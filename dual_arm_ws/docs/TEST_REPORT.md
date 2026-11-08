@@ -1,5 +1,9 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-09 Fresh GitHub clone check
+
+Commit e345638 FAIL on a fresh clone (clone_build_check.log): `dual_arm_bringup` installed an empty `config` directory that git does not store. Removing that install entry gave 11 packages built, 33 cm530_hardware tests, coordinator tests and `start_sim.sh mock`, all PASS in a clone with the one-line fix. The earlier README flow check missed this because `tar` preserves empty directories.
+
 ## 2026-11-09 README flow check
 
 The README steps were followed in a throwaway copy on the WSL Linux disk (readme_flow_check.log): copy 434 s and 578 MB, full build of 11 packages 300 s, then quick checks, 33 cm530_hardware tests, the mock-serial launch and `start_sim.sh mock`, all PASS. `install_jazzy.sh` was not rerun because the packages were already installed; its list was compared against the package dependency closure. All required ROS packages exist in the arm64 Jazzy repository, but an Orin build remains NOT_RUN.
