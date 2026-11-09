@@ -294,6 +294,7 @@ dual_arm_system/
 | 找不到 `ros2` | 執行 `source /opt/ros/jazzy/setup.bash` |
 | 找不到 dual_arm 套件 | 先建置，再 `source install/setup.bash`；每個新終端都要做 |
 | 找不到控制器 | 等 Gazebo 載入完成；確認 `ROS_DOMAIN_ID` 都是 43 |
+| `Switch controller timed out` | 偶發的啟動失敗，停掉模擬重開；載入期間先不要反覆查詢控制器 |
 | 模擬非常慢 | 確認專案在 Linux 磁碟，不是 `/mnt/e`；沒畫面需求時改用 `headless` |
 | 沒有 GUI | 檢查 `echo "$DISPLAY"`；沒有桌面就用 `headless` |
 | 重開後場景異常 | 用 `pgrep -af 'gz sim'` 檢查有沒有上一輪的殘留 |

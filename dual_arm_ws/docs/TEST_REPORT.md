@@ -1,5 +1,9 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-09 README screenshots
+
+docs/images comes from a two-object headless run at commit 6feea97, which reached PASS with 74 events. The first capture attempt never started the transfer because Gazebo's controller switch timed out after 120 s, while the capture script polled `list_controllers`; delaying the first poll by 45 s worked on the retry. One retry does not establish the cause, so treat this as an intermittent startup failure. transfer_pipeline.json was restored after the capture.
+
 ## 2026-11-09 Fresh GitHub clone check
 
 Commit e345638 FAIL on a fresh clone (clone_build_check.log): `dual_arm_bringup` installed an empty `config` directory that git does not store. Removing that install entry gave 11 packages built, 33 cm530_hardware tests, coordinator tests and `start_sim.sh mock`, all PASS in a clone with the one-line fix. The earlier README flow check missed this because `tar` preserves empty directories.
