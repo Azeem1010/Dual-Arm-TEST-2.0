@@ -130,7 +130,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | 1 | `dual_arm_coordinator` 沒有 entry point，repo 內沒有任何 client 呼叫 `/vision/*` service，所有 `/vision/*` topic 也沒有訂閱者 | A→B→C 的 demo 用 Gazebo 真值，不是視覺 |
 | 2 | `/vision/calibration_status` 沒有訂閱者 | 校正狀態目前擋不住任何動作 |
 | 3 | `usb_cam` 的 `frame_id` 是 `env_cam`、`arm1_cam`、`arm2_cam`，`dual_arm_vision_adapter/config/hardware/*.yaml` 是 `*_camera_optical_frame`，`validate()` 比對字串 | 實機校正狀態會一直 FAIL（偏安全，但無法通過） |
-| 4 | 視覺輸出 `arm1_base`、`arm2_base`，URDF 只有 `arm1_base_link`、`arm2_base_link`，轉換 adapter 尚未實作 | 目標座標不能直接交給 MoveIt；軸向與換算狀態見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
+| 4 | 視覺輸出 `arm1_base`、`arm2_base`，URDF 只有 `arm1_base_link`、`arm2_base_link`；模擬已發布兩者間的 static TF，實機 TF 與目標轉換 adapter 尚未實作 | 目標座標不能直接交給 MoveIt；軸向與換算狀態見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
 | 5 | `esp32_micro_ros`、`dual_arm_interfaces` 套件不存在 | 實機沒有吸盤後端，`/gripper/*` 只存在於模擬 |
 | 6 | `/collision_object`、`/attached_collision_object`、`/planning_scene` 沒有發布者 | 吸盤附著不會同步到 MoveIt PlanningScene |
 | 7 | 相機 static TF 只在 `sim.launch.py` 發布 | 實機沒有相機 TF |

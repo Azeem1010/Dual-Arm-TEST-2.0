@@ -27,7 +27,7 @@ for name,cx,cz in [('env',0.,.8),('arm1',.2,.5),('arm2',-.2,.5)]:
             report['cameras'][name]={'status':'FAIL','reason':layout.message}
             continue
         pixels=np.array([[h.cx,h.cy] for h in layout.holes])
-        truth=np.array([[-.1675+col*.035,-.015+row*.035] for row in range(4) for col in range(2)])
+        truth=np.array([[-.1675+col*.035,-.09+row*.035] for row in range(4) for col in range(2)])
         plane=.014
         source='CAD hole centers, fixed source geometry'
     else:

@@ -128,18 +128,18 @@ class Pipeline(Demo):
     def deposit_b(self,name):
         if self.b_object is not None:
             raise RuntimeError('B is occupied; deposit denied')
-        self.move_pair({'arm1':[0.,.02,.054]},'B_deposit_approach')
-        self.move_pair({'arm1':[0.,.02,CONTACT_Z]},'B_deposit_contact',contact=True)
+        self.move_pair({'arm1':[0.,-.02,.054]},'B_deposit_approach')
+        self.move_pair({'arm1':[0.,-.02,CONTACT_Z]},'B_deposit_contact',contact=True)
         self.grip('arm1',name,False)
         self.b_object=name
-        self.move_pair({'arm1':[0.,.02,.054]},'B_arm1_retreat')
+        self.move_pair({'arm1':[0.,-.02,.054]},'B_arm1_retreat')
         self.move_pair({'arm1':None},'B_arm1_clear')
-        self.placed(name,[0.,.02,CAP_CENTER_Z],'B_placement_verified')
+        self.placed(name,[0.,-.02,CAP_CENTER_Z],'B_placement_verified')
 
     def run(self):
         self.homes=configured_homes(self.models)
         names=['cap_5','cap_6','cap_4'][:self.count]
-        destinations=[[-.1675,.02,CAP_CENTER_Z],[-.1325,.02,CAP_CENTER_Z],[-.1675,.055,CAP_CENTER_Z]][:self.count]
+        destinations=[[-.1675,-.055,CAP_CENTER_Z],[-.1325,-.055,CAP_CENTER_Z],[-.1675,-.02,CAP_CENTER_Z]][:self.count]
         self.wait(lambda:len(self.joints)==8 and all(n in self.poses for n in names) and self.clock is not None,
                   90,'Simulator not ready')
         self.settle()
@@ -153,7 +153,7 @@ class Pipeline(Demo):
             if not controller.wait_for_server(timeout_sec=90):
                 raise RuntimeError(arm+' trajectory controller not ready; no motion submitted')
         sources={n:self.position(n) for n in names}
-        expected={'cap_5':[.14,.03,.019],'cap_6':[.2,.03,.019],'cap_4':[.2,-.035,.019]}
+        expected={'cap_5':[.14,-.03,.019],'cap_6':[.2,-.03,.019],'cap_4':[.2,.035,.019]}
         for n in names:
             if np.linalg.norm(sources[n]-expected[n])>.003:
                 raise RuntimeError('Source object moved; fresh scene required: '+n)
@@ -201,7 +201,7 @@ class Pipeline(Demo):
             self.record('B_clear_verified',object=current)
             targets={'arm2':[c[0],c[1],.0253]}
             if following:
-                targets['arm1']=[0.,.02,.054]
+                targets['arm1']=[0.,-.02,.054]
             self.move_pair(targets,'parallel_C_release_B_approach',contact=True)
             # Release above the flush white pad, then verify actual supported cap height.
             self.grip('arm2',current,False)

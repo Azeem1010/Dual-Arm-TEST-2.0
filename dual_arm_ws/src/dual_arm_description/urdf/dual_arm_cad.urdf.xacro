@@ -9,15 +9,6 @@
       <mass value="0.1" />
       <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0" />
     </inertial>
-    <visual name="component_0">
-      <origin xyz="-0.1 0.11725 0" rpy="1.5707963267948966 0 0" />
-      <geometry>
-        <mesh filename="package://dual_arm_description/meshes/cad/component_000.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="cad_0">
-        <color rgba="1 0.15 0.55 1" />
-      </material>
-    </visual>
     <visual name="component_1">
       <origin xyz="-0.1 0.11725 0" rpy="1.5707963267948966 0 0" />
       <geometry>
@@ -304,7 +295,7 @@
   <joint name="arm1_mount" type="fixed">
     <parent link="world" />
     <child link="arm1_base_link" />
-    <origin xyz="0.1 -0.08725 0" />
+    <origin xyz="0.1 0.08725 0" rpy="0 0 3.141592653589793" />
   </joint>
   <link name="arm1_cad_link_1">
     <inertial>
@@ -1600,15 +1591,6 @@
         <color rgba="0.45 0.45 0.48 1" />
       </material>
     </visual>
-    <visual name="component_259">
-      <origin xyz="0.1 0.11725 0" rpy="1.5707963267948966 0 0" />
-      <geometry>
-        <mesh filename="package://dual_arm_description/meshes/cad/component_259.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="cad_259">
-        <color rgba="1 0.15 0.55 1" />
-      </material>
-    </visual>
     <visual name="component_260">
       <origin xyz="0.1 0.11725 0" rpy="1.5707963267948966 0 0" />
       <geometry>
@@ -1643,7 +1625,7 @@
   <joint name="arm2_mount" type="fixed">
     <parent link="world" />
     <child link="arm2_base_link" />
-    <origin xyz="-0.1 -0.08725 0" />
+    <origin xyz="-0.1 0.08725 0" rpy="0 0 3.141592653589793" />
   </joint>
   <link name="arm2_cad_link_1">
     <inertial>
@@ -2681,6 +2663,35 @@
     <parent link="arm2_cad_link_4" />
     <child link="arm2_tcp" />
     <origin xyz="0.0155 0.071 -8.326672685e-17" rpy="-1.5707963267948966 0 0" />
+  </joint>
+  <link name="field_platform">
+    <inertial>
+      <mass value="0.1" />
+      <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual name="component_0">
+      <origin xyz="0 -0.03 0.01" rpy="-1.5707963267948966 0 0" />
+      <geometry>
+        <mesh filename="package://dual_arm_description/meshes/cad/component_000.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="cad_0">
+        <color rgba="1 0.15 0.55 1" />
+      </material>
+    </visual>
+    <visual name="component_259">
+      <origin xyz="0 -0.03 0.01" rpy="-1.5707963267948966 0 0" />
+      <geometry>
+        <mesh filename="package://dual_arm_description/meshes/cad/component_259.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="cad_259">
+        <color rgba="1 0.15 0.55 1" />
+      </material>
+    </visual>
+  </link>
+  <joint name="field_platform_fixed" type="fixed">
+    <parent link="world" />
+    <child link="field_platform" />
+    <origin xyz="0 0 0" />
   </joint>
   <ros2_control name="DualArmSystem" type="system">
     <hardware>

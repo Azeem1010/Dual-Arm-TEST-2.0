@@ -34,7 +34,7 @@ def main():
     arm1 = CadKinematics(model_path.read_text(), 'arm1')
     arm2 = CadKinematics(model_path.read_text(), 'arm2')
     candidates = [(c['kind'], c['dense_1mm_approach']) for c in study['candidates'] if 'offset_m' in c]
-    candidates.append(('toward_user_y_10mm', study['ten_mm_candidate']['validation']))
+    candidates.append(('toward_arm_y_10mm', study['ten_mm_candidate']['validation']))
     report = {
         'status': 'NOT_RUN',
         'scope': 'Discrete self-collision with current URDF boxes and SRDF exclusions; arm1 at model zero',

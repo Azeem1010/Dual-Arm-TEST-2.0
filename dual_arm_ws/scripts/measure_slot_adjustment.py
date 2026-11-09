@@ -12,7 +12,7 @@ sys.path.insert(0,str(root/'src/dual_arm_coordinator'))
 from dual_arm_coordinator.kinematics import CadKinematics
 from runtime_settings import SETTINGS
 model=CadKinematics((root/'src/dual_arm_description/urdf/dual_arm_cad.urdf.xacro').read_text(),'arm2')
-slots=[[-.1675+col*.035,-.015+row*.035] for row in range(4) for col in range(2)]
+slots=[[-.1675+col*.035,-.09+row*.035] for row in range(4) for col in range(2)]
 # Current white pads are flush with the foam. Historical recess results are archived.
 contact_z=SETTINGS['surface_z_m']+SETTINGS['cap_height_m']
 def check(dx=0.,dy=0.,dz=0.,lifts=(.03,.02,.01,0.)):
@@ -29,7 +29,7 @@ def check(dx=0.,dy=0.,dz=0.,lifts=(.03,.02,.01,0.)):
     return True,details
 report={'scope':'Numerical CAD IK, four downward approach samples per slot; not collision/hardware acceptance',
         'contact_height_m':contact_z,'baseline':check()[1],'candidates':[]}
-for kind,direction in [('toward_user_y',(0.,-1.,0.)),('toward_arm_base_x',(1.,0.,0.)),('raise_insert_z',(0.,0.,1.))]:
+for kind,direction in [('toward_arm_y',(0.,1.,0.)),('toward_arm_base_x',(1.,0.,0.)),('raise_insert_z',(0.,0.,1.))]:
     found=None
     for millimetres in range(0,61):
         offset=np.array(direction)*millimetres/1000
@@ -47,8 +47,8 @@ for candidate in report['candidates']:
         if valid:
             vectors=np.array([entry['joints'] for entry in detail])
             candidate['smallest_joint_limit_margin_rad']=float(np.min(np.minimum(vectors-model.lower,model.upper-vectors)))
-ok,details=check(0.,-.010,0.,lifts=np.linspace(.03,0.,31))
-report['ten_mm_candidate']={'status':'PASS' if ok else 'FAIL','offset_m':[0.,-.010,0.],'validation':details}
+ok,details=check(0.,.010,0.,lifts=np.linspace(.03,0.,31))
+report['ten_mm_candidate']={'status':'PASS' if ok else 'FAIL','offset_m':[0.,.010,0.],'validation':details}
 if ok:
     vectors=np.array([entry['joints'] for entry in details])
     report['ten_mm_candidate']['smallest_joint_limit_margin_rad']=float(np.min(np.minimum(vectors-model.lower,model.upper-vectors)))

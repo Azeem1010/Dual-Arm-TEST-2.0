@@ -1,0 +1,55 @@
+=== 17:19:19 home_collision
+home_A_home_C {'valid': True, 'contacts': []}
+home_A_arm2_cad_zero {'valid': True, 'contacts': []}
+arm1_cad_zero_home_C {'valid': True, 'contacts': []}
+=== 17:19:29 exit 0
+=== 17:19:29 verify_slot_proposals
+    }
+  ]
+}
+=== 17:19:31 exit 0
+=== 17:19:31 slot_self_collision
+toward_arm_y PASS invalid 0 / 248
+toward_arm_base_x PASS invalid 0 / 248
+toward_arm_y_10mm PASS invalid 0 / 248
+=== 17:19:41 exit 0
+=== 17:19:41 smoke_runtime_sim
+  },
+  "planning_group": "both_arms",
+  "status": "PASS",
+  "shutdown": "PASS",
+  "mesh_resources": "PASS"
+}
+=== 17:20:56 exit 0
+=== 17:21:01 analyze_sim_images
+    "calibration_status": "NOT_RUN"
+  }
+}
+=== 17:21:04 exit 0
+=== 17:21:04 validate_sim_coordinates
+  "hardware_calibration_status": "NOT_RUN",
+      "measurement_status": "PASS",
+      "reason": "Error measured; synchronized acquisition/pose provenance and measured combined tolerance budget still required",
+      "maximum_error_m": 0.0019252699305315605,
+      "measurement_status": "PASS",
+      "reason": "Error measured; synchronized acquisition/pose provenance and measured combined tolerance budget still required",
+      "maximum_error_m": 0.0010879712928076072,
+        "held_out_maximum_error_m": 0.00018030033514921577,
+      "measurement_status": "PASS",
+      "reason": "Error measured; synchronized acquisition/pose provenance and measured combined tolerance budget still required",
+      "maximum_error_m": 0.0005269072280816846,
+        "held_out_maximum_error_m": 9.235078403236733e-05,
+=== 17:21:08 exit 0
+=== 17:21:08 pipeline_sim_start
+=== 17:21:25 tf_check
+- Translation: [0.000, 0.000, 0.014]
+- Rotation: in RPY (degree) [0.000, -0.000, 90.000]
+- Translation: [0.000, 0.000, 0.014]
+- Rotation: in RPY (degree) [0.000, -0.000, 90.000]
+=== 17:21:41 pipeline
+=== 17:30:58 pipeline exit 0
+both_home_start {"targets": {"arm1": null, "arm2": null}, "simultaneous": true}
+both_home_done {"feedback": {"arm1": {"tcp": [0.16634247330591423, -0.02766031461185926, 0.14080636745028738], "error_m": 0.0}, "arm2": {"tcp": [-0.15157268745744992, -0.03502035465390006, 0.14077807786029292], "error_m": 0.0}}}
+pipeline_completed {}
+=== 17:30:59 sim_stop
+=== 17:31:29 done

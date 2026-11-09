@@ -43,7 +43,7 @@ def prepare():
     cad_to_world[:3, 3] = [0, .03, 0]
     study = json.loads((EVIDENCE / 'slot_adjustment.json').read_text())
     candidates = {c['kind']: c['dense_1mm_approach'] for c in study['candidates'] if 'offset_m' in c}
-    candidates['toward_user_y_10mm'] = study['ten_mm_candidate']['validation']
+    candidates['toward_arm_y_10mm'] = study['ten_mm_candidate']['validation']
     failures = json.loads((EVIDENCE / 'slot_self_collision.json').read_text())
     witnesses = []
     for candidate in failures['candidates']:

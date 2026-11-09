@@ -1,5 +1,28 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-09 Far-side simulation layout
+
+Commands ran in WSL Ubuntu after `generate_cad_robot.py`, `generate_world.py` and `scripts/build.sh`. Both generators were first run unmodified and reproduced the committed model and world. Prior evidence is in evidence/before_far_side_layout_20261109. The first background run never started, because Git Bash rewrote the `/mnt/c` script path and a pipe hid the failure with exit 0; its stale files were not used. It was rerun with `MSYS_NO_PATHCONV=1`, and file times and values were checked afterward.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `test_cad_pose.py` | PASS | cad_pose_validation.json; 264 visuals match source CAD plus the documented layout transform; does not show the layout matches hardware |
+| `verify_model_revision.py` | PASS | model_revision_validation.json; motor axes and TCP unchanged |
+| `report_home_poses.py` | PASS | home_poses.json; FK and limits; j1 direction -1 is inferred |
+| `check_home_collision.py` | PASS | home_collision.json; discrete self/inter-arm boxes only; world and path NOT_RUN |
+| `test_ik.py` | FAIL | ik_validation.json; 16/18; arm1 (0.2, -0.085) and arm2 slot 1 (-0.1675, -0.09), the mirrored equivalents of the two previous failures |
+| `measure_slot_adjustment.py` baseline | FAIL | slot_adjustment.json; slot 1 at 30 mm above contact |
+| `verify_slot_proposals.py` | PASS | slot_proposal_verification.json; candidates +Y 6 mm, +X 18 mm, +Y 10 mm; solver self-consistency only |
+| `check_slot_self_collision.py` | PASS | slot_self_collision.json; 0/248 invalid for each candidate; URDF boxes only |
+| coordinator unit tests | PASS | 8 tests |
+| `smoke_runtime.py sim --seconds 150 --group both_arms --execute` | PASS | sim_runtime.json; cameras, views, controllers, plan, execution feedback and shutdown |
+| `analyze_sim_images.py` | FAIL for env grid only | sim_detection.json; arm1 8 caps and arm2 grid PASS; env finds 4 caps and 4 holes because the arms occlude it, unchanged from the previous record |
+| `validate_sim_coordinates.py` | PASS (measurement) | sim_coordinate_validation.json; max error env 1.93 mm, arm1 1.09 mm, arm2 0.53 mm; calibration validity NOT_RUN |
+| `tf2_echo armN_base_link armN_base` | PASS | far_side_checks.log; translation (0, 0, 0.014), yaw 90 deg |
+| `run_pipeline.sh --count 2` | PASS | transfer_pipeline.json, far_side_pipeline.log; 74 events; Gazebo ground truth to slots 3 and 4 |
+
+`check_slot_mesh_witnesses.py` was not rerun. Eight-object transfer, vision-driven transfer, world collision, continuous path and all hardware checks remain NOT_RUN.
+
 ## 2026-11-09 Live ROS graph capture
 
 At commit b48eee8, headless `vision_sim.launch.py` plus `calibration.launch.py` ran on domain 77 and the graph was dumped with rclpy (evidence/ros_graph_vision_sim). Node, topic, service and action endpoints PASS against the source, and all three controllers were active. The first capture attempt never started because the capture script used `set -u` before sourcing ROS. `arm1_controller`'s spawner exited 1 after its first switch call timed out at 10 s and the retry found the controller already switched; the controller was active. `/vision/calibration_status` content NOT_RUN: `ros2 topic echo --once` got nothing within 15 s and the cause was not investigated. `arm2_vision_node` and `calibration_status` logged tracebacks during SIGINT shutdown, after the capture. No leftover processes. This shows endpoints exist, not that data or task flow is correct.

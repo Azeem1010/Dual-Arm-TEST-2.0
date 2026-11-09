@@ -25,7 +25,7 @@ def main():
         for c in study['candidates'] if 'offset_m' in c
     ]
     extra = study['ten_mm_candidate']
-    candidates.append(('toward_user_y_10mm', extra['offset_m'], extra['validation']))
+    candidates.append(('toward_arm_y_10mm', extra['offset_m'], extra['validation']))
     report = {
         'scope': 'Saved samples rechecked with current CAD FK; no collision or hardware acceptance',
         'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
@@ -48,7 +48,7 @@ def main():
                 if sample['status'] != 'PASS' or q.shape != (4,) or not np.isfinite(q).all():
                     raise ValueError(f'{name}: invalid sample')
                 row, col = divmod(slot - 1, 2)
-                target = np.array([-.1675 + col * .035, -.015 + row * .035,
+                target = np.array([-.1675 + col * .035, -.09 + row * .035,
                                    study['contact_height_m'] + sample['lift_m']]) + offset
                 pose = model.forward(q)
                 error = float(np.linalg.norm(pose[:3, 3] - target))

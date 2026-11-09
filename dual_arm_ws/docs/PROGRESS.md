@@ -1,5 +1,12 @@
 # Development status — 2026-11-09
 
+## Latest result: far-side simulation layout (supersedes the BLOCKED note and C reach row below)
+
+- Simulation now follows the user-stated layout: arm bases on the side far from the user, facing -Y, zone A on the arm's left. Source CAD is unchanged; the generators apply the layout. Layout itself is NOT_RUN against hardware (no photo or measurement).
+- PASS: CAD pose transform (264 visuals), HOME FK/limits, HOME self/inter-arm collision, 8 coordinator tests, simulation static TF, three cameras and four views, both_arms execution, two-object A->B->C regression with Gazebo ground truth (74 events).
+- FAIL: slot 1 is out of reach by downward IK at its current position, and it is the first slot in the fill order. IK is still 16/18, the same two mirrored targets as before. A +Y 10 mm move passes IK and box self-collision with 5.06 deg margin, but nothing is applied. See SLOT_ADJUSTMENT.md.
+- j1 simulation direction changed to -1 by inference. Motor direction, Arm 1 j1 zero, base-to-edge distances, arm2 axis convention, hardware TF and the vision target adapter remain NOT_RUN. Eight-object and vision-driven transfer remain NOT_RUN. README screenshots in docs/images still show the old layout.
+
 ## Latest result: coordinate axis definitions
 
 - New [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) records the OpenCV-side X/Y definitions. User stated the physical arm bases are on the side far from the user, with zone A on the left when facing the field from the base.

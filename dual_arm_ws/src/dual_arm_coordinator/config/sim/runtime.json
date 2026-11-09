@@ -1,5 +1,5 @@
 {
-  "revision": "camera_forward_flush_C_20261109",
+  "revision": "far_side_layout_20261109",
   "transport_speed_scale": 0.5,
   "contact_speed_scale": 0.25,
   "acceleration_scale": 0.25,
@@ -30,7 +30,7 @@
         512
       ],
       "direction": [
-        1,
+        -1,
         1,
         1,
         1
@@ -57,7 +57,7 @@
         512
       ],
       "direction": [
-        1,
+        -1,
         1,
         1,
         1
@@ -66,7 +66,7 @@
     "mapping_mode": "simulation_assumed",
     "hardware_use_allowed": false,
     "zero_reference": "User-stated physical zero: all four motors at raw 512 with the arm straight, read as vertical. CAD equivalent is q=(0,-35,-55,0) deg, so raw_at_cad_zero j2..j4 = 631.35/699.55/512. Directions are inferred, not measured.",
-    "arm1_j1_status": "UNRESOLVED: firmware home_A raw 90 faces zone A on the real arm, but raw 512 faces +Y, which would put raw 90 at about 124 deg. raw_at_cad_zero 192.3 is the earlier -30 deg simulation placeholder until motor 17 is read on the real arm.",
+    "arm1_j1_status": "UNRESOLVED: simulation j1 direction is -1 because the bases now face -Y and zone A is on the arm left. The real direction is unmeasured. Firmware home_A raw 90 is 123.75 deg from raw 512, while zone A only needs about 30 deg. raw_at_cad_zero 192.3 keeps the simulated +30 deg placeholder until motor 17 is read on the real arm.",
     "assumption_note": "Simulation only. Not measured calibration; the wrist upper limit was widened to 1.65 rad in simulation so raw 825 fits, without physical clearance checks."
   }
 }

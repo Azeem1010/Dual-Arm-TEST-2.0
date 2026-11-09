@@ -22,12 +22,12 @@ try:
         raise RuntimeError('Live MoveIt unavailable')
     targets = []
     for i in range(8):
-        targets.append(('A_cap_'+str(i+1), 'arm1', [.14+(i%2)*.06, -.1+(i//2)*.065, .024]))
-    for y in [-.02, 0., .02, .04, .06]:
+        targets.append(('A_cap_'+str(i+1), 'arm1', [.14+(i%2)*.06, .1-(i//2)*.065, .024]))
+    for y in [.02, 0., -.02, -.04, -.06]:
         for arm in models:
             targets.append(('B_'+str(y), arm, [0., y, .024]))
     for i in range(8):
-        targets.append(('C_slot_'+str(i+1), 'arm2', [-.1675+(i%2)*.035, -.015+(i//2)*.035, CONTACT_Z]))
+        targets.append(('C_slot_'+str(i+1), 'arm2', [-.1675+(i%2)*.035, -.09+(i//2)*.035, CONTACT_Z]))
     for name, arm, xyz in targets:
         entry = {'name': name, 'arm': arm, 'target': xyz, 'samples': [], 'status': 'PASS'}
         seed = None

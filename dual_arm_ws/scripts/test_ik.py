@@ -8,8 +8,8 @@ urdf=(root/'src/dual_arm_description/urdf/dual_arm_cad.urdf.xacro').read_text()
 results=[]
 for arm in ('arm1','arm2'):
     model=CadKinematics(urdf,arm)
-    targets=([[.14+col*.06,-.02+row*.035,.024] for row in range(4) for col in range(2)] if arm=='arm1' else [[-.1675+col*.035,-.015+row*.035,.024] for row in range(4) for col in range(2)])
-    targets.append([0,.05,.024])
+    targets=([[.14+col*.06,.02-row*.035,.024] for row in range(4) for col in range(2)] if arm=='arm1' else [[-.1675+col*.035,-.09+row*.035,.024] for row in range(4) for col in range(2)])
+    targets.append([0,-.05,.024])
     for target in targets:
         try:
             q=model.solve(target)

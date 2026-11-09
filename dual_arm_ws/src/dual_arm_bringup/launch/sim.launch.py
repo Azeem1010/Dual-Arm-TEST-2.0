@@ -21,5 +21,8 @@ def generate_launch_description():
         actions.append(Node(package='controller_manager', executable='spawner', arguments=[name, '--controller-manager-timeout', '120', '--switch-timeout', '120'], parameters=[{'use_sim_time': True}]))
     for name, x, z in [('env', 0.0, 0.8), ('arm1', 0.2, 0.5), ('arm2', -0.2, 0.5)]:
         actions.append(Node(package='tf2_ros', executable='static_transform_publisher', arguments=['--x', str(x), '--y', '0', '--z', str(z), '--roll', '3.14159265359', '--frame-id', 'world', '--child-frame-id', name + '_camera_optical_frame']))
+    # Vision base frames: x into the field, y to the arm's left, origin on the foam top (simulation z only).
+    for arm in ['arm1', 'arm2']:
+        actions.append(Node(package='tf2_ros', executable='static_transform_publisher', arguments=['--z', '0.014', '--yaw', '1.57079632679', '--frame-id', arm + '_base_link', '--child-frame-id', arm + '_base']))
     actions.insert(0, SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', str(Path(share('dual_arm_description')).parent) + os.pathsep + os.environ.get('GZ_SIM_RESOURCE_PATH','')))
     return LaunchDescription(actions)

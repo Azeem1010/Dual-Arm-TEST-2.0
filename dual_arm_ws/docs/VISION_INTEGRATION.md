@@ -5,6 +5,6 @@ The original packages are copied intact to src, pinned in docs/sources.lock.json
 
 Original service definitions and names remain unchanged. GetPickTarget response: success, message, rank, x/y/z. GetGridState response: occupied[8], place_x/y/z[8], all_full, success, message. VerifyPlace response: placed, order_ok, wrong_slots, success, message. These responses have no image acquisition timestamp.
 
-Upstream frames use arm1_base / arm2_base; integration model uses arm1_base_link / arm2_base_link. A motion adapter must explicitly map and verify those frames with TF rather than merely relabel coordinates. This runtime target adapter is not yet implemented. Axis definitions and the current CAD left/right mismatch are in [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md).
+Upstream frames use arm1_base / arm2_base; integration model uses arm1_base_link / arm2_base_link. A motion adapter must explicitly map and verify those frames with TF rather than merely relabel coordinates. This runtime target adapter is not yet implemented. `sim.launch.py` publishes the fixed `armN_base_link` to `armN_base` transforms for simulation only. Axis definitions are in [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md).
 
 CalibrationStatus publishes diagnostic messages and fails closed with missing records. It is a monitor; it is not yet wired to a motion-executing coordinator. No automatic physical motion is currently exposed.

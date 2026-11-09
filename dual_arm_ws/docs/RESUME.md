@@ -11,7 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
-- 座標軸定義已寫入 COORDINATE_FRAMES.md。實機手臂在遠離使用者側、面向場地時 A 區在左邊，與 CAD 模型左右相反，視覺到 URDF 的換算為 BLOCKED。
+- 模擬已改為手臂在遠離使用者側、A 區在手臂左邊，定義見 COORDINATE_FRAMES.md。兩物體搬運回歸 PASS（far_side_pipeline.log）；舊配置證據在 evidence/before_far_side_layout_20261109/。
+- 待處理：格位 1 逆運動學 FAIL（見 SLOT_ADJUSTMENT.md）；需要實機俯視照片確認配置；README 的 docs/images 截圖仍是舊配置。
 - ROS 介面規格已寫入 ROS_INTERFACES.md，並用 headless `vision_sim` 的實際 graph 核對（evidence/ros_graph_vision_sim/）。任務層尚未接上視覺，缺口列在該文件最後一節。
 - 使用者提供實機零姿態：四顆馬達 raw 512、手臂伸直。已套用為模擬暫定值，換算與數字見 HOME_POSES.md。
 - 兩物體搬運回歸 PASS（Gazebo 真值、無畫面），證據為 transfer_pipeline.json 與 zero512_pipeline.log。先前手動中斷的那一輪備份在 evidence/before_zero512/，不是搬運失敗。

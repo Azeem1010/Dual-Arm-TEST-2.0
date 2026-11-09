@@ -2,16 +2,23 @@
   "mode": "sim",
   "joint_feedback": "PASS",
   "joints": {
-    "arm1_arm_elbow_flex_joint": 3.0125512272613326e-09,
-    "arm1_arm_shoulder_lift_joint": 1.750788721087101e-08,
-    "arm1_arm_shoulder_pan_joint": -6.124076506325292e-15,
-    "arm1_arm_wrist_flex_joint": 2.6110044820670804e-12,
-    "arm2_arm_elbow_flex_joint": 2.3914313323450594e-10,
-    "arm2_arm_shoulder_lift_joint": 1.2688755476681345e-09,
-    "arm2_arm_shoulder_pan_joint": -6.074300350905632e-15,
-    "arm2_arm_wrist_flex_joint": 2.5786301705021933e-12
+    "arm1_arm_elbow_flex_joint": 7.2682825717070895e-06,
+    "arm1_arm_shoulder_lift_joint": 4.255676275438226e-05,
+    "arm1_arm_shoulder_pan_joint": -3.047343193757223e-14,
+    "arm1_arm_wrist_flex_joint": 1.3603583169652382e-11,
+    "arm2_arm_elbow_flex_joint": 1.5130326504743868e-10,
+    "arm2_arm_shoulder_lift_joint": 7.545475219228321e-10,
+    "arm2_arm_shoulder_pan_joint": -6.085056070137543e-15,
+    "arm2_arm_wrist_flex_joint": 2.5822062682534487e-12
   },
   "images": {
+    "env": {
+      "frame": "env_camera_optical_frame",
+      "size": [
+        640,
+        480
+      ]
+    },
     "arm1": {
       "frame": "arm1_camera_optical_frame",
       "size": [
@@ -26,15 +33,15 @@
         480
       ]
     },
-    "env": {
-      "frame": "env_camera_optical_frame",
-      "size": [
-        640,
-        480
-      ]
-    },
     "view_isometric": {
       "frame": "view_isometric/link/camera",
+      "size": [
+        960,
+        720
+      ]
+    },
+    "view_top": {
+      "frame": "view_top/link/camera",
       "size": [
         960,
         720
@@ -147,114 +154,126 @@
     "cap_1": {
       "position": [
         0.14,
-        -0.1,
+        0.1,
         0.018999999944852998
       ],
       "quaternion": [
-        -5.0935503174502595e-20,
-        1.4230884267335842e-20,
-        7.710766656285852e-22,
+        -3.4930299058758315e-20,
+        -8.562617994733788e-20,
+        2.8140074121501845e-22,
         1.0
       ]
     },
     "cap_2": {
       "position": [
         0.2,
-        -0.1,
+        0.1,
         0.018999999944852998
       ],
       "quaternion": [
-        -2.190016962608664e-20,
-        -2.842876613891096e-21,
-        1.0159146274244641e-21,
+        -5.421202299739094e-20,
+        -2.5875311402190852e-20,
+        6.646368178100372e-23,
         1.0
       ]
     },
     "cap_3": {
       "position": [
         0.14,
-        -0.035,
+        0.035,
         0.018999999944852998
       ],
       "quaternion": [
-        1.0986800625129036e-19,
-        -5.446296655007583e-20,
-        2.274331780617396e-22,
+        -6.117383907931411e-20,
+        -4.670335370812729e-20,
+        1.0524774071998798e-21,
         1.0
       ]
     },
     "cap_4": {
       "position": [
         0.2,
-        -0.035,
+        0.035,
         0.018999999944852998
       ],
       "quaternion": [
-        1.6419935666317687e-20,
-        3.64457003731877e-20,
-        3.822771510766628e-21,
+        7.234101852941632e-20,
+        -4.9288829530449135e-20,
+        3.0111811031458728e-21,
         1.0
       ]
     },
     "cap_5": {
       "position": [
         0.14,
-        0.03,
+        -0.03,
         0.018999999944852998
       ],
       "quaternion": [
-        -1.796782030645084e-20,
-        -2.4365387280695222e-20,
-        -3.721684636350734e-21,
+        -3.113790800075309e-22,
+        2.5618898121237484e-20,
+        2.558067958561264e-21,
         1.0
       ]
     },
     "cap_6": {
       "position": [
         0.2,
-        0.03,
+        -0.03,
         0.018999999944852998
       ],
       "quaternion": [
-        8.431419397584651e-20,
-        -4.837841485682453e-20,
-        -2.8140074160142413e-22,
+        -7.686766633293291e-20,
+        2.7534834396279244e-20,
+        -1.015914627650159e-21,
         1.0
       ]
     },
     "cap_7": {
       "position": [
         0.14,
-        0.095,
+        -0.095,
         0.018999999944852998
       ],
       "quaternion": [
-        6.424868201967565e-21,
-        -8.152419369419749e-20,
-        -1.964769634147215e-21,
+        -4.0697155744406166e-20,
+        3.99283628507944e-20,
+        4.896759241108562e-22,
         1.0
       ]
     },
     "cap_8": {
       "position": [
         0.2,
-        0.095,
+        -0.095,
         0.018999999944852998
       ],
       "quaternion": [
-        -1.5960387755246725e-19,
-        -4.4837082432434115e-21,
-        3.397078639901486e-21,
+        -3.6039516151985056e-20,
+        5.129848975283599e-20,
+        -8.72771166492734e-21,
         1.0
       ]
     }
   },
   "three_camera_streams": "PASS",
-  "workspace_views": "FAIL",
+  "workspace_views": "PASS",
   "controllers": "PASS",
-  "moveit_plan": "NOT_RUN",
+  "moveit_plan": "PASS",
+  "moveit_error_code": 1,
+  "execution_feedback": "PASS",
+  "final_joints": {
+    "arm1_arm_elbow_flex_joint": 0.0035323152075943547,
+    "arm1_arm_shoulder_lift_joint": 0.0003730028853414761,
+    "arm1_arm_shoulder_pan_joint": 0.0539514416679014,
+    "arm1_arm_wrist_flex_joint": -0.002990524882156461,
+    "arm2_arm_elbow_flex_joint": -0.003027735800073651,
+    "arm2_arm_shoulder_lift_joint": 0.0032802291249971875,
+    "arm2_arm_shoulder_pan_joint": 0.046401051063922706,
+    "arm2_arm_wrist_flex_joint": -0.003273193872708974
+  },
   "planning_group": "both_arms",
-  "status": "FAIL",
-  "shutdown": "FAIL",
+  "status": "PASS",
+  "shutdown": "PASS",
   "mesh_resources": "PASS"
 }

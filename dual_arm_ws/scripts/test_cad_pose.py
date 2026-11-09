@@ -23,17 +23,29 @@ while pending:
             transforms[joint.find('child').get('link')] = transforms[parent]@origin(joint.find('origin'))
             pending.remove(joint)
     assert len(pending)<before,'Disconnected graph'
-expected = np.eye(4)
-expected[:3,:3] = Rotation.from_euler('x',np.pi/2).as_matrix()
-expected[:3,3] = [0,.03,0]
+source = np.eye(4)
+source[:3,:3] = Rotation.from_euler('x',np.pi/2).as_matrix()
+source[:3,3] = [0,.03,0]
+# Installed layout: platforms mirrored across y=0 by a flip; each arm yawed 180 degrees about its base axis.
+flip = np.diag([1.,-1.,-1.,1.])
+flip[2,3] = .01
+def expected_for(link_name):
+    if link_name=='field_platform':
+        return flip@source
+    x = .1 if link_name.startswith('arm1_') else -.1
+    cad_mount, installed = np.eye(4), np.eye(4)
+    cad_mount[:3,3] = [x,-.08725,0]
+    installed[:3,3] = [x,.08725,0]
+    installed[:3,:3] = Rotation.from_euler('z',np.pi).as_matrix()
+    return installed@np.linalg.inv(cad_mount)@source
 count = 0
 for link in robot.findall('link'):
     for visual in link.findall('visual'):
         actual = transforms[link.get('name')]@origin(visual.find('origin'))
-        assert np.allclose(actual,expected,atol=1e-9), link.get('name')
+        assert np.allclose(actual,expected_for(link.get('name')),atol=1e-9), link.get('name')
         count += 1
 assert count==264,count
 assert len([j for j in robot.findall('joint') if j.get('type')=='revolute'])==8
-report = {'status':'PASS','visual_components':count,'scope':'At zero joint displacement, each exported CAD visual has exactly the source assembly transform; does not validate fastener assignment during motion or dynamics.'}
+report = {'status':'PASS','visual_components':count,'scope':'At zero joint displacement, each exported CAD visual has exactly the source assembly transform composed with the documented installed-layout transform; does not validate fastener assignment during motion or dynamics, or that the layout matches hardware.'}
 (root/'docs/evidence/cad_pose_validation.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))

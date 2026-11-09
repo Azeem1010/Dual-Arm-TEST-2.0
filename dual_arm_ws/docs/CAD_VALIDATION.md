@@ -8,6 +8,8 @@ NOT_RUN: measured mass/inertia, hardware joint travel, motor sign/zero, fastener
 
 CAD coordinate conversion: world = Rx(90°) * CAD_mm / 1000 + [0,0.03,0]. World X is left-to-right, Y away from user, Z up. Source platform span is 600 × 300 mm with front notches. A distinct 600 × 300 mm foam layer is modeled above it to meet the vision specification; this layer is simulation fixture geometry, not a change to source CAD.
 
+Installed simulation layout (2026-11-09, user-stated, not measured): source CAD is unchanged, but each arm is yawed 180° about its base axis and installed at (±0.10, +0.08725, 0), and the platforms are mirrored across y=0. See [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md). The installed hole centers are y = -0.090, -0.055, -0.020, 0.015. The numbers below are source CAD values.
+
 Actual CAD hole centers in world metres: x = -0.1675 / -0.1325; y = -0.015, 0.020, 0.055, 0.090. Hole width is 25 mm. Slots are row-major from user side, left then right. Geometry extraction records include tessellation bounding tolerance; centers and straight-edge dimensions are used separately from those expanded bounds.
 
 FAIL: at least the far-left final row slot is unreachable with a downward suction axis at the original low placement plane under the current numerical CAD model. See SLOT_ADJUSTMENT.md. Do not broaden hardware limits to conceal this.
