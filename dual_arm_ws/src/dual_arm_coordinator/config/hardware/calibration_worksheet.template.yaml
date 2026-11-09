@@ -1,0 +1,24 @@
+# Worksheet for tools/calibration_sheet.py. Fill from measurements on the real arm.
+# Limits have no defaults; derive them from measured clearances (decision D6).
+# The tool only reports candidates. A person copies approved values to calibration.yaml.
+acceptance:
+  max_fit_ticks: null
+  min_span_rad: null
+  max_position_error_m: null
+  max_tilt_error_deg: null
+arms: [arm1]
+joints:
+  # Add one entry per joint, each with at least three samples: the measured URDF
+  # angle and the READ value taken at the same moment.
+  arm1_arm_shoulder_pan_joint:
+    samples:
+      - {angle_rad: null, raw: null}
+      - {angle_rad: null, raw: null}
+      - {angle_rad: null, raw: null}
+verification:
+  # At least three poses that were not used above. tcp_m is measured independently
+  # in the world frame; do not copy forward kinematics output here.
+  arm1:
+    - {raw: [null, null, null, null], tcp_m: [null, null, null], tilt_deg: null}
+    - {raw: [null, null, null, null], tcp_m: [null, null, null], tilt_deg: null}
+    - {raw: [null, null, null, null], tcp_m: [null, null, null], tilt_deg: null}

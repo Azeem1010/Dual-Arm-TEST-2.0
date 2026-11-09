@@ -1,6 +1,6 @@
 # 座標軸定義（OpenCV 端與手臂端共用）
 
-更新：2026-11-09。實機配置來自使用者口述，尚未以照片或量測確認。狀態只使用 `PASS`、`FAIL`、`BLOCKED`、`NOT_RUN`。
+更新：2026-11-10。實機配置來自使用者口述，尚未以照片或量測確認。**A 區在手臂左邊或右邊目前證據矛盾（`BLOCKED`，D0）**，見 [FUTURE_ROADMAP.md](FUTURE_ROADMAP.md) 第 3.1 節；本文件描述的是模擬目前採用的遠側配置。狀態只使用 `PASS`、`FAIL`、`BLOCKED`、`NOT_RUN`。
 
 ## 實機配置
 
@@ -66,7 +66,7 @@ y_world = y_base_origin - x_vision
 
 ## `calibrate_caps` 的使用限制
 
-程式預設 `OUTER_EDGE_Y_MM = -200`，代表 A 區在 y < 0，**與實機相反，不可直接使用預設值**。程式的換算是 `y = outer_edge_y + side`，不改程式時用下列方式輸入：
+程式預設 `OUTER_EDGE_Y_MM = -200`，代表 A 區在 y < 0，**與目前採用的遠側配置相反，D0 確認前不可直接使用預設值**。程式的換算是 `y = outer_edge_y + side`，不改程式時用下列方式輸入：
 
 | 輸入 | 內容 |
 |---|---|
@@ -89,7 +89,8 @@ y_world = y_base_origin - x_vision
 | A/B 分界與旋轉軸是否對齊 | `NOT_RUN` | 模型中 x = 0.10，與分界一致；實機未量 |
 | 上述 `calibrate_caps` 輸入方式 | `NOT_RUN` | 依程式公式推導，尚未實際執行 |
 | 手臂 2 軸向 | `NOT_RUN` | 待 OpenCV 端確認 |
-| 實機 TF 與視覺目標 adapter | `NOT_RUN` | 尚未實作 |
+| 視覺目標轉換（模擬） | `PASS` | `gateways/vision.py` 以 TF 轉到 `world`，evidence/wp7/ |
+| 實機 `armN_base` TF | `NOT_RUN` | 需要實測，尚未發布 |
 
 ## 待釐清
 

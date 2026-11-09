@@ -9,6 +9,7 @@ is enabled only by an explicit operator command:
 
 A hardware emergency stop independent of this software is required.
 """
+import math
 from pathlib import Path
 import yaml
 from ament_index_python.packages import get_package_share_directory as share
@@ -29,6 +30,21 @@ def require_bool(context, name):
     return value == 'true'
 
 
+def require_measured_tolerances(path):
+    """Refuse a controllers file whose constraints were not filled from measurements."""
+    data = yaml.safe_load(Path(path).read_text())
+    for controller in ('arm1_controller', 'arm2_controller'):
+        parameters = data[controller]['ros__parameters']
+        constraints = parameters.get('constraints') or {}
+        values = {'goal_time': constraints.get('goal_time'),
+                  'stopped_velocity_tolerance': constraints.get('stopped_velocity_tolerance')}
+        values.update({joint: (constraints.get(joint) or {}).get('goal') for joint in parameters['joints']})
+        unmeasured = [name for name, value in values.items()
+                      if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0]
+        if unmeasured:
+            raise RuntimeError(f'controllers_file {path}: {controller} has unmeasured constraints: {unmeasured}')
+
+
 def spawner(name, *extra):
     return Node(package='controller_manager', executable='spawner',
                 arguments=[name, '--controller-manager-timeout', '60', *extra])
@@ -43,6 +59,8 @@ def setup(context):
     port = MOCK_PORT if use_mock else LaunchConfiguration('port').perform(context)
     if enable_motion and not controllers_file:
         raise RuntimeError('enable_motion:=true requires controllers_file with measured goal tolerances')
+    if enable_motion:
+        require_measured_tolerances(controllers_file)
 
     description = ParameterValue(Command([
         'xacro ', share('dual_arm_description'), '/urdf/dual_arm_cad.urdf.xacro mode:=hardware',
@@ -77,6 +95,9 @@ def setup(context):
             actions.append(Node(package='dual_arm_bringup', executable='move_group_lifetime',
                                 parameters=[params], output='screen'))
     if not use_mock:
+        if enable_motion:
+            # Fail closed: without a valid heartbeat the arm controllers stay stopped.
+            actions.append(Node(package='dual_arm_coordinator', executable='safety_supervisor', output='screen'))
         return actions
     # The mock must create its pseudo-terminal before the driver opens it.
     mock = Node(package='cm530_hardware', executable='cm530_mock_serial',

@@ -1,0 +1,186 @@
+{
+  "status": "PASS",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "unreachable_caps_parked": {
+      "status": "PASS",
+      "detail": null
+    },
+    "start_accepted": {
+      "status": "PASS",
+      "detail": null
+    },
+    "missing_calibration_stops_before_touching_an_object": {
+      "status": "PASS",
+      "detail": "Pick target invalid: Calibration for arm1 is not valid: [\"[Errno 2] No such file or directory: '/tmp/dual_arm_wp7/calib/arm1_camera.yaml'\"]"
+    },
+    "no_object_moved": {
+      "status": "PASS",
+      "detail": null
+    },
+    "record_passes_calibration_status": {
+      "status": "PASS",
+      "detail": [
+        "[]"
+      ]
+    },
+    "first_target_within_suction_tolerance": {
+      "status": "PASS",
+      "detail": {
+        "success": true,
+        "cap": "cap_4",
+        "world": [
+          0.19973517075233374,
+          0.035150088001872276
+        ],
+        "error_m": 0.0003044025931648649
+      }
+    },
+    "vision_run_accepted": {
+      "status": "PASS",
+      "detail": null
+    },
+    "two_objects_succeeded_with_vision_targets": {
+      "status": "PASS",
+      "detail": ""
+    },
+    "ground_truth_has_caps_in_slots_3_and_4": {
+      "status": "PASS",
+      "detail": [
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "observations": {
+    "calibration_status_without_record": [
+      "[\"[Errno 2] No such file or directory: '/tmp/dual_arm_wp7/calib/arm1_camera.yaml'\"]"
+    ],
+    "calibration_record": "arm1: measured 0.00094 m, budget 0.00100 m, status PASS",
+    "first_vision_target": {
+      "success": true,
+      "cap": "cap_4",
+      "world": [
+        0.19973517075233374,
+        0.035150088001872276
+      ],
+      "error_m": 0.0003044025931648649
+    },
+    "final_cap_positions": {
+      "cap_2": [
+        0.35,
+        0.3,
+        0.01499921010053342
+      ],
+      "cap_1": [
+        0.35,
+        0.3,
+        0.004999229764172961
+      ],
+      "cap_3": [
+        0.14,
+        0.035,
+        0.018999999944852998
+      ],
+      "cap_4": [
+        -0.16777566395345492,
+        -0.05488541745688237,
+        0.01899999961250583
+      ],
+      "cap_5": [
+        0.14,
+        -0.03,
+        0.018999999944852998
+      ],
+      "cap_6": [
+        -0.13297629648358192,
+        -0.054835664091661934,
+        0.018999999779634093
+      ],
+      "cap_7": [
+        0.14,
+        -0.095,
+        0.018999999944852998
+      ],
+      "cap_8": [
+        0.2,
+        -0.095,
+        0.018999999944852998
+      ]
+    },
+    "final_cap_rotations_xyzw": {
+      "cap_2": [
+        -2.9256494784248693e-16,
+        -9.216450238969335e-17,
+        -4.687602238545039e-18,
+        1.0
+      ],
+      "cap_1": [
+        -2.069282997886053e-16,
+        -7.343614709697384e-17,
+        1.2835684027337751e-18,
+        1.0
+      ],
+      "cap_3": [
+        -6.117383907931411e-20,
+        -4.670335370812729e-20,
+        1.0524774071998798e-21,
+        1.0
+      ],
+      "cap_4": [
+        1.041707799223833e-06,
+        -5.919740406323313e-07,
+        0.9985330481932194,
+        -0.054145652314126075
+      ],
+      "cap_5": [
+        -3.113790800075309e-22,
+        2.5618898121237484e-20,
+        2.558067958561264e-21,
+        1.0
+      ],
+      "cap_6": [
+        7.024511579419958e-07,
+        -3.227631585311915e-07,
+        0.9377518473651032,
+        -0.34730602177724845
+      ],
+      "cap_7": [
+        -4.0697155744406166e-20,
+        3.99283628507944e-20,
+        4.896759241108562e-22,
+        1.0
+      ],
+      "cap_8": [
+        -3.6039516151985056e-20,
+        5.129848975283599e-20,
+        -8.72771166492734e-21,
+        1.0
+      ]
+    },
+    "final_tcp": {
+      "arm1": {
+        "tcp_m": [
+          0.16634467633610403,
+          -0.027659971885690096,
+          0.14080809696905222
+        ],
+        "tool_tilt_deg": 13.431729016908218
+      },
+      "arm2": {
+        "tcp_m": [
+          -0.15156858554248148,
+          -0.035068652146618126,
+          0.14069636587054757
+        ],
+        "tool_tilt_deg": 13.413016612972958
+      }
+    }
+  }
+}

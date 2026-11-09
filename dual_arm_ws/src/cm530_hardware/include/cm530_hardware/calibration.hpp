@@ -36,6 +36,9 @@ public:
   // only on a pseudo-terminal, so it can never authorize a physical port.
   std::vector<std::string> motion_blockers(bool port_is_pseudo_terminal) const;
 
+  // One message per joint of the arm outside its measured raw limits.
+  std::vector<std::string> pose_limit_violations(Arm arm, const RawPose & pose) const;
+
   const RawPose & expected_home(Arm arm) const noexcept;
   int max_step_raw() const noexcept { return max_step_raw_.value_or(0); }
 

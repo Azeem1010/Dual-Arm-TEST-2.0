@@ -172,9 +172,24 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_activate(const rcl
       return CallbackReturn::ERROR;
     }
     latest_raw_[static_cast<std::size_t>(arm)] = *read.pose;
-    if (enable_motion_) {
+  }
+  if (enable_motion_) {
+    // Limits are never widened to fit: the first write would fault anyway, so
+    // refuse before torque is applied to either arm.
+    bool inside_limits = true;
+    for (const Arm arm : kArms) {
+      for (const auto & violation : calibration_->pose_limit_violations(arm, latest_raw_[static_cast<std::size_t>(arm)])) {
+        RCLCPP_ERROR(get_logger(), "Activation refused, move the arm by hand first: %s", violation.c_str());
+        inside_limits = false;
+      }
+    }
+    if (!inside_limits) {
+      return CallbackReturn::ERROR;
+    }
+    for (const Arm arm : kArms) {
+      const std::string name{arm_name(arm)};
       // The firmware requires a target before torque, so hold the measured pose.
-      if (!require_ok(link_->transact(Command::ax(arm, *read.pose)), "AX " + name) ||
+      if (!require_ok(link_->transact(Command::ax(arm, latest_raw_[static_cast<std::size_t>(arm)])), "AX " + name) ||
         !require_ok(link_->transact(Command::torque_enable(arm, true)), "TORQUE on " + name))
       {
         return CallbackReturn::ERROR;
@@ -231,9 +246,17 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_shutdown(const rcl
 
 CM530SystemInterface::CallbackReturn CM530SystemInterface::on_error(const rclcpp_lifecycle::State &)
 {
-  // The firmware has no STOP or watchdog and the link state is unknown, so
-  // nothing further is sent. Motors keep their last target until the hardware
-  // emergency stop or a deliberate operator action.
+  // The firmware has no STOP or watchdog. One HOLD per arm is sent only while the
+  // link is still synchronized; a desynchronized link receives nothing. Motors
+  // otherwise keep their last target until the hardware emergency stop.
+  scheduler_.reset();
+  if (enable_motion_ && link_) {
+    for (const LinkResult & result : hold_arms_once(*link_)) {
+      if (!result.ok()) {
+        RCLCPP_ERROR(get_logger(), "HOLD after fault failed: %s", result.detail.c_str());
+      }
+    }
+  }
   RCLCPP_ERROR(get_logger(), "CM-530 fault: communication stopped; use the hardware emergency stop if needed");
   release_link();
   return CallbackReturn::SUCCESS;

@@ -1,5 +1,7 @@
 # home_A / home_C 姿態換算
 
+> **2026-11-10 狀態：** 本文件的方向與零點都是模擬假設。j1 方向、j2 方向與零點和實機紀錄有矛盾（`BLOCKED`，D0、D1），見 [FUTURE_ROADMAP.md](FUTURE_ROADMAP.md) 第 3.1、3.2 節，確認方法見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 4 節。實機 HOME 由 `calibration.yaml` 換算，不使用本文件的數值或 SRDF 的 named state。
+
 目前第 17 版韌體來源的設定如下；若實際控制板刷入不同版本，需以 `GET_HOME` 回覆為準。
 
 | 手臂 | 名稱 | j1 / j2 / j3 / j4 馬達 ID | HOME 原始位置值 |

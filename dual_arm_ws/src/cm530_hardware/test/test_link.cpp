@@ -48,6 +48,52 @@ TEST_F(LinkTest, HandshakesWithOrWithoutReady)
   EXPECT_TRUE(link->handshake(2ms).ok());
 }
 
+TEST_F(LinkTest, HandshakeClearsPartialLineLeftInFirmware)
+{
+  sim.feed("VERSI");
+  EXPECT_TRUE(link->handshake(2ms).ok());
+  EXPECT_TRUE(link->healthy());
+}
+
+TEST_F(LinkTest, HandshakeNeverExecutesACommandLeftInFirmware)
+{
+  const int goals = sim.goal_writes();
+  sim.feed("HOME,arm1");
+  EXPECT_TRUE(link->handshake(2ms).ok());
+  EXPECT_EQ(sim.goal_writes(), goals);
+}
+
+TEST_F(LinkTest, HoldAfterFaultCoversBothArms)
+{
+  const int goals = sim.goal_writes();
+  const auto results = cm530_hardware::hold_arms_once(*link);
+  ASSERT_EQ(results.size(), 2U);
+  EXPECT_TRUE(results[0].ok());
+  EXPECT_TRUE(results[1].ok());
+  EXPECT_EQ(sim.goal_writes(), goals + 2);
+}
+
+TEST_F(LinkTest, HoldAfterFaultIsNotRetriedAndStillTriesTheOtherArm)
+{
+  sim.set_fault(17, MotorFault::kNoReply);
+  const int writes = loop->writes();
+  const auto results = cm530_hardware::hold_arms_once(*link);
+  ASSERT_EQ(results.size(), 2U);
+  EXPECT_EQ(results[0].status, LinkStatus::kDeviceError);
+  EXPECT_TRUE(results[1].ok());
+  EXPECT_EQ(loop->writes(), writes + 2);
+}
+
+TEST_F(LinkTest, HoldIsNeverSentOnADesynchronizedLink)
+{
+  loop->drop_next_reply();
+  EXPECT_FALSE(link->transact(Command::read(Arm::kArm1)).ok());
+  ASSERT_FALSE(link->healthy());
+  const int writes = loop->writes();
+  EXPECT_TRUE(cm530_hardware::hold_arms_once(*link).empty());
+  EXPECT_EQ(loop->writes(), writes);
+}
+
 TEST_F(LinkTest, RejectsInitFailureAtHandshake)
 {
   loop->inject("ERR,INIT_FAILED\r\n");

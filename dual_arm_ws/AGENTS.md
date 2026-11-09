@@ -3,7 +3,7 @@
 ## 開始前先讀
 
 1. `docs/REQUIREMENTS.md`：完整需求
-2. `docs/PROGRESS.md`：目前進度，最上面的段落最新
+2. `docs/PROGRESS.md`：目前進度，最上面的段落最新；工作包與衝突清單在 `docs/MODIFICATION_PLAN.md`
 3. `docs/SOURCE_AUDIT.md`：上游來源與韌體查核
 4. `docs/RESUME.md`：中斷時的續接資訊
 
@@ -49,6 +49,7 @@ bash scripts/start_sim.sh gui             # 或 headless、mock
 bash scripts/run_pipeline.sh --count 2    # 需要另開終端和乾淨的場景
 python3 scripts/check_home_collision.py   # HOME 碰撞檢查，需先 source install/setup.bash
 python3 scripts/test_cm530_mock.py        # CM-530 整合測試，不需硬體
+(cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # coordinator 單元測試
 ```
 
 ## 容易踩到的地方
@@ -60,6 +61,8 @@ python3 scripts/test_cm530_mock.py        # CM-530 整合測試，不需硬體
 | `dual_arm.srdf` 的 HOME | 由 `validate_model.py` 依 `runtime.json` 產生，不要手改 |
 | `transfer_pipeline.json` 顯示 `FAIL` | 流程跑完前的預設值就是 `FAIL`；先確認程序是否還在跑 |
 | 指令裡設定 `PYTHONPATH=...` | 會蓋掉 ROS 路徑；要 import `rclpy` 時不要整個覆寫 |
+| `build.sh`、舊 pipeline、`test_cm530_mock.py` 會覆寫 `docs/evidence/` 的舊紀錄 | 新結果另存到自己的子目錄，舊檔用 `git restore` 還原 |
+| 從 Git Bash 呼叫 `wsl.exe bash -lc '...$VAR...'` | 變數會先被展開，指令會靜默出錯；寫成腳本再執行 |
 | 已有模擬在執行 | 先用 `pgrep -af 'gz sim'` 確認，不要重複啟動 |
 | Gazebo 關不掉 | 已知問題，launch 結束後可能要對殘留的 `gz sim` 送 SIGTERM |
 | `tests/test_bridge.c` 有 11 項失敗 | 上游測試仍預期 HOME=512，實際韌體是 90／590 |

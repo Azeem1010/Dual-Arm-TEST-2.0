@@ -1,0 +1,57 @@
+{
+  "status": "FAIL",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "fresh_journal_is_idle_with_prefilled_slots": {
+      "status": "PASS",
+      "detail": "IDLE"
+    },
+    "start_accepted": {
+      "status": "PASS",
+      "detail": "Accepted; the result is reported on /dual_arm/status"
+    },
+    "second_start_refused_while_busy": {
+      "status": "PASS",
+      "detail": "Busy, faulted or full; see /dual_arm/status"
+    },
+    "cancel_accepted": {
+      "status": "PASS",
+      "detail": "Cancellation requested"
+    },
+    "cancel_ends_in_fault_with_recovery_token": {
+      "status": "PASS",
+      "detail": "Task canceled"
+    },
+    "arm_stays_stopped_after_cancel": {
+      "status": "PASS",
+      "detail": {
+        "max_joint_drift_rad": 1.534515417511706e-08
+      }
+    },
+    "cancel_interrupted_motion_before_target": {
+      "status": "FAIL",
+      "detail": {
+        "tcp_m": [
+          0.16634231468328306,
+          -0.02766213533167884,
+          0.14080295097303197
+        ],
+        "tool_tilt_deg": 13.430860251238753
+      }
+    },
+    "start_refused_in_fault": {
+      "status": "PASS",
+      "detail": "Busy, faulted or full; see /dual_arm/status"
+    },
+    "wrong_recovery_token_refused": {
+      "status": "PASS",
+      "detail": "Token does not confirm recovery"
+    },
+    "recovery_refused_while_arm_is_not_home": {
+      "status": "FAIL",
+      "detail": "Recovered; send a new start"
+    }
+  },
+  "observations": {},
+  "error": "Timed out waiting for new token; last status {'active_arm': '', 'b_owner': '', 'busy': False, 'completed': 0, 'config_fingerprint': 'c8c43ff83c673eeabec635390a47093afa2518bc8a82c338661bb80f71fd2db7', 'cycle_id': 'c42762df5d0a436d8df7847fc21e54e4', 'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'message': '', 'occupied': [True, True, False, False, False, False, False, False], 'recovery_token': '', 'slot': 0, 'state': 'IDLE', 'suction_step': '', 'suction_token': ''}\nTraceback (most recent call last):\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 240, in main\n    passed = harness.run()\n             ^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 221, in run\n    status = self.refusals_in_fault(status)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 169, in refusals_in_fault\n    status = self.wait_status(lambda s: s['recovery_token'] and s['recovery_token'] != token, 10, 'new token')\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 111, in wait_status\n    raise RuntimeError(f'Timed out waiting for {label}; last status {self.latest()}')\nRuntimeError: Timed out waiting for new token; last status {'active_arm': '', 'b_owner': '', 'busy': False, 'completed': 0, 'config_fingerprint': 'c8c43ff83c673eeabec635390a47093afa2518bc8a82c338661bb80f71fd2db7', 'cycle_id': 'c42762df5d0a436d8df7847fc21e54e4', 'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'message': '', 'occupied': [True, True, False, False, False, False, False, False], 'recovery_token': '', 'slot': 0, 'state': 'IDLE', 'suction_step': '', 'suction_token': ''}\n"
+}

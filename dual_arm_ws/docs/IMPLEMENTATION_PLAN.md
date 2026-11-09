@@ -2,6 +2,8 @@
 
 Spec: REQUIREMENTS.md. Execute in this workspace as requested.
 
+> Historical first-pass sequence, kept unchanged below; its checkboxes were never maintained. Current work and status are in [MODIFICATION_PLAN.md](MODIFICATION_PLAN.md) section 6.
+
 - [ ] Audit four pinned sources and install Jazzy toolchain; record package versions and actual interface fields.
 - [ ] Extract CAD component transforms and motor axes; retain upstream PhantomX kinematic reference. Test unique eight movable joints, connected world root, meshes and inertials.
 - [ ] Build physical workstation, board, holes, caps and camera sensors. Check rendered views against CAD; save screenshots.

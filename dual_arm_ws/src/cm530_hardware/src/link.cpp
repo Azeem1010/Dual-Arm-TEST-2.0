@@ -11,6 +11,7 @@ namespace
 {
 
 constexpr std::size_t kMaxBuffered = 256;
+constexpr std::size_t kFirmwareLineBytes = 96;  // BRIDGE_LINE_SIZE in the v17 firmware
 
 bool is_eol(char value) noexcept
 {
@@ -89,6 +90,10 @@ LinkResult Link::handshake(std::chrono::milliseconds listen)
   }
   // READY is only sent at board boot, so its absence is not a failure.
   try {
+    // Clear any partial line from an earlier session, which would corrupt VERSION.
+    // DEL only edits the firmware's line buffer, so unlike a line ending it cannot
+    // execute whatever happens to be stored there.
+    transport_->write_all(std::string(kFirmwareLineBytes, '\x7f'), command_timeout_);
     const auto deadline = std::chrono::steady_clock::now() + listen;
     while (true) {
       if (auto line = pop_line()) {
@@ -108,6 +113,18 @@ LinkResult Link::handshake(std::chrono::milliseconds listen)
     return version;
   }
   return transact(Command::ping());
+}
+
+std::vector<LinkResult> hold_arms_once(Link & link)
+{
+  std::vector<LinkResult> results;
+  for (const Arm arm : kArms) {
+    if (!link.healthy()) {
+      break;
+    }
+    results.push_back(link.transact(Command::hold(arm)));
+  }
+  return results;
 }
 
 LinkResult Link::transact(const Command & command)

@@ -93,6 +93,19 @@ TEST(Calibration, AuthorizesMotionOnlyWithFullPhysicalEvidence)
   EXPECT_FALSE(Calibration::from_yaml(document("PASS", "gazebo")).motion_blockers(false).empty());
 }
 
+TEST(Calibration, ReportsEveryJointOutsideItsLimits)
+{
+  const auto calibration = Calibration::from_yaml(document());
+  using cm530_hardware::Arm;
+  using cm530_hardware::RawPose;
+  EXPECT_TRUE(calibration.pose_limit_violations(Arm::kArm1, RawPose{100, 900, 512, 512}).empty());
+  const auto violations = calibration.pose_limit_violations(Arm::kArm2, RawPose{99, 512, 901, 512});
+  ASSERT_EQ(violations.size(), 2U);
+  EXPECT_NE(violations[0].find("arm2_arm_shoulder_pan_joint"), std::string::npos);
+  EXPECT_NE(violations[0].find("raw 99"), std::string::npos);
+  EXPECT_NE(violations[1].find("arm2_arm_elbow_flex_joint"), std::string::npos);
+}
+
 TEST(Calibration, MockEvidenceNeverAuthorizesARealPort)
 {
   const auto mock = Calibration::from_yaml(document("PASS", "mock_serial_test"));

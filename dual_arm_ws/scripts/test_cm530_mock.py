@@ -26,6 +26,8 @@ FIXTURES = ROOT / 'src/cm530_hardware/test/fixtures'
 MOCK_CAL = str(FIXTURES / 'calibration_mock.yaml')
 REFUSED_CAL = str(FIXTURES / 'calibration_not_authorized.yaml')
 CONTROLLERS = str(FIXTURES / 'controllers_mock.yaml')
+NARROW_CAL = str(FIXTURES / 'calibration_mock_narrow.yaml')
+CONTROLLERS_TEMPLATE = str(ROOT / 'src/dual_arm_controllers/config/controllers_hardware.template.yaml')
 ARM1 = [f'arm1_arm_{name}' for name in ('shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_flex_joint', 'wrist_flex_joint')]
 ARM2 = [name.replace('arm1_', 'arm2_') for name in ARM1]
 TARGET = [0.2, -0.15, 0.1, 0.25]
@@ -181,6 +183,32 @@ def controllers_required(_):
         launch.stop()
 
 
+def controllers_template_refused(_):
+    launch = Launch('controllers_template', f'calibration_file:={MOCK_CAL}', 'enable_motion:=true',
+                    f'controllers_file:={CONTROLLERS_TEMPLATE}', 'use_moveit:=false')
+    try:
+        return launch.wait_for('unmeasured constraints', 60), 'null controller constraints are refused'
+    finally:
+        launch.stop()
+
+
+def rest_pose_outside_limits(_):
+    launch = Launch('rest_limits', f'calibration_file:={NARROW_CAL}', 'enable_motion:=true',
+                    f'controllers_file:={CONTROLLERS}', 'use_moveit:=false')
+    try:
+        ready, controllers = wait_cli(
+            lambda text: 'arm1_controller' in text and 'arm2_controller' in text and text.count('inactive') >= 2,
+            'list_controllers')
+        if not ready:
+            return False, f'controllers not ready: {controllers}'
+        cli('set_hardware_component_state', 'DualArmSystem', 'active')
+        refused = launch.wait_for('Activation refused', 30)
+        no_torque = 'torque' not in launch.text().split('Activation refused')[0].lower().replace('torque failure', '')
+        return refused, {'refused': refused, 'log_mentions_torque_before_refusal': not no_torque}
+    finally:
+        launch.stop()
+
+
 def motion_and_fault(probe):
     launch = Launch('motion', f'calibration_file:={MOCK_CAL}', 'enable_motion:=true',
                     f'controllers_file:={CONTROLLERS}', 'use_moveit:=false')
@@ -229,6 +257,8 @@ def main():
             ('refused_calibration', refused_calibration),
             ('template_refused', template_refused),
             ('controllers_required', controllers_required),
+            ('controllers_template_refused', controllers_template_refused),
+            ('rest_pose_outside_limits', rest_pose_outside_limits),
             ('motion_and_fault', motion_and_fault),
         ]]
         report['status'] = 'PASS' if all(results) else 'FAIL'

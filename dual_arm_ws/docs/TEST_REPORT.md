@@ -1,5 +1,239 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-10 C32 safety latch enforcement
+
+Commands are in evidence/c32/c32.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 259 tests |
+| `test_safety_ros.py` repeated | PASS | 03; 5 of 5 runs, 6 tests each, stand-in controller manager |
+| Safety scenarios including manual activation while latched | PASS | 05, 06; MoveIt mock, 29 checks, stopped again in 0.29 s |
+| Startup order and manual switch on mock serial | PASS | mock_serial/results.txt; controllers inactive after manual switch, reset before hardware active still refused |
+| Leftover processes | PASS | 07; none |
+| Hardware, Gazebo physics | NOT_RUN | |
+
+## 2026-11-10 README images and safety startup order
+
+Commands are in evidence/readme_images/capture.sh and evidence/safety_order/run.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `demo_pick_place.launch.py cycles:=2` | PASS | readme_images; Gazebo ground truth, SUCCEEDED, completed 2, no leftovers |
+| README images captured from real sensor frames | PASS | readme_images/raw; second attempt |
+| First capture attempt | FAIL | status is 5 Hz and short states were missed; task itself SUCCEEDED, nothing published |
+| `/safety/reset` before hardware active | FAIL | safety_order; refused, this was the documented order |
+| Hardware active, then `/safety/reset` | PASS | safety_order; mock serial, controllers active |
+| Heartbeat loss stops controllers | PASS | safety_order; mock serial |
+| Manual `switch_controllers` blocked while latched | FAIL | safety_order; controllers become active, status still reports stopped (C32) |
+| HARDWARE_TEST_GUIDE.md procedure | NOT_RUN | no hardware used |
+
+## 2026-11-10 Documentation audit
+
+Commands are in evidence/docs_audit/verify.sh and verify_unittest_sourced.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Old README `PYTHONPATH=... unittest` command | FAIL | 01; 3 import errors, the command replaced PYTHONPATH and lost rclpy |
+| Same discovery with ROS entries kept in PYTHONPATH | PASS | 10; 253 tests |
+| README pytest command | PASS | 02; 253 tests |
+| `run_pipeline.sh --count 2` at 1.0/0.5/1.0 | PASS | 03, 04, 05; old pipeline, Gazebo ground truth |
+| `demo_pick_place.launch.py` and `operator_console start` | PASS | 06, 07, 08; default one cycle, Gazebo ground truth, ended SUCCEEDED |
+| Leftover processes after both runs | PASS | 09; none |
+| Document links, referenced paths and executables | PASS | 24 documents, no broken links |
+| Documented hardware and Orin procedures | NOT_RUN | no Orin or hardware used |
+
+## 2026-11-10 WP12 ESP32 suction backend
+
+Commands are in evidence/wp12/wp12.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 253 tests |
+| ESP32 topic wiring | PASS | test_esp32_ros.py; stand-in node on domain 93 |
+| Sim config accepted, hardware template refused | PASS | 03, 04; module mapping and timings must be measured |
+| Real ESP32, micro-ROS agent, actual suction | NOT_RUN | |
+| Gazebo regression | NOT_RUN | Gazebo backend unchanged |
+
+## 2026-11-10 WP13 documentation
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Node interfaces captured from running nodes | PASS | evidence/wp13/04_node_info.txt; MoveIt mock |
+| Document links, referenced scripts and installed executables | PASS | checked against the workspace |
+| ORIN_DEPLOYMENT.md procedure | NOT_RUN | no Orin or hardware used |
+
+## 2026-11-09 WP10 operator tools
+
+Commands are in evidence/wp10/wp10.sh. Integration uses `scripts/test_operator_tools.py`.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 233 tests |
+| `cm530_probe` on mock serial | PASS | 05, 06; sent only the six read-only commands |
+| `check_calibration_sheet` | PASS | shipped template refused; fitting and limits covered by unit tests |
+| `manual_xy` on MoveIt mock | PASS | plan left joints still; execute reached the target; unreachable target and hardware template refused |
+| `operator_console` with the coordinator node | PASS | status, start, and refusals for confirm and recover |
+| Real board, real calibration measurements | NOT_RUN | |
+
+## 2026-11-09 WP9 safety supervisor
+
+Commands are in evidence/wp9/wp9.sh. Integration uses `scripts/test_safety_supervisor.py` against `start_sim.sh mock`.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 201 tests |
+| Mock run 1 | FAIL | run1_reset_before_coordinator_ready/; test reset before the restarted coordinator reported in; reset was correctly refused |
+| Mock run 2 | PASS | 04, 05; 26 checks |
+| Arm stop time after coordinator is killed | measurement | about 1.2 s; 22.2 s before WP9 (C29) |
+| Arm stop time after heartbeat loss / asserted stop | measurement | about 2.7 s including the 2 s limit / about 0.3 s |
+| Gazebo physics, hardware heartbeat source, hardware | NOT_RUN | |
+
+## 2026-11-09 WP8 driver hardening
+
+Commands are in evidence/wp8/wp8.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Build of cm530_hardware, controllers, bringup | PASS | 01 |
+| cm530_hardware colcon test | PASS | 02, 03; 35 gtests plus 4 CTest wrappers |
+| `test_cm530_mock.py` | PASS | 04, cm530_mock/; 7 phases, including template and rest-pose refusals |
+| ASan + UBSan, 20 repetitions | PASS | 05; no reports |
+| TSan, 20 repetitions | PASS | 05; run with `setarch -R` for the WSL address layout |
+| c-review | NOT_RUN | needs a Workflow tool not available here |
+| READ retry | NOT_RUN | waits for decision D2 |
+| Real UART, motors, Orin | NOT_RUN | |
+
+## 2026-11-09 WP7 vision gateway
+
+Commands are in evidence/wp7/wp7.sh. Gazebo; simulated calibration from the known camera geometry.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 10, 11; 186 tests |
+| Live vision probe at HOME | measurement | 03, 04; arm1 error up to 0.94 mm; arm2 found 1 of 8 slots; environment camera could not locate the field |
+| Missing calibration record refuses the run | PASS | every pick run; stops before any object moves |
+| Vision-chosen picks, first five runs | FAIL | before_timing_fixes/, 13; 1 of 5 passed |
+| Vision-chosen picks after timing fixes | PASS | pick_repeat_1..3, 14; 3 of 3, slots 3 and 4 |
+| Two objects with final parameters | PASS | regress_two/; 5 checks |
+| Fault scenarios with final parameters | PASS | regress_faults/; 21 checks |
+| Time reduction of at least 50% with final parameters | FAIL | 15_timing_compare.txt; 727.6 s to 373.9 s, -48.6% |
+| Zone and slot state from vision | BLOCKED | C31, decision D7 |
+| Hardware | NOT_RUN | |
+
+## 2026-11-09 WP6S faster simulation speeds
+
+Commands are in evidence/wp6s/wp6s.sh. Scales changed to transport 1.0, contact 0.5, acceleration 1.0.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 170 tests |
+| First regression attempt | FAIL | two_run1_timing_probe_script_error/; a bug in the real-time-factor probe aborted the script before the test started |
+| Two objects at the new speeds | PASS | two/; slots 3 and 4; record, ground truth and planning scene agree |
+| Time reduction of at least 50% | PASS | 03_timing.txt versus wp6/03_analysis.txt; trajectory span 727.6 s to 351.8 s, -51.6% |
+| Idle real-time factor | measurement | 7 simulated seconds in 34 wall seconds, about 0.2 |
+| Fault scenarios and old pipeline at new speeds, hardware | NOT_RUN | |
+
+## 2026-11-09 WP6 simulation regression
+
+Commands are in evidence/wp6/wp6.sh; scenarios are in `scripts/test_transfer_regression.py`. Gazebo ground truth, simulated prefilled slots 1 and 2 unless stated.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 170 tests |
+| Two objects | PASS | two/; slots 3 and 4; record, ground truth and planning scene agree; about 12.4 min |
+| Fault scenarios, first run | FAIL | faults_run1_start_before_heartbeat/; test timing, start correctly refused without a heartbeat |
+| Fault scenarios | PASS | faults/; 21 checks: failed release, heartbeat loss, latched emergency stop, cancel while holding, scene cleanup on recovery |
+| Eight objects from empty C | FAIL | batch/; slot 1 out of reach; the run stopped before any object moved, as designed |
+| Six objects into slots 3 to 8 | FAIL | batch/; placed 4, then no reachable cap; 03_analysis.txt shows only cap_3 to cap_6 are reachable |
+| Vision-driven transfer, hardware | NOT_RUN | |
+
+## 2026-11-09 WP5 coordinator node
+
+Commands are in evidence/wp5/wp5.sh. Integration uses `scripts/test_coordinator_sim.py` against `start_sim.sh headless` with Gazebo ground truth.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 165 tests |
+| `demo_pick_place.launch.py --show-args` | PASS | 03; argument parsing only |
+| Gazebo run 1 | FAIL | run1_cancel_during_planning/; cancel landed during planning, so the arm had not left HOME and the test's assumptions did not hold |
+| Gazebo run 2 | FAIL | run2_operator_before_arm_stopped/; MoveIt refused a new trajectory while the killed run's trajectory was still executing |
+| Gazebo run 3 after correcting test timing | PASS | 05, 06; 22 checks; cancel, refusals, two restart recoveries, one full A->B->C with the real suction plugin |
+| Motion after coordinator is killed | FAIL (known gap, C29) | 06 observations; about 22 s and 0.26 rad after SIGKILL |
+| Eight objects, vision-driven transfer, hardware | NOT_RUN | |
+
+## 2026-11-09 WP4 suction gateway
+
+Commands are in evidence/wp4/wp4.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 142 tests, 41 new |
+| ROS topic wiring | PASS | test_gripper_ros.py; stand-in node on domain 91, not the Gazebo plugin |
+| Hardware refuses auto-confirm and Gazebo backend | PASS | test_gripper.py and task_config tests |
+| Real Gazebo suction plugin | NOT_RUN | WP6 |
+| Physical suction, ESP32 | NOT_RUN | no protocol available |
+
+## 2026-11-09 WP3 motion gateway
+
+Commands are in evidence/wp3/wp3.sh. Integration uses `scripts/test_motion_gateway.py` against `start_sim.sh mock`.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| coordinator build and pytest | PASS | 01, 02; 101 tests |
+| Mock run 1 | FAIL | 04a, 05a; reported PASS, but the contact-path collision check was refused by IK, so it did not test collision |
+| Mock run 2 after correcting the test | PASS | 04, 05; 16 checks, full A->B->C path, worst TCP error 2.9 um, worst tilt on contact moves about 1e-6 deg |
+| Refusals | PASS | slot 1 and far target by IK; two colliding cases with a collision reason; refused descent moved no joint |
+| Cancel during motion | PASS | stopped mid-move and stayed still on mock |
+| Gazebo physics, hardware | NOT_RUN | mock joints follow commands exactly |
+
+## 2026-11-09 WP2 ROS-free task logic
+
+Commands are in evidence/wp2/wp2.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `colcon build --packages-select dual_arm_coordinator` | PASS | 01_build.log |
+| coordinator pytest, first run | FAIL | 02a_first_run_2_failed.log; 79 passed, 2 failed; refusals from the resource managers were not raised as TaskFault |
+| coordinator pytest after the fix | PASS | 02_coordinator_pytest.log; 81 tests with a fake IO world |
+| Installed modules do not load rclpy | PASS | 05_import_check.txt |
+| `check_task_config` sim / hardware template | PASS | accepted / refused with exit 1 |
+| Full workspace build, pipeline, ROS or Gazebo execution | NOT_RUN | only the coordinator package changed |
+| All hardware checks | NOT_RUN | |
+
+## 2026-11-09 WP1 interfaces and coordinator skeleton
+
+Commands are in evidence/wp1/wp1.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `scripts/build.sh` | PASS | 01_build.log; 12 packages |
+| coordinator pytest | PASS | 27 tests; 8 existing and 19 new in test_task_config.py |
+| `ros2 interface show` for both services | PASS | 03_interfaces.txt |
+| `check_task_config` on installed sim config | PASS | 04_check_sim.txt; exit 0 |
+| `check_task_config` on hardware template | PASS | 05_check_hardware.txt; refused with exit 1 as required |
+| `run_pipeline.sh --count 2` | PASS | 07, 08; 74 events; Gazebo ground truth, slots 3 and 4 only |
+| All hardware checks | NOT_RUN | |
+
+Three older evidence files overwritten by build.sh and the pipeline were restored from git.
+
+## 2026-11-09 WP0 baseline
+
+Commit c7dfba3, WSL Ubuntu, no source changes. Commands are in evidence/roadmap_baseline/wp0.sh.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `scripts/build.sh` | PASS | 01_build.log; 11 packages |
+| coordinator / vision adapter / vision_pkg pytest | PASS | 8 / 10 / 99 tests |
+| `cm530_hardware`, `dual_arm_gripper` colcon test | PASS | 29 gtests (reported as 33 with 4 CTest wrappers); 1 gripper CTest |
+| `test_cm530_mock.py` | PASS | 5 phases; mock serial only |
+| `run_pipeline.sh --count 2` | PASS | 74 events; Gazebo ground truth, not vision-driven |
+| Gazebo shutdown by SIGINT to launch only | NOT_RUN | a process-group SIGINT exited cleanly, which is a different method |
+| Sanitizers | NOT_RUN | outside WP0 |
+| All hardware checks | NOT_RUN | |
+
+The first attempt did not run the build because `wsl.exe` expanded the shell variables; see roadmap_baseline/README.md. Eight older evidence files overwritten by these scripts were restored from git.
+
 ## 2026-11-09 Far-side simulation layout
 
 Commands ran in WSL Ubuntu after `generate_cad_robot.py`, `generate_world.py` and `scripts/build.sh`. Both generators were first run unmodified and reproduced the committed model and world. Prior evidence is in evidence/before_far_side_layout_20261109. The first background run never started, because Git Bash rewrote the `/mnt/c` script path and a pipe hid the failure with exit 0; its stale files were not used. It was rerun with `MSYS_NO_PATHCONV=1`, and file times and values were checked afterward.

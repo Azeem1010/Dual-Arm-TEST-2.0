@@ -1,0 +1,81 @@
+{
+  "status": "FAIL",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "manual_run_accepted": {
+      "status": "PASS",
+      "detail": null
+    },
+    "confirm_with_wrong_token_refused": {
+      "status": "PASS",
+      "detail": null
+    },
+    "grasp_confirmed": {
+      "status": "PASS",
+      "detail": null
+    },
+    "used_token_refused": {
+      "status": "PASS",
+      "detail": null
+    },
+    "release_reported_failed": {
+      "status": "PASS",
+      "detail": null
+    },
+    "release_failure_keeps_tool_unknown_and_b_owner": {
+      "status": "PASS",
+      "detail": {
+        "message": "Operator reported suction release failed on arm1: cap stuck",
+        "holding": {
+          "arm1": "unknown",
+          "arm2": "empty"
+        },
+        "b_owner": "arm1"
+      }
+    },
+    "fault_leaves_attached_object_in_scene": {
+      "status": "PASS",
+      "detail": {
+        "world": [],
+        "attached": [
+          "arm1_carried_cap"
+        ]
+      }
+    },
+    "recovery_refused_with_arm_in_b": {
+      "status": "PASS",
+      "detail": "arm1 is not at HOME"
+    },
+    "recovery_accepted_after_home": {
+      "status": "PASS",
+      "detail": "Recovered; send a new start"
+    },
+    "recovery_clears_tool_and_b_owner": {
+      "status": "PASS",
+      "detail": {
+        "holding": {
+          "arm1": "empty",
+          "arm2": "empty"
+        },
+        "b_owner": ""
+      }
+    },
+    "recovery_clears_attached_object": {
+      "status": "PASS",
+      "detail": {
+        "world": [
+          "cap_in_slot_1",
+          "cap_in_slot_2"
+        ],
+        "attached": []
+      }
+    },
+    "start_accepted_with_heartbeat": {
+      "status": "FAIL",
+      "detail": null
+    }
+  },
+  "observations": {},
+  "group": "faults",
+  "error": "Timed out waiting for ARM1:APPROACH_A; last status {'active_arm': '', 'b_owner': '', 'busy': False, 'completed': 0, 'config_fingerprint': 'c8c43ff83c673eeabec635390a47093afa2518bc8a82c338661bb80f71fd2db7', 'cycle_id': '', 'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'message': '', 'occupied': [True, True, False, False, False, False, False, False], 'recovery_token': '', 'slot': 0, 'state': 'IDLE', 'suction_step': '', 'suction_token': ''}\nTraceback (most recent call last):\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 200, in main\n    {'two': harness.two_objects, 'batch': harness.batch, 'faults': harness.faults}[group]()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 190, in faults\n    self.estop_scenarios()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 148, in estop_scenarios\n    self.wait_state('ARM1:APPROACH_A', 240)\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 119, in wait_state\n    return self.wait_status(lambda s: text in s['state'], timeout, text)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 116, in wait_status\n    raise RuntimeError(f'Timed out waiting for {label}; last status {self.latest()}')\nRuntimeError: Timed out waiting for ARM1:APPROACH_A; last status {'active_arm': '', 'b_owner': '', 'busy': False, 'completed': 0, 'config_fingerprint': 'c8c43ff83c673eeabec635390a47093afa2518bc8a82c338661bb80f71fd2db7', 'cycle_id': '', 'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'message': '', 'occupied': [True, True, False, False, False, False, False, False], 'recovery_token': '', 'slot': 0, 'state': 'IDLE', 'suction_step': '', 'suction_token': ''}\n"
+}

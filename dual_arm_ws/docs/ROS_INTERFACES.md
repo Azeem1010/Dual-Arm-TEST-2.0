@@ -1,6 +1,6 @@
 # ROS 2 介面規格（Topic／Service／Action）
 
-最後確認：2026-11-09，commit `b48eee8`。
+最後確認：2026-11-10。視覺與模擬端點來自 commit `b48eee8` 的擷取；coordinator 與安全監控來自 [wp13/04_node_info.txt](evidence/wp13/04_node_info.txt)。
 
 本文件記錄**目前實際存在**的介面，不是目標設計。需求見 [REQUIREMENTS.md](REQUIREMENTS.md)。文件與程式不一致時，以程式碼和 `evidence/` 的最新紀錄為準。
 
@@ -12,6 +12,7 @@
 | `joint_state_broadcaster`、`arm1_controller`、`arm2_controller` 為 active | PASS | [live_controllers.txt](evidence/ros_graph_vision_sim/live_controllers.txt) |
 | `/vision/calibration_status` 訊息內容 | NOT_RUN | 端點存在，但 15 秒內沒抓到訊息（`live_calibration_status.txt` 是空的） |
 | `mock`、`hardware`、`vision.launch.py` 的實際 graph | NOT_RUN | 僅比對原始碼與 launch |
+| `dual_arm_coordinator`、`safety_supervisor` 端點與型別 | PASS | [wp13/04_node_info.txt](evidence/wp13/04_node_info.txt)，MoveIt mock 上擷取 |
 | 實機介面 | NOT_RUN | 未接硬體 |
 
 Live graph 只證明端點存在且型別相符，不代表資料內容正確，也不代表任務流程可用。
@@ -33,6 +34,13 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `joint_state_broadcaster` | `ros2_control` | `/joint_states`、`/dynamic_joint_states` | 無 | 無 |
 | `arm1_controller`、`arm2_controller` | `JointTrajectoryController` | `/armN_controller/controller_state` | `/armN_controller/joint_trajectory`、`/armN_controller/speed_scaling_input` | Action：`/armN_controller/follow_joint_trajectory`；`/armN_controller/query_state` |
 | `move_group` | `dual_arm_bringup/move_group_lifetime` | `/monitored_planning_scene`、`/display_planned_path`、`/display_contacts`、`/pipeline_state` | `/joint_states`、`/planning_scene`、`/planning_scene_world`、`/collision_object`、`/attached_collision_object`、`/trajectory_execution_event` | 見 Action 與 MoveIt Service |
+
+| 任務與安全節點 | 來源 | 發布 | 訂閱 | Service／Action |
+|---|---|---|---|---|
+| `dual_arm_coordinator` | `dual_arm_coordinator` | `/dual_arm/status`、`/dual_arm/permit`、`/handoff/b_state`、`/gripper/armN/command` | `/joint_states`、`/safety/estop`、`/gripper/armN/state`、`/ground_truth/cap_{1..8}` | Server：`/dual_arm/{start,cancel,confirm,recover}`。Client：`/move_action`、`/execute_trajectory`、`/apply_planning_scene`、`/check_state_validity`、`/get_planning_scene` |
+| `safety_supervisor` | `dual_arm_coordinator` | `/safety/status` | `/safety/estop`、`/dual_arm/permit` | Server：`/safety/reset`。Client：`/controller_manager/switch_controller`、`/controller_manager/list_controllers` |
+
+參數 `observation_source:=vision_pick` 時，`dual_arm_coordinator` 另外使用 `/vision/arm1/get_pick_target`、`/vision/calibration_status`、三支相機 `image_raw` 與 TF。實機設定目前會被 coordinator 拒絕啟動。
 
 `SuctionSystem` 是 Gazebo system plugin，不是 ROS 節點，透過 gz-transport 與 `ros_gz_bridge` 連接。
 
@@ -56,6 +64,15 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/vision/arm2/grid_state` | `vision_interfaces/msg/GridState` | C 區八格，`frame_id=arm2_base` | reliable、depth 10 |
 | `/vision/calibration_status` | `diagnostic_msgs/msg/DiagnosticArray` | 三支相機 PASS／FAIL 與原因 | reliable、depth 10；每 0.5 秒 |
 
+| `/dual_arm/status` | `std_msgs/msg/String`（JSON） | 狀態、持物、B 區擁有者、格位、token | transient_local、depth 1；5 Hz |
+| `/dual_arm/permit` | `std_msgs/msg/Bool` | Coordinator 存活與是否允許；停止發布代表失效 | 10 Hz |
+| `/handoff/b_state` | `std_msgs/msg/String`（JSON） | B 區擁有者 | transient_local、depth 1 |
+| `/safety/estop` | `std_msgs/msg/Bool` | 急停心跳，`true` 為觸發；實機來源尚不存在 | 需持續發布 |
+| `/safety/status` | `std_msgs/msg/String`（JSON） | 安全鎖定狀態、原因，以及實際查證的 `controllers_stopped` | transient_local、depth 1；5 Hz |
+
+| `/suction_command` | `std_msgs/msg/Int32` | ROS→ESP32，僅實機。`0` 全關，`1`／`2` 模組 1 吸取／釋放，`3`／`4` 模組 2 | 尚未接真正的 ESP32 |
+| `/suction_status` | `std_msgs/msg/Int32` | ESP32→ROS，命令回音，不是真空感測 | 尚未接真正的 ESP32 |
+
 depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位以 [vision_interfaces/msg](../src/vision_interfaces/msg) 為準，依 `AGENTS.md` 不可改動。
 
 ## Service
@@ -75,11 +92,22 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 
 這些 response 都沒有影像時間戳，單憑回應不足以授權動作（見 [ARCHITECTURE.md](ARCHITECTURE.md)）。
 
+### 任務與安全
+
+| Service | 型別 | 用途 |
+|---|---|---|
+| `/dual_arm/start`、`/dual_arm/cancel` | `std_srvs/srv/Trigger` | 開始、取消；開始只代表已接受，結果看 `/dual_arm/status` |
+| `/dual_arm/confirm` | `dual_arm_interfaces/srv/ConfirmStep` | 人工吸盤步驟的一次性確認 |
+| `/dual_arm/recover` | `dual_arm_interfaces/srv/ConfirmStep` | 現場清空後復歸 |
+| `/safety/reset` | `std_srvs/srv/Trigger` | 輸入恢復正常後解除鎖定並重新啟用 controller |
+
+`dual_arm_interfaces/srv/ManualXY` 已定義，但目前沒有服務端，`manual_xy` 是命令列工具。
+
 ### MoveIt
 
 `/check_state_validity`、`/compute_ik`、`/compute_fk`、`/compute_cartesian_path`、`/plan_kinematic_path`、`/get_planning_scene`、`/apply_planning_scene`、`/query_planner_interface`、`/get_planner_params`、`/set_planner_params`、`/clear_octomap`。
 
-目前專案實際用到的只有 `/check_state_validity`（`scripts/check_*.py`、`probe_transfer_targets.py`）。
+目前專案實際用到的有 `/check_state_validity`、`/apply_planning_scene`、`/get_planning_scene`。
 
 ### ros2_control
 
@@ -91,8 +119,8 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 
 | Action | 型別 | Server | Client |
 |---|---|---|---|
-| `/move_action` | `moveit_msgs/action/MoveGroup` | `move_group` | `scripts/demo_transfer_*.py`、`smoke_runtime.py`、`show_gazebo_motion.py` |
-| `/execute_trajectory` | `moveit_msgs/action/ExecuteTrajectory` | `move_group` | 無 |
+| `/move_action` | `moveit_msgs/action/MoveGroup` | `move_group` | `dual_arm_coordinator`、`manual_xy`、`scripts/demo_transfer_*.py`、`smoke_runtime.py`、`show_gazebo_motion.py` |
+| `/execute_trajectory` | `moveit_msgs/action/ExecuteTrajectory` | `move_group` | `dual_arm_coordinator`（接觸段） |
 | `/arm1_controller/follow_joint_trajectory` | `control_msgs/action/FollowJointTrajectory` | `arm1_controller` | `moveit_simple_controller_manager`、`demo_transfer_pipeline.py`、`test_cm530_mock.py` |
 | `/arm2_controller/follow_joint_trajectory` | `control_msgs/action/FollowJointTrajectory` | `arm2_controller` | `moveit_simple_controller_manager`、`demo_transfer_pipeline.py` |
 
@@ -118,22 +146,23 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `mock.launch.py` | RSP、`ros2_control_node`（`mock_components`）、`move_group`、RViz、三個 spawner | Gazebo、相機、吸盤、視覺 |
 | `sim.launch.py` | Gazebo、bridge、RSP、`move_group`、三個 spawner、相機 static TF | 視覺節點 |
 | `vision_sim.launch.py` | `sim.launch.py` + 三個視覺節點 | `calibration_status` |
+| `demo_pick_place.launch.py` | `sim.launch.py` + `dual_arm_coordinator`（Gazebo 真值） | 視覺節點；預設一輪已實跑通過（evidence/docs_audit/） |
 | `calibration.launch.py` | `calibration_status` | 校正工具 |
 | `hardware.launch.py`（預設） | RSP、`ros2_control_node`、`joint_state_broadcaster`，唯讀 | arm controller、`move_group`、相機、吸盤 |
-| `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group` | 相機、吸盤、相機 TF |
+| `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group`；非 Mock 時加 `safety_supervisor`。`controllers_file` 的容差必須是實測值 | 相機、吸盤、相機 TF |
 | `vision.launch.py` | `usb_cam` × 3、視覺節點 × 3，需要時加 `image_rotate_node` | 手臂與 MoveIt |
 
 ## 已知缺口
 
 | # | 問題 | 影響 |
 |---|---|---|
-| 1 | `dual_arm_coordinator` 沒有 entry point，repo 內沒有任何 client 呼叫 `/vision/*` service，所有 `/vision/*` topic 也沒有訂閱者 | A→B→C 的 demo 用 Gazebo 真值，不是視覺 |
-| 2 | `/vision/calibration_status` 沒有訂閱者 | 校正狀態目前擋不住任何動作 |
+| 1 | 區域與格位狀態仍用 Gazebo 真值，只有取料點可由視覺決定；模擬相機在 Home 被手臂遮擋（C31、D7） | 視覺驅動的完整搬運 `BLOCKED` |
+| 2 | Coordinator 只有在 `observation_source:=vision_pick` 時才檢查 `/vision/calibration_status`，且只檢查 arm1 | 區域與格位的校正閘門還沒有實際使用 |
 | 3 | `usb_cam` 的 `frame_id` 是 `env_cam`、`arm1_cam`、`arm2_cam`，`dual_arm_vision_adapter/config/hardware/*.yaml` 是 `*_camera_optical_frame`，`validate()` 比對字串 | 實機校正狀態會一直 FAIL（偏安全，但無法通過） |
-| 4 | 視覺輸出 `arm1_base`、`arm2_base`，URDF 只有 `arm1_base_link`、`arm2_base_link`；模擬已發布兩者間的 static TF，實機 TF 與目標轉換 adapter 尚未實作 | 目標座標不能直接交給 MoveIt；軸向與換算狀態見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
-| 5 | `esp32_micro_ros`、`dual_arm_interfaces` 套件不存在 | 實機沒有吸盤後端，`/gripper/*` 只存在於模擬 |
-| 6 | `/collision_object`、`/attached_collision_object`、`/planning_scene` 沒有發布者 | 吸盤附著不會同步到 MoveIt PlanningScene |
+| 4 | 視覺輸出 `armN_base`；模擬有 static TF，`vision` gateway 已用 TF 轉換；實機 TF 尚未發布，需要量測值 | 實機無法轉換視覺座標；軸向見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
+| 5 | `esp32_micro_ros` 不存在，沒有 ESP32 協定（D5） | 實機只能用人工 token；`/gripper/*` 只存在於模擬 |
+| 6 | Coordinator 會同步 PlanningScene，但場景沒有平台、泡棉、相機支架，碰撞模型仍是保守方塊（WP11） | 路徑碰撞驗證不完整 |
 | 7 | 相機 static TF 只在 `sim.launch.py` 發布 | 實機沒有相機 TF |
-| 8 | `demo_pick_place.launch.py` 不存在，`calibration.launch.py` 只有狀態監看 | 需求第十五節的啟動模式未齊全 |
+| 8 | `demo_pick_place.launch.py` 不含視覺節點；`calibration.launch.py` 只有狀態監看 | 含視覺的流程目前由測試腳本分開啟動 |
 | 9 | `calibration.launch.py` 的 `use_sim_time` 預設 `true`，實機模式需明確設為 `false` | 否則節點等不到 `/clock` |
 | 10 | 2026-11-09 擷取時 `arm1_controller` spawner 的第一次 switch 呼叫 10 秒逾時，重試時 controller 已切換，spawner 以 exit 1 結束，controller 實際為 active | launch log 出現 `process has died`，可能誤判；啟動後要以 `list_controllers` 為準 |

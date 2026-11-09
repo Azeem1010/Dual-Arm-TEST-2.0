@@ -1,0 +1,64 @@
+# Physical task template. The loader refuses this file while any field is null.
+# Fill fields only from measurements on the real workstation; never copy values
+# from config/sim. Joint zeros and directions belong in calibration.yaml.
+schema_version: 1
+mode: hardware
+evidence_kind: null
+target_frame: null
+home_source: calibration
+journal_path: ~/.ros/dual_arm/hardware_journal.json
+arms:
+  arm1:
+    planning_group: arm1
+    controller: arm1_controller
+    tcp_link: arm1_tcp
+    moveit_base_frame: arm1_base_link
+    vision_base_frame: arm1_base
+  arm2:
+    planning_group: arm2
+    controller: arm2_controller
+    tcp_link: arm2_tcp
+    moveit_base_frame: arm2_base_link
+    vision_base_frame: arm2_base
+speeds:
+  transport_scale: null
+  contact_scale: null
+  acceleration_scale: null
+heights:
+  surface_z_m: null
+  cap_height_m: null
+  cap_radius_m: null
+  contact_z_m: null
+  release_z_m: null
+  approach_z_m: null
+  pick_z_tolerance_m: null
+zones:
+  a_min_xy_m: null
+  a_max_xy_m: null
+  b_place_xy_m: null
+  c_slots_xy_m: null
+motion:
+  planning_s: null
+  planning_attempts: null
+  goal_submit_s: null
+  motion_s: null
+  settle_s: null
+  tcp_error_limit_m: null
+  arrival_samples: null
+  arrival_timeout_s: null
+  joint_state_max_age_s: null
+  waypoint_step_m: null
+  waypoint_joint_jump_rad: null
+  max_velocity_rad_s: null
+  max_acceleration_rad_s2: null
+gripper:
+  # The ESP32 only echoes commands, so an operator still confirms each result.
+  backend: esp32
+  auto_confirm: false
+  reply_timeout_s: null
+  esp32_echo_timeout_s: null
+  vacuum_settle_s: null
+  # Which relay module serves each arm must be checked on the real wiring.
+  esp32_modules:
+    arm1: null
+    arm2: null

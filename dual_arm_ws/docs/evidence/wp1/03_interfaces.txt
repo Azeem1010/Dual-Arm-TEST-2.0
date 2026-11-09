@@ -1,0 +1,20 @@
+# One-time token published on /dual_arm/status for the step being confirmed.
+string token
+# True only after the operator verified the physical result.
+bool success
+string message
+---
+bool accepted
+string message
+===
+# Target in the arm1_base frame, metres. Height is set by the task configuration.
+float64 x
+float64 y
+# False plans and previews only; true also executes the motion.
+bool execute
+# True allows the initial move onto the travel height from an arbitrary pose.
+bool prepare
+---
+bool success
+# JSON record of the plan or execution, or the reason for refusal.
+string message

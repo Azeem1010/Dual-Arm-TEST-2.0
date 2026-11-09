@@ -1,0 +1,99 @@
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-09-23-25-33-635599-DESKTOP-HBTEAAO-26907
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [cm530_mock_serial-1]: process started with pid [26922]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/4
+[INFO] [robot_state_publisher-2]: process started with pid [26924]
+[INFO] [ros2_control_node-3]: process started with pid [26925]
+[INFO] [spawner-4]: process started with pid [26926]
+[INFO] [spawner-5]: process started with pid [26927]
+[INFO] [spawner-6]: process started with pid [26928]
+[robot_state_publisher-2] [INFO] [1794237936.894038377] [robot_state_publisher]: Robot initialized
+[ros2_control_node-3] [INFO] [1794237937.354336530] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[ros2_control_node-3] [INFO] [1794237937.673851743] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-3] [INFO] [1794237937.673940098] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-3] [INFO] [1794237937.673946950] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-3] [INFO] [1794237937.673950572] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-3] [WARN] [1794237937.674060678] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-3] [INFO] [1794237937.684813968] [controller_manager]: Received robot description from topic.
+[ros2_control_node-3] [INFO] [1794237937.685179479] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-3] [INFO] [1794237937.785414377] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794237937.840177318] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-3] [INFO] [1794237937.840307138] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794237937.849165975] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794237937.849351254] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[ros2_control_node-3] [INFO] [1794237937.849364216] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-3] [ERROR] [1794237937.860845438] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: calibration status is NOT_RUN, not PASS
+[ros2_control_node-3] [ERROR] [1794237937.860930884] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: hardware_use_allowed is false
+[ros2_control_node-3] [ERROR] [1794237937.860938469] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: moving_speed_verified is false
+[ros2_control_node-3] [ERROR] [1794237937.860943384] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: max_step_raw is not set
+[ros2_control_node-3] [ERROR] [1794237937.860948110] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: evidence_kind none cannot authorize this port
+[ros2_control_node-3] [ERROR] [1794237937.860966288] [resource_manager]: Failed to 'configure' hardware 'DualArmSystem'
+[ros2_control_node-3] terminate called after throwing an instance of 'std::runtime_error'
+[ros2_control_node-3]   what():  Failed to set the initial state of the component : DualArmSystem to inactive
+[ros2_control_node-3] Stack trace (most recent call last) in thread 26975:
+[ros2_control_node-3] #17   Object "", at 0xffffffffffffffff, in 
+[ros2_control_node-3] #16   Source "../sysdeps/unix/sysv/linux/x86_64/clone3.S", line 78, in clone3 [0x7402aaf29ecb]
+[ros2_control_node-3] #15   Source "./nptl/pthread_create.c", line 447, in start_thread [0x7402aae9cb83]
+[ros2_control_node-3] #14   Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7402ab2ecdb3, in 
+[ros2_control_node-3] #13   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0x7402ab741d36, in rclcpp::executors::MultiThreadedExecutor::run(unsigned long)
+[ros2_control_node-3] #12   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0x7402ab7177f9, in rclcpp::Executor::execute_any_executable(rclcpp::AnyExecutable&)
+[ros2_control_node-3] #11   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0x7402ab7170ca, in rclcpp::Executor::execute_subscription(std::shared_ptr<rclcpp::SubscriptionBase>)
+[ros2_control_node-3] #10   Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7402aba76364, in 
+[ros2_control_node-3] #9    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7402ab9d9a9f, in controller_manager::ControllerManager::robot_description_callback(std_msgs::msg::String_<std::allocator<void> > const&)
+[ros2_control_node-3] #8    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7402ab9e340b, in controller_manager::ControllerManager::set_initial_hardware_components_state()
+[ros2_control_node-3] #7    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7402ab99f6d2, in 
+[ros2_control_node-3] #6    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7402ab2bb390, in __cxa_throw
+[ros2_control_node-3] #5    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7402ab2a5a54, in std::terminate()
+[ros2_control_node-3] #4    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7402ab2bb0d9, in 
+[ros2_control_node-3] #3    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7402ab2a5ff4, in 
+[ros2_control_node-3] #2    Source "./stdlib/abort.c", line 79, in abort [0x7402aae288fe]
+[ros2_control_node-3] #1    Source "../sysdeps/posix/raise.c", line 26, in raise [0x7402aae4527d]
+[ros2_control_node-3] #0  | Source "./nptl/pthread_kill.c", line 89, in __pthread_kill_internal
+[ros2_control_node-3]     | Source "./nptl/pthread_kill.c", line 78, in __pthread_kill_implementation
+[ros2_control_node-3]       Source "./nptl/pthread_kill.c", line 44, in __pthread_kill [0x7402aae9ec0c]
+[ros2_control_node-3] Aborted (Signal sent by tkill() 26925 1000)
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [spawner-6]: sending signal 'SIGINT' to process[spawner-6]
+[INFO] [spawner-5]: sending signal 'SIGINT' to process[spawner-5]
+[INFO] [spawner-4]: sending signal 'SIGINT' to process[spawner-4]
+[INFO] [ros2_control_node-3]: sending signal 'SIGINT' to process[ros2_control_node-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [cm530_mock_serial-1]: sending signal 'SIGINT' to process[cm530_mock_serial-1]
+[spawner-4] Traceback (most recent call last):
+[spawner-4]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-4]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-4]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-4]     return next(matches).load()
+[spawner-4]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[spawner-4]     module = import_module(match.group('module'))
+[spawner-4]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[INFO] [cm530_mock_serial-1]: process has finished cleanly [pid 26922]
+[robot_state_publisher-2] [INFO] [1794237938.076388142] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[spawner-4]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-4]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-4]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/spawner.py", line 36, in <module>
+[spawner-4]     from filelock import Timeout, FileLock
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1322, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1262, in _find_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1528, in find_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1502, in _get_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1601, in find_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 147, in _path_stat
+[spawner-4] KeyboardInterrupt
+[spawner-5] [INFO] [1794237938.089805221] [ros2_control_controller_spawner_arm1_controller]: KeyboardInterrupt received! Exiting....
+[spawner-6] [INFO] [1794237938.090615822] [ros2_control_controller_spawner_arm2_controller]: KeyboardInterrupt received! Exiting....
+[ERROR] [spawner-4]: process has died [pid 26926, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner joint_state_broadcaster --controller-manager-timeout 60 --ros-args'].
+[INFO] [spawner-6]: process has finished cleanly [pid 26928]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 26924]
+[INFO] [spawner-5]: process has finished cleanly [pid 26927]
+[ERROR] [ros2_control_node-3]: process has died [pid 26925, exit code -6, cmd '/opt/ros/jazzy/lib/controller_manager/ros2_control_node --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_emaukx3o -r ~/robot_description:=/robot_description'].

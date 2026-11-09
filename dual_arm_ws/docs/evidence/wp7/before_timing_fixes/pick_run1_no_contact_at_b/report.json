@@ -1,0 +1,118 @@
+{
+  "status": "FAIL",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "unreachable_caps_parked": {
+      "status": "PASS",
+      "detail": null
+    },
+    "start_accepted": {
+      "status": "PASS",
+      "detail": null
+    },
+    "missing_calibration_stops_before_touching_an_object": {
+      "status": "PASS",
+      "detail": "Pick target invalid: Calibration for arm1 is not valid: [\"[Errno 2] No such file or directory: '/tmp/dual_arm_wp7/calib/arm1_camera.yaml'\"]"
+    },
+    "no_object_moved": {
+      "status": "PASS",
+      "detail": null
+    },
+    "record_passes_calibration_status": {
+      "status": "PASS",
+      "detail": [
+        "[]"
+      ]
+    },
+    "first_target_within_suction_tolerance": {
+      "status": "PASS",
+      "detail": {
+        "success": true,
+        "cap": "cap_4",
+        "world": [
+          0.19973517075233374,
+          0.035150088001872276
+        ],
+        "error_m": 0.0003044025931648649
+      }
+    },
+    "vision_run_accepted": {
+      "status": "PASS",
+      "detail": null
+    },
+    "two_objects_succeeded_with_vision_targets": {
+      "status": "FAIL",
+      "detail": "arm2: suction grasp failed: 1794233241536494,fault:no_contact"
+    },
+    "ground_truth_has_caps_in_slots_3_and_4": {
+      "status": "FAIL",
+      "detail": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "observations": {
+    "calibration_status_without_record": [
+      "[\"[Errno 2] No such file or directory: '/tmp/dual_arm_wp7/calib/arm1_camera.yaml'\"]"
+    ],
+    "calibration_record": "arm1: measured 0.00094 m, budget 0.00100 m, status PASS",
+    "first_vision_target": {
+      "success": true,
+      "cap": "cap_4",
+      "world": [
+        0.19973517075233374,
+        0.035150088001872276
+      ],
+      "error_m": 0.0003044025931648649
+    },
+    "final_cap_positions": {
+      "cap_1": [
+        0.35,
+        0.3,
+        0.004999229823595943
+      ],
+      "cap_2": [
+        0.35,
+        0.3,
+        0.014999867918552356
+      ],
+      "cap_3": [
+        0.14,
+        0.035,
+        0.018999999944852998
+      ],
+      "cap_4": [
+        -0.00019501231850397764,
+        -0.02022593156575982,
+        0.01899999926374171
+      ],
+      "cap_5": [
+        0.14,
+        -0.03,
+        0.018999999944852998
+      ],
+      "cap_6": [
+        0.2,
+        -0.03,
+        0.018999999944852998
+      ],
+      "cap_7": [
+        0.14,
+        -0.095,
+        0.018999999944852998
+      ],
+      "cap_8": [
+        0.2,
+        -0.095,
+        0.018999999944852998
+      ]
+    }
+  }
+}

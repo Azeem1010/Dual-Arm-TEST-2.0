@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include "cm530_hardware/protocol.hpp"
 #include "cm530_hardware/transport.hpp"
@@ -47,5 +48,9 @@ private:
   std::string buffer_;
   bool down_{false};
 };
+
+// Best effort after a fault: one HOLD per arm while the link stays synchronized.
+// Never retried. The caller must have stopped every other user of the link.
+std::vector<LinkResult> hold_arms_once(Link & link);
 
 }  // namespace cm530_hardware

@@ -30,17 +30,36 @@ class ZoneManager:
             self.owner, self._token = None, None
             self.faulted = False
 
+    def restore(self, arm):
+        """Rebuild ownership from the journal after a restart; stays faulted until recovery."""
+        with self._lock:
+            if arm not in ('arm1', 'arm2') or self.owner is not None:
+                raise RuntimeError('B zone ownership cannot be restored')
+            self.owner, self._token, self.faulted = arm, str(uuid.uuid4()), True
+            return self._token
+
+
+def _contiguous_count(occupied):
+    if len(occupied) != 8 or any(type(v) is not bool for v in occupied):
+        raise RuntimeError('Exactly eight boolean slot observations required')
+    count = sum(occupied)
+    if occupied != [True]*count+[False]*(8-count):
+        raise RuntimeError('Nonsequential or regressed slot observation')
+    return count
+
 
 class SlotManager:
     def __init__(self):
         self.committed = 0
         self.reserved = None
 
+    def restore(self, occupied):
+        """Adopt a verified observation after recovery; discards any open reservation."""
+        self.committed, self.reserved = _contiguous_count(occupied), None
+
     def reserve(self, occupied):
-        if len(occupied) != 8 or any(type(v) is not bool for v in occupied):
-            raise RuntimeError('Exactly eight boolean slot observations required')
-        count = sum(occupied)
-        if occupied != [True]*count+[False]*(8-count) or count < self.committed:
+        count = _contiguous_count(occupied)
+        if count < self.committed:
             raise RuntimeError('Nonsequential or regressed slot observation')
         if self.reserved is not None:
             raise RuntimeError('Outstanding placement must be resolved')

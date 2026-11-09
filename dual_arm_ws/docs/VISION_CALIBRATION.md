@@ -4,6 +4,8 @@ Read [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) first: the `calibrate_caps` de
 
 All six shipped sim/hardware records are NOT_RUN and contain null matrices. They cannot authorize motion. Camera detection tests do not change that status.
 
+For simulation, `scripts/generate_sim_vision_calibration.py` writes homographies from the known Gazebo camera geometry to a separate calibration directory, and a validity record for one camera only when the measured error is inside the suction budget (arm 1: 0.94 mm against 1 mm, evidence/wp7/). Simulation values must never be copied to hardware.
+
 1. Record camera serial, resolution, optical frame, mounting revision and image-processing rotation/undistortion settings. For eye-in-hand cameras record Home joint feedback and camera-to-TCP transform. Fixed simulation cameras are deliberately labeled fixed, not hand-eye calibrated hardware.
 2. Run `ros2 run vision_pkg calibrate_intrinsics --help`, acquire multiple views of a measured chessboard with image evidence. Use the original upstream calibration tool; retain observations, distortion model and reprojection errors.
 3. Define world +X left-to-right C/B/A, +Y away from user, +Z upward. Slots 1/2 are nearest the user, left/right. Measure slot centers, board/target surface height, hole width, cap and cup diameter, mechanical repeatability and margin.

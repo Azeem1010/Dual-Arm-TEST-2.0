@@ -168,6 +168,20 @@ std::vector<std::string> Calibration::motion_blockers(bool port_is_pseudo_termin
   return blockers;
 }
 
+std::vector<std::string> Calibration::pose_limit_violations(Arm arm, const RawPose & pose) const
+{
+  std::vector<std::string> violations;
+  for (std::size_t joint = 0; joint < kJointsPerArm; ++joint) {
+    const std::size_t index = static_cast<std::size_t>(arm) * kJointsPerArm + joint;
+    const JointCalibration & limits = joints_[index];
+    if (pose[joint] < limits.min_raw || pose[joint] > limits.max_raw) {
+      violations.push_back(std::format(
+          "{} is at raw {}, outside {}..{}", kJointNames[index], pose[joint], limits.min_raw, limits.max_raw));
+    }
+  }
+  return violations;
+}
+
 const RawPose & Calibration::expected_home(Arm arm) const noexcept
 {
   return expected_home_[static_cast<std::size_t>(arm)];
