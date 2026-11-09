@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-10：操作介面規劃與使用者決定在 [UI_PLAN.md](UI_PLAN.md)，階段 0 假資料畫面已實作（`src/dual_arm_hmi`，evidence/hmi/stage0/），等使用者確認視覺並在 Orin 執行一次才算結案。階段 1 唯讀監看 `PASS`（evidence/hmi/stage1/，205 項測試，WSL 模擬實測）：UI 不會送出任何指令，全部按鈕含強制停止都未接通。下一步是階段 2。WSL 系統沒有繁中字型，要先裝 `fonts-noto-cjk`。使用者要求實機運作時 Gazebo 同時動作，設計在 UI_PLAN.md 第 9.1 節，尚未實作；不可在同一個 ROS domain 同時跑 `sim.launch.py` 和實機。
 - 2026-11-10：現場測試請照 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md)，換電腦用 [HANDOFF_PROMPT_NEXT_COMPUTER.md](HANDOFF_PROMPT_NEXT_COMPUTER.md)。安全監控鎖定可被手動 `switch_controllers` 繞過的問題（C32）已修正，只在 mock 驗證（evidence/c32/）。
 - 2026-11-10：所有文件已對照現行程式更新（evidence/docs_audit/）；`demo_pick_place.launch.py` 預設一輪與舊 pipeline 兩物體都 `PASS`。README 截圖已於 2026-11-10 用 coordinator 重新擷取。
 - 2026-11-09：接手請用 [HANDOFF_PROMPT.md](HANDOFF_PROMPT.md)，工作順序與進度在 [MODIFICATION_PLAN.md](MODIFICATION_PLAN.md) 第 6 節。WP0～WP6 都是 `PASS`（evidence/roadmap_baseline/、evidence/wp1/～wp6/）。WP6S 最終只減少 48.6%，未達 50%（`FAIL`）。WP7 取料點已由視覺決定，區域與格位仍用真值，等 D7（`BLOCKED`）。WP8 驅動強化 `PASS`（evidence/wp8/），READ 重試等 D2。WP9 安全監控 `PASS`（evidence/wp9/，只驗證 mock）。WP10 操作工具 `PASS`（evidence/wp10/）。WP13 文件 `PASS`。WP12 ESP32 後端 `PASS`（evidence/wp12/，只用替身節點），協定來源是 ray000518/micro-ros。WP7、WP11、實機階段在等使用者決定或現場操作，起點是 ORIN_DEPLOYMENT.md 第 4 節的手動確認。模擬速度比例 1.0／0.5／1.0、到位容差 0.5 mm，只限模擬。目前佈局只有 4 個瓶蓋可達（C30），八件搬運要等 D3 決定。Coordinator 被強制結束後，安全監控約 1.2 秒內停下手臂（C29，mock 量測），實體急停與實機心跳來源仍未完成。WP2 只用假 IO，WP3 只用 MoveIt mock，都還沒跑 Gazebo 物理。`build.sh` 和 pipeline 會覆寫 `docs/evidence/` 的舊紀錄，新結果要另存，舊檔用 `git restore` 還原。

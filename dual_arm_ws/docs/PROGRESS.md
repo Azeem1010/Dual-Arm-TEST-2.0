@@ -2,6 +2,19 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: operator UI stage 1 (read-only monitor)
+
+- `dual_arm_hmi` now shows live ROS data: three cameras with the vision nodes' own annotations, four Gazebo views, eight joints with limits, task progress, the zone B interlock and calibration results. Vision nodes gained an optional `publish_debug_image` (off by default), and `hmi_sim.launch.py` starts everything the interface shows. Two OpenCV overlay texts that printed Chinese as question marks now use ASCII.
+- PASS: 205 offline tests. Live against the simulation, off screen with the real widgets: a full transfer to SUCCEEDED, a lost system announced, and `ros2 node info` shows no command interface. Simulation speed is 0.182 without and 0.183 with the interface. Evidence: evidence/hmi/stage1/.
+- Remaining: every button including the stop button is deliberately disconnected and labelled so. Camera rate in WSL is about 2 FPS because of rendering, so the 10 FPS target is unverified. In simulation the task decides zones from ground truth, so the interlock shows only ownership and fault as authoritative. NOT_RUN: Orin, hardware, stage 2 onward.
+
+## Latest result: operator UI stage 0
+
+- New package `dual_arm_hmi`: the full PyQt5 interface driven by invented data in twelve scenarios. The state and button rules are pure Python. Plan and user decisions are in UI_PLAN.md. `install_jazzy.sh` now installs `python3-pyqt5` and `fonts-noto-cjk`.
+- The zone B interlock is drawn from the same rules as `ZoneManager` and the arm workflows.
+- PASS: 166 tests, including every scenario at four resolutions off screen. Real window on WSLg opened and a real F12 press sent the stop action. Evidence: evidence/hmi/stage0/.
+- Remaining: user visual review and one run on the Orin. WSL has no system CJK font yet, so the checks used a private font folder. There is no ROS data source, so no button reaches ROS. NOT_RUN: 150% display scaling, Orin, everything from stage 1 on.
+
 ## Latest result: C32 safety latch enforced
 
 - `safety_supervisor` now checks the arm controllers every 0.2 s while latched and stops any that are active. `controllers_stopped` in `/safety/status` is now the verified result: it is false while a controller is active or cannot be checked. A reset is excluded from this check while it runs, and a failed reset stops the controllers again.

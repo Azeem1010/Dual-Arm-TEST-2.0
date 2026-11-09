@@ -63,6 +63,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/vision/arm1/detections` | `vision_interfaces/msg/PickDetections` | 所有偵測到的瓶蓋 | reliable、depth 10 |
 | `/vision/arm2/grid_state` | `vision_interfaces/msg/GridState` | C 區八格，`frame_id=arm2_base` | reliable、depth 10 |
 | `/vision/calibration_status` | `diagnostic_msgs/msg/DiagnosticArray` | 三支相機 PASS／FAIL 與原因 | reliable、depth 10；每 0.5 秒 |
+| `/vision/{env,arm1,arm2}/debug_image` | `sensor_msgs/msg/Image` | 視覺節點的標註影像（`bgr8`），給操作介面顯示。需 `publish_debug_image:=true`，預設不發布 | best-effort；隨視覺處理頻率 |
 
 | `/dual_arm/status` | `std_msgs/msg/String`（JSON） | 狀態、持物、B 區擁有者、格位、token | transient_local、depth 1；5 Hz |
 | `/dual_arm/permit` | `std_msgs/msg/Bool` | Coordinator 存活與是否允許；停止發布代表失效 | 10 Hz |
@@ -148,6 +149,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `vision_sim.launch.py` | `sim.launch.py` + 三個視覺節點 | `calibration_status` |
 | `demo_pick_place.launch.py` | `sim.launch.py` + `dual_arm_coordinator`（Gazebo 真值） | 視覺節點；預設一輪已實跑通過（evidence/docs_audit/） |
 | `calibration.launch.py` | `calibration_status` | 校正工具 |
+| `hmi_sim.launch.py` | `demo_pick_place.launch.py` + 三個視覺節點（發布標註影像）+ `calibration_status` | `safety_supervisor` |
 | `hardware.launch.py`（預設） | RSP、`ros2_control_node`、`joint_state_broadcaster`，唯讀 | arm controller、`move_group`、相機、吸盤 |
 | `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group`；非 Mock 時加 `safety_supervisor`。`controllers_file` 的容差必須是實測值 | 相機、吸盤、相機 TF |
 | `vision.launch.py` | `usb_cam` × 3、視覺節點 × 3，需要時加 `image_rotate_node` | 手臂與 MoveIt |

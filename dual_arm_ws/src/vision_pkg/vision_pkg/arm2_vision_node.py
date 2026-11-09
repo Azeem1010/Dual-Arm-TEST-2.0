@@ -43,7 +43,7 @@ from vision_interfaces.srv import GetGridState, VerifyPlace
 from vision_pkg import calib_io
 from vision_pkg.debug_draw import draw_poly, put_text, put_text_centered
 from vision_pkg.node_common import (FlatParams, FrameBuffer, LatestValue, image_msg_to_bgr,
-                                    image_problem, read_ros_params, spin_node, stamp)
+                                    image_problem, publish_debug_image, read_ros_params, spin_node, stamp)
 from vision_pkg.vision_core.color_zone import MaskParams, to_hsv, mask_from_hsv
 from vision_pkg.vision_core.geometry import apply_homography
 from vision_pkg.vision_core.holes import (N_SLOTS, HoleLayout, HoleParams, check_fill_order, locate_holes,
@@ -71,6 +71,8 @@ class Arm2VisionNode(Node):
         self._last_param_check = 0.0
         self.cfg = self._build_cfg(self.P)
         self.show_debug = self.P.b('show_debug')
+        self.debug_pub = (self.create_publisher(Image, '/vision/arm2/debug_image', qos_profile_sensor_data)
+                          if self.P.b('publish_debug_image') else None)
         self.calib_dir = calib_io.resolve_calib_dir(self.P.s('calib_dir'))
         self.get_logger().info(f'校正檔目錄: {self.calib_dir}')
 
@@ -318,15 +320,16 @@ class Arm2VisionNode(Node):
         return self._debug_img
 
     def _render(self, frame, layout: HoleLayout, res: Optional[GridResult]) -> None:
-        if not self.show_debug:
+        if not self.show_debug and self.debug_pub is None:
             return
         img = frame.copy()
         for h in layout.candidates:     # 不合格的候選（紅色細框）
             if not h.ok:
                 draw_poly(img, h.corners, (0, 0, 255), 1)
         if res is None:
-            put_text(img, 'C HOLES NOT FOUND: ' + layout.message[:60], (8, 18), (0, 0, 255), 0.5, 1)
+            put_text(img, 'C HOLES NOT FOUND', (8, 18), (0, 0, 255), 0.5, 1)  # layout.message 是中文，putText 畫不出來
             self._debug_img = img
+            publish_debug_image(self.debug_pub, img, self.get_clock().now().to_msg())
             return
         for slot, q in enumerate(res.holes, start=1):
             occ = res.occupied[slot - 1]
@@ -349,6 +352,7 @@ class Arm2VisionNode(Node):
         put_text(img, 'in each hole: x / y = ' + ('base m' if res.base_xy is not None else 'pixel (arm2_homography not calibrated)'),
                  (8, 36), (0, 255, 255), 0.5, 1)
         self._debug_img = img
+        publish_debug_image(self.debug_pub, img, self.get_clock().now().to_msg())
 
 
 def main(args=None):

@@ -48,7 +48,7 @@ from vision_interfaces.srv import CaptureRanking, GetRank, GetZoneState, Recalib
 
 from vision_pkg import calib_io
 from vision_pkg.debug_draw import draw_poly, put_text
-from vision_pkg.node_common import (Debouncer, FlatParams, FrameBuffer, LatestValue, image_msg_to_bgr,
+from vision_pkg.node_common import (Debouncer, FlatParams, FrameBuffer, LatestValue, image_msg_to_bgr, publish_debug_image,
                                     image_problem, read_ros_params, spin_node, stamp)
 from vision_pkg.vision_core.color_zone import (FieldParams, MaskParams, OccupancyParams, ZoneFindParams, ZoneRoi,
                                                count_blobs, hsv_mask, judge_arm_present, judge_object_present,
@@ -92,6 +92,8 @@ class EnvVisionNode(Node):
         self._last_param_check = 0.0
         self.cfg = self._build_cfg(self.P)
         self.show_debug = self.P.b('show_debug')
+        self.debug_pub = (self.create_publisher(Image, '/vision/env/debug_image', qos_profile_sensor_data)
+                          if self.P.b('publish_debug_image') else None)
         self.calib_dir = calib_io.resolve_calib_dir(self.P.s('calib_dir'))
         self.get_logger().info(f'校正檔目錄: {self.calib_dir}')
 
@@ -483,7 +485,7 @@ class EnvVisionNode(Node):
 
     def _render(self, frame: np.ndarray, st: Optional[ZoneState], obj_mask: Optional[np.ndarray],
                 rois: Optional[Dict[str, ZoneRoi]]) -> None:
-        if not self.show_debug:
+        if not self.show_debug and self.debug_pub is None:
             return
         img = frame.copy()
         if obj_mask is not None and rois:   # 瓶蓋輪廓（只畫場地範圍內的）
@@ -507,6 +509,7 @@ class EnvVisionNode(Node):
         put_text(img, f'{status}  frame_age={self.frames.age() or 0:.2f}s  '
                       f'{"" if st is None or st.valid else "STATE INVALID"}', (8, 18), (255, 255, 255), 0.5, 1)
         self._debug_img = img
+        publish_debug_image(self.debug_pub, img, self.get_clock().now().to_msg())
 
 
 def main(args=None):

@@ -95,7 +95,8 @@ def _launch_setup(context, *args, **kwargs):
                                     respawn=respawn, respawn_delay=2.0))
 
         node_params = [str(cfg / vision_yaml),
-                       {'show_debug': show_debug, 'calib_dir': str(calib_dir)}]
+                       {'show_debug': show_debug, 'publish_debug_image': _truthy(arg('publish_debug_image')),
+                        'calib_dir': str(calib_dir)}]
         if undistort:
             node_params[1]['undistort'] = _truthy(undistort)
         actions.append(Node(package='vision_pkg', executable=vision_exe, name=vision_exe, output='screen',
@@ -120,6 +121,8 @@ def generate_launch_description():
           for cam, _, _, _ in CAMERAS],
         DeclareLaunchArgument('show_debug', default_value='true',
                               description='三個視覺節點是否開 debug 視窗（沒有 DISPLAY 時自動停用）'),
+        DeclareLaunchArgument('publish_debug_image', default_value='false',
+                              description='是否發布標註影像 /vision/*/debug_image 給操作介面'),
         DeclareLaunchArgument('calib_dir', default_value='',
                               description='校正檔目錄（空 = $VISION_CALIB_DIR 或 ~/.ros/vision_calib）'),
         DeclareLaunchArgument('undistort', default_value='',

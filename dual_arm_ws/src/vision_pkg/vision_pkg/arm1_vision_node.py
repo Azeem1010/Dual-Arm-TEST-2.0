@@ -41,7 +41,7 @@ from vision_interfaces.srv import GetPickTarget
 from vision_pkg import calib_io
 from vision_pkg.debug_draw import draw_poly, put_text, put_text_centered
 from vision_pkg.node_common import (FlatParams, FrameBuffer, LatestValue, image_msg_to_bgr, image_problem,
-                                    read_ros_params, spin_node, stamp)
+                                    publish_debug_image, read_ros_params, spin_node, stamp)
 from vision_pkg.vision_core.cap_detect import Cap, CapParams, describe_rejected, detect_caps, nearest_neighbor_dist
 from vision_pkg.vision_core.color_zone import MaskParams, hsv_mask
 from vision_pkg.vision_core.geometry import apply_homography, polygon_mask
@@ -73,6 +73,8 @@ class Arm1VisionNode(Node):
         self._last_param_check = 0.0
         self.cfg = self._build_cfg(self.P)
         self.show_debug = self.P.b('show_debug')
+        self.debug_pub = (self.create_publisher(Image, '/vision/arm1/debug_image', qos_profile_sensor_data)
+                          if self.P.b('publish_debug_image') else None)
         self.calib_dir = calib_io.resolve_calib_dir(self.P.s('calib_dir'))
         self.get_logger().info(f'校正檔目錄: {self.calib_dir}')
 
@@ -345,7 +347,7 @@ class Arm1VisionNode(Node):
         return self._debug_img
 
     def _render(self, frame, caps: List[Cap], rejected: List[Cap], poly) -> None:
-        if not self.show_debug:
+        if not self.show_debug and self.debug_pub is None:
             return
         img = frame.copy()
         if poly is not None:
@@ -367,10 +369,11 @@ class Arm1VisionNode(Node):
                 put_text_centered(img, line, (s.cx, s.cy + s.radius + 9 + 13 * k), col, 0.35, 1)
         for s in rejected:
             cv2.circle(img, (int(round(s.cx)), int(round(s.cy))), int(round(s.radius)), (0, 0, 255), 1, cv2.LINE_AA)
-            put_text(img, 'x ' + s.reject_reason.split('；')[0], (s.cx - 20, s.cy), (0, 0, 255), 0.4, 1)
+            put_text(img, 'x rejected', (s.cx - 20, s.cy), (0, 0, 255), 0.4, 1)  # reject_reason 是中文，putText 畫不出來
         unit = 'x / y = base m' if self._arm_h_valid() else 'x / y = pixel (arm1_homography not calibrated)'
         put_text(img, f'caps={len(caps)} rejected={len(rejected)}  coords: {unit}', (8, 18), (255, 255, 255), 0.5, 1)
         self._debug_img = img
+        publish_debug_image(self.debug_pub, img, self.get_clock().now().to_msg())
 
     def _arm_h_valid(self) -> bool:
         ha = self.h_arm.value

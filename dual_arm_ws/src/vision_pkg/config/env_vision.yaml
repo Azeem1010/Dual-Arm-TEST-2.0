@@ -7,6 +7,7 @@
   ros__parameters:
     image_topic: /env_cam/image_raw
     show_debug: true            # debug 視窗；launch 的 show_debug:=false 可關閉。沒有 DISPLAY 時自動停用
+    publish_debug_image: false  # true 時把標註影像發布到 /vision/env/debug_image，給操作介面顯示
     process_hz: 10.0            # 持續判斷的頻率
     image_timeout_s: 1.0        # 最新影像/結果超過這個秒數視為過期（影像中斷）
     service_timeout_s: 2.0      # 所有 service 的等待逾時（待實測）

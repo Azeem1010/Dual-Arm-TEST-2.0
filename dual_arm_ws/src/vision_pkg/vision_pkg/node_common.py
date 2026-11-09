@@ -51,6 +51,20 @@ def image_msg_to_bgr(msg) -> np.ndarray:
     raise ValueError(f'不支援的影像編碼 {msg.encoding!r}')
 
 
+def publish_debug_image(publisher, bgr: np.ndarray, stamp_msg) -> None:
+    """發布標註後的 BGR 影像給操作介面；publisher 為 None（未啟用）時不做事。"""
+    if publisher is None:
+        return
+    from sensor_msgs.msg import Image
+    msg = Image()
+    msg.header.stamp = stamp_msg
+    msg.height, msg.width = bgr.shape[:2]
+    msg.encoding = 'bgr8'
+    msg.step = msg.width * 3
+    msg.data = array.array('B', bgr.tobytes())
+    publisher.publish(msg)
+
+
 # --------------------------------------------------------------------------- #
 # 執行緒安全的資料容器
 # --------------------------------------------------------------------------- #

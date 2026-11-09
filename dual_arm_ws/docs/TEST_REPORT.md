@@ -1,5 +1,35 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-10 Operator UI stage 1 (read-only monitor)
+
+Commands are in evidence/hmi/stage1/stage1_*.sh and stage1_*.py. Isolated with ROS_DOMAIN_ID=78 and GZ_PARTITION=hmi_stage1.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Build of `vision_pkg`, `dual_arm_bringup`, `dual_arm_hmi` | PASS | 01_build.log |
+| Offline tests | PASS | 02_pytest.log; 205 tests |
+| Live data against `hmi_sim.launch.py` | PASS | 04_live_check.json, screens/; 8 joints with limits and commands, annotated differs from raw on all three cameras, four Gazebo views |
+| One transfer observed to SUCCEEDED | PASS | 04_live_check.json; Gazebo ground truth decides zones |
+| Lost system announced | PASS | after_stop in 04_live_check.json; ROS interrupted about 6 s after SIGINT |
+| Interface is read-only | PASS | 05_node_info.txt; no publishers beyond /rosout and /parameter_events, no action clients |
+| Interface load | PASS | 06_speed_without_ui.json against speed_with_ui; real-time factor 0.182 and 0.183, refresh mean 1.0 ms |
+| 10 FPS camera target | NOT_RUN | WSL renders about 2 FPS with or without the interface |
+| Real window with live data, Orin, hardware | NOT_RUN | Live checks ran off screen |
+
+## 2026-11-10 Operator UI stage 0
+
+Commands are in evidence/hmi/stage0/stage0_verify.sh and wslg_window_check.py. All data shown is invented.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `dual_arm_hmi` build | PASS | 01_build.log; this package only |
+| Unit and off-screen layout tests | PASS | 02_pytest.log; 166 tests, twelve scenarios at four resolutions |
+| Screen captures | PASS | 03_screenshots.log, screens/; 18 images, reviewed by eye |
+| Real window on WSLg | PASS | 04_wslg_window.log, wslg_window.json; xcb, real F12, refresh mean 7.0 ms with fake data |
+| System CJK font in WSL | FAIL | Not installed, needs sudo; the checks above used a private font folder |
+| 150% display scaling, user visual review, Orin | NOT_RUN | |
+| ROS data, real cameras, hardware | NOT_RUN | Stage 1 onward |
+
 ## 2026-11-10 C32 safety latch enforcement
 
 Commands are in evidence/c32/c32.sh.
