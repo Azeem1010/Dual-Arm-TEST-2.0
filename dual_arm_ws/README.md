@@ -319,6 +319,7 @@ colcon test-result --test-result-base build/cm530_hardware
 | 文件 | 內容 |
 |---|---|
 | [docs/PROGRESS.md](docs/PROGRESS.md) | 目前進度 |
+| [docs/COORDINATE_FRAMES.md](docs/COORDINATE_FRAMES.md) | 視覺與手臂的座標軸定義 |
 | [docs/TEST_REPORT.md](docs/TEST_REPORT.md) | 測試結果 |
 | [docs/RESUME.md](docs/RESUME.md) | 中斷後如何續接 |
 | [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) | 完整需求 |

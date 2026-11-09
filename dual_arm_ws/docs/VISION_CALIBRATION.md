@@ -1,5 +1,7 @@
 # Calibration procedure
 
+Read [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) first: the `calibrate_caps` default edge values do not match the physical layout.
+
 All six shipped sim/hardware records are NOT_RUN and contain null matrices. They cannot authorize motion. Camera detection tests do not change that status.
 
 1. Record camera serial, resolution, optical frame, mounting revision and image-processing rotation/undistortion settings. For eye-in-hand cameras record Home joint feedback and camera-to-TCP transform. Fixed simulation cameras are deliberately labeled fixed, not hand-eye calibrated hardware.

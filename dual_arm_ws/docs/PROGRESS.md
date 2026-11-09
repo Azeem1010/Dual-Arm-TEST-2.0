@@ -1,5 +1,10 @@
 # Development status — 2026-11-09
 
+## Latest result: coordinate axis definitions
+
+- New [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) records the OpenCV-side X/Y definitions. User stated the physical arm bases are on the side far from the user, with zone A on the left when facing the field from the base.
+- The loaded CAD model puts zone A on the arm's right, so model and hardware are mirrored. Vision-to-URDF conversion is BLOCKED until that is resolved. Base-to-edge measurements and the `calibrate_caps` input method are NOT_RUN. Documentation only; no code or test changed.
+
 ## Latest result: ROS interface specification
 
 - New [ROS_INTERFACES.md](ROS_INTERFACES.md) lists actual topics, services and actions, checked against a live headless vision_sim graph (evidence/ros_graph_vision_sim). mock, hardware and vision.launch.py graphs remain NOT_RUN; `/vision/calibration_status` content NOT_RUN.
