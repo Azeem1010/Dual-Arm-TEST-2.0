@@ -1,5 +1,9 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-09 Live ROS graph capture
+
+At commit b48eee8, headless `vision_sim.launch.py` plus `calibration.launch.py` ran on domain 77 and the graph was dumped with rclpy (evidence/ros_graph_vision_sim). Node, topic, service and action endpoints PASS against the source, and all three controllers were active. The first capture attempt never started because the capture script used `set -u` before sourcing ROS. `arm1_controller`'s spawner exited 1 after its first switch call timed out at 10 s and the retry found the controller already switched; the controller was active. `/vision/calibration_status` content NOT_RUN: `ros2 topic echo --once` got nothing within 15 s and the cause was not investigated. `arm2_vision_node` and `calibration_status` logged tracebacks during SIGINT shutdown, after the capture. No leftover processes. This shows endpoints exist, not that data or task flow is correct.
+
 ## 2026-11-09 README screenshots
 
 docs/images comes from a two-object headless run at commit 6feea97, which reached PASS with 74 events. The first capture attempt never started the transfer because Gazebo's controller switch timed out after 120 s, while the capture script polled `list_controllers`; delaying the first poll by 45 s worked on the retry. One retry does not establish the cause, so treat this as an intermittent startup failure. transfer_pipeline.json was restored after the capture.

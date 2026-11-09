@@ -1,5 +1,10 @@
 # Development status — 2026-11-09
 
+## Latest result: ROS interface specification
+
+- New [ROS_INTERFACES.md](ROS_INTERFACES.md) lists actual topics, services and actions, checked against a live headless vision_sim graph (evidence/ros_graph_vision_sim). mock, hardware and vision.launch.py graphs remain NOT_RUN; `/vision/calibration_status` content NOT_RUN.
+- The task layer is not wired: no coordinator node, no client of any `/vision/*` service. Other gaps, including the hardware camera frame_id mismatch, are listed in that file. No code changed.
+
 ## Latest result: cm530_hardware on mock serial (supersedes the Hardware row below)
 
 - New package src/cm530_hardware: protocol-5 parser, single-owner link, background scheduler, strict calibration and CM530SystemInterface plugin. New hardware.launch.py and URDF mode:=hardware.

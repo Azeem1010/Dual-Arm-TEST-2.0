@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- ROS 介面規格已寫入 ROS_INTERFACES.md，並用 headless `vision_sim` 的實際 graph 核對（evidence/ros_graph_vision_sim/）。任務層尚未接上視覺，缺口列在該文件最後一節。
 - 使用者提供實機零姿態：四顆馬達 raw 512、手臂伸直。已套用為模擬暫定值，換算與數字見 HOME_POSES.md。
 - 兩物體搬運回歸 PASS（Gazebo 真值、無畫面），證據為 transfer_pipeline.json 與 zero512_pipeline.log。先前手動中斷的那一輪備份在 evidence/before_zero512/，不是搬運失敗。
 - 待使用者提供：Arm 1 馬達 17 的三筆讀值（步驟見 HOME_POSES.md），用來取代 j1 暫定值 192.3；確認「伸直」是否指垂直朝上。

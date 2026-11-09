@@ -1,0 +1,5161 @@
+{
+ "nodes": {
+  "/_ros2cli_daemon_77_a113bce8b5384db4b132a68ed2165d51": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [],
+   "srv": [],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/arm1_controller": {
+   "pub": [
+    [
+     "/arm1_controller/controller_state",
+     [
+      "control_msgs/msg/JointTrajectoryControllerState"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/feedback",
+     [
+      "control_msgs/action/FollowJointTrajectory_FeedbackMessage"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/status",
+     [
+      "action_msgs/msg/GoalStatusArray"
+     ]
+    ],
+    [
+     "/arm1_controller/transition_event",
+     [
+      "lifecycle_msgs/msg/TransitionEvent"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/arm1_controller/joint_trajectory",
+     [
+      "trajectory_msgs/msg/JointTrajectory"
+     ]
+    ],
+    [
+     "/arm1_controller/speed_scaling_input",
+     [
+      "control_msgs/msg/SpeedScalingFactor"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/arm1_controller/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/cancel_goal",
+     [
+      "action_msgs/srv/CancelGoal"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/get_result",
+     [
+      "control_msgs/action/FollowJointTrajectory_GetResult"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/send_goal",
+     [
+      "control_msgs/action/FollowJointTrajectory_SendGoal"
+     ]
+    ],
+    [
+     "/arm1_controller/get_logger_levels",
+     [
+      "rcl_interfaces/srv/GetLoggerLevels"
+     ]
+    ],
+    [
+     "/arm1_controller/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/arm1_controller/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/arm1_controller/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/arm1_controller/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/arm1_controller/query_state",
+     [
+      "control_msgs/srv/QueryTrajectoryState"
+     ]
+    ],
+    [
+     "/arm1_controller/set_logger_levels",
+     [
+      "rcl_interfaces/srv/SetLoggerLevels"
+     ]
+    ],
+    [
+     "/arm1_controller/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/arm1_controller/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [
+    [
+     "/arm1_controller/follow_joint_trajectory",
+     [
+      "control_msgs/action/FollowJointTrajectory"
+     ]
+    ]
+   ],
+   "action_cli": []
+  },
+  "/arm1_vision_node": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/vision/arm1/detections",
+     [
+      "vision_interfaces/msg/PickDetections"
+     ]
+    ],
+    [
+     "/vision/arm1/pick_target",
+     [
+      "vision_interfaces/msg/PickTarget"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/arm1_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/arm1_vision_node/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/arm1_vision_node/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/arm1_vision_node/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/arm1_vision_node/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/arm1_vision_node/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/arm1_vision_node/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/arm1_vision_node/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ],
+    [
+     "/vision/arm1/get_pick_target",
+     [
+      "vision_interfaces/srv/GetPickTarget"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/arm2_controller": {
+   "pub": [
+    [
+     "/arm2_controller/controller_state",
+     [
+      "control_msgs/msg/JointTrajectoryControllerState"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/feedback",
+     [
+      "control_msgs/action/FollowJointTrajectory_FeedbackMessage"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/status",
+     [
+      "action_msgs/msg/GoalStatusArray"
+     ]
+    ],
+    [
+     "/arm2_controller/transition_event",
+     [
+      "lifecycle_msgs/msg/TransitionEvent"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/arm2_controller/joint_trajectory",
+     [
+      "trajectory_msgs/msg/JointTrajectory"
+     ]
+    ],
+    [
+     "/arm2_controller/speed_scaling_input",
+     [
+      "control_msgs/msg/SpeedScalingFactor"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/arm2_controller/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/cancel_goal",
+     [
+      "action_msgs/srv/CancelGoal"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/get_result",
+     [
+      "control_msgs/action/FollowJointTrajectory_GetResult"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/send_goal",
+     [
+      "control_msgs/action/FollowJointTrajectory_SendGoal"
+     ]
+    ],
+    [
+     "/arm2_controller/get_logger_levels",
+     [
+      "rcl_interfaces/srv/GetLoggerLevels"
+     ]
+    ],
+    [
+     "/arm2_controller/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/arm2_controller/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/arm2_controller/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/arm2_controller/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/arm2_controller/query_state",
+     [
+      "control_msgs/srv/QueryTrajectoryState"
+     ]
+    ],
+    [
+     "/arm2_controller/set_logger_levels",
+     [
+      "rcl_interfaces/srv/SetLoggerLevels"
+     ]
+    ],
+    [
+     "/arm2_controller/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/arm2_controller/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [
+    [
+     "/arm2_controller/follow_joint_trajectory",
+     [
+      "control_msgs/action/FollowJointTrajectory"
+     ]
+    ]
+   ],
+   "action_cli": []
+  },
+  "/arm2_vision_node": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/vision/arm2/grid_state",
+     [
+      "vision_interfaces/msg/GridState"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/arm2_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/arm2_vision_node/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/arm2_vision_node/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/arm2_vision_node/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/arm2_vision_node/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/arm2_vision_node/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/arm2_vision_node/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/arm2_vision_node/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ],
+    [
+     "/vision/arm2/get_grid_state",
+     [
+      "vision_interfaces/srv/GetGridState"
+     ]
+    ],
+    [
+     "/vision/arm2/verify_place",
+     [
+      "vision_interfaces/srv/VerifyPlace"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/calibration_status": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/vision/calibration_status",
+     [
+      "diagnostic_msgs/msg/DiagnosticArray"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/arm1_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/arm2_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/env_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/calibration_status/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/calibration_status/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/calibration_status/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/calibration_status/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/calibration_status/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/calibration_status/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/calibration_status/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/controller_manager": {
+   "pub": [
+    [
+     "/controller_manager/activity",
+     [
+      "controller_manager_msgs/msg/ControllerManagerActivity"
+     ]
+    ],
+    [
+     "/controller_manager/introspection_data/full",
+     [
+      "pal_statistics_msgs/msg/Statistics"
+     ]
+    ],
+    [
+     "/controller_manager/introspection_data/names",
+     [
+      "pal_statistics_msgs/msg/StatisticsNames"
+     ]
+    ],
+    [
+     "/controller_manager/introspection_data/values",
+     [
+      "pal_statistics_msgs/msg/StatisticsValues"
+     ]
+    ],
+    [
+     "/controller_manager/statistics/full",
+     [
+      "pal_statistics_msgs/msg/Statistics"
+     ]
+    ],
+    [
+     "/controller_manager/statistics/names",
+     [
+      "pal_statistics_msgs/msg/StatisticsNames"
+     ]
+    ],
+    [
+     "/controller_manager/statistics/values",
+     [
+      "pal_statistics_msgs/msg/StatisticsValues"
+     ]
+    ],
+    [
+     "/diagnostics",
+     [
+      "diagnostic_msgs/msg/DiagnosticArray"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/robot_description",
+     [
+      "std_msgs/msg/String"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/controller_manager/cleanup_controller",
+     [
+      "controller_manager_msgs/srv/CleanupController"
+     ]
+    ],
+    [
+     "/controller_manager/configure_controller",
+     [
+      "controller_manager_msgs/srv/ConfigureController"
+     ]
+    ],
+    [
+     "/controller_manager/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/controller_manager/get_logger_levels",
+     [
+      "rcl_interfaces/srv/GetLoggerLevels"
+     ]
+    ],
+    [
+     "/controller_manager/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/controller_manager/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/controller_manager/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/controller_manager/list_controller_types",
+     [
+      "controller_manager_msgs/srv/ListControllerTypes"
+     ]
+    ],
+    [
+     "/controller_manager/list_controllers",
+     [
+      "controller_manager_msgs/srv/ListControllers"
+     ]
+    ],
+    [
+     "/controller_manager/list_hardware_components",
+     [
+      "controller_manager_msgs/srv/ListHardwareComponents"
+     ]
+    ],
+    [
+     "/controller_manager/list_hardware_interfaces",
+     [
+      "controller_manager_msgs/srv/ListHardwareInterfaces"
+     ]
+    ],
+    [
+     "/controller_manager/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/controller_manager/load_controller",
+     [
+      "controller_manager_msgs/srv/LoadController"
+     ]
+    ],
+    [
+     "/controller_manager/reload_controller_libraries",
+     [
+      "controller_manager_msgs/srv/ReloadControllerLibraries"
+     ]
+    ],
+    [
+     "/controller_manager/set_hardware_component_state",
+     [
+      "controller_manager_msgs/srv/SetHardwareComponentState"
+     ]
+    ],
+    [
+     "/controller_manager/set_logger_levels",
+     [
+      "rcl_interfaces/srv/SetLoggerLevels"
+     ]
+    ],
+    [
+     "/controller_manager/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/controller_manager/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ],
+    [
+     "/controller_manager/switch_controller",
+     [
+      "controller_manager_msgs/srv/SwitchController"
+     ]
+    ],
+    [
+     "/controller_manager/unload_controller",
+     [
+      "controller_manager_msgs/srv/UnloadController"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/env_vision_node": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/vision/env/ranking",
+     [
+      "vision_interfaces/msg/RankingSnapshot"
+     ]
+    ],
+    [
+     "/vision/env/zone_state",
+     [
+      "vision_interfaces/msg/ZoneState"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/env_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/env_vision_node/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/env_vision_node/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/env_vision_node/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/env_vision_node/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/env_vision_node/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/env_vision_node/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/env_vision_node/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ],
+    [
+     "/vision/env/capture_ranking",
+     [
+      "vision_interfaces/srv/CaptureRanking"
+     ]
+    ],
+    [
+     "/vision/env/clear_taken",
+     [
+      "std_srvs/srv/Trigger"
+     ]
+    ],
+    [
+     "/vision/env/get_rank",
+     [
+      "vision_interfaces/srv/GetRank"
+     ]
+    ],
+    [
+     "/vision/env/get_zone_state",
+     [
+      "vision_interfaces/srv/GetZoneState"
+     ]
+    ],
+    [
+     "/vision/env/recalibrate_zones",
+     [
+      "vision_interfaces/srv/RecalibrateZones"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/gz_ros_control": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/gz_ros_control/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/gz_ros_control/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/gz_ros_control/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/gz_ros_control/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/gz_ros_control/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/gz_ros_control/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/gz_ros_control/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/joint_state_broadcaster": {
+   "pub": [
+    [
+     "/dynamic_joint_states",
+     [
+      "control_msgs/msg/DynamicJointState"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/transition_event",
+     [
+      "lifecycle_msgs/msg/TransitionEvent"
+     ]
+    ],
+    [
+     "/joint_states",
+     [
+      "sensor_msgs/msg/JointState"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/joint_state_broadcaster/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/get_logger_levels",
+     [
+      "rcl_interfaces/srv/GetLoggerLevels"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/set_logger_levels",
+     [
+      "rcl_interfaces/srv/SetLoggerLevels"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/joint_state_broadcaster/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/move_group": {
+   "pub": [
+    [
+     "/display_contacts",
+     [
+      "visualization_msgs/msg/MarkerArray"
+     ]
+    ],
+    [
+     "/display_planned_path",
+     [
+      "moveit_msgs/msg/DisplayTrajectory"
+     ]
+    ],
+    [
+     "/execute_trajectory/_action/feedback",
+     [
+      "moveit_msgs/action/ExecuteTrajectory_FeedbackMessage"
+     ]
+    ],
+    [
+     "/execute_trajectory/_action/status",
+     [
+      "action_msgs/msg/GoalStatusArray"
+     ]
+    ],
+    [
+     "/move_action/_action/feedback",
+     [
+      "moveit_msgs/action/MoveGroup_FeedbackMessage"
+     ]
+    ],
+    [
+     "/move_action/_action/status",
+     [
+      "action_msgs/msg/GoalStatusArray"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/pipeline_state",
+     [
+      "moveit_msgs/msg/PipelineState"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/trajectory_execution_event",
+     [
+      "std_msgs/msg/String"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/apply_planning_scene",
+     [
+      "moveit_msgs/srv/ApplyPlanningScene"
+     ]
+    ],
+    [
+     "/check_state_validity",
+     [
+      "moveit_msgs/srv/GetStateValidity"
+     ]
+    ],
+    [
+     "/clear_octomap",
+     [
+      "std_srvs/srv/Empty"
+     ]
+    ],
+    [
+     "/compute_cartesian_path",
+     [
+      "moveit_msgs/srv/GetCartesianPath"
+     ]
+    ],
+    [
+     "/compute_fk",
+     [
+      "moveit_msgs/srv/GetPositionFK"
+     ]
+    ],
+    [
+     "/compute_ik",
+     [
+      "moveit_msgs/srv/GetPositionIK"
+     ]
+    ],
+    [
+     "/execute_trajectory/_action/cancel_goal",
+     [
+      "action_msgs/srv/CancelGoal"
+     ]
+    ],
+    [
+     "/execute_trajectory/_action/get_result",
+     [
+      "moveit_msgs/action/ExecuteTrajectory_GetResult"
+     ]
+    ],
+    [
+     "/execute_trajectory/_action/send_goal",
+     [
+      "moveit_msgs/action/ExecuteTrajectory_SendGoal"
+     ]
+    ],
+    [
+     "/get_planner_params",
+     [
+      "moveit_msgs/srv/GetPlannerParams"
+     ]
+    ],
+    [
+     "/get_urdf",
+     [
+      "moveit_msgs/srv/GetGroupUrdf"
+     ]
+    ],
+    [
+     "/load_geometry_from_file",
+     [
+      "moveit_msgs/srv/LoadGeometryFromFile"
+     ]
+    ],
+    [
+     "/load_map",
+     [
+      "moveit_msgs/srv/LoadMap"
+     ]
+    ],
+    [
+     "/move_action/_action/cancel_goal",
+     [
+      "action_msgs/srv/CancelGoal"
+     ]
+    ],
+    [
+     "/move_action/_action/get_result",
+     [
+      "moveit_msgs/action/MoveGroup_GetResult"
+     ]
+    ],
+    [
+     "/move_action/_action/send_goal",
+     [
+      "moveit_msgs/action/MoveGroup_SendGoal"
+     ]
+    ],
+    [
+     "/move_group/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/move_group/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/move_group/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/move_group/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/move_group/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/move_group/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/move_group/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ],
+    [
+     "/plan_kinematic_path",
+     [
+      "moveit_msgs/srv/GetMotionPlan"
+     ]
+    ],
+    [
+     "/query_planner_interface",
+     [
+      "moveit_msgs/srv/QueryPlannerInterfaces"
+     ]
+    ],
+    [
+     "/save_geometry_to_file",
+     [
+      "moveit_msgs/srv/SaveGeometryToFile"
+     ]
+    ],
+    [
+     "/save_map",
+     [
+      "moveit_msgs/srv/SaveMap"
+     ]
+    ],
+    [
+     "/set_planner_params",
+     [
+      "moveit_msgs/srv/SetPlannerParams"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [
+    [
+     "/execute_trajectory",
+     [
+      "moveit_msgs/action/ExecuteTrajectory"
+     ]
+    ],
+    [
+     "/move_action",
+     [
+      "moveit_msgs/action/MoveGroup"
+     ]
+    ]
+   ],
+   "action_cli": []
+  },
+  "/move_group_private_104939967734672": {
+   "pub": [
+    [
+     "/monitored_planning_scene",
+     [
+      "moveit_msgs/msg/PlanningScene"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/attached_collision_object",
+     [
+      "moveit_msgs/msg/AttachedCollisionObject"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/collision_object",
+     [
+      "moveit_msgs/msg/CollisionObject"
+     ]
+    ],
+    [
+     "/joint_states",
+     [
+      "sensor_msgs/msg/JointState"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/planning_scene",
+     [
+      "moveit_msgs/msg/PlanningScene"
+     ]
+    ],
+    [
+     "/planning_scene_world",
+     [
+      "moveit_msgs/msg/PlanningSceneWorld"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/get_planning_scene",
+     [
+      "moveit_msgs/srv/GetPlanningScene"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/move_group_private_104939967734672/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/move_group/moveit": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/move_group/moveit/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/move_group/moveit/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/move_group/moveit/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/move_group/moveit/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/move_group/moveit/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/move_group/moveit/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/move_group/moveit/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/moveit_3992146440": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/moveit_3992146440/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/moveit_3992146440/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/moveit_3992146440/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/moveit_3992146440/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/moveit_3992146440/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/moveit_3992146440/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/moveit_3992146440/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/moveit_simple_controller_manager": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/feedback",
+     [
+      "control_msgs/action/FollowJointTrajectory_FeedbackMessage"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/status",
+     [
+      "action_msgs/msg/GoalStatusArray"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/feedback",
+     [
+      "control_msgs/action/FollowJointTrajectory_FeedbackMessage"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/status",
+     [
+      "action_msgs/msg/GoalStatusArray"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/moveit_simple_controller_manager/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/moveit_simple_controller_manager/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/moveit_simple_controller_manager/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/moveit_simple_controller_manager/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/moveit_simple_controller_manager/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/moveit_simple_controller_manager/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/moveit_simple_controller_manager/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/cancel_goal",
+     [
+      "action_msgs/srv/CancelGoal"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/get_result",
+     [
+      "control_msgs/action/FollowJointTrajectory_GetResult"
+     ]
+    ],
+    [
+     "/arm1_controller/follow_joint_trajectory/_action/send_goal",
+     [
+      "control_msgs/action/FollowJointTrajectory_SendGoal"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/cancel_goal",
+     [
+      "action_msgs/srv/CancelGoal"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/get_result",
+     [
+      "control_msgs/action/FollowJointTrajectory_GetResult"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory/_action/send_goal",
+     [
+      "control_msgs/action/FollowJointTrajectory_SendGoal"
+     ]
+    ]
+   ],
+   "action_srv": [],
+   "action_cli": [
+    [
+     "/arm1_controller/follow_joint_trajectory",
+     [
+      "control_msgs/action/FollowJointTrajectory"
+     ]
+    ],
+    [
+     "/arm2_controller/follow_joint_trajectory",
+     [
+      "control_msgs/action/FollowJointTrajectory"
+     ]
+    ]
+   ]
+  },
+  "/robot_state_publisher": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/robot_description",
+     [
+      "std_msgs/msg/String"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/tf",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/tf_static",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/joint_states",
+     [
+      "sensor_msgs/msg/JointState"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/robot_state_publisher/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/robot_state_publisher/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/robot_state_publisher/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/robot_state_publisher/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/robot_state_publisher/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/robot_state_publisher/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/robot_state_publisher/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/ros_gz_bridge": {
+   "pub": [
+    [
+     "/arm1_cam/camera_info",
+     [
+      "sensor_msgs/msg/CameraInfo"
+     ]
+    ],
+    [
+     "/arm1_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/arm2_cam/camera_info",
+     [
+      "sensor_msgs/msg/CameraInfo"
+     ]
+    ],
+    [
+     "/arm2_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/env_cam/camera_info",
+     [
+      "sensor_msgs/msg/CameraInfo"
+     ]
+    ],
+    [
+     "/env_cam/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/gazebo/ground_truth",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/gripper/arm1/state",
+     [
+      "std_msgs/msg/String"
+     ]
+    ],
+    [
+     "/gripper/arm2/state",
+     [
+      "std_msgs/msg/String"
+     ]
+    ],
+    [
+     "/ground_truth/cap_1",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_2",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_3",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_4",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_5",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_6",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_7",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/ground_truth/cap_8",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/view_front/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/view_isometric/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/view_side/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ],
+    [
+     "/view_top/image_raw",
+     [
+      "sensor_msgs/msg/Image"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/gripper/arm1/command",
+     [
+      "std_msgs/msg/String"
+     ]
+    ],
+    [
+     "/gripper/arm2/command",
+     [
+      "std_msgs/msg/String"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/ros_gz_bridge/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/ros_gz_bridge/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/ros_gz_bridge/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/ros_gz_bridge/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/ros_gz_bridge/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/ros_gz_bridge/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/ros_gz_bridge/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/static_transform_publisher_YNrCTbbLpmPi1JnG": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/tf_static",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_YNrCTbbLpmPi1JnG/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/static_transform_publisher_k7nW3WvvFbtlH1CW": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/tf_static",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_k7nW3WvvFbtlH1CW/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/static_transform_publisher_ukBdVSpGMhrimuf1": {
+   "pub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ],
+    [
+     "/tf_static",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/describe_parameters",
+     [
+      "rcl_interfaces/srv/DescribeParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/get_parameter_types",
+     [
+      "rcl_interfaces/srv/GetParameterTypes"
+     ]
+    ],
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/get_parameters",
+     [
+      "rcl_interfaces/srv/GetParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ],
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/list_parameters",
+     [
+      "rcl_interfaces/srv/ListParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/set_parameters",
+     [
+      "rcl_interfaces/srv/SetParameters"
+     ]
+    ],
+    [
+     "/static_transform_publisher_ukBdVSpGMhrimuf1/set_parameters_atomically",
+     [
+      "rcl_interfaces/srv/SetParametersAtomically"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  },
+  "/transform_listener_impl_5f713d7a4340": {
+   "pub": [
+    [
+     "/rosout",
+     [
+      "rcl_interfaces/msg/Log"
+     ]
+    ]
+   ],
+   "sub": [
+    [
+     "/clock",
+     [
+      "rosgraph_msgs/msg/Clock"
+     ]
+    ],
+    [
+     "/parameter_events",
+     [
+      "rcl_interfaces/msg/ParameterEvent"
+     ]
+    ],
+    [
+     "/tf",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ],
+    [
+     "/tf_static",
+     [
+      "tf2_msgs/msg/TFMessage"
+     ]
+    ]
+   ],
+   "srv": [
+    [
+     "/transform_listener_impl_5f713d7a4340/get_type_description",
+     [
+      "type_description_interfaces/srv/GetTypeDescription"
+     ]
+    ]
+   ],
+   "cli": [],
+   "action_srv": [],
+   "action_cli": []
+  }
+ },
+ "topics": {
+  "/arm1_cam/camera_info": {
+   "types": [
+    "sensor_msgs/msg/CameraInfo"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/arm1_cam/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/arm1_vision_node",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/calibration_status",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm1_controller/controller_state": {
+   "types": [
+    "control_msgs/msg/JointTrajectoryControllerState"
+   ],
+   "publishers": [
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/arm1_controller/follow_joint_trajectory/_action/feedback": {
+   "types": [
+    "control_msgs/action/FollowJointTrajectory_FeedbackMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm1_controller/follow_joint_trajectory/_action/status": {
+   "types": [
+    "action_msgs/msg/GoalStatusArray"
+   ],
+   "publishers": [
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm1_controller/joint_trajectory": {
+   "types": [
+    "trajectory_msgs/msg/JointTrajectory"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/arm1_controller",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm1_controller/speed_scaling_input": {
+   "types": [
+    "control_msgs/msg/SpeedScalingFactor"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/arm1_controller",
+     "reliability": "BEST_EFFORT",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm1_controller/transition_event": {
+   "types": [
+    "lifecycle_msgs/msg/TransitionEvent"
+   ],
+   "publishers": [
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/arm2_cam/camera_info": {
+   "types": [
+    "sensor_msgs/msg/CameraInfo"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/arm2_cam/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/arm2_vision_node",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/calibration_status",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm2_controller/controller_state": {
+   "types": [
+    "control_msgs/msg/JointTrajectoryControllerState"
+   ],
+   "publishers": [
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/arm2_controller/follow_joint_trajectory/_action/feedback": {
+   "types": [
+    "control_msgs/action/FollowJointTrajectory_FeedbackMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm2_controller/follow_joint_trajectory/_action/status": {
+   "types": [
+    "action_msgs/msg/GoalStatusArray"
+   ],
+   "publishers": [
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm2_controller/joint_trajectory": {
+   "types": [
+    "trajectory_msgs/msg/JointTrajectory"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/arm2_controller",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm2_controller/speed_scaling_input": {
+   "types": [
+    "control_msgs/msg/SpeedScalingFactor"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/arm2_controller",
+     "reliability": "BEST_EFFORT",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ]
+  },
+  "/arm2_controller/transition_event": {
+   "types": [
+    "lifecycle_msgs/msg/TransitionEvent"
+   ],
+   "publishers": [
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/attached_collision_object": {
+   "types": [
+    "moveit_msgs/msg/AttachedCollisionObject"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/clock": {
+   "types": [
+    "rosgraph_msgs/msg/Clock"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group/moveit",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_3992146440",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/transform_listener_impl_5f713d7a4340",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/env_vision_node",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/controller_manager",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_controller",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_controller",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_vision_node",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_vision_node",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/calibration_status",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/collision_object": {
+   "types": [
+    "moveit_msgs/msg/CollisionObject"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/controller_manager/activity": {
+   "types": [
+    "controller_manager_msgs/msg/ControllerManagerActivity"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/controller_manager/introspection_data/full": {
+   "types": [
+    "pal_statistics_msgs/msg/Statistics"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "BEST_EFFORT",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/controller_manager/introspection_data/names": {
+   "types": [
+    "pal_statistics_msgs/msg/StatisticsNames"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/controller_manager/introspection_data/values": {
+   "types": [
+    "pal_statistics_msgs/msg/StatisticsValues"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "BEST_EFFORT",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/controller_manager/statistics/full": {
+   "types": [
+    "pal_statistics_msgs/msg/Statistics"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "BEST_EFFORT",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/controller_manager/statistics/names": {
+   "types": [
+    "pal_statistics_msgs/msg/StatisticsNames"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/controller_manager/statistics/values": {
+   "types": [
+    "pal_statistics_msgs/msg/StatisticsValues"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "BEST_EFFORT",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/diagnostics": {
+   "types": [
+    "diagnostic_msgs/msg/DiagnosticArray"
+   ],
+   "publishers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/display_contacts": {
+   "types": [
+    "visualization_msgs/msg/MarkerArray"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/display_planned_path": {
+   "types": [
+    "moveit_msgs/msg/DisplayTrajectory"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/dynamic_joint_states": {
+   "types": [
+    "control_msgs/msg/DynamicJointState"
+   ],
+   "publishers": [
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/env_cam/camera_info": {
+   "types": [
+    "sensor_msgs/msg/CameraInfo"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/env_cam/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/env_vision_node",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/calibration_status",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/execute_trajectory/_action/feedback": {
+   "types": [
+    "moveit_msgs/action/ExecuteTrajectory_FeedbackMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/execute_trajectory/_action/status": {
+   "types": [
+    "action_msgs/msg/GoalStatusArray"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/gazebo/ground_truth": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/gripper/arm1/command": {
+   "types": [
+    "std_msgs/msg/String"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/gripper/arm1/state": {
+   "types": [
+    "std_msgs/msg/String"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/gripper/arm2/command": {
+   "types": [
+    "std_msgs/msg/String"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/gripper/arm2/state": {
+   "types": [
+    "std_msgs/msg/String"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_1": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_2": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_3": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_4": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_5": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_6": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_7": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/ground_truth/cap_8": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/joint_state_broadcaster/transition_event": {
+   "types": [
+    "lifecycle_msgs/msg/TransitionEvent"
+   ],
+   "publishers": [
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/joint_states": {
+   "types": [
+    "sensor_msgs/msg/JointState"
+   ],
+   "publishers": [
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "BEST_EFFORT",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/monitored_planning_scene": {
+   "types": [
+    "moveit_msgs/msg/PlanningScene"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/move_action/_action/feedback": {
+   "types": [
+    "moveit_msgs/action/MoveGroup_FeedbackMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/move_action/_action/status": {
+   "types": [
+    "action_msgs/msg/GoalStatusArray"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/parameter_events": {
+   "types": [
+    "rcl_interfaces/msg/ParameterEvent"
+   ],
+   "publishers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group/moveit",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_3992146440",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_k7nW3WvvFbtlH1CW",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_ukBdVSpGMhrimuf1",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_YNrCTbbLpmPi1JnG",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/env_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/gz_ros_control",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/graph_dump_probe",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/calibration_status",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/_ros2cli_daemon_77_a113bce8b5384db4b132a68ed2165d51",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group/moveit",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_3992146440",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/transform_listener_impl_5f713d7a4340",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_k7nW3WvvFbtlH1CW",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_ukBdVSpGMhrimuf1",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_YNrCTbbLpmPi1JnG",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/gz_ros_control",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    },
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/pipeline_state": {
+   "types": [
+    "moveit_msgs/msg/PipelineState"
+   ],
+   "publishers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/planning_scene": {
+   "types": [
+    "moveit_msgs/msg/PlanningScene"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/planning_scene_world": {
+   "types": [
+    "moveit_msgs/msg/PlanningSceneWorld"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/robot_description": {
+   "types": [
+    "std_msgs/msg/String"
+   ],
+   "publishers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ]
+  },
+  "/rosout": {
+   "types": [
+    "rcl_interfaces/msg/Log"
+   ],
+   "publishers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/move_group/moveit",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_3992146440",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/move_group_private_104939967734672",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/transform_listener_impl_5f713d7a4340",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/moveit_simple_controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_k7nW3WvvFbtlH1CW",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_ukBdVSpGMhrimuf1",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_YNrCTbbLpmPi1JnG",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/env_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/gz_ros_control",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/controller_manager",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_controller",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_controller",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/joint_state_broadcaster",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/arm1_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/arm2_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/graph_dump_probe",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/calibration_status",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/_ros2cli_daemon_77_a113bce8b5384db4b132a68ed2165d51",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/tf": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/transform_listener_impl_5f713d7a4340",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/tf_static": {
+   "types": [
+    "tf2_msgs/msg/TFMessage"
+   ],
+   "publishers": [
+    {
+     "node": "/robot_state_publisher",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_k7nW3WvvFbtlH1CW",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_ukBdVSpGMhrimuf1",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    },
+    {
+     "node": "/static_transform_publisher_YNrCTbbLpmPi1JnG",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": [
+    {
+     "node": "/transform_listener_impl_5f713d7a4340",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ]
+  },
+  "/trajectory_execution_event": {
+   "types": [
+    "std_msgs/msg/String"
+   ],
+   "publishers": [],
+   "subscribers": [
+    {
+     "node": "/move_group",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ]
+  },
+  "/view_front/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/view_isometric/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/view_side/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/view_top/image_raw": {
+   "types": [
+    "sensor_msgs/msg/Image"
+   ],
+   "publishers": [
+    {
+     "node": "/ros_gz_bridge",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/vision/arm1/detections": {
+   "types": [
+    "vision_interfaces/msg/PickDetections"
+   ],
+   "publishers": [
+    {
+     "node": "/arm1_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/vision/arm1/pick_target": {
+   "types": [
+    "vision_interfaces/msg/PickTarget"
+   ],
+   "publishers": [
+    {
+     "node": "/arm1_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/vision/arm2/grid_state": {
+   "types": [
+    "vision_interfaces/msg/GridState"
+   ],
+   "publishers": [
+    {
+     "node": "/arm2_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/vision/calibration_status": {
+   "types": [
+    "diagnostic_msgs/msg/DiagnosticArray"
+   ],
+   "publishers": [
+    {
+     "node": "/calibration_status",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/vision/env/ranking": {
+   "types": [
+    "vision_interfaces/msg/RankingSnapshot"
+   ],
+   "publishers": [
+    {
+     "node": "/env_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "TRANSIENT_LOCAL",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  },
+  "/vision/env/zone_state": {
+   "types": [
+    "vision_interfaces/msg/ZoneState"
+   ],
+   "publishers": [
+    {
+     "node": "/env_vision_node",
+     "reliability": "RELIABLE",
+     "durability": "VOLATILE",
+     "depth": 0
+    }
+   ],
+   "subscribers": []
+  }
+ },
+ "services": [
+  [
+   "/apply_planning_scene",
+   [
+    "moveit_msgs/srv/ApplyPlanningScene"
+   ]
+  ],
+  [
+   "/arm1_controller/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/arm1_controller/follow_joint_trajectory/_action/cancel_goal",
+   [
+    "action_msgs/srv/CancelGoal"
+   ]
+  ],
+  [
+   "/arm1_controller/follow_joint_trajectory/_action/get_result",
+   [
+    "control_msgs/action/FollowJointTrajectory_GetResult"
+   ]
+  ],
+  [
+   "/arm1_controller/follow_joint_trajectory/_action/send_goal",
+   [
+    "control_msgs/action/FollowJointTrajectory_SendGoal"
+   ]
+  ],
+  [
+   "/arm1_controller/get_logger_levels",
+   [
+    "rcl_interfaces/srv/GetLoggerLevels"
+   ]
+  ],
+  [
+   "/arm1_controller/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/arm1_controller/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/arm1_controller/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/arm1_controller/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/arm1_controller/query_state",
+   [
+    "control_msgs/srv/QueryTrajectoryState"
+   ]
+  ],
+  [
+   "/arm1_controller/set_logger_levels",
+   [
+    "rcl_interfaces/srv/SetLoggerLevels"
+   ]
+  ],
+  [
+   "/arm1_controller/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/arm1_controller/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/arm1_vision_node/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/arm1_vision_node/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/arm1_vision_node/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/arm1_vision_node/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/arm1_vision_node/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/arm1_vision_node/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/arm1_vision_node/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/arm2_controller/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/arm2_controller/follow_joint_trajectory/_action/cancel_goal",
+   [
+    "action_msgs/srv/CancelGoal"
+   ]
+  ],
+  [
+   "/arm2_controller/follow_joint_trajectory/_action/get_result",
+   [
+    "control_msgs/action/FollowJointTrajectory_GetResult"
+   ]
+  ],
+  [
+   "/arm2_controller/follow_joint_trajectory/_action/send_goal",
+   [
+    "control_msgs/action/FollowJointTrajectory_SendGoal"
+   ]
+  ],
+  [
+   "/arm2_controller/get_logger_levels",
+   [
+    "rcl_interfaces/srv/GetLoggerLevels"
+   ]
+  ],
+  [
+   "/arm2_controller/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/arm2_controller/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/arm2_controller/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/arm2_controller/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/arm2_controller/query_state",
+   [
+    "control_msgs/srv/QueryTrajectoryState"
+   ]
+  ],
+  [
+   "/arm2_controller/set_logger_levels",
+   [
+    "rcl_interfaces/srv/SetLoggerLevels"
+   ]
+  ],
+  [
+   "/arm2_controller/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/arm2_controller/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/arm2_vision_node/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/arm2_vision_node/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/arm2_vision_node/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/arm2_vision_node/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/arm2_vision_node/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/arm2_vision_node/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/arm2_vision_node/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/calibration_status/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/calibration_status/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/calibration_status/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/calibration_status/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/calibration_status/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/calibration_status/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/calibration_status/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/check_state_validity",
+   [
+    "moveit_msgs/srv/GetStateValidity"
+   ]
+  ],
+  [
+   "/clear_octomap",
+   [
+    "std_srvs/srv/Empty"
+   ]
+  ],
+  [
+   "/compute_cartesian_path",
+   [
+    "moveit_msgs/srv/GetCartesianPath"
+   ]
+  ],
+  [
+   "/compute_fk",
+   [
+    "moveit_msgs/srv/GetPositionFK"
+   ]
+  ],
+  [
+   "/compute_ik",
+   [
+    "moveit_msgs/srv/GetPositionIK"
+   ]
+  ],
+  [
+   "/controller_manager/cleanup_controller",
+   [
+    "controller_manager_msgs/srv/CleanupController"
+   ]
+  ],
+  [
+   "/controller_manager/configure_controller",
+   [
+    "controller_manager_msgs/srv/ConfigureController"
+   ]
+  ],
+  [
+   "/controller_manager/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/controller_manager/get_logger_levels",
+   [
+    "rcl_interfaces/srv/GetLoggerLevels"
+   ]
+  ],
+  [
+   "/controller_manager/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/controller_manager/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/controller_manager/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/controller_manager/list_controller_types",
+   [
+    "controller_manager_msgs/srv/ListControllerTypes"
+   ]
+  ],
+  [
+   "/controller_manager/list_controllers",
+   [
+    "controller_manager_msgs/srv/ListControllers"
+   ]
+  ],
+  [
+   "/controller_manager/list_hardware_components",
+   [
+    "controller_manager_msgs/srv/ListHardwareComponents"
+   ]
+  ],
+  [
+   "/controller_manager/list_hardware_interfaces",
+   [
+    "controller_manager_msgs/srv/ListHardwareInterfaces"
+   ]
+  ],
+  [
+   "/controller_manager/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/controller_manager/load_controller",
+   [
+    "controller_manager_msgs/srv/LoadController"
+   ]
+  ],
+  [
+   "/controller_manager/reload_controller_libraries",
+   [
+    "controller_manager_msgs/srv/ReloadControllerLibraries"
+   ]
+  ],
+  [
+   "/controller_manager/set_hardware_component_state",
+   [
+    "controller_manager_msgs/srv/SetHardwareComponentState"
+   ]
+  ],
+  [
+   "/controller_manager/set_logger_levels",
+   [
+    "rcl_interfaces/srv/SetLoggerLevels"
+   ]
+  ],
+  [
+   "/controller_manager/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/controller_manager/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/controller_manager/switch_controller",
+   [
+    "controller_manager_msgs/srv/SwitchController"
+   ]
+  ],
+  [
+   "/controller_manager/unload_controller",
+   [
+    "controller_manager_msgs/srv/UnloadController"
+   ]
+  ],
+  [
+   "/env_vision_node/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/env_vision_node/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/env_vision_node/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/env_vision_node/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/env_vision_node/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/env_vision_node/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/env_vision_node/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/execute_trajectory/_action/cancel_goal",
+   [
+    "action_msgs/srv/CancelGoal"
+   ]
+  ],
+  [
+   "/execute_trajectory/_action/get_result",
+   [
+    "moveit_msgs/action/ExecuteTrajectory_GetResult"
+   ]
+  ],
+  [
+   "/execute_trajectory/_action/send_goal",
+   [
+    "moveit_msgs/action/ExecuteTrajectory_SendGoal"
+   ]
+  ],
+  [
+   "/get_planner_params",
+   [
+    "moveit_msgs/srv/GetPlannerParams"
+   ]
+  ],
+  [
+   "/get_planning_scene",
+   [
+    "moveit_msgs/srv/GetPlanningScene"
+   ]
+  ],
+  [
+   "/get_urdf",
+   [
+    "moveit_msgs/srv/GetGroupUrdf"
+   ]
+  ],
+  [
+   "/graph_dump_probe/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/graph_dump_probe/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/graph_dump_probe/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/graph_dump_probe/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/graph_dump_probe/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/graph_dump_probe/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/graph_dump_probe/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/gz_ros_control/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/gz_ros_control/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/gz_ros_control/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/gz_ros_control/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/gz_ros_control/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/gz_ros_control/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/gz_ros_control/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/get_logger_levels",
+   [
+    "rcl_interfaces/srv/GetLoggerLevels"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/set_logger_levels",
+   [
+    "rcl_interfaces/srv/SetLoggerLevels"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/joint_state_broadcaster/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/load_geometry_from_file",
+   [
+    "moveit_msgs/srv/LoadGeometryFromFile"
+   ]
+  ],
+  [
+   "/load_map",
+   [
+    "moveit_msgs/srv/LoadMap"
+   ]
+  ],
+  [
+   "/move_action/_action/cancel_goal",
+   [
+    "action_msgs/srv/CancelGoal"
+   ]
+  ],
+  [
+   "/move_action/_action/get_result",
+   [
+    "moveit_msgs/action/MoveGroup_GetResult"
+   ]
+  ],
+  [
+   "/move_action/_action/send_goal",
+   [
+    "moveit_msgs/action/MoveGroup_SendGoal"
+   ]
+  ],
+  [
+   "/move_group/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/move_group/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/move_group/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/move_group/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/move_group/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/move_group/moveit/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/move_group/moveit/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/move_group/moveit/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/move_group/moveit/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/move_group/moveit/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/move_group/moveit/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/move_group/moveit/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/move_group/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/move_group/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/move_group_private_104939967734672/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/moveit_3992146440/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/moveit_3992146440/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/moveit_3992146440/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/moveit_3992146440/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/moveit_3992146440/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/moveit_3992146440/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/moveit_3992146440/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/moveit_simple_controller_manager/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/plan_kinematic_path",
+   [
+    "moveit_msgs/srv/GetMotionPlan"
+   ]
+  ],
+  [
+   "/query_planner_interface",
+   [
+    "moveit_msgs/srv/QueryPlannerInterfaces"
+   ]
+  ],
+  [
+   "/robot_state_publisher/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/robot_state_publisher/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/robot_state_publisher/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/robot_state_publisher/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/robot_state_publisher/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/robot_state_publisher/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/robot_state_publisher/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/ros_gz_bridge/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/save_geometry_to_file",
+   [
+    "moveit_msgs/srv/SaveGeometryToFile"
+   ]
+  ],
+  [
+   "/save_map",
+   [
+    "moveit_msgs/srv/SaveMap"
+   ]
+  ],
+  [
+   "/set_planner_params",
+   [
+    "moveit_msgs/srv/SetPlannerParams"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_YNrCTbbLpmPi1JnG/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_k7nW3WvvFbtlH1CW/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/describe_parameters",
+   [
+    "rcl_interfaces/srv/DescribeParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/get_parameter_types",
+   [
+    "rcl_interfaces/srv/GetParameterTypes"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/get_parameters",
+   [
+    "rcl_interfaces/srv/GetParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/list_parameters",
+   [
+    "rcl_interfaces/srv/ListParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/set_parameters",
+   [
+    "rcl_interfaces/srv/SetParameters"
+   ]
+  ],
+  [
+   "/static_transform_publisher_ukBdVSpGMhrimuf1/set_parameters_atomically",
+   [
+    "rcl_interfaces/srv/SetParametersAtomically"
+   ]
+  ],
+  [
+   "/transform_listener_impl_5f713d7a4340/get_type_description",
+   [
+    "type_description_interfaces/srv/GetTypeDescription"
+   ]
+  ],
+  [
+   "/vision/arm1/get_pick_target",
+   [
+    "vision_interfaces/srv/GetPickTarget"
+   ]
+  ],
+  [
+   "/vision/arm2/get_grid_state",
+   [
+    "vision_interfaces/srv/GetGridState"
+   ]
+  ],
+  [
+   "/vision/arm2/verify_place",
+   [
+    "vision_interfaces/srv/VerifyPlace"
+   ]
+  ],
+  [
+   "/vision/env/capture_ranking",
+   [
+    "vision_interfaces/srv/CaptureRanking"
+   ]
+  ],
+  [
+   "/vision/env/clear_taken",
+   [
+    "std_srvs/srv/Trigger"
+   ]
+  ],
+  [
+   "/vision/env/get_rank",
+   [
+    "vision_interfaces/srv/GetRank"
+   ]
+  ],
+  [
+   "/vision/env/get_zone_state",
+   [
+    "vision_interfaces/srv/GetZoneState"
+   ]
+  ],
+  [
+   "/vision/env/recalibrate_zones",
+   [
+    "vision_interfaces/srv/RecalibrateZones"
+   ]
+  ]
+ ]
+}

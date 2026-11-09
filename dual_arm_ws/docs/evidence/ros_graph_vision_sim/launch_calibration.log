@@ -1,0 +1,36 @@
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-09-14-37-41-299034-DESKTOP-HBTEAAO-469
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [calibration_status-1]: process started with pid [478]
+[calibration_status-1] Traceback (most recent call last):
+[calibration_status-1]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_vision_adapter/lib/python3.12/site-packages/dual_arm_vision_adapter/status_node.py", line 77, in main
+[calibration_status-1]     rclpy.spin(node)
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 247, in spin
+[calibration_status-1]     executor.spin_once()
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 926, in spin_once
+[calibration_status-1]     self._spin_once_impl(timeout_sec)
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 907, in _spin_once_impl
+[calibration_status-1]     handler, entity, node = self.wait_for_ready_callbacks(
+[calibration_status-1]                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 877, in wait_for_ready_callbacks
+[calibration_status-1]     return next(self._cb_iter)
+[calibration_status-1]            ^^^^^^^^^^^^^^^^^^^
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 785, in _wait_for_ready_callbacks
+[calibration_status-1]     raise ExternalShutdownException()
+[calibration_status-1] rclpy.executors.ExternalShutdownException
+[calibration_status-1] 
+[calibration_status-1] During handling of the above exception, another exception occurred:
+[calibration_status-1] 
+[calibration_status-1] Traceback (most recent call last):
+[calibration_status-1]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_vision_adapter/lib/dual_arm_vision_adapter/calibration_status", line 33, in <module>
+[calibration_status-1]     sys.exit(load_entry_point('dual-arm-vision-adapter==0.1.0', 'console_scripts', 'calibration_status')())
+[calibration_status-1]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[calibration_status-1]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_vision_adapter/lib/python3.12/site-packages/dual_arm_vision_adapter/status_node.py", line 80, in main
+[calibration_status-1]     rclpy.shutdown()
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 134, in shutdown
+[calibration_status-1]     _shutdown(context=context)
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/utilities.py", line 82, in shutdown
+[calibration_status-1]     context.shutdown()
+[calibration_status-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/context.py", line 129, in shutdown
+[calibration_status-1]     self.__context.shutdown()
+[calibration_status-1] rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:333
+[ERROR] [calibration_status-1]: process has died [pid 478, exit code 1, cmd '/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_vision_adapter/lib/dual_arm_vision_adapter/calibration_status --ros-args --params-file /tmp/launch_params_bwogir4l'].
