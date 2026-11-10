@@ -2,6 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: vision upstream update to 4a40f30 (frame names)
+
+- Submodule `three-camera-vision-ros2` fast-forwarded b98fb4e → 4a40f30; the same diff applied to `src/vision_pkg` and `src/vision_interfaces` with `git apply --ignore-whitespace --directory=dual_arm_ws/src`, keeping the local `publish_debug_image` additions. sources.lock.json updated.
+- Upstream only relabels `header.frame_id` (`armN_base` → `armN_base_link`, cameras → `*_camera_optical_frame`); coordinate math is unchanged, so `coordinator.yaml` keeps `vision_base_frame: armN_base`. ROS_INTERFACES.md gap 3 resolved, gap 4 reworded.
+- Fixed test_launch.py stubs, which lacked the `publish_debug_image` argument added by the operator UI (7 failures before this update too).
+- PASS in WSL Jazzy: `colcon build --packages-select vision_interfaces vision_pkg`; vision_pkg 99, coordinator 259, vision adapter 10. Gazebo pipeline not rerun.
+
 ## Latest result: operator UI stage 2 (start and stop)
 
 - The interface now starts, stops and resets the system in its own process group, records the session so a restarted interface adopts it, and removes Gazebo servers and tagged processes left behind. Only one managing interface may run; `--monitor` opens a watch-only one. Settings are in `config/profiles.yaml`; hardware modes refuse to start without a port, and motion without measured controller tolerances. Added `scripts/hmi_windows.bat` and `scripts/install_hmi_shortcut.sh`.

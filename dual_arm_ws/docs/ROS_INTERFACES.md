@@ -59,9 +59,9 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/gazebo/ground_truth` | `tf2_msgs/msg/TFMessage` | 僅模擬，整個場景的 pose | |
 | `/vision/env/zone_state` | `vision_interfaces/msg/ZoneState` | A/B/C 區狀態 | reliable、depth 10；約 10 Hz |
 | `/vision/env/ranking` | `vision_interfaces/msg/RankingSnapshot` | 固定發布一次 `valid=false`（不排序） | reliable、transient_local、depth 1 |
-| `/vision/arm1/pick_target` | `vision_interfaces/msg/PickTarget` | 目前會選中的瓶蓋，`frame_id=arm1_base` | reliable、depth 10 |
+| `/vision/arm1/pick_target` | `vision_interfaces/msg/PickTarget` | 目前會選中的瓶蓋，`frame_id=arm1_base_link`（數值仍是 `arm1_base` 軸向，見已知缺口 4） | reliable、depth 10 |
 | `/vision/arm1/detections` | `vision_interfaces/msg/PickDetections` | 所有偵測到的瓶蓋 | reliable、depth 10 |
-| `/vision/arm2/grid_state` | `vision_interfaces/msg/GridState` | C 區八格，`frame_id=arm2_base` | reliable、depth 10 |
+| `/vision/arm2/grid_state` | `vision_interfaces/msg/GridState` | C 區八格，`frame_id=arm2_base_link`（數值仍是 `arm2_base` 軸向，見已知缺口 4） | reliable、depth 10 |
 | `/vision/calibration_status` | `diagnostic_msgs/msg/DiagnosticArray` | 三支相機 PASS／FAIL 與原因 | reliable、depth 10；每 0.5 秒 |
 | `/vision/{env,arm1,arm2}/debug_image` | `sensor_msgs/msg/Image` | 視覺節點的標註影像（`bgr8`），給操作介面顯示。需 `publish_debug_image:=true`，預設不發布 | best-effort；隨視覺處理頻率 |
 
@@ -160,8 +160,8 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 |---|---|---|
 | 1 | 區域與格位狀態仍用 Gazebo 真值，只有取料點可由視覺決定；模擬相機在 Home 被手臂遮擋（C31、D7） | 視覺驅動的完整搬運 `BLOCKED` |
 | 2 | Coordinator 只有在 `observation_source:=vision_pick` 時才檢查 `/vision/calibration_status`，且只檢查 arm1 | 區域與格位的校正閘門還沒有實際使用 |
-| 3 | `usb_cam` 的 `frame_id` 是 `env_cam`、`arm1_cam`、`arm2_cam`，`dual_arm_vision_adapter/config/hardware/*.yaml` 是 `*_camera_optical_frame`，`validate()` 比對字串 | 實機校正狀態會一直 FAIL（偏安全，但無法通過） |
-| 4 | 視覺輸出 `armN_base`；模擬有 static TF，`vision` gateway 已用 TF 轉換；實機 TF 尚未發布，需要量測值 | 實機無法轉換視覺座標；軸向見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
+| 3 | 已解決（上游 4a40f30）：`usb_cam` 的 `frame_id` 改為 `*_camera_optical_frame`，與 `dual_arm_vision_adapter/config/hardware/*.yaml` 一致 | — |
+| 4 | 上游 4a40f30 只把 `header.frame_id` 改成 `armN_base_link`，座標數值的計算沒變，仍是 `armN_base` 軸向（與 `armN_base_link` 差 +90° yaw 與 z 0.014）。`vision` gateway 不看 `header.frame_id`，用 `coordinator.yaml` 的 `vision_base_frame: armN_base` 經 TF 轉換；模擬有 static TF，實機 TF 尚未發布，需要量測值 | 不可依 `header.frame_id` 直接當 `armN_base_link` 使用；需與上游確認座標是否要真的改成 `armN_base_link` 軸向。軸向見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
 | 5 | `esp32_micro_ros` 不存在，沒有 ESP32 協定（D5） | 實機只能用人工 token；`/gripper/*` 只存在於模擬 |
 | 6 | Coordinator 會同步 PlanningScene，但場景沒有平台、泡棉、相機支架，碰撞模型仍是保守方塊（WP11） | 路徑碰撞驗證不完整 |
 | 7 | 相機 static TF 只在 `sim.launch.py` 發布 | 實機沒有相機 TF |

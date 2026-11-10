@@ -74,7 +74,7 @@ def _setup(tmp_path, **values):
     saved = {}
     try:
         m = _load_launch_module(saved)
-        _LC.values = {'env_cam_device': '', 'arm1_cam_device': '', 'arm2_cam_device': '', 'show_debug': 'true',
+        _LC.values = {'env_cam_device': '', 'arm1_cam_device': '', 'arm2_cam_device': '', 'show_debug': 'true', 'publish_debug_image': '',
                       'calib_dir': str(tmp_path), 'undistort': '', 'respawn': 'true',
                       'env_cam_rotate': '', 'arm1_cam_rotate': '', 'arm2_cam_rotate': ''}
         _LC.values.update(values)
@@ -112,6 +112,7 @@ def test_existing_device_starts_usb_cam_in_its_namespace(tmp_path):
     assert (cam.executable, cam.namespace, cam.name) == ('usb_cam_node_exe', 'env_cam', 'usb_cam')
     assert cam.parameters[0].endswith('usb_cam.yaml')
     assert cam.parameters[1]['video_device'] == str(dev) and cam.parameters[1]['camera_name'] == 'env_cam'
+    assert cam.parameters[1]['frame_id'] == 'env_camera_optical_frame'
     assert 'camera_info_url' not in cam.parameters[1]            # 還沒標內參
     err = '\n'.join(a.msg for a in actions if isinstance(a, _LogInfo))
     assert 'arm1_cam' in err and 'arm2_cam' in err and 'env_cam:' not in err
@@ -139,7 +140,7 @@ def test_vision_node_parameters_show_debug_calib_dir_and_undistort(tmp_path):
     nodes = _nodes(actions)
     for n in nodes:
         assert n.parameters[0].endswith(('env_vision.yaml', 'arm1_vision.yaml', 'arm2_vision.yaml'))
-        assert n.parameters[1] == {'show_debug': False, 'calib_dir': str(tmp_path), 'undistort': True}
+        assert n.parameters[1] == {'show_debug': False, 'publish_debug_image': False, 'calib_dir': str(tmp_path), 'undistort': True}
         assert n.respawn is False
     m, actions = _setup(tmp_path)                                  # undistort 留空 -> 沿用各節點 YAML
     assert all('undistort' not in n.parameters[1] for n in _nodes(actions))
