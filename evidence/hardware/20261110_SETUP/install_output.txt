@@ -1,0 +1,100 @@
+Hit:1 https://download.docker.com/linux/ubuntu noble InRelease
+Hit:2 https://persistent.oaistatic.com/codex-app-prod/linux/deb stable InRelease
+Hit:3 https://packages.microsoft.com/repos/code stable InRelease
+Hit:4 https://repo.download.nvidia.com/jetson/common r39.2 InRelease
+Hit:5 http://packages.ros.org/ros2/ubuntu noble InRelease
+Hit:6 https://repo.download.nvidia.com/jetson/som r39.2 InRelease
+Hit:7 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Hit:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease
+Hit:9 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease
+Hit:10 https://repo.download.nvidia.com/jetson/ffmpeg r39.2 InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+gnupg is already the newest version (2.4.4-2ubuntu17.6).
+software-properties-common is already the newest version (0.99.49.4).
+software-properties-common set to manually installed.
+The following additional packages will be installed:
+  libcurl3t64-gnutls libcurl4-openssl-dev libcurl4t64
+Suggested packages:
+  libcurl4-doc libidn-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev
+The following packages will be upgraded:
+  ca-certificates curl libcurl3t64-gnutls libcurl4-openssl-dev libcurl4t64
+5 upgraded, 0 newly installed, 0 to remove and 279 not upgraded.
+Need to get 1486 kB of archives.
+After this operation, 2048 B of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 ca-certificates all 20260816ubuntu0.24.04.2 [140 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 libcurl4-openssl-dev arm64 8.5.0-2ubuntu10.16 [456 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 curl arm64 8.5.0-2ubuntu10.16 [222 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 libcurl4t64 arm64 8.5.0-2ubuntu10.16 [337 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 libcurl3t64-gnutls arm64 8.5.0-2ubuntu10.16 [331 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 1486 kB in 2s (622 kB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 280098 files and directories currently installed.)
+Preparing to unpack .../ca-certificates_20260816ubuntu0.24.04.2_all.deb ...
+Unpacking ca-certificates (20260816ubuntu0.24.04.2) over (20260601~24.04.1) ...
+Preparing to unpack .../libcurl4-openssl-dev_8.5.0-2ubuntu10.16_arm64.deb ...
+Unpacking libcurl4-openssl-dev:arm64 (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Preparing to unpack .../curl_8.5.0-2ubuntu10.16_arm64.deb ...
+Unpacking curl (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Preparing to unpack .../libcurl4t64_8.5.0-2ubuntu10.16_arm64.deb ...
+Unpacking libcurl4t64:arm64 (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Preparing to unpack .../libcurl3t64-gnutls_8.5.0-2ubuntu10.16_arm64.deb ...
+Unpacking libcurl3t64-gnutls:arm64 (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Setting up libcurl4t64:arm64 (8.5.0-2ubuntu10.16) ...
+Setting up libcurl3t64-gnutls:arm64 (8.5.0-2ubuntu10.16) ...
+Setting up ca-certificates (20260816ubuntu0.24.04.2) ...
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+4 added, 5 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Setting up libcurl4-openssl-dev:arm64 (8.5.0-2ubuntu10.16) ...
+Setting up curl (8.5.0-2ubuntu10.16) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+Hit:1 https://download.docker.com/linux/ubuntu noble InRelease
+Hit:2 https://persistent.oaistatic.com/codex-app-prod/linux/deb stable InRelease
+Hit:3 https://packages.microsoft.com/repos/code stable InRelease
+Hit:4 http://packages.ros.org/ros2/ubuntu noble InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Hit:6 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease
+Hit:7 https://repo.download.nvidia.com/jetson/common r39.2 InRelease
+Hit:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease
+Hit:9 https://repo.download.nvidia.com/jetson/som r39.2 InRelease
+Hit:10 https://repo.download.nvidia.com/jetson/ffmpeg r39.2 InRelease
+Reading package lists...
+新增元件'universe'到全部的軟體庫。
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  1167  100  1167    0     0   7669      0 --:--:-- --:--:-- --:--:--  7728
+E: Conflicting values set for option Signed-By regarding source http://packages.ros.org/ros2/ubuntu/ noble: /usr/share/keyrings/ros-archive-keyring.gpg != -----BEGIN PGP PUBLIC KEY BLOCK-----
+   mQINBFzvJpYBEADY8l1YvO7iYW5gUESyzsTGnMvVUmlV3XarBaJz9bGRmgPXh7jc
+   VFrQhE0L/HV7LOfoLI9H2GWYyHBqN5ERBlcA8XxG3ZvX7t9nAZPQT2Xxe3GT3tro
+   u5oCR+SyHN9xPnUwDuqUSvJ2eqMYb9B/Hph3OmtjG30jSNq9kOF5bBTk1hOTGPH4
+   K/AY0jzT6OpHfXU6ytlFsI47ZKsnTUhipGsKucQ1CXlyirndZ3V3k70YaooZ55rG
+   aIoAWlx2H0J7sAHmqS29N9jV9mo135d+d+TdLBXI0PXtiHzE9IPaX+ctdSUrPnp+
+   TwR99lxglpIG6hLuvOMAaxiqFBB/Jf3XJ8OBakfS6nHrWH2WqQxRbiITl0irkQoz
+   pwNEF2Bv0+Jvs1UFEdVGz5a8xexQHst/RmKrtHLct3iOCvBNqoAQRbvWvBhPjO/p
+   V5cYeUljZ5wpHyFkaEViClaVWqa6PIsyLqmyjsruPCWlURLsQoQxABcL8bwxX7UT
+   hM6CtH6tGlYZ85RIzRifIm2oudzV5l+8oRgFr9yVcwyOFT6JCioqkwldW52P1pk/
+   /SnuexC6LYqqDuHUs5NnokzzpfS6QaWfTY5P5tz4KHJfsjDIktly3mKVfY0fSPVV
+   okdGpcUzvz2hq1fqjxB6MlB/1vtk0bImfcsoxBmF7H+4E9ZN1sX/tSb0KQARAQAB
+   tCZPcGVuIFJvYm90aWNzIDxpbmZvQG9zcmZvdW5kYXRpb24ub3JnPokCVAQTAQgA
+   PgIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBMHPbjHmut6IaLFytPQu1vur
+   F8ZUBQJoEhoGBQkUtHZwAAoJEPQu1vurF8ZUv1AP/2gID+uw7pw3WpPevny3pliZ
+   JeDx4Y+ut+5c2nCfkpUc3lG50v9ly4ZpNQTWKIm9yB6dxgary7EKpAlGVmiU75JA
+   LyftVtjeyQcre2f7Z00u2lXw8Red52AsWHkh/dtctgLSGQiJdTd0donO6cszZFVa
+   sCiFdRKlizGvBkE8uFdKYMGixOgnvQZrb9OLqRsoj10aDzN0X3NJk1LTxiS3+udY
+   poOk2Bm9VGyrNmgIrYiNqbYPBHYkWGHBqJxvAK92lJ2I/n6X4U8r6sMdDE7QDw4j
+   FMdrxC0XmCL4cFPkkR1qadtJy9FiCtpKyqiKuUsCG6AUi5EOY+7Y3oSpKn8Wp1K5
+   VMbv12JRIatDIeaAnwa2qyBQVAVC1F/OqWUFKluPjKyMR3DXKwjxpt1P+HUmda0w
+   HcnhFIu2th/egmGKH5e3atcVxjAxYfm+f92MN7fFEuFQsMZhI/gt3IgESWrgdaAz
+   opRInrMz7yEtz3VaaehwmUUR2gevPQMzBRaA+NIqMLDUvV5jujvFe8c1VUtBLTYc
+   /alBiM/Mo1niy3aUfDahzhTr6zz+ur6BFRnNFWv56M3NOVlreNm3NIbNX2kTKh0Z
+   QJSSCklJuDUqnPmAzT2BZWUpwfe7QYRwvQhF0YB2N1LavyNwiyfinCQlAh+Q9eme
+   2jqGsxvQym3sAPnWvA68
+   =xH9H
+   -----END PGP PUBLIC KEY BLOCK-----
+E: The list of sources could not be read.

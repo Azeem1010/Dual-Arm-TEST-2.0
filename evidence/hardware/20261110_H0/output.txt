@@ -1,0 +1,121 @@
+# 2026-11-10T16:14:47+08:00 run 1（未推手臂）
+$ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0
+{
+  "status": "PASS",
+  "exchanges": [
+    {
+      "tx": "VERSION",
+      "rx": "VERSION,5"
+    },
+    {
+      "tx": "PING",
+      "rx": "PONG"
+    },
+    {
+      "tx": "GET_HOME,arm1",
+      "rx": "HOME,arm1,90,567,712,825"
+    },
+    {
+      "tx": "READ,arm1",
+      "rx": "POS,arm1,140,779,611,765"
+    },
+    {
+      "tx": "GET_HOME,arm2",
+      "rx": "HOME,arm2,590,567,712,825"
+    },
+    {
+      "tx": "READ,arm2",
+      "rx": "POS,arm2,520,691,811,595"
+    }
+  ],
+  "home": {
+    "arm1": [
+      90,
+      567,
+      712,
+      825
+    ],
+    "arm2": [
+      590,
+      567,
+      712,
+      825
+    ]
+  },
+  "position": {
+    "arm1": [
+      140,
+      779,
+      611,
+      765
+    ],
+    "arm2": [
+      520,
+      691,
+      811,
+      595
+    ]
+  }
+}
+exit=0
+
+# 2026-11-10T16:18:09+08:00 run 2（測試人員回報已推動兩臂 j1 並扶住）
+$ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0
+{
+  "status": "PASS",
+  "exchanges": [
+    {
+      "tx": "VERSION",
+      "rx": "VERSION,5"
+    },
+    {
+      "tx": "PING",
+      "rx": "PONG"
+    },
+    {
+      "tx": "GET_HOME,arm1",
+      "rx": "HOME,arm1,90,567,712,825"
+    },
+    {
+      "tx": "READ,arm1",
+      "rx": "POS,arm1,167,489,528,781"
+    },
+    {
+      "tx": "GET_HOME,arm2",
+      "rx": "HOME,arm2,590,567,712,825"
+    },
+    {
+      "tx": "READ,arm2",
+      "rx": "POS,arm2,541,527,613,532"
+    }
+  ],
+  "home": {
+    "arm1": [
+      90,
+      567,
+      712,
+      825
+    ],
+    "arm2": [
+      590,
+      567,
+      712,
+      825
+    ]
+  },
+  "position": {
+    "arm1": [
+      167,
+      489,
+      528,
+      781
+    ],
+    "arm2": [
+      541,
+      527,
+      613,
+      532
+    ]
+  }
+}
+exit=0

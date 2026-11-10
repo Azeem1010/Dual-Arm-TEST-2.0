@@ -1,0 +1,43 @@
+$ git rev-parse HEAD
+3fd258c8e81c3bada92df92ef9a95e5749ca5178
+exit_code=0
+
+$ git submodule status
+ 07dd98f63f7f838dd83664337623a605b680c663 third_party/CM530_ROS_BRIDGE (heads/main)
+ 1eefc4da57a25008ff037b851b58e24cf8ab7af5 third_party/dual_arm_3d (heads/main)
+ b30cf4195f5c14403f8c4e8408b560f2c9da5782 third_party/phantomx_pincher (heads/ros2)
+ 4a40f303ad349824182b4eb35d14bfa881700a8a third_party/three-camera-vision-ros2 (heads/main)
+exit_code=0
+
+$ bash -n scripts/install_jazzy.sh
+exit_code=0
+
+$ git diff --check
+exit_code=0
+
+$ id orin
+uid=2002(orin) gid=2002(orin) groups=2002(orin),4(adm),20(dialout),24(cdrom),27(sudo),29(audio),30(dip),44(video),46(plugdev),100(users),994(kvm),993(render),108(i2c),111(lpadmin),122(gdm),984(gpio),983(weston-launch),979(docker)
+exit_code=0
+
+$ dpkg-query -W ros2-apt-source ros-jazzy-desktop ros-jazzy-moveit ros-jazzy-ros-gz ros-jazzy-gz-ros2-control libswscale-dev libavdevice-dev libavformat-dev libavcodec-dev libavutil-dev
+libavcodec-dev:arm64	7:6.1.1-3ubuntu5
+libavdevice-dev:arm64	7:6.1.1-3ubuntu5
+libavformat-dev:arm64	7:6.1.1-3ubuntu5
+libavutil-dev:arm64	7:6.1.1-3ubuntu5
+libswscale-dev:arm64	7:6.1.1-3ubuntu5
+ros-jazzy-desktop	0.11.0-1noble.20261006.040847
+ros-jazzy-gz-ros2-control	1.2.20-1noble.20261006.043411
+ros-jazzy-moveit	2.12.4-1noble.20260921.052316
+ros-jazzy-ros-gz	1.0.24-1noble.20261006.044318
+ros2-apt-source	1.3.0~noble
+exit_code=0
+
+$ git status --short
+ M docs/ORIN_DEPLOYMENT.md
+ M docs/PROGRESS.md
+ M docs/RESUME.md
+ M docs/TEST_REPORT.md
+ M scripts/install_jazzy.sh
+?? docs/evidence/hardware/
+exit_code=0
+

@@ -1,0 +1,21 @@
+# 實機測試總表 — 2026-11-10
+
+| 階段 | 狀態 | 實測值或缺漏原因 |
+|---|---|---|
+| SETUP 環境／下載 | PASS | aarch64、Ubuntu 24.04.5、837 GB 可用；main 與四個子模組下載完成 |
+| SETUP 安裝 | PASS | 來源相容、noble-updates 與 FFmpeg 依賴已修復；原始失敗保留，最新證據見 20261110_SETUP_retry/ |
+| 建置／離線測試／mock | PASS | 13 套件；259 coordinator、262 HMI、42 CM530、7 階段 Mock Serial；基本 Mock 啟停通過 |
+| dialout | PASS | 已設定；使用者仍需登出再登入 |
+| P0 | PASS | 急停按下斷電、放開恢復（口頭回報）；兩人以上（代號 A、B、C）；量具與 Moving Speed 軟體齊；已淨空；俯視照片 20261110_P0/photos/IMG_0891.webp。照片顯示 C 區在下方手臂側，與模擬配置可能相反，待 H1 |
+| H0 | PASS | /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0；VERSION,5、PONG；home arm1 [90,567,712,825]、arm2 [590,567,712,825] 相符；READ arm1 140,779,611,765→167,489,528,781，arm2 520,691,811,595→541,527,613,532（手推後 8 值皆變）。見 20261110_H0/ |
+| H1 arm1/arm2 | NOT_RUN（進行中） | arm1：基準 READ、j1 右轉（變小，+1，朝 A 區）、j2 上抬（變小）、伸直 READ 已記錄，見 20261110_H1/record.md。桌面參考線 F（垂直長邊朝使用者，0 在旋轉軸）、L（沿長邊朝 B/C，0 在與 F1 交點）已貼並拍照，這組不是文件的 `world`。三區各 20 cm；arm1 軸心在 A/B 分界（L=0），arm2 軸心在 B/C 分界（L=20 cm）。軸心在板外約 1 cm，使用者側長邊在 F=24.5 cm → 板寬約 23.5 cm，與文件與 env_vision.yaml 的 300 mm 不符（待直接量短邊確認）。仍缺：arm2 全部項目、8 顆 Moving Speed、ID15 線材觀察、短邊實長、兩臂各自的軸心到板緣 mm 值 |
+| H1 arm1 額外 | NOT_RUN | 缺 GET_HOME、世界 +Y 定義與該朝向 READ、home_A READ |
+| V0 | NOT_RUN | 缺三顆 by-id 對應、方向與 rotate:180 確認、三張截圖 |
+| E0 | NOT_RUN | 缺 ESP32 by-id、上電泵閥/GPIO5 觀察、1～4 命令對應、至少三次吸穩時間原始錄影、status 回音時間 |
+| H2 資料 | NOT_RUN | 缺每軸至少三組角度/READ、原始尺量或像素/照片/換算式、三個獨立姿態 TCP/傾角與 READ、工作表 |
+| H2 驗收 | BLOCKED | D6 四項門檻空白；check、候選值填寫、唯讀十分鐘驗證未執行 |
+| H3 | BLOCKED | 未填負責人授權且 H2 未通過；缺每顆 ±10 raw 方向、變化量、到位與穩態誤差、異音觀察 |
+| H4～H8 | BLOCKED | 本次禁止，D8 急停心跳尚未實作 |
+| D0/D1 | BLOCKED（待負責人決定） | 觀察事實（僅 arm1）：手臂自身右方＝A 區側，C 區在手臂左邊，與 COORDINATE_FRAMES.md「A 在手臂左邊」相反；j1 右轉讀值變小（+1，模擬假設 −1）；j2 上抬讀值變小；伸直 READ 200,505,498,513，目視垂直朝上，大致符合「512＝伸直」（±數度，人手扶持）。arm2 未測。不代替負責人決定 |
+
+安裝與建置已完成，前次失敗已保留。未進行實機操作，尚未提交或推送。Mock 的排程、Octomap 與關閉訊息詳見重試 record.md。

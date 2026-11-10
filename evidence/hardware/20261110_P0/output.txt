@@ -1,0 +1,11 @@
+# P0 output — 2026-11-10T16:10:43+08:00
+$ git rev-parse HEAD
+3fd258c8e81c3bada92df92ef9a95e5749ca5178
+$ ls -l /dev/serial/by-id/
+總用量 0
+lrwxrwxrwx 1 root root 13 11月 10 14:12 usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0 -> ../../ttyUSB0
+$ ls -l /dev/v4l/by-id/
+總用量 0
+lrwxrwxrwx 1 root root 12 11月 10 15:51 usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 10 15:51 usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index1 -> ../../video3
+$ fuser -v /dev/ttyUSB0 (空白=無占用)

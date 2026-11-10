@@ -1,0 +1,21 @@
+本次實際命令索引；完整輸出分檔保存。
+1. bash -n scripts/install_jazzy.sh；PASS。
+2. sudo -n bash scripts/install_jazzy.sh；FAIL exit 100，install_output.txt。
+3. 新增 dual-arm-noble-updates.sources（內容副本在本目錄）；sudo -n apt-get update，ubuntu_updates_output.txt。
+4. sudo -n bash scripts/install_jazzy.sh；PASS exit 0，install_output_02.txt。
+5. bash scripts/build.sh；FAIL exit 1，build_output.txt。
+6. sudo -n usermod -aG dialout orin；id orin，dialout_output.txt。
+7. sudo -n apt-get check；PASS exit 0，apt_check.txt。
+8. sudo -n apt-get install -y libswscale-dev libavdevice-dev libavformat-dev libavcodec-dev libavutil-dev；PASS，ffmpeg_install.txt。
+9. bash scripts/build.sh；PASS exit 0，build_output_02.txt。
+以下先 source /opt/ros/jazzy/setup.bash 與 install/setup.bash；單元測試設 ROS_DOMAIN_ID=87、QT_QPA_PLATFORM=offscreen。
+10. (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)；coordinator_test.txt。
+11. (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)；hmi_test.txt。
+12. colcon test --packages-select cm530_hardware；cm530_test.txt。
+13. colcon test-result --verbose；cm530_test_result.txt。
+14. python3 scripts/test_cm530_mock.py；PASS exit 0，cm530_mock_output.txt 與 cm530_mock*。
+15. ROS_DOMAIN_ID=87 bash scripts/start_sim.sh mock；mock_startup.txt。
+16. ros2 control list_controllers；mock_controllers.txt。
+17. ros2 topic echo /joint_states --once；mock_joint_states.txt。
+18. 對本次 Mock 程序群組送 SIGINT，確認退出碼 0、群組已不存在；mock_smoke_result.json。
+19. 複製本次生成的 evidence 後 git restore -- docs/evidence/；final_checks.txt。
