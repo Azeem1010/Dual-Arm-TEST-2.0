@@ -41,7 +41,7 @@ class JointPaths(unittest.TestCase):
         cls.model = CadKinematics(URDF.read_text(encoding='utf-8'), 'arm1')
 
     def test_descent_stays_on_line_with_tool_down(self):
-        above, below = np.array([0.14, -0.03, 0.054]), np.array([0.14, -0.03, 0.0243])
+        above, below = np.array([-0.14, -0.03, 0.054]), np.array([-0.14, -0.03, 0.0243])
         start = self.model.solve(above)
         path = solve_line(self.model, start, line_points(above, below, 0.002), 0.15)
         for q in path:
@@ -51,7 +51,7 @@ class JointPaths(unittest.TestCase):
         self.assertLess(tcp_error(self.model, path[-1], below), 1e-4)
 
     def test_joint_jump_is_refused(self):
-        above, below = [0.14, -0.03, 0.054], [0.14, -0.03, 0.0243]
+        above, below = [-0.14, -0.03, 0.054], [-0.14, -0.03, 0.0243]
         start = self.model.solve(above)
         with self.assertRaises(ValueError):
             solve_line(self.model, start, line_points(above, below, 0.002), 1e-6)

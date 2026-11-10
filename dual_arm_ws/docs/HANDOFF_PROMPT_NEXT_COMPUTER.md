@@ -39,7 +39,7 @@
 - 模擬：coordinator 在 Gazebo 完成兩物體 A→B→C、故障停止與人工復歸。區域和格位用 Gazebo 真值，只有 arm1 取料點可由視覺決定。
 - cm530_hardware、安全監控、ESP32 後端只用 Mock 或替身節點驗證。實機全部 NOT_RUN，所有實機步驟都還沒執行過。
 - config/calibration.yaml 刻意全為 null，coordinator_node 會拒絕實機模式。
-- A 區在手臂左或右、j1 與 j2 的方向與零點，證據互相矛盾，要靠手冊的 H1 解決（D0、D1）。
+- 2026-11-10 H1（arm1）已確認 A 區在手臂右方、j1 方向 +1，模擬已依此修改。arm2 的 H1、j2 的方向與零點仍待手冊的 H1 解決（D1）。
 - 模型只有 cap_3～6 與部分格位可達，格位 1 搆不到，八件搬運是已知 FAIL（D3）。
 - safety_supervisor 鎖定時會把手動啟動的控制器再停掉（C32，只驗證 Mock），約有 0.3 秒空窗，所以手動切換依然禁止。
 
@@ -68,7 +68,7 @@
 
 A. 現場實機測試
    依 HARDWARE_TEST_GUIDE.md 的順序，一次帶一個階段：說明目的、要準備什麼、指令、該看到什麼、什麼情況要按急停。等使用者貼回結果，你判斷 PASS/FAIL，寫進 docs/evidence/hardware/<日期>_<階段>/，再問要不要進下一階段。
-   H1 完成後要停下來分析：比對遠側配置、COORDINATE_FRAMES.md、URDF 與 runtime.json，告訴使用者哪些要改，得到同意才改。改了模型或 HOME 要依 TEST_PLAN.md 第 4 節重跑檢查。
+   H1 完成後要停下來分析：比對目前的模擬配置、COORDINATE_FRAMES.md、URDF 與 runtime.json，告訴使用者哪些要改，得到同意才改。改了模型或 HOME 要依 TEST_PLAN.md 第 4 節重跑檢查。
 
 B. 不需要實機的開發，建議順序
    1. 使用者決定 D8 後，做急停心跳節點。

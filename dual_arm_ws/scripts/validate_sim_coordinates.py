@@ -15,7 +15,7 @@ from vision_pkg.vision_core.cap_detect import CapParams,detect_caps
 from vision_pkg.vision_core.holes import HoleParams,locate_holes
 runtime=json.loads((root/'docs/evidence/sim_runtime.json').read_text())
 report={'mode':'sim','hardware_calibration_status':'NOT_RUN','cameras':{}}
-for name,cx,cz in [('env',0.,.8),('arm1',.2,.5),('arm2',-.2,.5)]:
+for name,cx,cz in [('env',0.,.8),('arm1',-.2,.5),('arm2',.2,.5)]:
     info=runtime['camera_info'][name]
     k=np.array(info['k']).reshape(3,3)
     frame=cv2.imread(str(root/f'docs/evidence/{name}_gazebo.png'))
@@ -27,7 +27,7 @@ for name,cx,cz in [('env',0.,.8),('arm1',.2,.5),('arm2',-.2,.5)]:
             report['cameras'][name]={'status':'FAIL','reason':layout.message}
             continue
         pixels=np.array([[h.cx,h.cy] for h in layout.holes])
-        truth=np.array([[-.1675+col*.035,-.09+row*.035] for row in range(4) for col in range(2)])
+        truth=np.array([[.1675-col*.035,-.09+row*.035] for row in range(4) for col in range(2)])
         plane=.014
         source='CAD hole centers, fixed source geometry'
     else:

@@ -1,75 +1,70 @@
-[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-09-17-19-35-926669-DESKTOP-HBTEAAO-635
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-10-18-38-52-773504-DESKTOP-HBTEAAO-564
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [robot_state_publisher-1]: process started with pid [651]
-[INFO] [ros2_control_node-2]: process started with pid [652]
-[INFO] [move_group_lifetime-3]: process started with pid [653]
-[INFO] [spawner-4]: process started with pid [654]
-[INFO] [spawner-5]: process started with pid [655]
-[INFO] [spawner-6]: process started with pid [656]
-[robot_state_publisher-1] [INFO] [1794215978.140884128] [robot_state_publisher]: Robot initialized
-[move_group_lifetime-3] [INFO] [1794215978.444533674] [move_group.moveit.moveit.ros.rdf_loader]: Loaded robot model in 0.230445 seconds
-[move_group_lifetime-3] [INFO] [1794215978.444699540] [move_group.moveit.moveit.core.robot_model]: Loading robot model 'dual_arm'...
-[move_group_lifetime-3] [INFO] [1794215978.444716305] [move_group.moveit.moveit.core.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint
-[move_group_lifetime-3] [WARN] [1794215978.444795079] [move_group.moveit.moveit.core.robot_model]: Link field_platform has visual geometry but no collision geometry. Collision geometry will be left empty. Fix your URDF file by explicitly specifying collision geometry.
-[move_group_lifetime-3] [INFO] [1794215978.748796644] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm1': 1 1 1 1
-[move_group_lifetime-3] [INFO] [1794215978.749398861] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm2': 1 1 1 1
-[move_group_lifetime-3] [INFO] [1794215979.120326132] [move_group.moveit.moveit.ros.moveit_cpp]: Listening to 'joint_states' for joint states
-[move_group_lifetime-3] [INFO] [1794215979.127749521] [move_group.moveit.moveit.ros.current_state_monitor]: Listening to joint states on topic 'joint_states'
-[move_group_lifetime-3] [INFO] [1794215979.168487550] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/attached_collision_object' for attached collision objects
-[move_group_lifetime-3] [INFO] [1794215979.170129061] [move_group.moveit.moveit.ros.planning_scene_monitor]: Publishing maintained planning scene on 'monitored_planning_scene'
-[move_group_lifetime-3] [INFO] [1794215979.170309977] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting planning scene monitor
-[move_group_lifetime-3] [INFO] [1794215979.170887768] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/planning_scene'
-[move_group_lifetime-3] [INFO] [1794215979.170914683] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting world geometry update monitor for collision objects, attached objects, octomap updates.
-[move_group_lifetime-3] [INFO] [1794215979.171566795] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'collision_object'
-[move_group_lifetime-3] [INFO] [1794215979.172320546] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'planning_scene_world' for planning scene world geometry
-[move_group_lifetime-3] [WARN] [1794215979.241438768] [move_group.moveit.moveit.ros.occupancy_map_monitor]: Resolution not specified for Octomap. Assuming resolution = 0.1 instead
-[move_group_lifetime-3] [ERROR] [1794215979.241510661] [move_group.moveit.moveit.ros.occupancy_map_monitor]: No 3D sensor plugin(s) defined for octomap updates
-[move_group_lifetime-3] [INFO] [1794215979.632157738] [move_group.moveit.moveit.ros.planning_pipeline]: Successfully loaded planner 'OMPL'
-[spawner-4] [INFO] [1794215979.650696919] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
-[ros2_control_node-2] [INFO] [1794215979.735098752] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
-[move_group_lifetime-3] [INFO] [1794215979.913312653] [move_group]: Try loading adapter 'default_planning_request_adapters/ResolveConstraintFrames'
-[move_group_lifetime-3] [INFO] [1794215979.949249672] [move_group]: Loaded adapter 'default_planning_request_adapters/ResolveConstraintFrames'
-[move_group_lifetime-3] [INFO] [1794215979.949298745] [move_group]: Try loading adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
-[move_group_lifetime-3] [INFO] [1794215979.949583476] [move_group]: Loaded adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
-[move_group_lifetime-3] [INFO] [1794215979.949597405] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateBounds'
-[move_group_lifetime-3] [INFO] [1794215979.949621219] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateBounds'
-[move_group_lifetime-3] [INFO] [1794215979.949625022] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateCollision'
-[move_group_lifetime-3] [INFO] [1794215979.949631846] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateCollision'
-[ros2_control_node-2] [INFO] [1794215980.169287839] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
-[ros2_control_node-2] [INFO] [1794215980.169365866] [controller_manager]: update rate is 100 Hz
-[ros2_control_node-2] [INFO] [1794215980.169371451] [controller_manager]: Overruns handling is : enabled
-[ros2_control_node-2] [INFO] [1794215980.169375261] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
-[ros2_control_node-2] [WARN] [1794215980.169482737] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
-[ros2_control_node-2] [INFO] [1794215980.180149944] [controller_manager]: Received robot description from topic.
-[ros2_control_node-2] [INFO] [1794215980.180408451] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
-[move_group_lifetime-3] [INFO] [1794215980.244759309] [move_group]: Try loading adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
-[move_group_lifetime-3] [INFO] [1794215980.287844745] [move_group]: Loaded adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
-[move_group_lifetime-3] [INFO] [1794215980.287889784] [move_group]: Try loading adapter 'default_planning_response_adapters/ValidateSolution'
-[move_group_lifetime-3] [INFO] [1794215980.298145267] [move_group]: Loaded adapter 'default_planning_response_adapters/ValidateSolution'
-[move_group_lifetime-3] [INFO] [1794215980.298183419] [move_group]: Try loading adapter 'default_planning_response_adapters/DisplayMotionPath'
-[move_group_lifetime-3] [INFO] [1794215980.298942506] [move_group]: Loaded adapter 'default_planning_response_adapters/DisplayMotionPath'
-[ros2_control_node-2] [INFO] [1794215980.408712381] [controller_manager]: Loading hardware 'DualArmSystem' 
-[ros2_control_node-2] [INFO] [1794215980.438438676] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'mock_components/GenericSystem'
-[ros2_control_node-2] [INFO] [1794215980.438547686] [controller_manager]: Initialize hardware 'DualArmSystem' 
-[ros2_control_node-2] [INFO] [1794215980.448709570] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
-[ros2_control_node-2] [INFO] [1794215980.448874769] [controller_manager]: Activating component 'DualArmSystem'.
-[ros2_control_node-2] [INFO] [1794215980.448889819] [resource_manager]: 'configure' hardware 'DualArmSystem' 
-[ros2_control_node-2] [INFO] [1794215980.448901500] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
-[ros2_control_node-2] [INFO] [1794215980.448908188] [resource_manager]: 'activate' hardware 'DualArmSystem' 
-[ros2_control_node-2] [INFO] [1794215980.448918094] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
-[ros2_control_node-2] [INFO] [1794215980.448971215] [controller_manager]: Registering statistics for : DualArmSystem
-[ros2_control_node-2] [INFO] [1794215980.449004263] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
-[ros2_control_node-2] [INFO] [1794215980.653560866] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
-[ros2_control_node-2] [INFO] [1794215980.653607089] [controller_manager]: Loading controller 'joint_state_broadcaster'
-[move_group_lifetime-3] [INFO] [1794215980.689633376] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm1_controller
-[move_group_lifetime-3] [INFO] [1794215980.692749727] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm2_controller
-[move_group_lifetime-3] [INFO] [1794215980.692915056] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
-[move_group_lifetime-3] [INFO] [1794215980.692935641] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
-[move_group_lifetime-3] [INFO] [1794215980.693660087] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Trajectory execution is not managing controllers
-[move_group_lifetime-3] [INFO] [1794215980.693681343] [move_group]: MoveGroup debug mode is ON
-[ros2_control_node-2] [INFO] [1794215980.868186259] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml 
-[spawner-4] [INFO] [1794215980.900999010] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
-[move_group_lifetime-3] [INFO] [1794215980.901302708] [move_group.moveit.moveit.ros.move_group.executable]: 
+[INFO] [robot_state_publisher-1]: process started with pid [580]
+[INFO] [ros2_control_node-2]: process started with pid [581]
+[INFO] [move_group_lifetime-3]: process started with pid [582]
+[INFO] [spawner-4]: process started with pid [583]
+[INFO] [spawner-5]: process started with pid [584]
+[INFO] [spawner-6]: process started with pid [585]
+[robot_state_publisher-1] [INFO] [1794307135.235259748] [robot_state_publisher]: Robot initialized
+[ros2_control_node-2] [INFO] [1794307135.724422301] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[move_group_lifetime-3] [INFO] [1794307135.936696386] [move_group.moveit.moveit.ros.rdf_loader]: Loaded robot model in 0.107576 seconds
+[move_group_lifetime-3] [INFO] [1794307135.936836129] [move_group.moveit.moveit.core.robot_model]: Loading robot model 'dual_arm'...
+[move_group_lifetime-3] [INFO] [1794307135.936853222] [move_group.moveit.moveit.core.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint
+[move_group_lifetime-3] [WARN] [1794307135.936915638] [move_group.moveit.moveit.core.robot_model]: Link field_platform has visual geometry but no collision geometry. Collision geometry will be left empty. Fix your URDF file by explicitly specifying collision geometry.
+[move_group_lifetime-3] [INFO] [1794307136.072487694] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm1': 1 1 1 1
+[move_group_lifetime-3] [INFO] [1794307136.072867570] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm2': 1 1 1 1
+[ros2_control_node-2] [INFO] [1794307136.093969195] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-2] [INFO] [1794307136.094052341] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-2] [INFO] [1794307136.094058288] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-2] [INFO] [1794307136.094062141] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-2] [WARN] [1794307136.094156341] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-2] [INFO] [1794307136.104862321] [controller_manager]: Received robot description from topic.
+[ros2_control_node-2] [INFO] [1794307136.105119385] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-2] [INFO] [1794307136.223383435] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794307136.233957292] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'mock_components/GenericSystem'
+[ros2_control_node-2] [INFO] [1794307136.234049856] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794307136.243501909] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794307136.243672537] [controller_manager]: Activating component 'DualArmSystem'.
+[ros2_control_node-2] [INFO] [1794307136.243690911] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794307136.243703841] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794307136.243712173] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794307136.243723523] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794307136.243774700] [controller_manager]: Registering statistics for : DualArmSystem
+[ros2_control_node-2] [INFO] [1794307136.243818713] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[move_group_lifetime-3] [INFO] [1794307136.247382529] [move_group.moveit.moveit.ros.moveit_cpp]: Listening to 'joint_states' for joint states
+[move_group_lifetime-3] [INFO] [1794307136.259074453] [move_group.moveit.moveit.ros.current_state_monitor]: Listening to joint states on topic 'joint_states'
+[move_group_lifetime-3] [INFO] [1794307136.311945075] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/attached_collision_object' for attached collision objects
+[move_group_lifetime-3] [INFO] [1794307136.313588914] [move_group.moveit.moveit.ros.planning_scene_monitor]: Publishing maintained planning scene on 'monitored_planning_scene'
+[move_group_lifetime-3] [INFO] [1794307136.313808214] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting planning scene monitor
+[move_group_lifetime-3] [INFO] [1794307136.314531162] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/planning_scene'
+[move_group_lifetime-3] [INFO] [1794307136.314552907] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting world geometry update monitor for collision objects, attached objects, octomap updates.
+[move_group_lifetime-3] [INFO] [1794307136.315285963] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'collision_object'
+[move_group_lifetime-3] [INFO] [1794307136.315864943] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'planning_scene_world' for planning scene world geometry
+[move_group_lifetime-3] [WARN] [1794307136.361938314] [move_group.moveit.moveit.ros.occupancy_map_monitor]: Resolution not specified for Octomap. Assuming resolution = 0.1 instead
+[move_group_lifetime-3] [ERROR] [1794307136.362017314] [move_group.moveit.moveit.ros.occupancy_map_monitor]: No 3D sensor plugin(s) defined for octomap updates
+[move_group_lifetime-3] [INFO] [1794307136.521103481] [move_group.moveit.moveit.ros.planning_pipeline]: Successfully loaded planner 'OMPL'
+[move_group_lifetime-3] [INFO] [1794307136.639728071] [move_group]: Try loading adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794307136.649391722] [move_group]: Loaded adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794307136.649435614] [move_group]: Try loading adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-3] [INFO] [1794307136.649795667] [move_group]: Loaded adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-3] [INFO] [1794307136.649814685] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794307136.649839116] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794307136.649842316] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794307136.649848917] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794307136.766798667] [move_group]: Try loading adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794307136.795056737] [move_group]: Loaded adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794307136.795103144] [move_group]: Try loading adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794307136.807168400] [move_group]: Loaded adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794307136.807213359] [move_group]: Try loading adapter 'default_planning_response_adapters/DisplayMotionPath'
+[move_group_lifetime-3] [INFO] [1794307136.807939270] [move_group]: Loaded adapter 'default_planning_response_adapters/DisplayMotionPath'
+[move_group_lifetime-3] [INFO] [1794307136.967291491] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm1_controller
+[move_group_lifetime-3] [INFO] [1794307136.969936132] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm2_controller
+[move_group_lifetime-3] [INFO] [1794307136.970113894] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794307136.970134552] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794307136.970624953] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Trajectory execution is not managing controllers
+[move_group_lifetime-3] [INFO] [1794307136.970648691] [move_group]: MoveGroup debug mode is ON
+[move_group_lifetime-3] [INFO] [1794307137.090296003] [move_group.moveit.moveit.ros.move_group.executable]: 
 [move_group_lifetime-3] 
 [move_group_lifetime-3] ********************************************************
 [move_group_lifetime-3] * MoveGroup using: 
@@ -88,8 +83,8 @@
 [move_group_lifetime-3] *     - save_geometry_to_file
 [move_group_lifetime-3] ********************************************************
 [move_group_lifetime-3] 
-[move_group_lifetime-3] [INFO] [1794215980.901387812] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context using pipeline ompl
-[move_group_lifetime-3] [INFO] [1794215980.901397977] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context initialization complete
+[move_group_lifetime-3] [INFO] [1794307137.090400346] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context using pipeline ompl
+[move_group_lifetime-3] [INFO] [1794307137.090409313] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context initialization complete
 [move_group_lifetime-3] [96mLoading 'move_group/ApplyPlanningSceneService'...[0m
 [move_group_lifetime-3] [96mLoading 'move_group/ClearOctomapService'...[0m
 [move_group_lifetime-3] [96mLoading 'move_group/GetUrdfService'...[0m
@@ -106,44 +101,49 @@
 [move_group_lifetime-3] 
 [move_group_lifetime-3] [92mYou can start planning now![0m
 [move_group_lifetime-3] 
-[ros2_control_node-2] [INFO] [1794215980.902254391] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
-[ros2_control_node-2] [INFO] [1794215980.902338673] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
-[ros2_control_node-2] [INFO] [1794215981.031716259] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
-[ros2_control_node-2] [INFO] [1794215981.040006701] [controller_manager]: Successfully switched controllers!
-[spawner-4] [INFO] [1794215981.050885236] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
-[INFO] [spawner-4]: process has finished cleanly [pid 654]
+[spawner-4] [INFO] [1794307137.098552084] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
+[ros2_control_node-2] [INFO] [1794307137.100328143] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[ros2_control_node-2] [INFO] [1794307137.100377859] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794307137.220293962] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml 
+[spawner-4] [INFO] [1794307137.255558019] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[ros2_control_node-2] [INFO] [1794307137.256732615] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794307137.256846025] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ros2_control_node-2] [INFO] [1794307137.346549364] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[ros2_control_node-2] [INFO] [1794307137.354648559] [controller_manager]: Successfully switched controllers!
+[spawner-4] [INFO] [1794307137.365841715] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[INFO] [spawner-4]: process has finished cleanly [pid 583]
 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
 [INFO] [spawner-6]: sending signal 'SIGINT' to process[spawner-6]
 [INFO] [spawner-5]: sending signal 'SIGINT' to process[spawner-5]
 [INFO] [move_group_lifetime-3]: sending signal 'SIGINT' to process[move_group_lifetime-3]
 [INFO] [ros2_control_node-2]: sending signal 'SIGINT' to process[ros2_control_node-2]
 [INFO] [robot_state_publisher-1]: sending signal 'SIGINT' to process[robot_state_publisher-1]
-[move_group_lifetime-3] [INFO] [1794215981.429757586] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ros2_control_node-2] [INFO] [1794215981.430343692] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ros2_control_node-2] [INFO] [1794215981.430420087] [controller_manager]: Shutdown request received....
-[ros2_control_node-2] [INFO] [1794215981.430465266] [controller_manager]: Shutting down all controllers in the controller manager.
-[ros2_control_node-2] [INFO] [1794215981.430488206] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
-[ros2_control_node-2] [INFO] [1794215981.430515083] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
-[ros2_control_node-2] [INFO] [1794215981.430580378] [resource_manager]: 'deactivate' hardware 'DualArmSystem' 
-[ros2_control_node-2] [INFO] [1794215981.430597979] [resource_manager]: Successful 'deactivate' of hardware 'DualArmSystem'
-[ros2_control_node-2] [INFO] [1794215981.430601355] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
-[ros2_control_node-2] [INFO] [1794215981.430604981] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
-[ros2_control_node-2] [INFO] [1794215981.430636898] [controller_manager]: Shutting down the controller manager.
-[ros2_control_node-2] [ERROR] [1794215981.430751759] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
-[ros2_control_node-2] [ERROR] [1794215981.430751639] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
-[robot_state_publisher-1] [INFO] [1794215981.430879814] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[ros2_control_node-2] [INFO] [1794215981.440064408] [controller_manager.pal_statistics]: Async messages lost 0
-[ros2_control_node-2] [INFO] [1794215981.440098288] [controller_manager.pal_statistics]: publish_async_failures_ 0
-[ros2_control_node-2] [INFO] [1794215981.441218531] [controller_manager.pal_statistics]: Async messages lost 0
-[ros2_control_node-2] [INFO] [1794215981.441239328] [controller_manager.pal_statistics]: publish_async_failures_ 0
-[spawner-6] [INFO] [1794215981.444104268] [ros2_control_controller_spawner_arm2_controller]: KeyboardInterrupt received! Exiting....
-[move_group_lifetime-3] [INFO] [1794215981.445152522] [move_group.moveit.moveit.ros.moveit_cpp]: Deleting MoveItCpp
-[move_group_lifetime-3] [INFO] [1794215981.455751310] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopped publishing maintained planning scene.
-[move_group_lifetime-3] [INFO] [1794215981.456713752] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping world geometry monitor
-[move_group_lifetime-3] [INFO] [1794215981.457165496] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping planning scene monitor
-[INFO] [spawner-6]: process has finished cleanly [pid 656]
-[INFO] [robot_state_publisher-1]: process has finished cleanly [pid 651]
-[spawner-5] [INFO] [1794215981.548643654] [ros2_control_controller_spawner_arm1_controller]: KeyboardInterrupt received! Exiting....
-[INFO] [ros2_control_node-2]: process has finished cleanly [pid 652]
-[INFO] [move_group_lifetime-3]: process has finished cleanly [pid 653]
-[INFO] [spawner-5]: process has finished cleanly [pid 655]
+[move_group_lifetime-3] [INFO] [1794307137.598481341] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-2] [INFO] [1794307137.599180195] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-2] [INFO] [1794307137.599240156] [controller_manager]: Shutdown request received....
+[ros2_control_node-2] [INFO] [1794307137.599507101] [controller_manager]: Shutting down all controllers in the controller manager.
+[ros2_control_node-2] [INFO] [1794307137.599529634] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794307137.599559333] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794307137.599711278] [resource_manager]: 'deactivate' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794307137.599734938] [resource_manager]: Successful 'deactivate' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794307137.599742939] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794307137.599752650] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794307137.599789655] [controller_manager]: Shutting down the controller manager.
+[robot_state_publisher-1] [INFO] [1794307137.599937081] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-2] [ERROR] [1794307137.599939038] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-2] [ERROR] [1794307137.599969240] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-2] [INFO] [1794307137.604697788] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-2] [INFO] [1794307137.604725544] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[ros2_control_node-2] [INFO] [1794307137.605810333] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-2] [INFO] [1794307137.605839267] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[spawner-5] [INFO] [1794307137.608116710] [ros2_control_controller_spawner_arm1_controller]: KeyboardInterrupt received! Exiting....
+[move_group_lifetime-3] [INFO] [1794307137.614600899] [move_group.moveit.moveit.ros.moveit_cpp]: Deleting MoveItCpp
+[spawner-6] [INFO] [1794307137.614797412] [ros2_control_controller_spawner_arm2_controller]: KeyboardInterrupt received! Exiting....
+[move_group_lifetime-3] [INFO] [1794307137.624711185] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopped publishing maintained planning scene.
+[move_group_lifetime-3] [INFO] [1794307137.625132652] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping world geometry monitor
+[move_group_lifetime-3] [INFO] [1794307137.625297156] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping planning scene monitor
+[INFO] [spawner-5]: process has finished cleanly [pid 584]
+[INFO] [robot_state_publisher-1]: process has finished cleanly [pid 580]
+[INFO] [ros2_control_node-2]: process has finished cleanly [pid 581]
+[INFO] [move_group_lifetime-3]: process has finished cleanly [pid 582]
+[INFO] [spawner-6]: process has finished cleanly [pid 585]

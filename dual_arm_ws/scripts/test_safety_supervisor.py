@@ -28,7 +28,7 @@ from dual_arm_coordinator.homes import load_homes
 from dual_arm_coordinator.task_config import load
 from dual_arm_coordinator.workflow.ports import TaskFault
 
-A_APPROACH = (0.14, -0.03, 0.054)
+A_APPROACH = (-0.14, -0.03, 0.054)
 SLOW_SCALE = 0.15
 ARM = 'arm1'
 

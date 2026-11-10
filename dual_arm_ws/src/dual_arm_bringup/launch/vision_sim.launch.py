@@ -9,5 +9,9 @@ from launch_ros.actions import Node
 def generate_launch_description():
     actions = [DeclareLaunchArgument('calib_dir', default_value='~/.ros/dual_arm_calib/sim'), IncludeLaunchDescription(PythonLaunchDescriptionSource(share('dual_arm_bringup') + '/launch/sim.launch.py'))]
     for name in ['env', 'arm1', 'arm2']:
-        actions.append(Node(package='vision_pkg', executable=name + '_vision_node', parameters=[share('vision_pkg') + '/config/' + name + '_vision.yaml', {'use_sim_time': True, 'show_debug': False, 'calib_dir': LaunchConfiguration('calib_dir')}], output='screen'))
+        overrides = {'use_sim_time': True, 'show_debug': False, 'calib_dir': LaunchConfiguration('calib_dir')}
+        if name == 'env':
+            # The simulated overhead camera sees -X on the image left, where zone A now is (A|B|C).
+            overrides['field.reverse'] = True
+        actions.append(Node(package='vision_pkg', executable=name + '_vision_node', parameters=[share('vision_pkg') + '/config/' + name + '_vision.yaml', overrides], output='screen'))
     return LaunchDescription(actions)

@@ -20,18 +20,19 @@ def box(name, xyz, size, color, static=True):
     parts.append(f'<model name="{name}"><static>{str(static).lower()}</static><pose>{xyz} 0 0 0</pose><link name="link"><collision name="collision"><geometry>{geom}</geometry></collision><visual name="visual"><geometry>{geom}</geometry><material><ambient>{color}</ambient><diffuse>{color}</diffuse></material></visual></link></model>')
 
 box('table', '0 0 -0.025', '0.8 0.7 0.05', '0.3 0.3 0.3 1')
-# Board C|B|A, x left-to-right, y away from user; arm bases are on the +Y edge.
-# Source CAD holes and caps are mirrored across y=0 to match the physical layout.
+# Board A|B|C as the user sees it (measured 2026-11-10): x left-to-right, y away
+# from the user; arm bases are on the +Y edge. The source CAD platform, holes and
+# caps are turned 180 degrees about Z, matching generate_cad_robot.py.
 # White pads fill C flush with foam.
 # Static concave CAD platform collision preserves the actual eight cutouts.
 # Visuals belong to the articulated robot; avoid coincident duplicate surfaces.
 for index in (0,259):
-    parts.append(f'''<model name="platform_collision_{index}"><static>true</static><pose>0 -0.03 0.01 -1.5707963267948966 0 0</pose><link name="body"><collision name="cad"><geometry><mesh><uri>model://dual_arm_description/meshes/cad/component_{index:03d}.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry></collision></link></model>''')
+    parts.append(f'''<model name="platform_collision_{index}"><static>true</static><pose>0 -0.03 0 1.5707963267948966 0 3.141592653589793</pose><link name="body"><collision name="cad"><geometry><mesh><uri>model://dual_arm_description/meshes/cad/component_{index:03d}.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry></collision></link></model>''')
 # Separate 600 x 300 mm foam sheet on the CAD platform, 4 mm thick in simulation.
 # Openings follow the measured CAD coordinates. This also covers the platform's
 # front notches, so the vision specification remains a rectangular workspace.
-box('foam_AB','0.1 0 0.012','0.4 0.3 0.004','1 0.15 0.55 1')
-xs=[-.3,-.18,-.155,-.145,-.12,-.1]
+box('foam_AB','-0.1 0 0.012','0.4 0.3 0.004','1 0.15 0.55 1')
+xs=[.1,.12,.145,.155,.18,.3]
 ys=[-.15,-.1025,-.0775,-.0675,-.0425,-.0325,-.0075,.0025,.0275,.15]
 for i in range(len(xs)-1):
     for j in range(len(ys)-1):
@@ -40,11 +41,11 @@ for i in range(len(xs)-1):
         box(f'foam_C_{i}_{j}',f'{(xs[i]+xs[i+1])/2} {(ys[j]+ys[j+1])/2} .012',f'{xs[i+1]-xs[i]} {ys[j+1]-ys[j]} .004','1 0.15 0.55 1')
 for row in range(4):
     for col in range(2):
-        box(f'slot_{row*2+col+1}_pad', f'{-0.1675+col*0.035} {-0.09+row*0.035} 0.007', '0.025 0.025 0.014', '1 1 1 1')
+        box(f'slot_{row*2+col+1}_pad', f'{0.1675-col*0.035} {-0.09+row*0.035} 0.007', '0.025 0.025 0.014', '1 1 1 1')
 for i in range(8):
-    parts.append(f'''<model name="cap_{i+1}"><pose>{0.14+(i%2)*0.06} {0.1-(i//2)*0.065} 0.019 0 0 0</pose><link name="body"><inertial><mass>0.002</mass><inertia><ixx>0.000000067</ixx><iyy>0.000000067</iyy><izz>0.0000001</izz></inertia></inertial><collision name="collision"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry></collision><visual name="visual"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry><material><ambient>0 0.1 1 1</ambient><diffuse>0 0.1 1 1</diffuse></material></visual></link></model>''')
+    parts.append(f'''<model name="cap_{i+1}"><pose>{-(0.14+(i%2)*0.06)} {0.1-(i//2)*0.065} 0.019 0 0 0</pose><link name="body"><inertial><mass>0.002</mass><inertia><ixx>0.000000067</ixx><iyy>0.000000067</iyy><izz>0.0000001</izz></inertia></inertial><collision name="collision"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry></collision><visual name="visual"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry><material><ambient>0 0.1 1 1</ambient><diffuse>0 0.1 1 1</diffuse></material></visual></link></model>''')
 bridge = []
-for name, x, height, fov in [('env', 0, 0.8, 0.9), ('arm1', 0.2, 0.5, 0.7), ('arm2', -0.2, 0.5, 0.7)]:
+for name, x, height, fov in [('env', 0, 0.8, 0.9), ('arm1', -0.2, 0.5, 0.7), ('arm2', 0.2, 0.5, 0.7)]:
     # Gazebo camera +X forward; optical z forward, x right, y down.
     parts.append(f'''<model name="{name}_camera"><static>true</static><pose>{x} 0 {height} 0 1.57079632679 1.57079632679</pose><link name="link"><sensor name="camera" type="camera"><always_on>true</always_on><update_rate>15</update_rate><topic>/{name}_cam/image_raw</topic><gz_frame_id>{name}_camera_optical_frame</gz_frame_id><camera><horizontal_fov>{fov}</horizontal_fov><image><width>640</width><height>480</height><format>R8G8B8</format></image><clip><near>0.01</near><far>5</far></clip><camera_info_topic>/{name}_cam/camera_info</camera_info_topic></camera></sensor></link></model>''')
     for suffix, ros, gz in [('image_raw', 'sensor_msgs/msg/Image', 'gz.msgs.Image'), ('camera_info', 'sensor_msgs/msg/CameraInfo', 'gz.msgs.CameraInfo')]:

@@ -28,7 +28,10 @@ def generate_launch_description():
                                  launch_arguments={'calib_dir': calib_dir}.items()),
     ]
     for name in ('env', 'arm1', 'arm2'):
+        overrides = {'use_sim_time': True, 'show_debug': False, 'publish_debug_image': True, 'calib_dir': calib_dir}
+        if name == 'env':
+            # The simulated overhead camera sees zone A on the image left (A|B|C); see vision_sim.launch.py.
+            overrides['field.reverse'] = True
         actions.append(Node(package='vision_pkg', executable=f'{name}_vision_node', output='screen', parameters=[
-            f'{share("vision_pkg")}/config/{name}_vision.yaml',
-            {'use_sim_time': True, 'show_debug': False, 'publish_debug_image': True, 'calib_dir': calib_dir}]))
+            f'{share("vision_pkg")}/config/{name}_vision.yaml', overrides]))
     return LaunchDescription(actions)

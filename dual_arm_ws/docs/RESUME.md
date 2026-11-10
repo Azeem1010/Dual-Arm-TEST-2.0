@@ -11,15 +11,17 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-10：使用者依 H1 實測決定 D0，模擬改為 CAD 整組轉 180°：A 區在 -X（手臂右方）、兩臂 j1 方向 +1。單元測試、HOME、舊 pipeline 兩物體、coordinator 一輪都 `PASS`（evidence/a_right_layout_20261110/）。板寬與軸心到板緣距離仍是 CAD 值，待現場直接量測；視覺取料、格位位移研究、README 截圖未重跑。
+
 - 2026-11-10：第一次 Orin 實機測試已匯入 evidence/hardware/（來源 Azeem1010/Dual-Arm-TEST-2.0 `fc4cd41`）。SETUP、P0、H0 `PASS`；H1 只做完 arm1：**A 區在手臂自身右方、j1 方向 +1**，與目前模擬（A 在左、−1）相反。軸心在板外約 10 mm、板寬約 235 mm，也與模型不同。只更新了文件與 `install_jazzy.sh`；模型、runtime.json、視覺設定未改，等使用者決定 D0。下方「A 區在手臂左邊」的敘述已被實測推翻。
 
 - 2026-11-10：操作介面規劃與使用者決定在 [UI_PLAN.md](UI_PLAN.md)，階段 0 假資料畫面已實作（`src/dual_arm_hmi`，evidence/hmi/stage0/），等使用者確認視覺並在 Orin 執行一次才算結案。階段 1 唯讀監看 `PASS`（evidence/hmi/stage1/，205 項測試，WSL 模擬實測）：UI 不會送出任何指令，全部按鈕含強制停止都未接通。階段 2 啟停管理 `PASS`（evidence/hmi/stage2/，242 項測試，十次模擬啟停與當掉後接回都無殘留）：介面可啟動、關閉、重置模擬，強制停止與任務按鈕仍未接通。下一步是階段 3。WSL 系統沒有繁中字型，要先裝 `fonts-noto-cjk`。使用者要求實機運作時 Gazebo 同時動作，設計在 UI_PLAN.md 第 9.1 節，尚未實作；不可在同一個 ROS domain 同時跑 `sim.launch.py` 和實機。
 - 2026-11-10：現場測試請照 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md)，換電腦用 [HANDOFF_PROMPT_NEXT_COMPUTER.md](HANDOFF_PROMPT_NEXT_COMPUTER.md)。安全監控鎖定可被手動 `switch_controllers` 繞過的問題（C32）已修正，只在 mock 驗證（evidence/c32/）。
 - 2026-11-10：所有文件已對照現行程式更新（evidence/docs_audit/）；`demo_pick_place.launch.py` 預設一輪與舊 pipeline 兩物體都 `PASS`。README 截圖已於 2026-11-10 用 coordinator 重新擷取。
 - 2026-11-09：接手請用 [HANDOFF_PROMPT.md](HANDOFF_PROMPT.md)，工作順序與進度在 [MODIFICATION_PLAN.md](MODIFICATION_PLAN.md) 第 6 節。WP0～WP6 都是 `PASS`（evidence/roadmap_baseline/、evidence/wp1/～wp6/）。WP6S 最終只減少 48.6%，未達 50%（`FAIL`）。WP7 取料點已由視覺決定，區域與格位仍用真值，等 D7（`BLOCKED`）。WP8 驅動強化 `PASS`（evidence/wp8/），READ 重試等 D2。WP9 安全監控 `PASS`（evidence/wp9/，只驗證 mock）。WP10 操作工具 `PASS`（evidence/wp10/）。WP13 文件 `PASS`。WP12 ESP32 後端 `PASS`（evidence/wp12/，只用替身節點），協定來源是 ray000518/micro-ros。WP7、WP11、實機階段在等使用者決定或現場操作，起點是 ORIN_DEPLOYMENT.md 第 4 節的手動確認。模擬速度比例 1.0／0.5／1.0、到位容差 0.5 mm，只限模擬。目前佈局只有 4 個瓶蓋可達（C30），八件搬運要等 D3 決定。Coordinator 被強制結束後，安全監控約 1.2 秒內停下手臂（C29，mock 量測），實體急停與實機心跳來源仍未完成。WP2 只用假 IO，WP3 只用 MoveIt mock，都還沒跑 Gazebo 物理。`build.sh` 和 pipeline 會覆寫 `docs/evidence/` 的舊紀錄，新結果要另存，舊檔用 `git restore` 還原。
-- A 區左右、j1 方向、j2 方向與零點證據矛盾，都是 `BLOCKED`，需要扭力關閉下的手動確認（FUTURE_ROADMAP.md 第 3 節、第 7 節階段 A）。下方「A 區在手臂左邊」只是模擬假設。
+- A 區左右與 arm1 的 j1 方向已由 2026-11-10 H1 確認（A 在右、+1）；arm2 的 j1、j2 方向與零點仍 `BLOCKED`（FUTURE_ROADMAP.md 第 3 節）。
 - 從 Git Bash 呼叫 `wsl.exe bash -lc '...$VAR...'` 時變數會先被展開，指令會靜默出錯；複雜指令請寫成腳本再用 `wsl.exe bash <路徑>` 執行。
-- 模擬已改為手臂在遠離使用者側、A 區在手臂左邊，定義見 COORDINATE_FRAMES.md。兩物體搬運回歸 PASS（far_side_pipeline.log）；舊配置證據在 evidence/before_far_side_layout_20261109/。
+- 2026-11-09 的「A 區在手臂左邊」鏡像配置已在 2026-11-10 換成 CAD 整組轉 180°（A 在右），定義見 COORDINATE_FRAMES.md，證據在 evidence/a_right_layout_20261110/；更早的配置證據在 evidence/before_far_side_layout_20261109/。
 - 待處理：格位 1 逆運動學 FAIL（見 SLOT_ADJUSTMENT.md）；需要實機俯視照片確認配置。
 - ROS 介面規格已寫入 ROS_INTERFACES.md，並用 headless `vision_sim` 的實際 graph 核對（evidence/ros_graph_vision_sim/）。目前缺口列在該文件最後一節。
 - 使用者提供實機零姿態：四顆馬達 raw 512、手臂伸直。已套用為模擬暫定值，換算與數字見 HOME_POSES.md。

@@ -5,7 +5,7 @@ from scipy.optimize import least_squares
 root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root/'src/dual_arm_coordinator'))
 from dual_arm_coordinator.kinematics import CadKinematics
-for arm,target in [('arm1',[.2,.085,.024]),('arm2',[-.1675,.09,.024])]:
+for arm,target in [('arm1',[-.2,.085,.024]),('arm2',[.1675,.09,.024])]:
     model=CadKinematics((root/'src/dual_arm_description/urdf/dual_arm_cad.urdf.xacro').read_text(),arm)
     def residual(q):
         t=model.forward(q)

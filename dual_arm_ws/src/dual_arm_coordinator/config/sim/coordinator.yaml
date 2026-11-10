@@ -34,19 +34,20 @@ heights:
   approach_z_m: 0.054
   pick_z_tolerance_m: 0.0015
 zones:
-  a_min_xy_m: [0.10, -0.15]
-  a_max_xy_m: [0.30, 0.15]
+  # Zone A is at -X: the user sees A | B | C (measured 2026-11-10).
+  a_min_xy_m: [-0.30, -0.15]
+  a_max_xy_m: [-0.10, 0.15]
   b_place_xy_m: [0.0, -0.02]
   # Slots 1-8. Slot 1 is a known IK FAIL in this layout (docs/SLOT_ADJUSTMENT.md).
   c_slots_xy_m:
-    - [-0.1675, -0.090]
-    - [-0.1325, -0.090]
-    - [-0.1675, -0.055]
-    - [-0.1325, -0.055]
-    - [-0.1675, -0.020]
-    - [-0.1325, -0.020]
-    - [-0.1675, 0.015]
-    - [-0.1325, 0.015]
+    - [0.1675, -0.090]
+    - [0.1325, -0.090]
+    - [0.1675, -0.055]
+    - [0.1325, -0.055]
+    - [0.1675, -0.020]
+    - [0.1325, -0.020]
+    - [0.1675, 0.015]
+    - [0.1325, 0.015]
 motion:
   planning_s: 10.0
   planning_attempts: 3

@@ -17,9 +17,9 @@ import yaml
 
 IMAGE_SIZE = (640, 480)
 # Camera position (x, height) and horizontal field of view from generate_world.py.
-CAMERAS = {'arm1': (0.2, 0.5, 0.7), 'arm2': (-0.2, 0.5, 0.7)}
+CAMERAS = {'arm1': (-0.2, 0.5, 0.7), 'arm2': (0.2, 0.5, 0.7)}
 # Arm base origins in the world frame; see docs/COORDINATE_FRAMES.md.
-BASES = {'arm1': (0.10, 0.08725), 'arm2': (-0.10, 0.08725)}
+BASES = {'arm1': (-0.10, 0.08725), 'arm2': (0.10, 0.08725)}
 # Heights of the planes the detections lie on: cap tops for arm1, slot pads for arm2.
 PLANE_Z = {'arm1': 0.024, 'arm2': 0.014}
 

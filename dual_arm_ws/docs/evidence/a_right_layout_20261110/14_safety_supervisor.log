@@ -1,0 +1,37 @@
+observation status_at_startup {'latched': True, 'reason': 'Emergency-stop heartbeat has not been received', 'controllers_stopped': True}
+startup_reset_after_inputs_arrive {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+controllers_active_when_healthy {'status': 'PASS', 'detail': {'arm1_controller': 'active', 'arm2_controller': 'active'}}
+motion_allowed_when_healthy {'status': 'PASS', 'detail': None}
+heartbeat_loss_latches {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Emergency-stop heartbeat is stale', 'controllers_stopped': True}}
+observation heartbeat_seconds_until_controllers_stopped 2.0727301680001347
+observation heartbeat_seconds_until_arm_stopped 2.1057168010001988
+heartbeat_controllers_inactive {'status': 'PASS', 'detail': {'arm1_controller': 'inactive', 'arm2_controller': 'inactive'}}
+heartbeat_move_reported_failure {'status': 'PASS', 'detail': 'arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4'}
+heartbeat_interrupted_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16239175253417715, -0.0347904299669558, 0.11757276239738719], 'tool_tilt_deg': 9.916782739908184}}
+motion_refused_while_latched {'status': 'PASS', 'detail': 'arm1 home failed: status 6, MoveIt code -4'}
+reset_refused_without_heartbeat {'status': 'PASS', 'detail': 'Emergency-stop heartbeat is stale'}
+still_latched_after_refused_reset {'status': 'PASS', 'detail': None}
+latch_survives_heartbeat_return {'status': 'PASS', 'detail': None}
+controllers_stay_inactive_until_reset {'status': 'PASS', 'detail': None}
+manual_activation_is_accepted_by_controller_manager {'status': 'PASS', 'detail': None}
+observation manual_activation_seconds_until_stopped 0.2826103749998765
+manual_activation_is_stopped_again {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Emergency-stop heartbeat is stale', 'controllers_stopped': True}}
+controllers_still_inactive_after_manual_activation {'status': 'PASS', 'detail': {'arm1_controller': 'inactive', 'arm2_controller': 'inactive'}}
+reset_accepted_2_15 {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+coordinator_death_latches {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Coordinator stopped responding', 'controllers_stopped': True}}
+observation coordinator_seconds_until_arm_stopped 1.0941993250000905
+coordinator_controllers_inactive {'status': 'PASS', 'detail': {'arm1_controller': 'inactive', 'arm2_controller': 'inactive'}}
+coordinator_move_reported_failure {'status': 'PASS', 'detail': 'arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4'}
+coordinator_interrupted_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16451501528623563, -0.03212157857386259, 0.12808958764004874], 'tool_tilt_deg': 11.492695277414459}}
+arm_stops_soon_after_coordinator_death {'status': 'PASS', 'detail': {'seconds': 1.0941993250000905, 'before_wp9_seconds': 22.2}}
+reset_refused_while_coordinator_is_dead {'status': 'PASS', 'detail': 'Coordinator stopped responding'}
+reset_accepted_3_22 {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+asserted_estop_latches {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Emergency stop is asserted', 'controllers_stopped': True}}
+observation estop_seconds_until_arm_stopped 0.24408053800016205
+estop_controllers_inactive {'status': 'PASS', 'detail': {'arm1_controller': 'inactive', 'arm2_controller': 'inactive'}}
+estop_move_reported_failure {'status': 'PASS', 'detail': 'arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4'}
+estop_interrupted_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16595205798752305, -0.028951417518107796, 0.13750712908525567], 'tool_tilt_deg': 12.923697170603319}}
+reset_refused_while_estop_is_asserted {'status': 'PASS', 'detail': 'Emergency stop is asserted'}
+reset_accepted_3_28 {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+motion_works_after_final_reset {'status': 'PASS', 'detail': {'tcp_m': [-0.13999953253281866, -0.030000153114246683, 0.054000493852126824], 'tool_tilt_deg': 0.0004693666725384738}}
+PASS

@@ -1,7 +1,7 @@
 # 環境相機節點 env_vision_node 參數
 # 標示「待實測」的數值尚未量測，僅為合理預設，請上線後以實際場地調整。
 #
-# 場地：60x30 cm 粉紅色泡棉板（無黑框、無分隔線），由左至右 C | B | A 各 20x30 cm。
+# 場地：60x30 cm 粉紅色泡棉板（無黑框、無分隔線），三區各寬 20 cm。2026-11-10 實測：使用者由左至右看到 A | B | C，短邊推算約 23.5 cm（尚未直接量，size_mm 先不改）。
 # 物件：藍色圓形瓶蓋，直徑 20 mm，大小都一樣（不排序）。
 /**:
   ros__parameters:
@@ -27,7 +27,7 @@
       color: pink               # 場地顏色（hsv.yaml 名稱）；場地外框與各區「被遮擋比例」都用它
       size_mm: [600.0, 300.0]   # 場地 [寬, 高]
       min_aspect: 1.3           # 場地在影像中 寬/高 的下限（2:1，斜拍會變小）
-      reverse: false            # false = 影像中由左至右是 C|B|A（目前場地）；true = A|B|C
+      reverse: false            # false = 影像中由左至右是 C|B|A；true = A|B|C。實機依環境相機的安裝方向設定（V0 確認）；模擬由 launch 設為 true
     field_mask:                 # 找場地外框用的遮罩前處理（閉運算補起兩塊板子的接縫）
       blur_ksize: 5
       open_ksize: 3

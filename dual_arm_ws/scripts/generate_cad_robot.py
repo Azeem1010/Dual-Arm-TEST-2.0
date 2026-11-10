@@ -4,10 +4,11 @@ Rotation axes are taken from the AX-12 output cylinder surfaces. Fixed fastener
 membership is inferred by closest main component bounding box and recorded for
 review. Dynamics and travel limits are simulation estimates, not calibration.
 
-Physical layout (user-stated, see docs/COORDINATE_FRAMES.md): the arm bases are on
-the +Y edge, far from the user, and face -Y. Each arm stays a rigid copy of its
-CAD chain, yawed 180 degrees about its own base axis. The flat platforms are
-mirrored across y=0 by flipping them, so the source CAD itself is unchanged.
+Physical layout (measured 2026-11-10, see docs/COORDINATE_FRAMES.md): the arm bases
+are on the +Y edge, far from the user, and face -Y; zone A is on the arm's own
+right (-X), so the user sees A | B | C. This is the source CAD assembly rotated
+180 degrees about the world Z axis: each arm keeps its CAD chain and the platforms
+are turned, not flipped, so the source CAD itself is unchanged.
 """
 import json
 import math
@@ -55,7 +56,6 @@ ET.SubElement(robot,'link',name='world')
 axis_report = {}
 tip_offsets = {}
 platform_items = []
-PLATFORM_THICKNESS_M = .01
 for arm in (1,2):
     pivots, axes = [], []
     for index in motor_ids[arm]:
@@ -66,7 +66,7 @@ for arm in (1,2):
         axes.append(rotation@np.array(cylinder['axis']))
     # base is the CAD-pose origin that link offsets are measured from; mount is where it is installed.
     base = np.array([.1 if arm==1 else -.1,-.08725,0.])
-    mount = np.array([base[0],-base[1],0.])
+    mount = np.array([-base[0],-base[1],0.])
     origins = [base]+pivots
     axis_report[f'arm{arm}'] = {'pivots_m':[p.tolist() for p in pivots],'axes':[a.tolist() for a in axes]}
     for group in range(5):
@@ -130,14 +130,14 @@ for arm in (1,2):
     axis_report[f'arm{arm}']['tcp_m'] = tip.tolist()
     tip_offsets[arm] = tip-origins[4]
 
-# Flipping about X maps (x,y,z) to (x,-y,thickness-z), which mirrors a flat plate across y=0.
+# Turning 180 degrees about world Z maps (x,y,z) to (-x,-y,z), matching the arm mounts.
 platform = ET.SubElement(robot,'link',name='field_platform')
 inertial = ET.SubElement(platform,'inertial')
 ET.SubElement(inertial,'mass',value='0.1')
 ET.SubElement(inertial,'inertia',ixx='0.0001',iyy='0.0001',izz='0.0001',ixy='0',ixz='0',iyz='0')
 for index in sorted(platform_items):
     visual = ET.SubElement(platform,'visual',name=f'component_{index}')
-    ET.SubElement(visual,'origin',xyz=xyz([0,-shift[1],PLATFORM_THICKNESS_M]),rpy=f'{-math.pi/2} 0 0')
+    ET.SubElement(visual,'origin',xyz=xyz([0,-shift[1],0]),rpy=f'{math.pi/2} 0 {math.pi}')
     ET.SubElement(ET.SubElement(visual,'geometry'),'mesh',filename='package://dual_arm_description/meshes/cad/'+by_id[index]['file'],scale='0.001 0.001 0.001')
     ET.SubElement(ET.SubElement(visual,'material',name=f'cad_{index}'),'color',rgba='1 0.15 0.55 1')
 joint = ET.SubElement(robot,'joint',name='field_platform_fixed',type='fixed')

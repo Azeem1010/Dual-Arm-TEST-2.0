@@ -19,9 +19,9 @@ from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 
-# World point (0.14, -0.03) expressed in arm1_base; see docs/COORDINATE_FRAMES.md.
-BASE_X, BASE_Y = 0.11725, 0.04
-WORLD_XY = (0.14, -0.03)
+# World point (-0.14, -0.03) expressed in arm1_base; see docs/COORDINATE_FRAMES.md.
+BASE_X, BASE_Y = 0.11725, -0.04
+WORLD_XY = (-0.14, -0.03)
 ARM1 = [f'arm1_arm_{name}' for name in ('shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_flex_joint', 'wrist_flex_joint')]
 ALLOWED = {'VERSION', 'PING', 'GET_HOME,arm1', 'GET_HOME,arm2', 'READ,arm1', 'READ,arm2'}
 

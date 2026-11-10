@@ -1,0 +1,923 @@
+=== 18:38:34 home_collision
+home_A_home_C {'valid': True, 'contacts': []}
+home_A_arm2_cad_zero {'valid': True, 'contacts': []}
+arm1_cad_zero_home_C {'valid': True, 'contacts': []}
+=== 18:38:44 exit 0
+=== 18:38:44 verify_slot_proposals
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/verify_slot_proposals.py", line 83, in <module>
+    main()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/verify_slot_proposals.py", line 58, in main
+    raise ValueError(f'{name}: FK or joint-limit failure at slot {slot}')
+ValueError: toward_arm_y: FK or joint-limit failure at slot 1
+=== 18:38:47 exit 0
+=== 18:38:47 slot_self_collision
+toward_arm_y PASS invalid 0 / 248
+toward_arm_base_x PASS invalid 0 / 248
+toward_arm_y_10mm PASS invalid 0 / 248
+=== 18:38:58 exit 0
+=== 18:38:58 smoke_runtime_sim
+{
+  "mode": "sim",
+  "joint_feedback": "PASS",
+  "joints": {
+    "arm1_arm_elbow_flex_joint": 2.4601131698632386e-08,
+    "arm1_arm_shoulder_lift_joint": 1.439137583343505e-07,
+    "arm1_arm_shoulder_pan_joint": -6.610687691699296e-15,
+    "arm1_arm_wrist_flex_joint": 2.845167566822853e-12,
+    "arm2_arm_elbow_flex_joint": 1.5130326407627188e-10,
+    "arm2_arm_shoulder_lift_joint": 7.545475219226161e-10,
+    "arm2_arm_shoulder_pan_joint": -6.085040891307129e-15,
+    "arm2_arm_wrist_flex_joint": 2.5822088148275137e-12
+  },
+  "images": {
+    "env": {
+      "frame": "env_camera_optical_frame",
+      "size": [
+        640,
+        480
+      ]
+    },
+    "arm1": {
+      "frame": "arm1_camera_optical_frame",
+      "size": [
+        640,
+        480
+      ]
+    },
+    "arm2": {
+      "frame": "arm2_camera_optical_frame",
+      "size": [
+        640,
+        480
+      ]
+    },
+    "view_isometric": {
+      "frame": "view_isometric/link/camera",
+      "size": [
+        960,
+        720
+      ]
+    },
+    "view_front": {
+      "frame": "view_front/link/camera",
+      "size": [
+        960,
+        720
+      ]
+    },
+    "view_side": {
+      "frame": "view_side/link/camera",
+      "size": [
+        960,
+        720
+      ]
+    },
+    "view_top": {
+      "frame": "view_top/link/camera",
+      "size": [
+        960,
+        720
+      ]
+    }
+  },
+  "camera_info": {
+    "env": {
+      "k": [
+        662.4503326416016,
+        0.0,
+        320.0,
+        0.0,
+        662.4502944946289,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 640,
+      "height": 480,
+      "frame_id": "env_camera_optical_frame",
+      "distortion_model": "plumb_bob"
+    },
+    "arm1": {
+      "k": [
+        876.6439056396484,
+        0.0,
+        320.0,
+        0.0,
+        876.6438674926758,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 640,
+      "height": 480,
+      "frame_id": "arm1_camera_optical_frame",
+      "distortion_model": "plumb_bob"
+    },
+    "arm2": {
+      "k": [
+        876.6439056396484,
+        0.0,
+        320.0,
+        0.0,
+        876.6438674926758,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "width": 640,
+      "height": 480,
+      "frame_id": "arm2_camera_optical_frame",
+      "distortion_model": "plumb_bob"
+    }
+  },
+  "ground_truth": {
+    "": {
+      "parent": "",
+      "position": [
+        0.0,
+        0.0,
+        5.0
+      ],
+      "quaternion": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "cap_3": {
+      "position": [
+        -0.14,
+        0.035,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        -1.6005203103522235e-20,
+        5.407550319677755e-20,
+        4.896759241284931e-22,
+        1.0
+      ]
+    },
+    "cap_4": {
+      "position": [
+        -0.2,
+        0.035,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        6.644604107747458e-20,
+        3.139970232526857e-20,
+        3.537419806888301e-21,
+        1.0
+      ]
+    },
+    "cap_6": {
+      "position": [
+        -0.2,
+        -0.03,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        -1.6005212033994935e-20,
+        1.523638128272791e-20,
+        4.8967592398296245e-22,
+        1.0
+      ]
+    },
+    "cap_7": {
+      "position": [
+        -0.14,
+        -0.095,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        -2.9745637565232954e-20,
+        4.368922305826245e-20,
+        -3.470360186023662e-21,
+        1.0
+      ]
+    },
+    "cap_8": {
+      "position": [
+        -0.2,
+        -0.095,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        -4.764903249760407e-20,
+        4.928884427418844e-20,
+        -3.0111811032060577e-21,
+        1.0
+      ]
+    },
+    "cap_1": {
+      "position": [
+        -0.14,
+        0.1,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        -9.194407314071502e-20,
+        -1.898974765834123e-20,
+        3.818820547698852e-21,
+        1.0
+      ]
+    },
+    "cap_2": {
+      "position": [
+        -0.2,
+        0.1,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        6.210265961463763e-20,
+        1.613884427475759e-19,
+        3.2925818448056785e-21,
+        1.0
+      ]
+    },
+    "cap_5": {
+      "position": [
+        -0.14,
+        -0.03,
+        0.018999999944852998
+      ],
+      "quaternion": [
+        -8.431422572796586e-20,
+        -2.5697480730656543e-20,
+        2.8140074110959735e-22,
+        1.0
+      ]
+    }
+  },
+  "three_camera_streams": "PASS",
+  "workspace_views": "PASS",
+  "controllers": "PASS",
+  "moveit_plan": "PASS",
+  "moveit_error_code": 1,
+  "planning_group": "both_arms",
+  "status": "FAIL",
+  "shutdown": "FAIL",
+  "mesh_resources": "PASS"
+}
+=== 18:39:56 exit 0
+=== 18:40:04 analyze_sim_images
+{
+  "env": {
+    "detected_caps": 4,
+    "cap_pixels": [
+      [
+        149.640059127864,
+        154.60458240946045
+      ],
+      [
+        149.59149582384205,
+        209.6902050113895
+      ],
+      [
+        149.61048689138573,
+        264.95205992509364
+      ],
+      [
+        149.61036036036037,
+        320.09234234234236
+      ]
+    ],
+    "grid_status": "FAIL",
+    "grid_message": "\u627e\u5230 4 \u500b\u65b9\u5b54\uff0c\u9810\u671f 8 \u500b",
+    "slot_pixels": [],
+    "camera_info_status": "PASS",
+    "calibration_status": "NOT_RUN"
+  },
+  "arm1": {
+    "detected_caps": 8,
+    "cap_pixels": [
+      [
+        319.515625,
+        56.90716911764706
+      ],
+      [
+        429.0934831460674,
+        56.892734082397
+      ],
+      [
+        319.4711155378486,
+        175.28187250996015
+      ],
+      [
+        429.23125693453795,
+        175.4755111745126
+      ],
+      [
+        319.52871253976224,
+        294.5262012389084
+      ],
+      [
+        429.2883141762452,
+        294.3839399744572
+      ],
+      [
+        319.4801660516605,
+        413.0262915129151
+      ],
+      [
+        429.09624943515587,
+        412.98448561530347
+      ]
+    ],
+    "grid_status": "PASS",
+    "grid_message": "ok",
+    "slot_pixels": [
+      [
+        319.5,
+        413.5000305175781
+      ],
+      [
+        429.00006103515625,
+        413.00006103515625
+      ],
+      [
+        319.5,
+        294.5
+      ],
+      [
+        429.2500305175781,
+        294.25
+      ],
+      [
+        319.5000305175781,
+        175.5
+      ],
+      [
+        429.5000305175781,
+        175.49998474121094
+      ],
+      [
+        319.5000305175781,
+        56.5
+      ],
+      [
+        429.00006103515625,
+        56.99998474121094
+      ]
+    ],
+    "camera_info_status": "PASS",
+    "calibration_status": "NOT_RUN"
+  },
+  "arm2": {
+    "detected_caps": 0,
+    "cap_pixels": [],
+    "grid_status": "PASS",
+    "grid_message": "ok",
+    "slot_pixels": [
+      [
+        198.0,
+        402.0
+      ],
+      [
+        261.0,
+        402.0
+      ],
+      [
+        198.0,
+        339.0
+      ],
+      [
+        261.0,
+        339.0
+      ],
+      [
+        198.0,
+        275.5
+      ],
+      [
+        261.0,
+        275.5
+      ],
+      [
+        198.0,
+        212.5
+      ],
+      [
+        261.0,
+        212.5
+      ]
+    ],
+    "camera_info_status": "PASS",
+    "calibration_status": "NOT_RUN"
+  }
+}
+=== 18:40:08 exit 0
+=== 18:40:08 validate_sim_coordinates
+{
+  "mode": "sim",
+  "hardware_calibration_status": "NOT_RUN",
+  "cameras": {
+    "env": {
+      "measurement_status": "PASS",
+      "calibration_validity": "NOT_RUN",
+      "reason": "Error measured; synchronized acquisition/pose provenance and measured combined tolerance budget still required",
+      "detections": 4,
+      "truth_source": "Gazebo PosePublisher cap body positions plus 5 mm cap half-height",
+      "plane_z_m": 0.023999999944853,
+      "camera_matrix": [
+        662.4503326416016,
+        0.0,
+        320.0,
+        0.0,
+        662.4502944946289,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "distortion": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "world_homography": [
+        0.0011714085748296816,
+        0.0,
+        -0.3748507439454981,
+        0.0,
+        -0.0011714086422848421,
+        0.28113807414836206,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "maximum_error_m": 0.001246465164550436,
+      "rms_error_m": 0.0008523930522182024,
+      "maximum_reprojection_error_px": 1.064073737465177,
+      "pixels": [
+        [
+          149.640059127864,
+          154.60458240946045
+        ],
+        [
+          149.59149582384205,
+          209.6902050113895
+        ],
+        [
+          149.61048689138573,
+          264.95205992509364
+        ],
+        [
+          149.61036036036037,
+          320.09234234234236
+        ]
+      ],
+      "mapped_xy_m": [
+        [
+          -0.19956109554509768,
+          0.10003293017708101
+        ],
+        [
+          -0.19961798301585104,
+          0.03550515579554006
+        ],
+        [
+          -0.1995957367164852,
+          -0.029229058639064
+        ],
+        [
+          -0.1995958849360133,
+          -0.09382086200065609
+        ]
+      ],
+      "expected_xy_m": [
+        [
+          -0.2,
+          0.1
+        ],
+        [
+          -0.2,
+          0.035
+        ],
+        [
+          -0.2,
+          -0.03
+        ],
+        [
+          -0.2,
+          -0.095
+        ]
+      ]
+    },
+    "arm1": {
+      "measurement_status": "PASS",
+      "calibration_validity": "NOT_RUN",
+      "reason": "Error measured; synchronized acquisition/pose provenance and measured combined tolerance budget still required",
+      "detections": 8,
+      "truth_source": "Gazebo PosePublisher cap body positions plus 5 mm cap half-height",
+      "plane_z_m": 0.023999999944853,
+      "camera_matrix": [
+        876.6439056396484,
+        0.0,
+        320.0,
+        0.0,
+        876.6438674926758,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "distortion": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "world_homography": [
+        0.0005429798769978681,
+        0.0,
+        -0.3737535606393178,
+        0.0,
+        -0.0005429799006255227,
+        0.13031517615012544,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "maximum_error_m": 0.0013165037221863165,
+      "rms_error_m": 0.0008439168335263574,
+      "maximum_reprojection_error_px": 2.424590191844823,
+      "pixels": [
+        [
+          319.515625,
+          56.90716911764706
+        ],
+        [
+          429.0934831460674,
+          56.892734082397
+        ],
+        [
+          319.4711155378486,
+          175.28187250996015
+        ],
+        [
+          429.23125693453795,
+          175.4755111745126
+        ],
+        [
+          319.52871253976224,
+          294.5262012389084
+        ],
+        [
+          429.2883141762452,
+          294.3839399744572
+        ],
+        [
+          319.4801660516605,
+          413.0262915129151
+        ],
+        [
+          429.09624943515587,
+          412.98448561530347
+        ]
+      ],
+      "mapped_xy_m": [
+        [
+          -0.20026300587792087,
+          0.09941572711774563
+        ],
+        [
+          -0.14076443394007934,
+          0.09942356505175123
+        ],
+        [
+          -0.20028717362020507,
+          0.035140642433211744
+        ],
+        [
+          -0.14068962554536207,
+          0.035035500530375796
+        ],
+        [
+          -0.20025589960719056,
+          -0.02960663133018973
+        ],
+        [
+          -0.14065864461127806,
+          -0.029529386322955153
+        ],
+        [
+          -0.20028225937332872,
+          -0.09394979857128538
+        ],
+        [
+          -0.14076293190077035,
+          -0.09392709880915465
+        ]
+      ],
+      "expected_xy_m": [
+        [
+          -0.2,
+          0.1
+        ],
+        [
+          -0.14,
+          0.1
+        ],
+        [
+          -0.2,
+          0.035
+        ],
+        [
+          -0.14,
+          0.035
+        ],
+        [
+          -0.2,
+          -0.03
+        ],
+        [
+          -0.14,
+          -0.03
+        ],
+        [
+          -0.2,
+          -0.095
+        ],
+        [
+          -0.14,
+          -0.095
+        ]
+      ],
+      "fitted_plane": {
+        "homography": [
+          0.0005475619642856806,
+          -1.4142390778274324e-07,
+          -0.37491292024107453,
+          -1.4223240119955842e-07,
+          -0.000547570557717155,
+          0.13118931844447895,
+          -7.008740445595782e-07,
+          9.796737786638124e-07,
+          1.0
+        ],
+        "fit_indices": [
+          0,
+          1,
+          6,
+          7
+        ],
+        "held_out_indices": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "held_out_maximum_error_m": 0.00016748303537542116,
+        "held_out_rms_error_m": 0.00013089210339281776,
+        "validity": "NOT_RUN",
+        "note": "Single static scene only; needs separately acquired observations, intrinsic acquisition validation, live TF/mount and tolerance budget."
+      }
+    },
+    "arm2": {
+      "measurement_status": "PASS",
+      "calibration_validity": "NOT_RUN",
+      "reason": "Error measured; synchronized acquisition/pose provenance and measured combined tolerance budget still required",
+      "detections": 8,
+      "truth_source": "CAD hole centers, fixed source geometry",
+      "plane_z_m": 0.014,
+      "camera_matrix": [
+        876.6439056396484,
+        0.0,
+        320.0,
+        0.0,
+        876.6438674926758,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "distortion": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "world_homography": [
+        0.000554387017206704,
+        0.0,
+        0.022596154493854742,
+        0.0,
+        -0.0005543870413307379,
+        0.1330528899193771,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "maximum_error_m": 0.03513666656510342,
+      "rms_error_m": 0.034964370315967885,
+      "maximum_reprojection_error_px": 63.37930989440259,
+      "pixels": [
+        [
+          198.0,
+          402.0
+        ],
+        [
+          261.0,
+          402.0
+        ],
+        [
+          198.0,
+          339.0
+        ],
+        [
+          261.0,
+          339.0
+        ],
+        [
+          198.0,
+          275.5
+        ],
+        [
+          261.0,
+          275.5
+        ],
+        [
+          198.0,
+          212.5
+        ],
+        [
+          261.0,
+          212.5
+        ]
+      ],
+      "mapped_xy_m": [
+        [
+          0.13236478390078213,
+          -0.08981070069557953
+        ],
+        [
+          0.16729116598480448,
+          -0.08981070069557953
+        ],
+        [
+          0.13236478390078213,
+          -0.054884317091743046
+        ],
+        [
+          0.16729116598480448,
+          -0.054884317091743046
+        ],
+        [
+          0.13236478390078213,
+          -0.01968073996724118
+        ],
+        [
+          0.16729116598480448,
+          -0.01968073996724118
+        ],
+        [
+          0.13236478390078213,
+          0.015245643636595307
+        ],
+        [
+          0.16729116598480448,
+          0.015245643636595307
+        ]
+      ],
+      "expected_xy_m": [
+        [
+          0.1675,
+          -0.09
+        ],
+        [
+          0.1325,
+          -0.09
+        ],
+        [
+          0.1675,
+          -0.05499999999999999
+        ],
+        [
+          0.1325,
+          -0.05499999999999999
+        ],
+        [
+          0.1675,
+          -0.01999999999999999
+        ],
+        [
+          0.1325,
+          -0.01999999999999999
+        ],
+        [
+          0.1675,
+          0.015000000000000013
+        ],
+        [
+          0.1325,
+          0.015000000000000013
+        ]
+      ],
+      "fitted_plane": {
+        "homography": [
+          -0.0005555557353155954,
+          0.0,
+          0.277500039764813,
+          0.0,
+          -0.0005540897268654489,
+          0.1327440666236318,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "fit_indices": [
+          0,
+          1,
+          6,
+          7
+        ],
+        "held_out_indices": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "held_out_maximum_error_m": 9.235078403236733e-05,
+        "held_out_rms_error_m": 9.234882818432817e-05,
+        "validity": "NOT_RUN",
+        "note": "Single static scene only; needs separately acquired observations, intrinsic acquisition validation, live TF/mount and tolerance budget."
+      }
+    }
+  }
+}
+=== 18:40:13 exit 0
+=== 18:40:46 controllers: arm1_controller joint_trajectory_controller/JointTrajectoryController  active arm2_controller joint_trajectory_controller/JointTrajectoryController  active 
+=== 18:40:50 pipeline_count2
+pipeline_start {"objects": ["cap_5", "cap_6"], "destinations": [[0.1675, -0.055, 0.019], [0.1325, -0.055, 0.019]]}
+home_A_home_C_ready_start {"targets": {"arm1": null, "arm2": null}, "simultaneous": true}
+home_A_home_C_ready_done {"feedback": {"arm1": {"tcp": [-0.16634500357190374, -0.027739864557233797, 0.14080056124730966], "error_m": 0.0}, "arm2": {"tcp": [0.15157780421838726, -0.035078200609725524, 0.14080157538444144], "error_m": 0.0}}}
+first_A_approach_start {"targets": {"arm1": [-0.14, -0.03, 0.054]}, "simultaneous": false}
+first_A_approach_done {"feedback": {"arm1": {"tcp": [-0.14005466318578425, -0.03004746030377033, 0.054114264138116194], "error_m": 0.0001352658034149444}}}
+first_A_contact_start {"targets": {"arm1": [-0.14, -0.03, 0.024300000000000002]}, "simultaneous": false}
+first_A_contact_done {"feedback": {"arm1": {"tcp": [-0.14000424916100646, -0.03001222995916187, 0.024392284987297064], "error_m": 9.318876622629203e-05}}}
+attached {"arm": "arm1", "object": "cap_5"}
+first_A_lift_start {"targets": {"arm1": [-0.14, -0.03, 0.054]}, "simultaneous": false}
+first_A_lift_done {"feedback": {"arm1": {"tcp": [-0.14000434322876684, -0.030014670408978563, 0.053869529912501435], "error_m": 0.00013136410570472603}}}
+physical_lift_verified {"arm": "arm1", "object": "cap_5", "position": [-0.14000124815013232, -0.030005811605055707, 0.04845260474534416]}
+B_deposit_approach_start {"targets": {"arm1": [0.0, -0.02, 0.054]}, "simultaneous": false}
+B_deposit_approach_done {"feedback": {"arm1": {"tcp": [-0.00012409816316225064, -0.020087499185942444, 0.053999820078026006], "error_m": 0.00015184364989274848}}}
+B_deposit_contact_start {"targets": {"arm1": [0.0, -0.02, 0.024300000000000002]}, "simultaneous": false}
+B_deposit_contact_done {"feedback": {"arm1": {"tcp": [5.79028944203662e-06, -0.020008677722430823, 0.024402638941280627], "error_m": 0.00010316774004317698}}}
+released {"arm": "arm1", "object": "cap_5"}
+B_arm1_retreat_start {"targets": {"arm1": [0.0, -0.02, 0.054]}, "simultaneous": false}
+B_arm1_retreat_done {"feedback": {"arm1": {"tcp": [1.0089572838448135e-05, -0.020011163587755496, 0.053867901764400594], "error_m": 0.00013295250663343265}}}
+B_arm1_clear_start {"targets": {"arm1": null}, "simultaneous": false}
+B_arm1_clear_done {"feedback": {"arm1": {"tcp": [-0.1662431696214104, -0.027756304792057006, 0.14074504780465746], "error_m": 0.0}}}
+B_placement_verified {"object": "cap_5", "position": [-3.169441460897458e-06, -0.019998938116944052, 0.01899999990687804]}
+parallel_A_B_approach_start {"targets": {"arm2": [-3.169441460897458e-06, -0.019998938116944052, 0.054], "arm1": [-0.2, -0.03, 0.054]}, "simultaneous": true}
+parallel_A_B_approach_done {"feedback": {"arm2": {"tcp": [9.990731768250334e-05, -0.020111284024263827, 0.05407866689166077], "error_m": 0.00017156602522229615}, "arm1": {"tcp": [-0.19998453433273883, -0.030021906748159473, 0.05408405548973587], "error_m": 8.822934791492625e-05}}}
+parallel_A_B_contact_start {"targets": {"arm2": [-3.169441460897458e-06, -0.019998938116944052, 0.024300000000000002], "arm1": [-0.2, -0.03, 0.024300000000000002]}, "simultaneous": true}
+parallel_A_B_contact_done {"feedback": {"arm2": {"tcp": [-1.2188089459446577e-05, -0.020007478053329582, 0.024418841262388538], "error_m": 0.00011948854410064376}, "arm1": {"tcp": [-0.20000622058192138, -0.03000835921838118, 0.024416421580717607], "error_m": 0.00011688693951066763}}}
+attached {"arm": "arm2", "object": "cap_5"}
+attached {"arm": "arm1", "object": "cap_6"}
+parallel_A_B_lift_start {"targets": {"arm2": [-3.169441460897458e-06, -0.019998938116944052, 0.054], "arm1": [-0.2, -0.03, 0.054]}, "simultaneous": true}
+parallel_A_B_lift_done {"feedback": {"arm2": {"tcp": [-1.263739689393549e-05, -0.020008904354931314, 0.05388166142141082], "error_m": 0.00011913432445021066}, "arm1": {"tcp": [-0.20000630949912593, -0.030009587605056162, 0.053878421125175116], "error_m": 0.0001221194282398078}}}
+physical_lift_verified {"arm": "arm2", "object": "cap_5", "position": [-7.178934492518135e-06, -0.020004213277116496, 0.04842410810878832]}
+physical_lift_verified {"arm": "arm1", "object": "cap_6", "position": [-0.20000350963254154, -0.03000524873387315, 0.04842685155437952]}
+C_carry_start {"targets": {"arm2": [0.1675, -0.055, 0.054]}, "simultaneous": false}
+C_carry_done {"feedback": {"arm2": {"tcp": [0.16735240757142444, -0.05505917168826231, 0.05399787148493608], "error_m": 0.00015902623758683052}}}
+stopped {"reason": "Object has not cleared B"}
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 225, in <module>
+    demo.run()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 199, in run
+    raise RuntimeError('Object has not cleared B')
+RuntimeError: Object has not cleared B
+=== 18:43:22 exit 0
+=== 18:43:31 done; leftover: 

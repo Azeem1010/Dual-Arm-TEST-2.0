@@ -60,7 +60,7 @@ class World(TaskIO):
 
     def pick_target(self):
         self._call('pick_target')
-        view = PickView(True, '', 0.14, -0.03, SETTINGS.cap_top_z)
+        view = PickView(True, '', -0.14, -0.03, SETTINGS.cap_top_z)
         return self.pick_patch(view) if self.pick_patch else view
 
     def grid(self):

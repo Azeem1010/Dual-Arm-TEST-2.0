@@ -26,18 +26,11 @@ while pending:
 source = np.eye(4)
 source[:3,:3] = Rotation.from_euler('x',np.pi/2).as_matrix()
 source[:3,3] = [0,.03,0]
-# Installed layout: platforms mirrored across y=0 by a flip; each arm yawed 180 degrees about its base axis.
-flip = np.diag([1.,-1.,-1.,1.])
-flip[2,3] = .01
+# Installed layout (measured 2026-11-10): the whole source assembly turned 180 degrees about world Z.
+installed = np.eye(4)
+installed[:3,:3] = Rotation.from_euler('z',np.pi).as_matrix()
 def expected_for(link_name):
-    if link_name=='field_platform':
-        return flip@source
-    x = .1 if link_name.startswith('arm1_') else -.1
-    cad_mount, installed = np.eye(4), np.eye(4)
-    cad_mount[:3,3] = [x,-.08725,0]
-    installed[:3,3] = [x,.08725,0]
-    installed[:3,:3] = Rotation.from_euler('z',np.pi).as_matrix()
-    return installed@np.linalg.inv(cad_mount)@source
+    return installed@source
 count = 0
 for link in robot.findall('link'):
     for visual in link.findall('visual'):

@@ -48,7 +48,7 @@ class ShippedFiles(unittest.TestCase):
         self.assertEqual(doc['heights']['cap_height_m'], runtime['cap_height_m'])
 
     def test_simulation_slots_match_world_formula(self):
-        expected = [[-0.1675 + col * 0.035, -0.09 + row * 0.035] for row in range(4) for col in range(2)]
+        expected = [[0.1675 - col * 0.035, -0.09 + row * 0.035] for row in range(4) for col in range(2)]
         for actual, wanted in zip(sim_doc()['zones']['c_slots_xy_m'], expected):
             self.assertAlmostEqual(actual[0], wanted[0])
             self.assertAlmostEqual(actual[1], wanted[1])

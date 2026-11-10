@@ -100,7 +100,7 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
 
 同時確認：實體急停可用、馬達 ID 15 的線材、Moving Speed。第 17 版韌體無法讀取 Moving Speed，要用其他工具，例如 RoboPlus 或 DYNAMIXEL Wizard，且使用時要先關閉其他占用序列埠的程式。
 
-如果結果和遠側配置不符，要先修正模擬配置與 `runtime.json`，並依 [TEST_PLAN.md](TEST_PLAN.md) 第 4 節重跑檢查。
+如果結果和目前的模擬配置（A 區在手臂右方、j1 方向 +1，見 COORDINATE_FRAMES.md）不符，要先修正模擬配置與 `runtime.json`，並依 [TEST_PLAN.md](TEST_PLAN.md) 第 4 節重跑檢查。
 
 ## 5. H2：校正
 

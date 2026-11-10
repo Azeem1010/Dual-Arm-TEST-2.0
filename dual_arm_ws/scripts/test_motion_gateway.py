@@ -25,7 +25,7 @@ from dual_arm_coordinator.homes import load_homes
 from dual_arm_coordinator.task_config import load
 from dual_arm_coordinator.workflow.ports import TaskCancelled, TaskFault
 
-A_XY = (0.14, -0.03)
+A_XY = (-0.14, -0.03)
 SLOT_3 = 3
 
 

@@ -139,7 +139,7 @@ class Pipeline(Demo):
     def run(self):
         self.homes=configured_homes(self.models)
         names=['cap_5','cap_6','cap_4'][:self.count]
-        destinations=[[-.1675,-.055,CAP_CENTER_Z],[-.1325,-.055,CAP_CENTER_Z],[-.1675,-.02,CAP_CENTER_Z]][:self.count]
+        destinations=[[.1675,-.055,CAP_CENTER_Z],[.1325,-.055,CAP_CENTER_Z],[.1675,-.02,CAP_CENTER_Z]][:self.count]
         self.wait(lambda:len(self.joints)==8 and all(n in self.poses for n in names) and self.clock is not None,
                   90,'Simulator not ready')
         self.settle()
@@ -153,7 +153,7 @@ class Pipeline(Demo):
             if not controller.wait_for_server(timeout_sec=90):
                 raise RuntimeError(arm+' trajectory controller not ready; no motion submitted')
         sources={n:self.position(n) for n in names}
-        expected={'cap_5':[.14,-.03,.019],'cap_6':[.2,-.03,.019],'cap_4':[.2,.035,.019]}
+        expected={'cap_5':[-.14,-.03,.019],'cap_6':[-.2,-.03,.019],'cap_4':[-.2,.035,.019]}
         for n in names:
             if np.linalg.norm(sources[n]-expected[n])>.003:
                 raise RuntimeError('Source object moved; fresh scene required: '+n)
@@ -195,7 +195,7 @@ class Pipeline(Demo):
             c=destinations[index]
             self.move_pair({'arm2':[c[0],c[1],.054]},'C_carry')
             # B ownership clears only after the real object has left the shared region.
-            if self.position(current)[0]>-.10:
+            if self.position(current)[0]<.10:
                 raise RuntimeError('Object has not cleared B')
             self.b_object=None
             self.record('B_clear_verified',object=current)

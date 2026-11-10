@@ -29,7 +29,7 @@
 - WP7 BLOCKED：模擬相機在 Home 被手臂遮擋，區域與格位仍用真值，等 D7。
 - WP6S FAIL：最終時間只減少 48.6%，使用者選擇維持現況。
 - cm530_hardware 與安全監控只驗證過 Mock，實機 NOT_RUN，config/calibration.yaml 刻意全為 null。Coordinator 會拒絕以實機設定啟動。
-- A 區在手臂左或右、j1 方向、j2 方向與零點，證據互相矛盾，都是 BLOCKED，需要現場手動確認（docs/HARDWARE_TEST_GUIDE.md 的 H1）。
+- 2026-11-10 H1（arm1）：A 區在手臂右方、j1 方向 +1，模擬已改成這個配置。arm2 的 j1 方向、j2 方向與零點仍 BLOCKED，需要現場手動確認（docs/HARDWARE_TEST_GUIDE.md 的 H1）。
 - 格位 1 與 4 個瓶蓋位置在目前模型中搆不到，八件搬運是已知 FAIL，等 D3。
 - 兩個專案都沒有完成實機取放。接下來幾乎都需要使用者決定或現場操作，不要自行繞過。
 

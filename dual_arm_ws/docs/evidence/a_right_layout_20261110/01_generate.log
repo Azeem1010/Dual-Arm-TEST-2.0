@@ -1,0 +1,10 @@
+$ python3 scripts/generate_cad_robot.py
+Generated articulated CAD model: 264 visuals, eight geometry-derived axes; fastener membership and dynamics require validation
+$ python3 scripts/generate_world.py
+Generated physical board, eight flush white pads/caps and three fixed simulation cameras
+$ python3 scripts/test_cad_pose.py
+{
+  "status": "PASS",
+  "visual_components": 264,
+  "scope": "At zero joint displacement, each exported CAD visual has exactly the source assembly transform composed with the documented installed-layout transform; does not validate fastener assignment during motion or dynamics, or that the layout matches hardware."
+}

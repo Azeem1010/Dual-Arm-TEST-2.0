@@ -22,7 +22,7 @@ from test_transfer_regression import Regression
 
 GZ = shutil.which('gz') or '/opt/ros/jazzy/opt/gz_tools_vendor/bin/gz'
 PARK = (0.35, 0.30)
-ARM1_BASE = (0.10, 0.08725)
+ARM1_BASE = (-0.10, 0.08725)
 
 
 class VisionPick(Regression):

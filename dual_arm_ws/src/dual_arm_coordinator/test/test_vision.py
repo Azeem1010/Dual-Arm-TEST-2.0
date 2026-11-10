@@ -10,7 +10,7 @@ class Services:
     def __init__(self):
         self.calls = []
         self.zone_reply = Reply(success=True, message='', a_has_object=True, b_has_object=False, b_arm_clear=True, c_object_count=2)
-        self.pick_reply = Reply(success=True, message='', x=0.05, y=0.1, z=0.01)
+        self.pick_reply = Reply(success=True, message='', x=0.05, y=-0.1, z=0.01)
         self.grid_reply = Reply(success=True, message='', occupied=[True, True] + [False] * 6)
         self.verify_reply = Reply(success=True, message='', placed=True, order_ok=True)
 
@@ -52,7 +52,7 @@ class Base(unittest.TestCase):
     def to_target(self, _arm, x, y, z):
         if self.transform_error:
             raise self.transform_error
-        return (0.1 + y, 0.08725 - x, z + 0.014)
+        return (-0.1 + y, 0.08725 - x, z + 0.014)
 
     def sleep(self, seconds):
         self.now += seconds
@@ -73,7 +73,7 @@ class Conversions(Base):
     def test_pick_is_converted_to_target_frame(self):
         view = self.observer.pick_target()
         self.assertTrue(view.success)
-        self.assertAlmostEqual(view.x, 0.2)
+        self.assertAlmostEqual(view.x, -0.2)
         self.assertAlmostEqual(view.y, 0.03725)
         self.assertAlmostEqual(view.z, 0.024)
 
@@ -97,7 +97,7 @@ class ServiceFailures(Base):
         self.assertFalse(self.observer.verify_place(1).success)
 
     def test_non_finite_pick_is_invalid(self):
-        self.services.pick_reply = Reply(success=True, message='', x=math.nan, y=0.1, z=0.01)
+        self.services.pick_reply = Reply(success=True, message='', x=math.nan, y=-0.1, z=0.01)
         self.assertIn('non-finite', self.observer.pick_target().message)
 
     def test_missing_transform_is_invalid(self):

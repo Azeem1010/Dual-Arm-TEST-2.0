@@ -160,10 +160,10 @@ class Demo(Node):
         if not self.client.wait_for_server(timeout_sec=20):
             raise RuntimeError('MoveIt unavailable')
         a = self.object_xyz()
-        if np.linalg.norm(a-np.array([.14,-.03,.019]))>.003:
+        if np.linalg.norm(a-np.array([-.14,-.03,.019]))>.003:
             raise RuntimeError('cap_5 is not at the expected A source; no automatic teleport/reset')
         b = [0.,-.02,.019]
-        c = [-.1675,-.055,CAP_CENTER_Z]
+        c = [.1675,-.055,CAP_CENTER_Z]
         self.record('start',A=a.tolist(),B=b,C=c)
         self.move('arm1',home=True,stage='home_A_ready')
         self.move('arm2',home=True,stage='home_C_ready')

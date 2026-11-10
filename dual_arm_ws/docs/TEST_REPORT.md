@@ -1,5 +1,23 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-10 Simulation layout: zone A on the arm's right
+
+WSL Ubuntu 24.04 + Jazzy after `generate_cad_robot.py`, `generate_world.py` and `scripts/build.sh`. Index and caveats in evidence/a_right_layout_20261110/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `test_cad_pose.py` | PASS | 264 components equal the source assembly turned 180 deg about Z |
+| `build.sh`, `validate_model.py` | PASS | 02_build.log |
+| `report_home_poses.py` | PASS | home_A (-166.3, -27.7, 140.8) mm, home_C (151.6, -35.0, 140.8) mm, inside limits |
+| `test_ik.py` | FAIL | 16/18; arm1 (-0.2, -0.085) and arm2 slot 1 (0.1675, -0.09), mirrors of the previous two failures |
+| coordinator / HMI / vision_pkg pytest | PASS | 259 / 262 / 99; coordinator first run had 5 fixture failures (park point and vision stub sides), fixed |
+| HOME collision, slot self-collision | PASS | 08_sim_checks.log (its exit codes are unreliable, see README) |
+| `smoke_runtime.py sim` | FAIL | all functional items PASS; shutdown check FAIL twice (Gazebo SIGINT timeout) |
+| `run_pipeline.sh --count 2`, first | FAIL | missed sign in the "cleared B" check |
+| `run_pipeline.sh --count 2`, after fix | PASS | 11_transfer_pipeline.json, slots 3 and 4 |
+| `demo_pick_place.launch.py`, one cycle | PASS | SUCCEEDED, no leftover processes |
+| `test_motion_gateway.py`, `test_operator_tools.py`, `test_safety_supervisor.py` (MoveIt mock) | PASS | 14_mock_tests.log |
+
 ## 2026-11-10 Orin hardware session (on site, imported)
 
 Run on site by the tester with code `3fd258c`; source records in Azeem1010/Dual-Arm-TEST-2.0 `fc4cd41`, copies in evidence/hardware/. Not rerun here.

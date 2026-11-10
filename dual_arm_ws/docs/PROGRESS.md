@@ -2,6 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: simulation layout follows the measured zone side (A on the arm's right)
+
+- The user decided D0 from the 2026-11-10 H1 measurement. The model is now the source CAD assembly, arms and platforms, turned 180 degrees about world Z: arm1 at (-0.10, +0.08725), arm2 at (+0.10, +0.08725), both facing -Y, zone A at -X, so the user sees A | B | C. This replaces the mirrored layout of commit `c7dfba3`. Every field coordinate only changed the sign of x; slot numbering is kept (slot 1 nearest the user, still unchecked on site). j1 direction is +1 for both arms (arm1 measured, arm2 assumed), raw_at_cad_zero unchanged, so home_A and home_C TCPs are x mirrors of the old ones.
+- `truth.py` no longer assumes zone A is at +X. Simulated env vision sets `field.reverse: true` in `vision_sim` and `hmi_sim`; the hardware `env_vision.yaml` keeps `false` until V0.
+- PASS in WSL Jazzy: CAD pose (264 components), build, HOME poses and collision, slot self-collision, coordinator 259, HMI 262, vision_pkg 99, MotionGateway, operator tools and safety supervisor against the MoveIt mock, old pipeline two objects, coordinator demo one cycle. `test_ik.py` stays 16/18, the same two points as before, mirrored. The first pipeline run FAILED on a `x > -0.10` "cleared B" check missed in the mirror; fixed and rerun. The sim smoke test FAILED both runs only on its shutdown check (Gazebo did not exit within 5 s of SIGINT), a message also seen in older logs. Evidence: evidence/a_right_layout_20261110/; previous files in evidence/before_a_right_layout_20261110/.
+- Not changed: board width (CAD 300 mm, measured about 235 mm) and base-to-edge distance (CAD 63 mm inside, measured about 10 mm outside). NOT_RUN: vision-driven pick, slot adjustment study, README screenshots. Hardware NOT_RUN.
+
 ## Latest result: first Orin hardware session imported (SETUP, P0, H0 PASS; H1 partial)
 
 - The on-site session of 2026-11-10 (code at `3fd258c`) is recorded in [Azeem1010/Dual-Arm-TEST-2.0](https://github.com/Azeem1010/Dual-Arm-TEST-2.0) `fc4cd41`. Its text records, outputs and photo hashes are copied to evidence/hardware/ with a reading in evidence/hardware/README.md; photos and large logs stay in that repo.

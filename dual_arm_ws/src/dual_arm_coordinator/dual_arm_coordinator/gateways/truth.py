@@ -25,7 +25,9 @@ class TruthObserver:
         self._half_height = heights['cap_height_m'] / 2.0
         self._contact_z, self._approach_z = heights['contact_z_m'], heights['approach_z_m']
         self._a_min, self._a_max = zones['a_min_xy_m'], zones['a_max_xy_m']
-        self._b_half_width = zones['a_min_xy_m'][0]
+        # B is centred on x = 0 between A and C; its half width is the distance to A's inner edge.
+        self._b_half_width = min(abs(zones['a_min_xy_m'][0]), abs(zones['a_max_xy_m'][0]))
+        self._c_side = -1.0 if zones['a_min_xy_m'][0] + zones['a_max_xy_m'][0] > 0 else 1.0
         self._slots = zones['c_slots_xy_m']
         self._tcp_of, self._can_reach, self._home_tcp = tcp_of, can_reach, home_tcp
         self._prefilled, self._clock = prefilled, clock
@@ -52,7 +54,7 @@ class TruthObserver:
         return abs(xyz[0]) < self._b_half_width
 
     def _in_c(self, xyz):
-        return xyz[0] <= -self._b_half_width
+        return self._c_side * xyz[0] >= self._b_half_width
 
     def _slot_occupancy(self, resting):
         occupied = [index < self._prefilled for index in range(8)]

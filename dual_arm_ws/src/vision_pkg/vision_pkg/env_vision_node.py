@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """環境相機節點 env_vision_node。
 
-場地：60x30 cm 粉紅色泡棉板，由左至右 C | B | A 各 20x30 cm；物件：藍色圓形瓶蓋（直徑 20 mm，大小相同）。
+場地：60x30 cm 粉紅色泡棉板，三區各寬 20 cm（影像中的左右順序由 field.reverse 設定）；物件：藍色圓形瓶蓋（直徑 20 mm，大小相同）。
 
 職責
   * 訂閱 /env_cam/image_raw（只訂閱 topic，絕不自己開 /dev/video）

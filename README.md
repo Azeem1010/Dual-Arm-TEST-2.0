@@ -45,7 +45,7 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 
 ## 工作區配置
 
-> 模擬目前是手臂在遠離使用者側（圖的上方）、A 區在手臂左邊，定義見 [COORDINATE_FRAMES.md](dual_arm_ws/docs/COORDINATE_FRAMES.md)。實機的 A 區在哪一邊，現有證據互相矛盾，要現場確認。
+> 2026-11-10 實機量測（arm1）：手臂在遠離使用者側，A 區在手臂自身右方，使用者由左至右看到 A | B | C，模擬已改成這個配置，定義見 [COORDINATE_FRAMES.md](dual_arm_ws/docs/COORDINATE_FRAMES.md)。**下方截圖是改版前的舊配置（C、B、A），尚未重新擷取。**
 
 ![工作區頂視圖，由左至右為 C、B、A 三區](dual_arm_ws/docs/images/layout_top.png)
 
