@@ -22,6 +22,12 @@ class DataSource(ABC):
     def close(self):
         """Release any connections when the window closes."""
 
+    def set_cycles(self, cycles):
+        """Transfer cycles for the next simulation start."""
+
+    def cycles(self):
+        return 1
+
     def scenarios(self):
         """Selectable demonstration states as (key, label); empty for live data."""
         return ()

@@ -7,6 +7,7 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/dual_arm_hmi']),
         ('share/dual_arm_hmi', ['package.xml']),
+        ('share/dual_arm_hmi/config', ['config/profiles.yaml']),
     ],
     install_requires=['setuptools'],
     entry_points={'console_scripts': [

@@ -2,6 +2,12 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: operator UI stage 2 (start and stop)
+
+- The interface now starts, stops and resets the system in its own process group, records the session so a restarted interface adopts it, and removes Gazebo servers and tagged processes left behind. Only one managing interface may run; `--monitor` opens a watch-only one. Settings are in `config/profiles.yaml`; hardware modes refuse to start without a port, and motion without measured controller tolerances. Added `scripts/hmi_windows.bat` and `scripts/install_hmi_shortcut.sh`.
+- PASS: 242 offline tests with real processes. Ten simulation start and stop cycles through the interface buttons: ready in 29.8 to 36.6 s, stopped in 3.7 to 10.3 s, nothing left behind. The interface killed while the system was ready, and a new one adopted and stopped it. The raw verdict counted the interface's own node as a leftover; the correction is in evidence/hmi/stage2/05_assessment.json.
+- Remaining: stop and task buttons are still disconnected (stage 3). Hardware and Mock Serial starts were not run through the interface. NOT_RUN: Orin, double-clicking the shortcuts.
+
 ## Latest result: operator UI stage 1 (read-only monitor)
 
 - `dual_arm_hmi` now shows live ROS data: three cameras with the vision nodes' own annotations, four Gazebo views, eight joints with limits, task progress, the zone B interlock and calibration results. Vision nodes gained an optional `publish_debug_image` (off by default), and `hmi_sim.launch.py` starts everything the interface shows. Two OpenCV overlay texts that printed Chinese as question marks now use ASCII.

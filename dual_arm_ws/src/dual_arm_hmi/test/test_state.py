@@ -239,6 +239,32 @@ def test_camera_staleness_can_be_widened_for_a_slow_simulation():
     assert CameraStatus(age_s=2.0, stale_after_s=4.0).has_signal
 
 
+@pytest.mark.parametrize('phase', (Phase.STARTING, Phase.STOPPING))
+def test_missing_ros_while_starting_or_stopping_is_not_a_failure(phase):
+    snapshot = Snapshot(phase=phase, ros_connected=False)
+    assert banner(snapshot).level is Level.INFO
+    assert status_cells(snapshot)[1].level is Level.NEUTRAL and status_cells(snapshot)[2].level is Level.BUSY
+
+
+def test_wired_actions_limit_what_is_enabled():
+    snapshot = Snapshot(wired_actions=frozenset({Action.START_SYSTEM}))
+    actions = evaluate_actions(snapshot)
+    assert actions[Action.START_SYSTEM].enabled
+    assert not actions[Action.STOP].enabled and actions[Action.STOP].reason == '尚未接通'
+
+
+def test_banner_never_names_a_button_that_is_not_wired():
+    snapshot = replace(latched(), wired_actions=frozenset({Action.START_SYSTEM}))
+    assert '解除鎖定' not in banner(snapshot).next_step
+    ready_live = ready(wired_actions=frozenset({Action.START_SYSTEM, Action.SHUTDOWN}))
+    assert '開始工作' not in banner(ready_live).next_step
+
+
+def test_launch_failure_outranks_lost_contact():
+    snapshot = ready(ros_connected=False, launch_problem='系統意外結束')
+    assert banner(snapshot).title == '系統啟動失敗' and status_cells(snapshot)[2].value == '啟動失敗'
+
+
 def test_next_slot():
     assert next_slot(TaskStatus(occupied=(True, True) + (False,) * 6)) == 3
     assert next_slot(TaskStatus(slot=5)) == 5

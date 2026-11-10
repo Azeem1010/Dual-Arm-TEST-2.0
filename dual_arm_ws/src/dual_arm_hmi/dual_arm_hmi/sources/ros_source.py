@@ -80,6 +80,7 @@ class RosSource(DataSource):
         self._parameters_pending = None
         self._ever_connected, self._feedback, self._last_phase = False, None, Phase.STOPPED
         self._stale_factor = 1.0
+        self._expect_down = False
         self._events, self._previous = deque(maxlen=_EVENT_LIMIT), {}
         self._context = Context()
         rclpy.init(context=self._context)
@@ -184,6 +185,10 @@ class RosSource(DataSource):
     def select_mode(self, mode):
         pass
 
+    def expect_disconnect(self, expected):
+        """A shutdown the operator asked for is recorded as such, not as a failure."""
+        self._expect_down = expected
+
     def invoke(self, action):
         self._feedback = CommandFeedback(action, '已拒絕', _REFUSED)
         self._note(Level.WARN, f'{action.value}：{_REFUSED}')
@@ -227,7 +232,12 @@ class RosSource(DataSource):
         if current['mode'] != previous['mode']:
             self._note(Level.NEUTRAL, f'模式：{current["mode"].value}')
         if current['connected'] != previous['connected']:
-            self._note(Level.OK if current['connected'] else Level.DANGER, 'ROS 已連線' if current['connected'] else 'ROS 連線中斷')
+            if current['connected']:
+                self._note(Level.OK, 'ROS 已連線')
+            elif self._expect_down:
+                self._note(Level.NEUTRAL, 'ROS 已斷線（系統關閉）')
+            else:
+                self._note(Level.DANGER, 'ROS 連線中斷')
         if current['phase'] != previous['phase']:
             self._note(Level.NEUTRAL, f'系統：{current["phase"].value}')
         if current['state'] != previous['state'] and current['state'] is not None:

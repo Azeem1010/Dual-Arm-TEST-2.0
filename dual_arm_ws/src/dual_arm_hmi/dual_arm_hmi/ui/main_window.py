@@ -162,6 +162,7 @@ class MainWindow(QMainWindow):
         self.control.mode_selected.connect(self.source.select_mode)
         self.control.scenario_selected.connect(self.source.set_scenario)
         self.control.gazebo_toggled.connect(self._toggle_gazebo)
+        self.control.cycles_changed.connect(self.source.set_cycles)
         body.addWidget(self.control)
         self._apply_layout()
 
@@ -224,6 +225,7 @@ class MainWindow(QMainWindow):
 
     def refresh(self):
         snapshot = self.source.snapshot()
+        self._snapshot = snapshot
         actions = evaluate_actions(snapshot, self.control.tools_cleared.isChecked())
         for widget, cell in zip(self.status_cells, status_cells(snapshot)):
             widget.set_cell(cell)
@@ -254,12 +256,19 @@ class MainWindow(QMainWindow):
     def _on_action(self, action):
         if action in _CONFIRM_TEXT and not self._confirm(action):
             return
+        if action is Action.START_SYSTEM and self._snapshot.mode.has_torque_step and not self._confirm_hardware_start():
+            return
         self._send(action)
         if action in (Action.GO_HOME, Action.RECOVER):
             self.control.tools_cleared.setChecked(False)
 
+    def _confirm_hardware_start(self):
+        return self._ask('啟動系統', '將連接控制板（唯讀，馬達不出力）。\n請確認手臂下方淨空，重置時扭力會立刻關閉。')
+
     def _confirm(self, action):
-        title, text = _CONFIRM_TEXT[action]
+        return self._ask(*_CONFIRM_TEXT[action])
+
+    def _ask(self, title, text):
         box = QMessageBox(QMessageBox.Warning, title, text, QMessageBox.Yes | QMessageBox.No, self)
         box.button(QMessageBox.Yes).setText('確定')
         box.button(QMessageBox.No).setText('取消')

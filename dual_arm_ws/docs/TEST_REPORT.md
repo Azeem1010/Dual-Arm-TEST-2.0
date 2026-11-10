@@ -1,5 +1,18 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-10 Operator UI stage 2 (start and stop)
+
+Commands are in evidence/hmi/stage2/stage2_*.sh and stage2_live_check.py. Isolated with ROS_DOMAIN_ID=79, GZ_PARTITION=hmi_stage2 and a temporary state directory. The copied check script excludes the interface's own node; the run itself used the earlier version.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Offline tests | PASS | 02_pytest.log; 242 tests, launcher tests use real processes |
+| Ten start and stop cycles of the simulation through the interface | PASS | 03, 04, 05_assessment.json; every cycle ready and stopped, no Gazebo, tagged process or ROS node left |
+| Adoption after the interface was killed | PASS | adoption in 04_live_check.json; same session, stopped cleanly |
+| Raw verdict `all_cycles_clean` | FAIL (check error) | it counted the interface's own node; corrected in 05_assessment.json |
+| Mock, Mock Serial and hardware starts through the interface | NOT_RUN | command building is unit tested only |
+| Windows `.bat` path conversion and Orin `.desktop` file | PASS | checked with an echo-only copy and a temporary home; not double-clicked |
+
 ## 2026-11-10 Operator UI stage 1 (read-only monitor)
 
 Commands are in evidence/hmi/stage1/stage1_*.sh and stage1_*.py. Isolated with ROS_DOMAIN_ID=78 and GZ_PARTITION=hmi_stage1.

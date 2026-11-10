@@ -1,14 +1,15 @@
 """Operator actions. The stop button never scrolls away and every disabled button says why."""
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import (QCheckBox, QComboBox, QHBoxLayout, QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QCheckBox, QComboBox, QHBoxLayout, QLabel, QPushButton, QScrollArea, QSpinBox, QVBoxLayout,
+                             QWidget)
 
-from ..model.state import Action, Mode, Phase
+from ..model.state import Action, Mode, Phase, is_wired
 from . import theme
 from .widgets import Panel
 
 _BUTTON_WIDTH = 112
 _STOP_NOTE = '軟體停止（F12），不會切斷馬達電源。危險時請按實體急停。'
-_STOP_NOTE_MONITOR = '唯讀監看：這個按鈕尚未接通，按了也不會停止。需要停止時請按實體急停。'
+_STOP_NOTE_MONITOR = '這個按鈕尚未接通，按了也不會停止。需要停止時請按實體急停。'
 
 
 class ActionRow(QWidget):
@@ -48,6 +49,7 @@ class ControlPanel(Panel):
     mode_selected = pyqtSignal(object)
     scenario_selected = pyqtSignal(str)
     gazebo_toggled = pyqtSignal()
+    cycles_changed = pyqtSignal(int)
 
     def __init__(self, scenarios=(), parent=None):
         super().__init__(parent)
@@ -109,6 +111,18 @@ class ControlPanel(Panel):
                 self.mode.addItem(mode.value, mode)
         self.mode.currentIndexChanged.connect(lambda: self.mode_selected.emit(self.mode.currentData()))
         self.body.addWidget(self.mode)
+        self.cycles_row = QWidget(parent)
+        cycles_layout = QHBoxLayout(self.cycles_row)
+        cycles_layout.setContentsMargins(0, 0, 0, 0)
+        cycles_label = QLabel('搬運循環數（模擬）', self.cycles_row)
+        self.cycles = QSpinBox(self.cycles_row)
+        self.cycles.setRange(1, 8)
+        self.cycles.setFixedWidth(64)
+        self.cycles.valueChanged.connect(self.cycles_changed)
+        cycles_layout.addWidget(cycles_label)
+        cycles_layout.addStretch(1)
+        cycles_layout.addWidget(self.cycles)
+        self.body.addWidget(self.cycles_row)
         self._add_row(Action.START_SYSTEM, 'primary', parent)
         self._add_row(Action.SHUTDOWN, '', parent)
         self._add_row(Action.TORQUE_ON, 'danger', parent)
@@ -192,12 +206,20 @@ class ControlPanel(Panel):
             self.feedback.setText(f'最後操作：{snapshot.feedback.action.value}｜{snapshot.feedback.phase}{detail}')
 
     def _update_stop(self, snapshot, state):
+        wired = is_wired(snapshot, Action.STOP)
         self.stop.setEnabled(state.enabled)
-        self.stop.setText('尚未接通' if snapshot.monitor_only else Action.STOP.value)
-        self.stop_note.setText(_STOP_NOTE_MONITOR if snapshot.monitor_only else _STOP_NOTE)
+        self.stop.setText(Action.STOP.value if wired else '尚未接通')
+        self.stop_note.setText(_STOP_NOTE if wired else _STOP_NOTE_MONITOR)
 
     def _sync_mode(self, snapshot):
-        self.mode.setEnabled(snapshot.phase is Phase.STOPPED and not snapshot.monitor_only)
+        choosable = snapshot.phase is Phase.STOPPED and is_wired(snapshot, Action.START_SYSTEM)
+        self.mode.setEnabled(choosable)
+        self.cycles.setEnabled(choosable)
+        self.cycles_row.setVisible(snapshot.mode is Mode.SIMULATION and is_wired(snapshot, Action.START_SYSTEM))
+        if self.cycles.value() != snapshot.cycles:
+            self.cycles.blockSignals(True)
+            self.cycles.setValue(snapshot.cycles)
+            self.cycles.blockSignals(False)
         if self.mode.currentData() is not snapshot.mode:
             self.mode.blockSignals(True)
             self.mode.setCurrentIndex(self.mode.findData(snapshot.mode))

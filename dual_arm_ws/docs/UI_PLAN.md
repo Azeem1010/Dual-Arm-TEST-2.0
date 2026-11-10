@@ -1,6 +1,16 @@
 # 操作介面（HMI）實作規劃
 
-更新：2026-11-10。**階段 0 假資料畫面與階段 1 唯讀監看已實作，並在 WSL 模擬中驗證。階段 0 還差使用者視覺確認與 Orin 執行；階段 2 以後都是 `NOT_RUN`。** 接真實資料：`ros2 run dual_arm_hmi hmi`；假資料：加上 `--fake`。階段 1 全部按鈕（含強制停止）都未接通，畫面會明確標示。介面定義以 [ROS_INTERFACES.md](ROS_INTERFACES.md) 和實際程式碼為準，開發規則見 [AGENTS.md](../AGENTS.md)。
+更新：2026-11-10。**階段 0～2 已實作並在 WSL 模擬中驗證：假資料畫面、唯讀監看、由介面啟動與關閉系統。階段 0 還差使用者視覺確認與 Orin 執行；階段 3 以後都是 `NOT_RUN`。**
+
+| 啟動方式 | 指令 |
+|---|---|
+| 管理系統（預設，只能開一個） | `ros2 run dual_arm_hmi hmi` |
+| 只看不操作（可再開第二個） | `ros2 run dual_arm_hmi hmi --monitor` |
+| 假資料 | `ros2 run dual_arm_hmi hmi --fake` |
+| Windows 捷徑 | 雙擊 `scripts/hmi_windows.bat` |
+| Orin 桌面捷徑 | 執行一次 `bash scripts/install_hmi_shortcut.sh` |
+
+目前接通的只有啟動系統、關閉系統、重置模擬；強制停止與任務按鈕都未接通，畫面會明確標示。介面定義以 [ROS_INTERFACES.md](ROS_INTERFACES.md) 和實際程式碼為準，開發規則見 [AGENTS.md](../AGENTS.md)。
 
 ## 1. 已定案
 
@@ -195,7 +205,11 @@ src/dual_arm_hmi/
 - 各模式獨立於 UI 執行，UI 當掉時系統不跟著結束，重開可接回。
 - `ROS_DOMAIN_ID`、`GZ_PARTITION` 和 `scripts/start_sim.sh` 一致。
 - 就緒以 `list_controllers` 為準，spawner 可能誤報失敗（ROS_INTERFACES 缺口 10）。
-- `cycles`、`prefilled_slots` 放在啟動選項，任務中不能改。
+- `cycles` 是介面上的啟動選項（模擬），`prefilled_slots` 在設定檔，任務中都不能改。
+- 設定檔：套件內 `config/profiles.yaml`，使用者覆寫放 `~/.ros/dual_arm_hmi/profiles.yaml`。實機的 `port`、`controllers_file` 沒填時拒絕啟動並說明原因。
+- 工作階段記錄在 `~/.ros/dual_arm_hmi/session.json`，每次啟動的紀錄檔在 `~/.ros/dual_arm_hmi/logs/`。
+- 啟動的每個程序都帶 `DUAL_ARM_HMI_SESSION` 標記；關閉時依序送 SIGINT、SIGTERM、SIGKILL，再清除同一個 `GZ_PARTITION` 的 Gazebo 與帶標記的殘留程序。
+- 系統若不是由介面啟動（例如在終端機），介面只監看，不能關閉它。
 
 ### 9.1 實機與 Gazebo 同步
 
@@ -228,7 +242,8 @@ src/dual_arm_hmi/
 |---|---|---|
 | `scripts/install_jazzy.sh` | 加 `fonts-noto-cjk`、`python3-pyqt5` | 0 |
 | `src/vision_pkg` 三個節點 | 新增 `publish_debug_image`，發布 `/vision/*/debug_image`。`_render` 目前被 `show_debug` 擋住，要讓繪圖和 `imshow` 分開控制 | 1 |
-| `src/dual_arm_bringup` | 新增 `hmi_sim.launch.py`（已提前於階段 1 完成，尚未含 `safety_supervisor`） | 2 |
+| `src/dual_arm_bringup` | 新增 `hmi_sim.launch.py`（已完成，尚未含 `safety_supervisor`，階段 3 加入） | 2 |
+| `scripts/` | 新增 `hmi_windows.bat`、`install_hmi_shortcut.sh` | 2 |
 | `safety_monitor.py`、`safety_supervisor.py` | 新增 `/safety/trigger_stop`，直接鎖定，由 `/safety/reset` 解除 | 3 |
 | `coordinator_node.py` | 新增 `/dual_arm/go_home` | 3 |
 | 新增 `twin_mirror`、`twin.launch.py`、孿生用 controller 設定與不含相機和瓶蓋的 world | 第 9.1 節，不改動現有 `sim.launch.py` | 同步階段 |
@@ -292,6 +307,10 @@ WSLg 與 Orin 各跑一次，結果放 `docs/evidence/hmi/`，狀態只用 `PASS
 | 階段 0 WSLg 實際視窗 | `PASS` | xcb，視窗可開啟、實按 F12 送出強制停止，假資料下每次刷新平均 7.0 ms；字型暫用私有資料夾 |
 | 階段 1 離線測試 | `PASS` | 205 項，[evidence/hmi/stage1/](evidence/hmi/stage1/) |
 | 階段 1 接模擬實測 | `PASS` | 實際視窗元件以離屏方式接 `hmi_sim.launch.py`：三格判定框、四個 Gazebo 視角、八軸、一輪搬運到 `SUCCEEDED`、斷線標示 |
+| 階段 2 離線測試 | `PASS` | 242 項，含真實程序的啟停、訊號升級、接回、殘留清除，[evidence/hmi/stage2/](evidence/hmi/stage2/) |
+| 階段 2 十次啟停 | `PASS` | 以介面按鈕啟停模擬十次：就緒 29.8～36.6 秒、關閉 3.7～10.3 秒，每次都沒有殘留的 Gazebo、帶標記程序或 ROS 節點。原始判定誤把介面自己的節點算成殘留，更正說明在 05_assessment.json |
+| 階段 2 當掉後接回 | `PASS` | 介面在系統就緒時被強制結束，新開的介面接回同一個工作階段並正常關閉，無殘留 |
+| Windows 與 Orin 捷徑 | `PASS` | `.bat` 的路徑轉換與 `.desktop` 內容已驗證；實際雙擊開啟 `NOT_RUN` |
 | 階段 1 唯讀 | `PASS` | `ros2 node info` 只有 `/rosout`、`/parameter_events` 發布者，client 只有 `list_controllers`、`get_parameters`，沒有 action |
 | UI 對系統的負載 | `PASS` | WSL 模擬速度：無 UI 0.182、有 UI 0.183 倍實時；刷新平均 1.0 ms。相機約 2 FPS 是 WSL 渲染限制，無法驗證 10 FPS 目標 |
 | WSL 系統繁中字型 | `FAIL` | 確認時為 0 個，需用 sudo 安裝 `fonts-noto-cjk` |

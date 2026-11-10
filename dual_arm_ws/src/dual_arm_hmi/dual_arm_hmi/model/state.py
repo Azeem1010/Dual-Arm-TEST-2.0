@@ -1,7 +1,8 @@
 """What the operator sees and may do. Free of ROS and Qt so the rules can be unit tested."""
 from dataclasses import dataclass, field, replace
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+import re
+from typing import Dict, FrozenSet, List, Optional, Tuple
 
 from .joints import JointSample
 
@@ -44,6 +45,7 @@ class Mode(Enum):
 
 class Phase(Enum):
     STOPPED = '未啟動'
+    STOPPING = '關閉中'
     STARTING = '啟動中'
     READ_ONLY = '唯讀就緒'
     TORQUE_ON = '已上扭力'
@@ -172,6 +174,12 @@ class Snapshot:
     ros_connected: bool = False
     is_fake: bool = False
     monitor_only: bool = False
+    # None means every action is carried out; otherwise only these are.
+    wired_actions: Optional[FrozenSet['Action']] = None
+    launch_managed: bool = True
+    launch_problem: str = ''
+    launch_warning: str = ''
+    cycles: int = 1
     task: Optional[TaskStatus] = None
     safety: Optional[SafetyStatus] = None
     controllers_active: bool = False
@@ -304,6 +312,10 @@ def _start_task_state(s):
 def _shutdown_state(s):
     if s.phase is Phase.STOPPED:
         return _refuse('系統未啟動')
+    if s.phase is Phase.STOPPING:
+        return _refuse('正在關閉')
+    if not s.launch_managed:
+        return _refuse('系統不是由介面啟動，請在原終端機關閉')
     if s.busy:
         return _refuse('任務執行中，請先停止')
     return ActionState(True)
@@ -334,8 +346,10 @@ def _safety_reset_state(s):
 
 def _reset_simulation_state(s):
     visible = s.mode is Mode.SIMULATION
-    if s.phase is Phase.STOPPED:
+    if s.phase in (Phase.STOPPED, Phase.STOPPING):
         return _refuse('系統未啟動', visible)
+    if not s.launch_managed:
+        return _refuse('系統不是由介面啟動', visible)
     if s.busy:
         return _refuse('任務執行中，請先停止', visible)
     return ActionState(True, visible=visible)
@@ -373,6 +387,23 @@ def _recover_state(s, tools_cleared):
     return ActionState(True)
 
 
+def is_wired(s, action):
+    """Whether the data source actually carries out this action."""
+    if s.monitor_only:
+        return False
+    return s.wired_actions is None or action in s.wired_actions
+
+
+def _start_system_state(s):
+    if s.phase is Phase.STOPPING:
+        return _refuse('系統正在關閉')
+    if s.phase is not Phase.STOPPED:
+        return _refuse('系統已啟動')
+    if s.residual_processes:
+        return _refuse('有殘留的 Gazebo 程序')
+    return ActionState(True)
+
+
 def evaluate_actions(s, tools_cleared=False):
     """Every action with whether it may be pressed now and, if not, why."""
     has_token = s.task is not None and bool(s.task.suction_token)
@@ -380,8 +411,7 @@ def evaluate_actions(s, tools_cleared=False):
     suction = ActionState(True) if has_token else _refuse('沒有等待確認的步驟', suction_visible)
     states = {
         Action.STOP: ActionState(True),
-        Action.START_SYSTEM: (ActionState(True) if s.phase is Phase.STOPPED and not s.residual_processes
-                              else _refuse('有殘留的 Gazebo 程序' if s.phase is Phase.STOPPED else '系統已啟動')),
+        Action.START_SYSTEM: _start_system_state(s),
         Action.SHUTDOWN: _shutdown_state(s),
         Action.TORQUE_ON: _torque_state(s),
         Action.SAFETY_RESET: _safety_reset_state(s),
@@ -393,30 +423,38 @@ def evaluate_actions(s, tools_cleared=False):
         Action.SUCTION_OK: suction,
         Action.SUCTION_FAILED: suction,
     }
-    if s.monitor_only:
-        # A control that looks usable but does nothing would be worse than none, the stop button above all.
-        return {action: _refuse('唯讀監看，尚未接通', state.visible) for action, state in states.items()}
-    return states
+    # A control that looks usable but does nothing would be worse than none, the stop button above all.
+    reason = '唯讀監看，尚未接通' if s.monitor_only else '尚未接通'
+    return {action: state if is_wired(s, action) else _refuse(reason, state.visible) for action, state in states.items()}
+
+
+def _expect_no_contact(s):
+    """Phases in which missing ROS data is normal rather than a failure."""
+    return s.phase in (Phase.STOPPED, Phase.STARTING, Phase.STOPPING)
 
 
 def _ros_cell(s):
-    if s.phase is Phase.STOPPED:
+    if s.ros_connected:
+        return StatusCell('ROS', '正常', Level.OK)
+    if _expect_no_contact(s):
         return StatusCell('ROS', '未連線', Level.NEUTRAL)
-    return StatusCell('ROS', '正常', Level.OK) if s.ros_connected else StatusCell('ROS', '中斷', Level.DANGER)
+    return StatusCell('ROS', '中斷', Level.DANGER)
 
 
 def _system_cell(s):
-    if s.phase is not Phase.STOPPED and not s.ros_connected:
+    if s.launch_problem:
+        return StatusCell('系統', '啟動失敗', Level.DANGER)
+    if not _expect_no_contact(s) and not s.ros_connected:
         # The last known phase must not stay green after contact is lost.
         return StatusCell('系統', '狀態未知', Level.WARN)
-    levels = {Phase.STOPPED: Level.NEUTRAL, Phase.STARTING: Level.BUSY, Phase.READ_ONLY: Level.OK,
-              Phase.TORQUE_ON: Level.WARN, Phase.READY: Level.OK}
+    levels = {Phase.STOPPED: Level.NEUTRAL, Phase.STARTING: Level.BUSY, Phase.STOPPING: Level.BUSY,
+              Phase.READ_ONLY: Level.OK, Phase.TORQUE_ON: Level.WARN, Phase.READY: Level.OK}
     return StatusCell('系統', s.phase.value, levels[s.phase])
 
 
 def _safety_cell(s):
     if s.safety is None:
-        if s.phase in (Phase.STOPPED, Phase.STARTING) or not s.ros_connected:
+        if _expect_no_contact(s) or not s.ros_connected:
             return StatusCell('安全', '—', Level.NEUTRAL)
         return StatusCell('安全', '無監控', Level.WARN)
     return StatusCell('安全', '鎖定', Level.DANGER) if s.safety.latched else StatusCell('安全', '正常', Level.OK)
@@ -448,6 +486,8 @@ def _idle_banner(s):
         return Banner(Level.INFO, '系統未啟動', '', '選擇模式後按「啟動系統」')
     if s.phase is Phase.STARTING:
         return Banner(Level.INFO, '系統啟動中', '', '等待控制器與相機就緒')
+    if s.phase is Phase.STOPPING:
+        return Banner(Level.INFO, '系統關閉中', '', '等待所有程序結束')
     if s.phase is Phase.READ_ONLY:
         return Banner(Level.INFO, '唯讀就緒', '馬達未出力', '確認實體急停可用後才上扭力')
     if s.busy:
@@ -460,8 +500,12 @@ def _attention_banner(s):
         problem = s.safety.blocking_problem
         next_step = f'先排除：{safety_reason_text(problem)}' if problem else '確認現場安全後按「解除鎖定」'
         return Banner(Level.DANGER, '安全鎖定', safety_reason_text(s.safety.reason), next_step)
-    if s.phase is not Phase.STOPPED and not s.ros_connected:
+    if s.launch_problem:
+        return Banner(Level.DANGER, '系統啟動失敗', s.launch_problem, '查看紀錄檔後重新按「啟動系統」')
+    if not _expect_no_contact(s) and not s.ros_connected:
         return Banner(Level.DANGER, 'ROS 連線中斷', '', '畫面資料已失效，請檢查系統')
+    if s.launch_warning:
+        return Banner(Level.WARN, '啟動時間過長', s.launch_warning, '查看紀錄檔，必要時關閉後重新啟動')
     if s.task is not None and s.task.state == 'FAULT':
         next_step = '清空吸盤與 B 區，勾選後按「回 HOME」' if not s.arms_at_home else '清空吸盤與 B 區，勾選後按「復歸」'
         return Banner(Level.DANGER, '任務故障', s.task.message, next_step)
@@ -469,7 +513,7 @@ def _attention_banner(s):
         return Banner(Level.WARN, '等待吸盤確認', s.task.suction_step, '確認實際結果後按成功或失敗')
     if s.task is not None and s.task.state == 'FULL':
         return Banner(Level.WARN, 'C 區已滿', '', '取走 C 區物件後勾選並按「復歸」')
-    if s.phase is Phase.STOPPED or s.phase is Phase.STARTING:
+    if _expect_no_contact(s):
         return None
     if s.joints_stale:
         return Banner(Level.WARN, '馬達資料過期', '數值不是即時資料', '檢查 /joint_states 與控制器')
@@ -481,19 +525,24 @@ def _attention_banner(s):
     return None
 
 
-def _monitor_banner(s, attention):
-    if attention is not None:
-        return replace(attention, next_step='操作按鈕尚未接通，請用終端機處理')
-    if s.phase is Phase.STOPPED:
-        return Banner(Level.INFO, '等待系統啟動', '', '在終端機啟動 ROS 系統')
-    if s.busy:
-        return Banner(Level.INFO, '任務執行中', '唯讀監看', '需要停止時請按實體急停或用終端機')
-    return Banner(Level.INFO, '監看中', '唯讀，不會送出指令', '操作請用終端機')
+_BUTTON_NAME = re.compile('「(.+?)」')
+_ACTION_BY_LABEL = {action.value: action for action in Action}
+
+
+def _without_unwired_buttons(s, result):
+    """Never tell the operator to press a button that does nothing."""
+    names = _BUTTON_NAME.findall(result.next_step)
+    if any(name in _ACTION_BY_LABEL and not is_wired(s, _ACTION_BY_LABEL[name]) for name in names):
+        return replace(result, next_step='這個操作尚未接通，請用終端機處理')
+    return result
 
 
 def banner(s):
     """The single most important thing the operator should know, and what to do next."""
     attention = _attention_banner(s)
-    if s.monitor_only:
-        return _monitor_banner(s, attention)
-    return attention or _idle_banner(s)
+    result = attention or _idle_banner(s)
+    if attention is None and not is_wired(s, Action.STOP) and s.phase in (Phase.READY, Phase.READ_ONLY, Phase.TORQUE_ON):
+        detail = '唯讀監看' if s.monitor_only else '強制停止尚未接通'
+        result = (Banner(Level.INFO, '任務執行中', detail, '需要停止時請按實體急停或用終端機') if s.busy
+                  else Banner(Level.INFO, '監看中', detail, '任務操作請用終端機'))
+    return _without_unwired_buttons(s, result)
