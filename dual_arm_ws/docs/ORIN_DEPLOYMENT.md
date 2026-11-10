@@ -1,6 +1,6 @@
 # Jetson AGX Orin 部署與實機放行
 
-更新：2026-11-10。**本文件的所有步驟都還沒有在 Orin 或實機上執行過（`NOT_RUN`）。** 指令依目前的程式撰寫，實際操作時請記錄結果，放到 `docs/evidence/`。
+更新：2026-11-11。**2026-11-10 在 Orin 實際執行過安裝、建置、離線測試、Mock、P0、H0（唯讀連線）與 arm1 的 H1（evidence/hardware/）；其餘步驟與所有馬達動作都還沒執行（`NOT_RUN`）。** 指令依目前的程式撰寫，實際操作時請記錄結果，放到 `docs/evidence/`。
 
 **現場照順序操作請用 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md)。** 本文件是部署細節與 ESP32 的補充。安裝步驟與基本連線另見 [README.md](../README.md) 第 4、6 節，驗收標準見 [TEST_PLAN.md](TEST_PLAN.md) 第 6 節。
 
@@ -20,6 +20,7 @@
 | Coordinator 自動搬運 | `BLOCKED`，節點會拒絕以實機設定啟動 | 視覺 gateway 完成區域判斷（D7）、實機 TF、實機設定 |
 | 手臂動作 | `BLOCKED` | 完成第 5 節的校正與全部放行條件 |
 | 控制器長時間啟用 | `BLOCKED` | `/safety/estop` 的實機心跳來源。沒有心跳時 `safety_supervisor` 會保持控制器停用 |
+| 操作介面的實機操作 | 只接通強制停止 | 上扭力、解除鎖定、吸盤確認在介面階段 5；介面也還沒在 Orin 開過視窗（UI_PLAN 第 13 節） |
 | ESP32 吸盤 | `NOT_RUN` | 後端已完成並以替身節點驗證，尚未接真正的 ESP32，見第 6.1 節。韌體沒有真空感測，吸附結果仍要人工確認 |
 | A 區左右、j1 與 j2 方向 | arm1：A 在右、j1 +1 `PASS`（2026-11-10，D0 已決定）；arm1 j2 與 arm2 全部 `BLOCKED` | 第 4 節的手動確認（D1），項目見 HARDWARE_TEST_GUIDE.md「2026-11-10 之後還要補的項目」 |
 

@@ -15,6 +15,7 @@
 | 八個物體完整搬運 | 未完成 | 目前模型只搆得到 4 個瓶蓋、7 個 C 格 |
 | 視覺自動定位 | 部分 | 模擬中 Arm 1 取料點可由視覺決定；區域與格位還沒接，實體相機尚未校正 |
 | ESP32 吸盤 | 僅模擬測試 | 程式完成，只用替身節點測過。韌體沒有真空感測，吸取結果要人工確認 |
+| 操作介面 | 模擬可用 | 啟動／關閉系統、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸，見 5 節「用操作介面」。實機模式只接通強制停止，上扭力與吸盤確認還沒做；還沒在 Orin 開過視窗 |
 | Jetson Orin | 部分實測 | 2026-11-10 已在 AGX Orin 安裝、建置，離線測試、Mock 與 CM-530 唯讀連線都 PASS；實機動作仍未放行 |
 
 **實機控制預設是關閉的。** 模擬成功不代表實機可以直接動作，詳見「6. 連接實機」。
@@ -195,6 +196,21 @@ ros2 run dual_arm_coordinator operator_console status
 
 故障後要先用手確認吸盤和 B 區都已淨空，才能復歸：`operator_console recover --cleared`。預設搬一個物體，可用 `cycles:=2` 調整。`journal_path` 檔案會保留狀態，要從頭開始請換一個路徑。服務清單見 [ROS_INTERFACES.md](docs/ROS_INTERFACES.md)。
 
+### 用操作介面
+
+介面會自己啟動和關閉模擬（`hmi_sim.launch.py`，含 coordinator 與 `safety_supervisor`），不要同時開著另一個模擬：
+
+```bash
+ros2 run dual_arm_hmi hmi
+```
+
+在右側選「模擬」後按「啟動系統」，就緒後按「開始工作」。按「強制停止」（或 F12）會停用手臂控制器並取消任務，這是軟體停止，不會切斷馬達電源。停止後依序按「解除鎖定」、勾選「我已確認吸盤與 B 區都已清空」、「回 HOME」、再勾選一次後「復歸」，就能再開始。模擬中吸盤上還有瓶蓋時無法清空，介面會提示改按「重置模擬」。
+
+- 只看不操作：`ros2 run dual_arm_hmi hmi --monitor`，可以同時開第二個；監看實機加 `--hardware`。
+- 不接 ROS 看畫面：`ros2 run dual_arm_hmi hmi --fake`。
+- 設定檔在 `src/dual_arm_hmi/config/profiles.yaml`，要改時複製到 `~/.ros/dual_arm_hmi/profiles.yaml`。實機要填控制板與相機的 by-id 路徑；實機預設用 ROS domain 0（`hardware.ros_domain_id`，不能和模擬相同），模擬用 43。
+- 按鈕的條件與規格見 [docs/UI_PLAN.md](docs/UI_PLAN.md)。
+
 ### 停止模擬
 
 在啟動模擬的終端按 `Ctrl+C`。Gazebo 有時關不乾淨（已知問題），可以這樣確認和處理：
@@ -329,6 +345,7 @@ dual_arm_system/
 | `vision_pkg`、`vision_interfaces` | 三相機視覺 |
 | `dual_arm_vision_adapter` | 校正有效性狀態發布 |
 | `cm530_hardware` | CM-530 實機驅動 |
+| `dual_arm_hmi` | 操作介面（PyQt5） |
 
 ## 9. 常見問題
 

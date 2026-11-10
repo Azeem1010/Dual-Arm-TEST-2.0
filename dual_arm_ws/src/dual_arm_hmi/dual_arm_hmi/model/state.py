@@ -165,6 +165,8 @@ class EventRecord:
     time_text: str
     level: Level
     message: str
+    # Wall-clock seconds, so events from the interface and from ROS can be merged in order.
+    stamp: float = 0.0
 
 
 @dataclass(frozen=True)

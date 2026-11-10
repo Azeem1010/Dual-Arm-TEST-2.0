@@ -182,13 +182,15 @@ dual_arm_coordinator/dual_arm_coordinator/
 | `ros2_control_node` + `CM530SystemInterface` | 唯一序列埠持有者 | 本地 |
 | `env`/`arm1`/`arm2_vision_node` | 視覺服務，介面不可更動 | 本地 |
 | `calibration_status` | 校正有效性 | 本地，需接到 coordinator |
-| `safety_supervisor`（新增） | 急停心跳、coordinator 存活，失效時停用控制器 | 參照對方 permit 概念 |
-| 吸盤節點 | Gazebo 或 ESP32 | 本地 Gazebo，ESP32 待開發 |
+| `safety_supervisor`（已實作） | 急停心跳、coordinator 存活、介面的軟體停止，失效時停用控制器 | 參照對方 permit 概念 |
+| 吸盤節點 | Gazebo 或 ESP32 | 本地 Gazebo；ESP32 後端已實作，只用替身節點驗證 |
+| `dual_arm_hmi`（已實作，模擬） | 操作介面：啟停系統、任務指令、狀態顯示 | 本地 |
 
 | 介面 | 型別 | 用途 |
 |---|---|---|
 | `/dual_arm/start`、`/dual_arm/cancel` | `std_srvs/Trigger` | 接受工作、取消 |
-| `/dual_arm/confirm`、`/dual_arm/recover` | `dual_arm_interfaces/ConfirmStep` | 人工確認、現場復歸 |
+| `/dual_arm/confirm`、`/dual_arm/recover`、`/dual_arm/go_home` | `dual_arm_interfaces/ConfirmStep` | 人工確認、現場復歸、兩臂回 HOME |
+| `/safety/reset`、`/safety/trigger_stop` | `std_srvs/Trigger` | 解除鎖定、軟體停止 |
 | `/dual_arm/status` | `std_msgs/String`（JSON，transient local） | 狀態、持物、B 區擁有者、格位 |
 | `/handoff/b_state` | `std_msgs/String` | B 區使用權資訊 |
 | `/dual_arm/permit`、`/safety/estop` | `std_msgs/Bool` | 軟體互鎖，不取代實體急停 |

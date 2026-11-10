@@ -20,7 +20,7 @@
 4. 只有在沒有 build/ 時才安裝與建置：sudo bash scripts/install_jazzy.sh（需要使用者同意）、bash scripts/build.sh。不要把別台電腦的 build/、install/、log/ 複製過來。
 5. 建立基準，全部不需要硬體，結果回報給使用者：
    (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)
-   應為 272 passed。
+   應為 285 passed。操作介面：(cd src/dual_arm_hmi && QT_QPA_PLATFORM=offscreen python3 -m pytest -q -p no:cacheprovider test)，應為 293 passed。
    python3 scripts/test_cm530_mock.py
    這支會覆寫 docs/evidence/ 的舊紀錄，跑完先把結果另存，再用 git restore 還原舊檔。
 
@@ -34,13 +34,14 @@
 
 文件可能過時。以程式碼和 docs/evidence/ 的最新紀錄為準。
 
-## 目前狀態（2026-11-10）
+## 目前狀態（2026-11-11）
 
 - 模擬：coordinator 在 Gazebo 完成兩物體 A→B→C、故障停止與人工復歸。區域和格位用 Gazebo 真值，只有 arm1 取料點可由視覺決定。
 - cm530_hardware、安全監控、ESP32 後端只用 Mock 或替身節點驗證。實機全部 NOT_RUN，所有實機步驟都還沒執行過。
 - config/calibration.yaml 刻意全為 null，coordinator_node 會拒絕實機模式。
 - 2026-11-10 H1（arm1）已確認 A 區在手臂右方、j1 方向 +1，模擬已依此修改。arm2 的 H1、j2 的方向與零點仍待手冊的 H1 解決（D1）。
-- 模型只有 cap_3～6 與部分格位可達，格位 1 搆不到，八件搬運是已知 FAIL（D3）。
+- 模型只有 cap_3～6 與部分格位可達，模擬編號的格位 1 搆不到，八件搬運是已知 FAIL（D3）。使用者 2026-11-11 提供的實物編號和模擬差 180°（1、2 在最靠近手臂 2 的一排），改編號併入階段 C，現場量測後和場地尺寸一起改。
+- 操作介面（dual_arm_hmi）階段 0～3 在模擬可用：啟停系統、開始、取消、強制停止、回 HOME、復歸。實機模式只接通強制停止，實機預設用 ROS domain 0（`hardware.ros_domain_id`）、模擬用 43。
 - safety_supervisor 鎖定時會把手動啟動的控制器再停掉（C32，只驗證 Mock），約有 0.3 秒空窗，所以手動切換依然禁止。
 
 ## 絕對禁止

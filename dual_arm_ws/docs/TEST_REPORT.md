@@ -1,5 +1,13 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-11 Docs synchronised; event log order
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| HMI unit tests after the event-log change | PASS | 293, including two new tests for merge order and the 200 limit |
+| `check_docs.py` | PASS | links and zone-order statements |
+| Gazebo rerun of stage 3 | NOT_RUN | the change affects only the event list |
+
 ## 2026-11-11 Operator UI stage 3 (task control)
 
 Commands are in evidence/hmi/stage3/stage3_*.sh and stage3_live_check.py. Isolated with ROS_DOMAIN_ID=78, GZ_PARTITION=hmi_stage3 and a temporary state directory and journal; the window runs offscreen and confirmation dialogs answer yes.

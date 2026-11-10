@@ -51,6 +51,7 @@ bash scripts/run_pipeline.sh --count 2    # 需要另開終端和乾淨的場景
 python3 scripts/check_home_collision.py   # HOME 碰撞檢查，需先 source install/setup.bash
 python3 scripts/test_cm530_mock.py        # CM-530 整合測試，不需硬體
 (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # coordinator 單元測試
+(cd src/dual_arm_hmi && QT_QPA_PLATFORM=offscreen python3 -m pytest -q -p no:cacheprovider test)   # 操作介面單元測試
 ```
 
 ## 容易踩到的地方

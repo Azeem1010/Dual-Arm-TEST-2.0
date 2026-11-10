@@ -15,6 +15,7 @@
 | 查看測試結果 | [TEST_REPORT.md](dual_arm_ws/docs/TEST_REPORT.md) |
 | 接手開發，或讓 AI 助手協助 | [AGENTS.md](dual_arm_ws/AGENTS.md) |
 | 工作包、衝突清單、待決定事項 | [MODIFICATION_PLAN.md](dual_arm_ws/docs/MODIFICATION_PLAN.md) |
+| 用操作介面啟動模擬與搬運 | [安裝與使用指南第 5 節](dual_arm_ws/README.md)、[UI_PLAN.md](dual_arm_ws/docs/UI_PLAN.md) |
 | **到現場測試實機** | [實機測試手冊](dual_arm_ws/docs/HARDWARE_TEST_GUIDE.md) |
 | 測試計畫與放行階梯 | [TEST_PLAN.md](dual_arm_ws/docs/TEST_PLAN.md) |
 | Orin 部署與實機步驟 | [ORIN_DEPLOYMENT.md](dual_arm_ws/docs/ORIN_DEPLOYMENT.md) |
@@ -39,6 +40,7 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 | 八物體完整搬運 | ❌ 未完成，目前模型只搆得到 4 個瓶蓋、7 個 C 格 |
 | 視覺自動定位 | 🟡 模擬中取料點可由視覺決定；區域與格位還沒接，實體相機尚未校正 |
 | ESP32 吸盤 | 🟡 程式完成，只用替身節點測過，還沒接實機 |
+| 操作介面 | 🟡 模擬中可啟停系統、開始、取消、強制停止、回 HOME、復歸；實機只接通強制停止，尚未在 Orin 開過 |
 | Orin 部署 | 🟡 2026-11-10 已在 Orin 安裝、建置並通過離線測試與 Mock；唯讀連線 PASS，手動方向確認只做完 Arm 1 |
 | 實機校正 | ❌ 未完成，需要現場量測 |
 

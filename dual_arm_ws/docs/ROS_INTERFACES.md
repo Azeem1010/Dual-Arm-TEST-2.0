@@ -38,6 +38,8 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | 任務與安全節點 | 來源 | 發布 | 訂閱 | Service／Action |
 |---|---|---|---|---|
 | `dual_arm_coordinator` | `dual_arm_coordinator` | `/dual_arm/status`、`/dual_arm/permit`、`/handoff/b_state`、`/gripper/armN/command` | `/joint_states`、`/safety/estop`、`/gripper/armN/state`、`/ground_truth/cap_{1..8}` | Server：`/dual_arm/{start,cancel,confirm,recover,go_home}`。Client：`/move_action`、`/execute_trajectory`、`/apply_planning_scene`、`/check_state_validity`、`/get_planning_scene` |
+| `dual_arm_hmi_monitor` | `dual_arm_hmi`（操作介面，監看） | 無 | 三支相機 `image_raw`、`/vision/*/debug_image`、`/view_*/image_raw`、`/joint_states`、`/dynamic_joint_states`、`/armN_controller/controller_state`、`/dual_arm/status`、`/safety/status`、`/robot_description`、`/vision/env/zone_state`、`/vision/arm2/grid_state`、`/vision/calibration_status` | Client：`/controller_manager/list_controllers`、`/dual_arm_coordinator/get_parameters` |
+| `dual_arm_hmi_command` | `dual_arm_hmi`（操作介面，指令；`--monitor` 不建立） | 無 | 無 | Client：`/safety/{trigger_stop,reset}`、`/dual_arm/{start,cancel,go_home,recover}` |
 | `safety_supervisor` | `dual_arm_coordinator` | `/safety/status` | `/safety/estop`、`/dual_arm/permit` | Server：`/safety/reset`、`/safety/trigger_stop`。Client：`/controller_manager/switch_controller`、`/controller_manager/list_controllers` |
 
 參數 `observation_source:=vision_pick` 時，`dual_arm_coordinator` 另外使用 `/vision/arm1/get_pick_target`、`/vision/calibration_status`、三支相機 `image_raw` 與 TF。實機設定目前會被 coordinator 拒絕啟動。
@@ -152,7 +154,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `vision_sim.launch.py` | `sim.launch.py` + 三個視覺節點 | `calibration_status` |
 | `demo_pick_place.launch.py` | `sim.launch.py` + `dual_arm_coordinator`（Gazebo 真值） | 視覺節點；預設一輪已實跑通過（evidence/docs_audit/） |
 | `calibration.launch.py` | `calibration_status` | 校正工具 |
-| `hmi_sim.launch.py` | `demo_pick_place.launch.py` + 三個視覺節點（發布標註影像）+ `calibration_status` | `safety_supervisor` |
+| `hmi_sim.launch.py` | `demo_pick_place.launch.py` + 三個視覺節點（發布標註影像）+ `calibration_status` + `safety_supervisor`（`require_estop:=false`） | 急停心跳 |
 | `hardware.launch.py`（預設） | RSP、`ros2_control_node`、`joint_state_broadcaster`，唯讀 | arm controller、`move_group`、相機、吸盤 |
 | `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group`；非 Mock 時加 `safety_supervisor`。`controllers_file` 的容差必須是實測值 | 相機、吸盤、相機 TF |
 | `vision.launch.py` | `usb_cam` × 3、視覺節點 × 3，需要時加 `image_rotate_node` | 手臂與 MoveIt |
@@ -165,7 +167,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | 2 | Coordinator 只有在 `observation_source:=vision_pick` 時才檢查 `/vision/calibration_status`，且只檢查 arm1 | 區域與格位的校正閘門還沒有實際使用 |
 | 3 | 已解決（上游 4a40f30）：`usb_cam` 的 `frame_id` 改為 `*_camera_optical_frame`，與 `dual_arm_vision_adapter/config/hardware/*.yaml` 一致 | — |
 | 4 | 上游 4a40f30 只把 `header.frame_id` 改成 `armN_base_link`，座標數值的計算沒變，仍是 `armN_base` 軸向（與 `armN_base_link` 差 +90° yaw 與 z 0.014）。`vision` gateway 不看 `header.frame_id`，用 `coordinator.yaml` 的 `vision_base_frame: armN_base` 經 TF 轉換；模擬有 static TF，實機 TF 尚未發布，需要量測值 | 不可依 `header.frame_id` 直接當 `armN_base_link` 使用；需與上游確認座標是否要真的改成 `armN_base_link` 軸向。軸向見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
-| 5 | `esp32_micro_ros` 不存在，沒有 ESP32 協定（D5） | 實機只能用人工 token；`/gripper/*` 只存在於模擬 |
+| 5 | 已部分解決（WP12）：`gripper` gateway 有 `esp32` 後端，協定依 ray000518/micro-ros（`/suction_command`、`/suction_status`），只用替身節點驗證；ESP32 只回命令回音，沒有真空感測（D5） | 吸取結果仍要人工 token 確認；`/gripper/*` 只存在於模擬 |
 | 6 | Coordinator 會同步 PlanningScene，但場景沒有平台、泡棉、相機支架，碰撞模型仍是保守方塊（WP11） | 路徑碰撞驗證不完整 |
 | 7 | 相機 static TF 只在 `sim.launch.py` 發布 | 實機沒有相機 TF |
 | 8 | `demo_pick_place.launch.py` 不含視覺節點；`calibration.launch.py` 只有狀態監看 | 含視覺的流程目前由測試腳本分開啟動 |

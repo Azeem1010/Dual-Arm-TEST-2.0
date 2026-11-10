@@ -439,3 +439,22 @@ def test_commands_follow_the_monitor_to_another_domain(monkeypatch):
 def live_reply(service, ok, message='ok'):
     from dual_arm_hmi.sources.ros_command import Reply
     return Reply(service, ok, message)
+
+
+def test_interface_and_ros_events_are_merged_newest_first(parts, monkeypatch):
+    from dual_arm_hmi.model.state import EventRecord, Level
+    source, ros, *_ = parts
+    now = [1000.0]
+    monkeypatch.setattr(live_source.time, 'time', lambda: now[0])
+    source.invoke(Action.STOP)  # an interface event at 1000
+    ros.base = replace(ros.base, events=(EventRecord('t', Level.NEUTRAL, 'ros later', 1001.0),
+                                         EventRecord('t', Level.NEUTRAL, 'ros earlier', 999.0)))
+    messages = [event.message for event in source.snapshot().events]
+    assert messages[0] == 'ros later' and messages[-1] == 'ros earlier'
+
+
+def test_interface_events_are_capped(parts):
+    source, *_ = parts
+    for _ in range(live_source.EVENT_LIMIT + 20):
+        source.invoke(Action.STOP)
+    assert len(source.snapshot().events) == live_source.EVENT_LIMIT

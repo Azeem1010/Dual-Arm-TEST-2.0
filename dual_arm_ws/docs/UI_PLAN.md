@@ -10,7 +10,7 @@
 | Windows 捷徑 | 雙擊 `scripts/hmi_windows.bat` |
 | Orin 桌面捷徑 | 執行一次 `bash scripts/install_hmi_shortcut.sh` |
 
-目前接通的只有啟動系統、關閉系統、重置模擬；強制停止與任務按鈕都未接通，畫面會明確標示。介面定義以 [ROS_INTERFACES.md](ROS_INTERFACES.md) 和實際程式碼為準，開發規則見 [AGENTS.md](../AGENTS.md)。
+目前接通：啟動系統、關閉系統、重置模擬、強制停止、解除鎖定、開始工作、取消任務、回 HOME、復歸。上扭力與吸盤成功／失敗尚未接通（階段 5），實機模式只接通強制停止；未接通的按鈕會標示「尚未接通」。`--monitor` 視窗所有操作都不接通。介面定義以 [ROS_INTERFACES.md](ROS_INTERFACES.md) 和實際程式碼為準，開發規則見 [AGENTS.md](../AGENTS.md)。
 
 ## 1. 已定案
 
@@ -20,8 +20,8 @@
 | Windows | WSLg 完整版，和 Orin 同一套程式；實機操作以 Orin 為準 |
 | 部署機 | Jetson AGX Orin Developer Kit，Ubuntu 24.04.5，L4T R39.2.1，32GB RAM，一般螢幕加鍵鼠 |
 | 版面基準 | 1920×1080，最小視窗 1280×720 |
-| 強制停止 | 新增 `/safety/trigger_stop`，同時呼叫 `/dual_arm/cancel`；標明是軟體停止，實體急停不可省略 |
-| 回 HOME | 新增 `/dual_arm/go_home`，模擬先開放，實機等 H5 通過 |
+| 強制停止 | `/safety/trigger_stop`（階段 3 已實作），同時呼叫 `/dual_arm/cancel`；標明是軟體停止，實體急停不可省略 |
+| 回 HOME | `/dual_arm/go_home`（階段 3 已實作），模擬開放，實機等 H5 通過 |
 | 急停心跳（D8） | 獨立節點接實體急停，UI 只顯示、不發送。節點與接線尚未完成 |
 | 相機畫面 | Qt 內嵌，判定框來自視覺節點自己的標註圖，不用 `cv2.imshow` |
 | Gazebo 畫面 | 使用 `/view_*` 影像，放大顯示並可切換四個視角，不嵌入 Gazebo 視窗 |
@@ -104,10 +104,14 @@ src/dual_arm_hmi/
     model/steps.py      任務步驟對照
     model/joints.py     角度、raw、限位餘裕
     sources/base.py     資料來源介面
-    sources/ros_source.py
+    sources/ros_source.py   唯讀監看節點 dual_arm_hmi_monitor
+    sources/ros_parse.py    ROS 訊息轉成畫面狀態（不需 rclpy）
+    sources/ros_command.py  指令節點 dual_arm_hmi_command（階段 3）
+    sources/live_source.py  監看＋啟停＋任務指令，追蹤每個指令的結果
     sources/fake_source.py
-    launcher/profiles.py
-    launcher/process.py
+    launcher/profiles.py    各模式的啟動指令、ROS domain
+    launcher/process.py     程序群組、工作階段檔、殘留清除
+    tools/capture_screens.py
     ui/theme.py, main_window.py, camera_panel.py, motor_panel.py,
        task_panel.py, control_panel.py, event_log.py
   config/profiles.yaml
@@ -115,7 +119,7 @@ src/dual_arm_hmi/
 ```
 
 - ROS 在背景執行，Qt 主執行緒只繪製。影像只保留最新一張，轉換在背景完成。
-- 強制停止用專屬的 client 和 callback group，不和一般資料共用。
+- 指令由獨立的 `dual_arm_hmi_command` 節點送出（自己的 context 與執行緒，6 個 service client），不和監看共用；強制停止和其他指令共用這個節點，service 不存在時立即回報、不等待。監看節點 `dual_arm_hmi_monitor` 沒有任何會下指令的 client。
 - 資料過期用電腦收到的時間判斷，模擬時 `header.stamp` 是模擬時間。
 - 用 apt 的 `python3-opencv` 和 `python3-pyqt5`，不用 pip 版 `opencv-python`（Qt plugin 會衝突）。
 - 影像轉換沿用 `vision_pkg.node_common.image_msg_to_bgr`，不用 `cv_bridge`，避開 Jetson 上的 ABI 問題；只在顯示時轉換。
@@ -138,17 +142,19 @@ src/dual_arm_hmi/
 | 強制停止 | 永遠可按 | 不確認 | `/safety/trigger_stop` 加 `/dual_arm/cancel` |
 | 啟動系統 | 未啟動，且沒有殘留的 Gazebo | 選擇模式 | 依模式執行 launch |
 | 關閉系統 | 任務未執行 | 確認視窗 | SIGINT，逾時 SIGTERM，再檢查殘留 |
-| 上扭力（實機） | 唯讀就緒、校正 `PASS` | 確認視窗，提醒急停 | `set_hardware_component_state active` |
-| 解除鎖定 | 已鎖定且原因已排除 | 確認視窗 | `/safety/reset`，不直接切換 controller |
+| 上扭力（實機，未接通） | 唯讀就緒、校正 `PASS` | 確認視窗，提醒急停 | `set_hardware_component_state active`（階段 5） |
+| 解除鎖定 | 已鎖定（原因是否排除由 `/safety/reset` 判斷，未排除時拒絕） | 確認視窗 | `/safety/reset`，不直接切換 controller |
 | 重置模擬（僅模擬） | 系統已啟動、任務未執行 | 確認視窗 | 重啟系統並使用新的 `journal_path` |
-| 開始工作 | `state` 為 IDLE 或 SUCCEEDED、未忙碌、未鎖定、controller 啟用 | 不確認 | `/dual_arm/start` |
+| 開始工作 | 系統就緒、`state` 為 IDLE 或 SUCCEEDED、未忙碌、未鎖定、controller 啟用；實機 `BLOCKED` | 不確認 | `/dual_arm/start` |
 | 取消任務 | 任務執行中 | 不確認 | `/dual_arm/cancel` |
-| 回 HOME | 任務未執行、未鎖定、人工確認吸盤已清空 | 勾選 | `/dual_arm/go_home` |
-| 吸盤成功／失敗 | 有 `suction_token` | 按鈕本身 | `/dual_arm/confirm` |
-| 復歸 | FAULT 或 FULL、任務未執行 | 勾選已清空 | `/dual_arm/recover` |
+| 回 HOME | 非實機、任務未執行、未鎖定、兩臂不全在 HOME、勾選已清空 | 勾選 | `/dual_arm/go_home`，`success` 帶勾選結果 |
+| 吸盤成功／失敗（未接通） | 有 `suction_token` | 按鈕本身 | `/dual_arm/confirm`（階段 5） |
+| 復歸 | FAULT 或 FULL、任務未執行、未鎖定、兩臂在 HOME | 勾選已清空 | `/dual_arm/recover`，帶狀態上的一次性 token |
 
 - 不能按時，原因直接顯示在按鈕旁。
-- 動作回饋分三段：已送出、系統接受或拒絕、實際結果。實際結果以狀態 topic 為準。
+- 動作回饋分三段：已送出、系統接受或拒絕、實際結果（完成或失敗）。解除鎖定與復歸由 service 做完才回覆，回覆就是結果；其他以狀態 topic 為準：開始工作看任務結束時的 `state`，回 HOME 看 `at_home`，強制停止看任務停下與 `/safety/status`。強制停止只要有一個 service 接受就算接受。
+- 「兩臂在 HOME」只認 `/dual_arm/status` 的 `at_home` 兩臂都是 true；欄位缺少或為 null 時當作不在 HOME。
+- 鎖定會停用手臂 controller。模擬與 Mock 沒有上扭力步驟，鎖定時系統維持「就緒」，鎖定另外顯示。
 - 上扭力與解除鎖定的順序不可對調（[HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md) H4）。
 
 ## 7. 停止與復歸
@@ -177,7 +183,7 @@ src/dual_arm_hmi/
 | 任務 | 八段進度、目前步驟、持物、B 區擁有者、C 區八格、完成數 | `/dual_arm/status`、`/vision/arm2/grid_state` |
 | B 區互鎖 | Arm1、B 區、Arm2 三格與兩道閘門 | `/dual_arm/status` 的 `b_owner`、`state`，`/vision/env/zone_state` |
 | 安全 | 鎖定、原因、controller 實際是否停止 | `/safety/status`、`list_controllers` |
-| 事件紀錄 | 時間、等級、訊息；故障置頂，可匯出 | UI 彙整 |
+| 事件紀錄 | 時間、等級、訊息；最新在上，最多 200 筆。匯出在階段 4 | UI 彙整 |
 
 **任務八段**（`state` 格式為 `ARM1:APPROACH_A`）：回 HOME、Arm1 取料、Arm1 放到 B、確認 B 區、Arm2 取料、確認 B 清空、Arm2 放到 C、確認 C 區。未對應的步驟顯示原文。
 
@@ -196,10 +202,10 @@ src/dual_arm_hmi/
 | 模式 | 內容 | 能否開始工作 |
 |---|---|---|
 | Mock | `mock.launch.py rviz:=false` | 否，沒有任務節點 |
-| 模擬 | 新增 `hmi_sim.launch.py`：模擬、視覺、校正狀態、coordinator、`safety_supervisor` | 可以 |
+| 模擬 | `hmi_sim.launch.py`：模擬、視覺、校正狀態、coordinator、`safety_supervisor` | 可以 |
 | Mock Serial | `hardware.launch.py use_mock_serial:=true` | 否，用來測啟動步驟 |
-| 實機唯讀 | `hardware.launch.py` 加 `vision.launch.py` | 否 |
-| 實機動作 | `enable_motion:=true`，選實測的 controllers 檔 | `BLOCKED` |
+| 實機唯讀 | `hardware.launch.py` 加 `vision.launch.py`、`calibration.launch.py mode:=hardware` | 否 |
+| 實機動作 | 同上加 `enable_motion:=true`，選實測的 controllers 檔 | `BLOCKED`（沒有 coordinator，介面只接通強制停止） |
 
 - `safety_supervisor` 在模擬要設 `require_estop:=false`，否則沒有心跳會一直鎖定。
 - 各模式獨立於 UI 執行，UI 當掉時系統不跟著結束，重開可接回。
@@ -241,13 +247,13 @@ src/dual_arm_hmi/
 
 | 檔案 | 改動 | 階段 |
 |---|---|---|
-| `scripts/install_jazzy.sh` | 加 `fonts-noto-cjk`、`python3-pyqt5` | 0 |
-| `src/vision_pkg` 三個節點 | 新增 `publish_debug_image`，發布 `/vision/*/debug_image`。`_render` 目前被 `show_debug` 擋住，要讓繪圖和 `imshow` 分開控制 | 1 |
+| `scripts/install_jazzy.sh` | 加 `fonts-noto-cjk`、`python3-pyqt5`（已完成） | 0 |
+| `src/vision_pkg` 三個節點 | 新增 `publish_debug_image`，發布 `/vision/*/debug_image`。`_render` 原本被 `show_debug` 擋住，已改成繪圖和 `imshow` 分開控制（已完成） | 1 |
 | `src/dual_arm_bringup` | 新增 `hmi_sim.launch.py`（已完成；階段 3 加入 `safety_supervisor`，`require_estop:=false`） | 2 |
-| `scripts/` | 新增 `hmi_windows.bat`、`install_hmi_shortcut.sh` | 2 |
-| `safety_monitor.py`、`safety_supervisor.py` | 新增 `/safety/trigger_stop`，直接鎖定，由 `/safety/reset` 解除 | 3 |
-| `coordinator_node.py` | 新增 `/dual_arm/go_home` | 3 |
-| 新增 `twin_mirror`、`twin.launch.py`、孿生用 controller 設定與不含相機和瓶蓋的 world | 第 9.1 節，不改動現有 `sim.launch.py` | 同步階段 |
+| `scripts/` | 新增 `hmi_windows.bat`、`install_hmi_shortcut.sh`（已完成） | 2 |
+| `safety_monitor.py`、`safety_supervisor.py` | 新增 `/safety/trigger_stop`，直接鎖定，由 `/safety/reset` 解除（已完成） | 3 |
+| `coordinator_node.py`、`workflow/transfer.py`、`gateways/motion.py` | 新增 `/dual_arm/go_home`，狀態加 `at_home`（已完成） | 3 |
+| 新增 `twin_mirror`、`twin.launch.py`、孿生用 controller 設定與不含相機和瓶蓋的 world | 第 9.1 節，不改動現有 `sim.launch.py`（未開始） | 同步階段 |
 | 文件 | `ROS_INTERFACES`、`HARDWARE_TEST_GUIDE`、`PROGRESS`、`TEST_REPORT`、`RESUME` | 各階段 |
 
 `vision_pkg` 位於 `src/`，可以修改；`third_party/` 裡的上游版本不動。
@@ -298,7 +304,7 @@ WSLg 與 Orin 各跑一次，結果放 `docs/evidence/hmi/`，狀態只用 `PASS
 | 異常 | 相機斷線、ROS 節點結束、UI 被強制關閉、操作被拒絕 |
 | 單元測試 | 狀態模型、按鈕規則、步驟對照，不需要 ROS 和 Qt |
 
-已做的環境檢查（2026-11-10）：
+已做的檢查（2026-11-10 起，最新 2026-11-11）：
 
 | 項目 | 狀態 | 說明 |
 |---|---|---|
@@ -317,7 +323,7 @@ WSLg 與 Orin 各跑一次，結果放 `docs/evidence/hmi/`，狀態只用 `PASS
 | 階段 3 持物停止後重置模擬 | `PASS`（重跑） | 手臂 1 吸著瓶蓋時停止，回 HOME 被拒絕並改用重置模擬，46.1 秒後 `IDLE`。第一次實測的第三次取料因 A 區可達性限制（C30）自己故障，沒有測到持物，照實記錄 |
 | 階段 3 停在限位外的恢復 | `FAIL`（已知缺口） | 手臂停在關節限位外時回 HOME 無法規劃，模擬只能重置；實機程序在 H5 前定出 |
 | Windows 與 Orin 捷徑 | `PASS` | `.bat` 的路徑轉換與 `.desktop` 內容已驗證；實際雙擊開啟 `NOT_RUN` |
-| 階段 1 唯讀 | `PASS` | `ros2 node info` 只有 `/rosout`、`/parameter_events` 發布者，client 只有 `list_controllers`、`get_parameters`，沒有 action |
+| 階段 1 唯讀 | `PASS` | `ros2 node info` 只有 `/rosout`、`/parameter_events` 發布者，client 只有 `list_controllers`、`get_parameters`，沒有 action。階段 3 沒有改動監看節點的 client，`--monitor` 仍不建立指令節點；完整介面另有 `dual_arm_hmi_command`，實際 `node info` 未重新擷取 |
 | UI 對系統的負載 | `PASS` | WSL 模擬速度：無 UI 0.182、有 UI 0.183 倍實時；刷新平均 1.0 ms。相機約 2 FPS 是 WSL 渲染限制，無法驗證 10 FPS 目標 |
 | WSL 系統繁中字型 | `FAIL` | 確認時為 0 個，需用 sudo 安裝 `fonts-noto-cjk` |
 | 高 DPI 150% | `NOT_RUN` | 目前只測 100% |

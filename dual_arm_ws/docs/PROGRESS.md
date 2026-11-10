@@ -2,7 +2,12 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: operator UI stage 3 (task control, stop, HOME, recovery)
+## Latest result: docs synchronised with the code; event log order fixed
+
+- Both READMEs now describe the operator UI (how to run it, what is wired, the hardware domain). UI_PLAN matches `state.py` and `live_source.py` (wired actions, button conditions, how each outcome is judged, architecture). ROS_INTERFACES lists the two interface nodes and corrects the `hmi_sim` row and the ESP32 gap. TEST_PLAN, ORIN_DEPLOYMENT (what has actually run on the Orin), ARCHITECTURE, FUTURE_ROADMAP, AGENTS and the three handoff prompts updated; expected counts coordinator 285, HMI 293.
+- Fixed while checking: the interface showed its own events (start, stop, commands) above every ROS event regardless of time, and kept them without limit. Events now carry a wall-clock stamp, are merged newest first and capped at 200. HMI unit tests 293 PASS. No Gazebo rerun; the change only affects the event list.
+
+## Earlier result: operator UI stage 3 (task control, stop, HOME, recovery)
 
 - New services: `/safety/trigger_stop` on `safety_supervisor` (latches with `Operator software stop` and deactivates the arm controllers; `/safety/reset` clears it) and `/dual_arm/go_home` on the coordinator (arms HOME one after the other, the B owner first, MoveIt-planned; `success` is the operator's confirmation and no token is used; refused in simulation while the journal shows an arm holding; a failed or stopped move faults the task). `/dual_arm/status` adds `at_home` per arm, null when the joint state is old.
 - `hmi_sim.launch.py` now runs `safety_supervisor` with `require_estop:=false`.

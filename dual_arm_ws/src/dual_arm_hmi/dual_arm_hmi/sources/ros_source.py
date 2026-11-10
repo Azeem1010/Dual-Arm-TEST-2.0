@@ -233,7 +233,7 @@ class RosSource(DataSource):
             return None
 
     def _note(self, level, message):
-        self._events.appendleft(EventRecord(time.strftime('%H:%M:%S'), level, message))
+        self._events.appendleft(EventRecord(time.strftime('%H:%M:%S'), level, message, time.time()))
 
     def _note_changes(self, snapshot):
         current = {'phase': snapshot.phase, 'mode': snapshot.mode, 'connected': snapshot.ros_connected,

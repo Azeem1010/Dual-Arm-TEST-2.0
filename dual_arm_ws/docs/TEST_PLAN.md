@@ -34,6 +34,9 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 | 視覺取料（Gazebo） | `docs/evidence/wp7/wp7.sh pick` |
 | 安全監控（mock） | `start_sim.sh mock` 後 `python3 scripts/test_safety_supervisor.py WORK REPORT.json` |
 | 操作工具（mock） | `docs/evidence/wp10/wp10.sh mock` |
+| 操作介面單元測試 | `cd src/dual_arm_hmi && QT_QPA_PLATFORM=offscreen python3 -m pytest -q -p no:cacheprovider test` |
+| 操作介面啟停（Gazebo） | `docs/evidence/hmi/stage2/stage2_live.sh`（十次啟停與接回） |
+| 操作介面任務控制（Gazebo） | `docs/evidence/hmi/stage3/stage3_live.sh`，只跑持物停止加 `holding` |
 
 - 每個 Gazebo 情境群組都要用剛啟動的模擬，因為瓶蓋會被移動。
 - 啟動前用 `pgrep -af 'gz sim'` 確認沒有其他模擬。
@@ -55,6 +58,9 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 | 重啟後要求復歸 | `test_workflow`、Coordinator 節點 | `PASS` |
 | Coordinator 失效時停止手臂 | 安全監控 | `PASS`（mock） |
 | 鎖定中手動啟動控制器會被再停用 | `test_safety_ros`、安全監控情境 | `PASS`（mock） |
+| 軟體停止鎖定、解除鎖定後恢復 | `test_safety`、`test_safety_ros`、介面任務控制 | `PASS`（模擬） |
+| 回 HOME 順序、拒絕條件、失敗進入故障 | `test_workflow`、介面任務控制 | `PASS`（模擬）；停在關節限位外時無法規劃 HOME，`FAIL`（已知缺口） |
+| 介面指令的送出、接受與結果 | `test_live_source`、介面任務控制 | `PASS`（模擬）；實機只接通強制停止 |
 | 序列逾時不重送 | `test_link`、`test_scheduler` | `PASS` |
 | 兩物體搬運 | 回歸 `two` | `PASS` |
 | 八物體搬運 | 回歸 `batch` | `FAIL`（格位 1 與 A 區可達範圍，C30、D3） |
@@ -74,7 +80,9 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 | `gateways/vision.py` | 單元測試、視覺取料 |
 | 速度、容差、逾時設定 | 回歸 `two`、`faults`、視覺取料至少 3 次 |
 | `cm530_hardware` | gtest、Mock Serial、ASan/UBSan、TSan |
-| 安全監控 | 單元測試、安全監控情境 |
+| 安全監控 | 單元測試、安全監控情境、介面任務控制 |
+| `dual_arm_hmi` | 介面單元測試；改到啟停或指令時加對應的 Gazebo 實測（stage2／stage3） |
+| `/dual_arm/*` 服務或狀態欄位 | Coordinator 單元測試、Coordinator 節點、介面單元測試與任務控制 |
 | URDF、SRDF、world、`runtime.json` 的 HOME | `build.sh`、模型檢查（`validate_model.py`、`test_cad_pose.py`、`check_home_collision.py`）、回歸 `two` |
 | 場地座標、區域或格位設定 | 上一列全部，加上可達性（`report_reach.py`）、舊 pipeline 兩物體、視覺取料 |
 | 只改文件 | `run_checks.sh t0`：連結全部有效，並逐條看過列出的區域順序描述 |

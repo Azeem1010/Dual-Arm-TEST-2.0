@@ -54,8 +54,8 @@
    source /opt/ros/jazzy/setup.bash
    source install/setup.bash
 6. 離線基準測試，全部不需要硬體。結果要記錄：
-   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 272 passed
-   (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)           # 預期 262 passed
+   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 285 passed
+   (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)           # 預期 293 passed（需 QT_QPA_PLATFORM=offscreen 或桌面）
    colcon test --packages-select cm530_hardware && colcon test-result --verbose     # 預期 42 項全過
    python3 scripts/test_cm530_mock.py                                               # 預期 7 個階段 PASS
    注意：build.sh 和 test_cm530_mock.py 會覆寫 docs/evidence/ 的既有紀錄。跑完先把新結果複製到本次的證據資料夾，再用 git restore docs/evidence/ 把舊檔還原，git status 要確認只剩新增的證據資料夾。

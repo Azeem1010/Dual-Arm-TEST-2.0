@@ -28,6 +28,7 @@ _FINISHED_BY_REPLY = frozenset({Action.SAFETY_RESET, Action.RECOVER})
 # Hardware gets only the stop until the stepwise hardware start (stage 5) exists.
 _HARDWARE_TASK_ACTIONS = frozenset({Action.STOP})
 _RESIDUAL_CHECK_S = 2.0
+EVENT_LIMIT = 200
 # How long a command may stay accepted without the task ever showing busy before it counts as settled.
 _SETTLE_S = 1.5
 _SERVICE_TEXT = {'/safety/trigger_stop': '安全監控', '/safety/reset': '安全監控', '/dual_arm/start': '任務',
@@ -116,7 +117,8 @@ class LiveSource(DataSource):
         self._store.save(self._settings)
 
     def _note(self, level, message):
-        self._events.insert(0, EventRecord(time.strftime('%H:%M:%S'), level, message))
+        self._events.insert(0, EventRecord(time.strftime('%H:%M:%S'), level, message, time.time()))
+        del self._events[EVENT_LIMIT:]
 
     def _wired(self, mode):
         if self._commander is None:
@@ -304,7 +306,8 @@ class LiveSource(DataSource):
         if phase is Phase.STOPPED:
             mode = self._selected
         self._follow_launch(status, phase)
-        events = tuple(self._events) + base.events
+        # Newest first across both lists; sorted() keeps the order of events with the same stamp.
+        events = tuple(sorted(self._events + list(base.events), key=lambda event: event.stamp, reverse=True))[:EVENT_LIMIT]
         return replace(base, phase=phase, mode=mode, monitor_only=False, wired_actions=self._wired(mode),
                        launch_managed=managed or not base.ros_connected, launch_problem=problem, launch_warning=warning,
                        residual_processes=self._residual_gazebo(managed), feedback=self._feedback or base.feedback,

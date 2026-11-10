@@ -158,6 +158,8 @@ unset ROS_DOMAIN_ID
 
 實機一律用 ROS 預設的 domain 0（操作介面的 `hardware.ros_domain_id` 也是 0）。模擬用 43，終端機若曾 `export ROS_DOMAIN_ID=43` 或其他值，`unset` 後才看得到實機，也不會收到模擬的資料。
 
+想用操作介面在旁邊看數值，另開終端執行 `ros2 run dual_arm_hmi hmi --monitor --hardware`。這個視窗只讀，不會下任何指令，也不開序列埠；H3～H5 的動作一律照本手冊用終端指令。
+
 找到控制板的固定路徑，下面用 `<控制板>` 表示：
 
 ```bash

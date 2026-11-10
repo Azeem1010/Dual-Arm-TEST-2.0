@@ -22,7 +22,7 @@
 
 文件可能過時。下結論前，以實際程式碼和 docs/evidence/ 的最新紀錄為準。兩份計畫不一致時，以 MODIFICATION_PLAN.md 為準。
 
-## 目前狀態（2026-11-10）
+## 目前狀態（2026-11-11）
 
 - 不需實機的工作包 WP0～WP6、WP8～WP10、WP12、WP13 都是 PASS，細節以 MODIFICATION_PLAN.md 第 6 節為準。
 - 模擬：coordinator 節點在 Gazebo 完成兩物體 A→B→C 與故障情境。觀測用 Gazebo 真值，取料點可由視覺決定。
@@ -30,7 +30,8 @@
 - WP6S FAIL：最終時間只減少 48.6%，使用者選擇維持現況。
 - cm530_hardware 與安全監控只驗證過 Mock，實機 NOT_RUN，config/calibration.yaml 刻意全為 null。Coordinator 會拒絕以實機設定啟動。
 - 2026-11-10 H1（arm1）：A 區在手臂右方、j1 方向 +1，模擬已改成這個配置。arm2 的 j1 方向、j2 方向與零點仍 BLOCKED，需要現場手動確認（docs/HARDWARE_TEST_GUIDE.md 的 H1）。
-- 格位 1 與 4 個瓶蓋位置在目前模型中搆不到，八件搬運是已知 FAIL，等 D3。
+- 模擬編號的格位 1 與 4 個瓶蓋位置在目前模型中搆不到，八件搬運是已知 FAIL，等 D3。實物格位編號已由使用者提供（和模擬差 180°），改編號併入階段 C。
+- 操作介面 dual_arm_hmi 階段 0～3 在模擬可用（UI_PLAN.md），新增 `/safety/trigger_stop`、`/dual_arm/go_home`；實機模式只接通強制停止。
 - 兩個專案都沒有完成實機取放。接下來幾乎都需要使用者決定或現場操作，不要自行繞過。
 
 ## 絕對禁止
