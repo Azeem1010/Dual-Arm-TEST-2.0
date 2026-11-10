@@ -2,7 +2,12 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: docs synchronised with the code; event log order fixed
+## Latest result: operator UI screenshots in the READMEs; stale saved zones found
+
+- New `scripts/capture_hmi_images.py` drives the real window against a simulation it starts itself, starts one transfer and presses stop. `ui_working.png` and `ui_stopped.png` are in both READMEs, with notes on what they show (simulated cameras uncalibrated in the interface calibration directory, zones for reference only, simulation slot numbering).
+- Found: in the A-right simulation the environment camera cannot locate the board at start-up and falls back to `~/.ros/dual_arm_calib/sim/zones.yaml`. On this WSL machine that file was saved on 2026-11-08 with the old layout, so zones A and C were swapped on screen. It was renamed to `zones.yaml.old_layout_20261108`; the camera now reports `ZONES MISSING`. Task decisions use ground truth and were not affected. The saved file records no layout, so it is reused silently after a layout change; on hardware it must be deleted when the field changes.
+
+## Earlier result: docs synchronised with the code; event log order fixed
 
 - Both READMEs now describe the operator UI (how to run it, what is wired, the hardware domain). UI_PLAN matches `state.py` and `live_source.py` (wired actions, button conditions, how each outcome is judged, architecture). ROS_INTERFACES lists the two interface nodes and corrects the `hmi_sim` row and the ESP32 gap. TEST_PLAN, ORIN_DEPLOYMENT (what has actually run on the Orin), ARCHITECTURE, FUTURE_ROADMAP, AGENTS and the three handoff prompts updated; expected counts coordinator 285, HMI 293.
 - Fixed while checking: the interface showed its own events (start, stop, commands) above every ROS event regardless of time, and kept them without limit. Events now carry a wall-clock stamp, are merged newest first and capped at 200. HMI unit tests 293 PASS. No Gazebo rerun; the change only affects the event list.

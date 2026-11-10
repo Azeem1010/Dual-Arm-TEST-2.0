@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-11：README 加上操作介面實際截圖（`docs/images/ui_working.png`、`ui_stopped.png`，由新的 `scripts/capture_hmi_images.py` 從模擬擷取）。擷取時發現：環境相機的區域在 A 在右的模擬中開機時偵測不到場地，會改讀 `~/.ros/dual_arm_calib/sim/zones.yaml`；這台 WSL 的檔案是 2026-11-08 舊配置（C 在左）存的，所以介面上 A 與 C 對調（框標「(saved)」，C 區顯示 7 個）。已把它改名為 `zones.yaml.old_layout_20261108`，之後顯示 `ZONES MISSING`。任務決策用真值不受影響；但存檔沒有記錄是哪個配置，換配置後會被默默沿用，實機換場地時同樣要先刪掉。
 - 2026-11-11：依程式全面更新文件：兩份 README 加上操作介面的用法與狀態、UI_PLAN 的接通狀態與按鈕條件改成和 `state.py` 一致、ROS_INTERFACES 加入介面的兩個節點並更正 `hmi_sim` 與 ESP32 缺口、TEST_PLAN 加入介面測試與重跑規則、ORIN_DEPLOYMENT 的執行狀態、ARCHITECTURE、FUTURE_ROADMAP、AGENTS 與三份接手 prompt（預期 coordinator 285、HMI 293）。順帶修正介面事件紀錄：介面自己的事件原本一律排在 ROS 事件前面且沒有上限，改為依時間合併、最多 200 筆。
 - 2026-11-11：操作介面階段 3 完成（UI_PLAN 第 13 節，evidence/hmi/stage3/）。新增 `/safety/trigger_stop`（軟體停止，鎖定並停用控制器）與 `/dual_arm/go_home`（不用 token，`success` 是人工確認；模擬中有持物時拒絕），`/dual_arm/status` 多了 `at_home`；`hmi_sim.launch.py` 加入 `safety_supervisor`（`require_estop:=false`）。介面以獨立的命令節點送出指令，`--monitor` 仍然只讀。WSL 模擬實測：一輪搬運、未持物停止後復歸再開始、持物停止後重置模擬都 `PASS`。實機只接通強制停止。發現：同一模擬第三次取料時手臂 1 肘關節到限位（C30），停在限位外時回 HOME 無法規劃。
 - 2026-11-11：使用者以示意圖確認實物格位編號（使用者側視角）：1、2 最靠近手臂 2，往使用者依序到 7、8，單號在左。模擬、介面格位圖、`vision_pkg` 三處都不一致；使用者決定併入階段 C，和場地尺寸一起改，見 MODIFICATION_PLAN D3。另檢查介面與實機相容性，同日修正兩項：介面設定檔新增三顆相機路徑；實機改用專用的 `hardware.ros_domain_id`（預設 0），監看節點跟著模式換 domain，新增 `--monitor --hardware`（UI_PLAN 第 9 節，介面單元測試 276 項 `PASS`，監看節點加入指定 domain 已在 WSL 實測）。仍未解決：沒有急停心跳發布者，實機動作會一直鎖定。

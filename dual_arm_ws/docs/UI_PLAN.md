@@ -183,7 +183,7 @@ src/dual_arm_hmi/
 | 任務 | 八段進度、目前步驟、持物、B 區擁有者、C 區八格、完成數 | `/dual_arm/status`、`/vision/arm2/grid_state` |
 | B 區互鎖 | Arm1、B 區、Arm2 三格與兩道閘門 | `/dual_arm/status` 的 `b_owner`、`state`，`/vision/env/zone_state` |
 | 安全 | 鎖定、原因、controller 實際是否停止 | `/safety/status`、`list_controllers` |
-| 事件紀錄 | 時間、等級、訊息；最新在上，最多 200 筆。匯出在階段 4 | UI 彙整 |
+| 事件紀錄 | 時間、等級、訊息；故障置頂，其餘最新在上，最多 200 筆。匯出在階段 4 | UI 彙整 |
 
 **任務八段**（`state` 格式為 `ARM1:APPROACH_A`）：回 HOME、Arm1 取料、Arm1 放到 B、確認 B 區、Arm2 取料、確認 B 清空、Arm2 放到 C、確認 C 區。未對應的步驟顯示原文。
 

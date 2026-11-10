@@ -1,5 +1,12 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-11 Operator UI screenshots
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `scripts/capture_hmi_images.py` on a live simulation | PASS | docs/images/ui_working.png, ui_stopped.png; no process left |
+| Environment camera zones at start-up (A-right layout) | FAIL | board not located; the first capture fell back to a 2026-11-08 old-layout `zones.yaml` and swapped A and C; that file was set aside and the shots retaken |
+
 ## 2026-11-11 Docs synchronised; event log order
 
 | Check | Result | Evidence / scope |

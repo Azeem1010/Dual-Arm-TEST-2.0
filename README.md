@@ -108,6 +108,14 @@ flowchart TD
 
 目前模擬中的相機固定在空間中，實機的手臂相機則裝在手臂末端。三顆實體相機都還沒校正；模擬中的相機有依已知幾何產生的校正，不能用在實機。
 
+## 操作介面
+
+![操作介面：Arm 1 帶著瓶蓋下降到 B 區](dual_arm_ws/docs/images/ui_working.png)
+
+*2026-11-11 在 Gazebo 模擬中實際擷取：Arm 1 持物下降到 B 區，B 區互鎖由 Arm 1 佔用，Arm 2 禁止進入。*
+
+用 `ros2 run dual_arm_hmi hmi` 開啟，可以啟動與關閉模擬、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸；實機模式目前只接通強制停止。用法見[安裝與使用指南第 5 節](dual_arm_ws/README.md)，規格見 [UI_PLAN.md](dual_arm_ws/docs/UI_PLAN.md)。畫面說明：模擬相機在介面使用的 `~/.ros/dual_arm_calib/sim` 沒有產生校正，三格都標「校正 FAIL」；區域狀態只是視覺參考，任務決策用 Gazebo 真值（右上「決策來源」）。環境相機在目前配置開機時找不到場地，顯示 `ZONES MISSING`。C 區格位圖用的是模擬的編號，和實物差 180°，階段 C 一起改。事件紀錄的故障會置頂。
+
 ## 模擬與實機
 
 | Gazebo 模型 | 實機 |

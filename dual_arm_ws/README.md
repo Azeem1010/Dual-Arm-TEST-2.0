@@ -211,6 +211,12 @@ ros2 run dual_arm_hmi hmi
 - 設定檔在 `src/dual_arm_hmi/config/profiles.yaml`，要改時複製到 `~/.ros/dual_arm_hmi/profiles.yaml`。實機要填控制板與相機的 by-id 路徑；實機預設用 ROS domain 0（`hardware.ros_domain_id`，不能和模擬相同），模擬用 43。
 - 按鈕的條件與規格見 [docs/UI_PLAN.md](docs/UI_PLAN.md)。
 
+| 任務執行中 | 按下強制停止後 |
+|:---:|:---:|
+| ![任務執行中：Arm 1 持物下降到 B 區](docs/images/ui_working.png) | ![強制停止後：安全鎖定、任務故障](docs/images/ui_stopped.png) |
+
+左圖 Arm 1 持物下降到 B 區；右圖按下強制停止後，控制器停用、任務進入故障，下一步提示「解除鎖定」，回 HOME 與復歸要等解除鎖定後才能按。畫面說明：模擬相機在介面使用的 `~/.ros/dual_arm_calib/sim` 沒有產生校正，三格都標「校正 FAIL」；區域狀態只是視覺參考，任務決策用 Gazebo 真值（右上「決策來源」）。環境相機在目前配置開機時找不到場地，顯示 `ZONES MISSING`。C 區格位圖用的是模擬的編號，和實物差 180°，階段 C 一起改。事件紀錄的故障會置頂。截圖由 `scripts/capture_hmi_images.py` 從實際模擬擷取，可以重跑。
+
 ### 停止模擬
 
 在啟動模擬的終端按 `Ctrl+C`。Gazebo 有時關不乾淨（已知問題），可以這樣確認和處理：
