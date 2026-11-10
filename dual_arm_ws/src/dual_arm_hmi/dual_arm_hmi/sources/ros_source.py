@@ -3,7 +3,7 @@ from collections import deque
 import threading
 import time
 
-from control_msgs.msg import JointTrajectoryControllerState
+from control_msgs.msg import DynamicJointState, JointTrajectoryControllerState
 from controller_manager_msgs.srv import ListControllers
 from diagnostic_msgs.msg import DiagnosticArray
 from rcl_interfaces.srv import GetParameters
@@ -21,7 +21,8 @@ from vision_pkg.node_common import image_msg_to_bgr
 from ..model.joints import JOINT_NAMES, JointSample
 from ..model.state import (CAMERA_STALE_S, GAZEBO_VIEWS, CameraStatus, CommandFeedback, EventRecord, Level, Mode, Phase, Snapshot, ZoneView)
 from .base import DataSource
-from .ros_parse import FpsMeter, calibration_from_diagnostics, infer_phase, limits_from_urdf, mode_from_urdf, safety_from_json, task_from_json
+from .ros_parse import (FpsMeter, calibration_from_diagnostics, calibration_raw_limits, firmware_counts, infer_phase, limits_from_urdf,
+                        mode_from_urdf, safety_from_json, task_from_json)
 
 CAMERAS = ('env', 'arm1', 'arm2')
 _POLL_PERIOD_S = 1.0
@@ -29,6 +30,8 @@ _CALL_TIMEOUT_S = 3.0
 _CONTROLLERS_MAX_AGE_S = 3.0
 _STATUS_MAX_AGE_S = 1.5
 _COMMAND_MAX_AGE_S = 1.0
+# A failed READ must not leave the last counts on screen (v17 spec 6.2), so they expire quickly.
+_COUNTS_MAX_AGE_S = 1.0
 _CONNECTED_MAX_AGE_S = 2.0
 _ANNOTATION_MAX_AGE_S = 1.0
 _VIEW_MAX_AGE_S = 3.0
@@ -75,7 +78,8 @@ class RosSource(DataSource):
         self._joints, self._task, self._safety = _Stamped(), _Stamped(), _Stamped()
         self._zones, self._grid, self._calibration, self._controllers = _Stamped(), _Stamped(), _Stamped(), _Stamped()
         self._commands = {'arm1': _Stamped(), 'arm2': _Stamped()}
-        self._urdf, self._limits, self._observation = '', {}, ''
+        self._counts = _Stamped()
+        self._urdf, self._limits, self._raw_limits, self._observation = '', {}, {}, ''
         self._controllers_pending, self._controllers_sent = None, 0.0
         self._parameters_pending = None
         self._ever_connected, self._feedback, self._last_phase = False, None, Phase.STOPPED
@@ -105,6 +109,7 @@ class RosSource(DataSource):
         for key, _ in GAZEBO_VIEWS:
             subscribe(Image, f'/{key}/image_raw', self._image_callback(key), qos_profile_sensor_data)
         subscribe(JointState, '/joint_states', self._on_joints, qos_profile_sensor_data)
+        subscribe(DynamicJointState, '/dynamic_joint_states', self._on_counts, qos_profile_sensor_data)
         for arm in self._commands:
             subscribe(JointTrajectoryControllerState, f'/{arm}_controller/controller_state', self._command_callback(arm), qos_profile_sensor_data)
         subscribe(String, '/dual_arm/status', lambda message: self._store(self._task, task_from_json(message.data)), _LATCHED)
@@ -136,9 +141,15 @@ class RosSource(DataSource):
         velocities = dict(zip(message.name, message.velocity))
         self._store(self._joints, (positions, velocities))
 
+    def _on_counts(self, message):
+        counts = firmware_counts(message.joint_names, ((item.interface_names, item.values) for item in message.interface_values))
+        if counts:
+            self._store(self._counts, counts)
+
     def _on_description(self, message):
+        limits, raw_limits = limits_from_urdf(message.data), calibration_raw_limits(message.data)
         with self._lock:
-            self._urdf, self._limits = message.data, limits_from_urdf(message.data)
+            self._urdf, self._limits, self._raw_limits = message.data, limits, raw_limits
 
     def _on_zones(self, message):
         zones = ZoneView(message.a_has_object, message.b_has_object, message.b_arm_clear, message.c_object_count) if message.valid else None
@@ -264,11 +275,14 @@ class RosSource(DataSource):
         commands = {}
         for slot in self._commands.values():
             commands.update(slot.fresh(now, _COMMAND_MAX_AGE_S) or {})
+        counts = self._counts.fresh(now, _COUNTS_MAX_AGE_S) or {}
         samples = []
         for name in JOINT_NAMES:
             if name in positions:
                 lower, upper = self._limits.get(name, (None, None))
-                samples.append(JointSample(name, positions[name], velocities.get(name, 0.0), lower, upper, commands.get(name)))
+                raw, raw_target = counts.get(name, (None, None))
+                samples.append(JointSample(name, positions[name], velocities.get(name, 0.0), lower, upper, commands.get(name),
+                                           raw, raw_target, self._raw_limits.get(name)))
         return tuple(samples)
 
     def snapshot(self):

@@ -1,8 +1,12 @@
 """Turns ROS payloads into interface state. Free of rclpy so it can be unit tested."""
 from collections import deque
 import json
+from pathlib import Path
 import xml.etree.ElementTree as ElementTree
 
+import yaml
+
+from ..model.joints import firmware_count
 from ..model.state import Mode, Phase, SafetyStatus, TaskStatus
 
 ARM_CONTROLLERS = ('arm1_controller', 'arm2_controller')
@@ -68,6 +72,46 @@ def limits_from_urdf(urdf):
             limits[joint.get('name')] = (float(limit.get('lower')), float(limit.get('upper')))
         except (TypeError, ValueError):
             continue
+    return limits
+
+
+def firmware_counts(joint_names, interfaces):
+    """Joint name to (raw_position, raw_target) from /dynamic_joint_states.
+
+    interfaces holds one (interface_names, values) pair per joint. Only the CM-530 driver
+    exports these interfaces, so simulation gives an empty result. A value that is not a
+    whole count in 0..1023 becomes None rather than a guess.
+    """
+    counts = {}
+    for name, (names, values) in zip(joint_names, interfaces):
+        found = dict(zip(names, values))
+        if 'raw_position' in found or 'raw_target' in found:
+            counts[name] = (firmware_count(found.get('raw_position')), firmware_count(found.get('raw_target')))
+    return counts
+
+
+def calibration_raw_limits(urdf):
+    """Joint name to (min_raw, max_raw) from the calibration file the driver was started with.
+
+    The path is the calibration_file hardware parameter in the robot description. Anything
+    missing or unreadable gives no limits, so nothing is highlighted rather than guessed.
+    """
+    try:
+        root = ElementTree.fromstring(urdf)
+    except (ElementTree.ParseError, TypeError):
+        return {}
+    path = next((param.text for param in root.iter('param') if param.get('name') == 'calibration_file'), None)
+    if not path:
+        return {}
+    try:
+        joints = (yaml.safe_load(Path(path).read_text(encoding='utf-8')) or {}).get('joints') or {}
+    except (OSError, UnicodeDecodeError, yaml.YAMLError, AttributeError):
+        return {}
+    limits = {}
+    for name, joint in joints.items():
+        low, high = (joint or {}).get('min_raw'), (joint or {}).get('max_raw')
+        if type(low) is int and type(high) is int and low <= high:
+            limits[name] = (low, high)
     return limits
 
 

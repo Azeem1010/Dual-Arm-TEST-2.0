@@ -8,12 +8,13 @@ namespace cm530_hardware
 {
 
 Scheduler::Scheduler(
-  Link & link, SchedulerOptions options, const std::array<RawPose, kArmCount> & initial)
-: link_(link), options_(options), last_sent_(initial)
+  Link & link, SchedulerOptions options, const std::array<RawPose, kArmCount> & initial,
+  const std::array<std::optional<RawPose>, kArmCount> & initial_targets)
+: link_(link), options_(options), last_sent_(initial), acked_(initial_targets)
 {
   const auto now = std::chrono::steady_clock::now();
   for (std::size_t arm = 0; arm < kArmCount; ++arm) {
-    samples_[arm] = ArmSample{initial[arm], now};
+    samples_[arm] = ArmSample{initial[arm], now, acked_[arm]};
   }
 }
 
@@ -95,6 +96,8 @@ bool Scheduler::cycle_arm(Arm arm)
         return false;
       }
       last_sent_[index] = *target;
+      const std::scoped_lock lock(mutex_);
+      acked_[index] = *target;
     }
   }
   const LinkResult read = link_.transact(Command::read(arm));
@@ -103,7 +106,7 @@ bool Scheduler::cycle_arm(Arm arm)
     return false;
   }
   const std::scoped_lock lock(mutex_);
-  samples_[index] = ArmSample{*read.pose, std::chrono::steady_clock::now()};
+  samples_[index] = ArmSample{*read.pose, std::chrono::steady_clock::now(), acked_[index]};
   return true;
 }
 

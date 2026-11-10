@@ -5,6 +5,7 @@ only; it is not hardware acceptance.
 """
 from pathlib import Path
 import json
+import math
 import os
 import signal
 import subprocess
@@ -17,6 +18,7 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from builtin_interfaces.msg import Duration
 from control_msgs.action import FollowJointTrajectory
+from control_msgs.msg import DynamicJointState
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectoryPoint
 
@@ -31,6 +33,8 @@ CONTROLLERS_TEMPLATE = str(ROOT / 'src/dual_arm_controllers/config/controllers_h
 ARM1 = [f'arm1_arm_{name}' for name in ('shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_flex_joint', 'wrist_flex_joint')]
 ARM2 = [name.replace('arm1_', 'arm2_') for name in ARM1]
 TARGET = [0.2, -0.15, 0.1, 0.25]
+# calibration_mock.yaml: zero_raw 512, direction 1 on every joint; same formula as Calibration::rad_to_raw.
+TARGET_RAW = [round(512 + value / (math.radians(300.0) / 1023.0)) for value in TARGET]
 report = {'status': 'NOT_RUN', 'scope': 'Mock serial with v17 firmware parser; no hardware', 'phases': {}}
 
 
@@ -93,12 +97,27 @@ class Probe(Node):
         super().__init__('cm530_mock_probe')
         self.states = {}
         self.stamp = 0.0
+        self.counts = {}
         self.create_subscription(JointState, '/joint_states', self.on_state, qos_profile_sensor_data)
+        self.create_subscription(DynamicJointState, '/dynamic_joint_states', self.on_counts, qos_profile_sensor_data)
         self.client = ActionClient(self, FollowJointTrajectory, '/arm1_controller/follow_joint_trajectory')
 
     def on_state(self, message):
         self.states = dict(zip(message.name, message.position))
         self.stamp = time.monotonic()
+
+    def on_counts(self, message):
+        for name, item in zip(message.joint_names, message.interface_values):
+            values = dict(zip(item.interface_names, item.values))
+            if 'raw_position' in values:
+                self.counts[name] = (values['raw_position'], values.get('raw_target', math.nan))
+
+    def wait_counts(self, timeout=30):
+        deadline = time.monotonic() + timeout
+        self.counts = {}
+        while time.monotonic() < deadline and len(self.counts) != 8:
+            rclpy.spin_once(self, timeout_sec=0.1)
+        return len(self.counts) == 8
 
     def spin_for(self, seconds):
         deadline = time.monotonic() + seconds
@@ -153,7 +172,13 @@ def read_only(probe):
         centered = all(abs(probe.states[name]) < 1e-6 for name in ARM1 + ARM2)
         _, controllers = wait_cli(lambda text: 'joint_state_broadcaster' in text, 'list_controllers')
         no_arm_controllers = 'arm1_controller' not in controllers and 'arm2_controller' not in controllers
-        return centered and no_arm_controllers, {'centered': centered, 'no_arm_controllers': no_arm_controllers}
+        # Counts are the firmware READ values; read-only never sends AX, so there is no acknowledged target.
+        counts = probe.wait_counts()
+        read_counts = counts and all(probe.counts[name][0] == 512.0 for name in ARM1 + ARM2)
+        no_target = counts and all(math.isnan(probe.counts[name][1]) for name in ARM1 + ARM2)
+        detail = {'centered': centered, 'no_arm_controllers': no_arm_controllers, 'raw_position_512': read_counts,
+                  'raw_target_absent': no_target}
+        return centered and no_arm_controllers and read_counts and no_target, detail
     finally:
         launch.stop()
 
@@ -236,6 +261,16 @@ def motion_and_fault(probe):
         arm2_still = max(abs(probe.states[name]) for name in ARM2)
         moved = error_code == FollowJointTrajectory.Result.SUCCESSFUL and max(reached) < 0.02 and arm2_still < 0.01
         detail = {'error_code': error_code, 'max_arm1_error_rad': max(reached), 'max_arm2_motion_rad': arm2_still}
+        # raw_target is the last AX answered OK,AX; raw_position is what READ returned afterwards.
+        counts = probe.wait_counts()
+        detail['arm1_raw_target'] = [probe.counts[name][1] for name in ARM1] if counts else None
+        detail['arm1_raw_position'] = [probe.counts[name][0] for name in ARM1] if counts else None
+        detail['arm2_raw_target'] = [probe.counts[name][1] for name in ARM2] if counts else None
+        counts_ok = bool(counts and detail['arm1_raw_target'] == [float(value) for value in TARGET_RAW]
+                         and all(abs(raw - goal) <= 3 for raw, goal in zip(detail['arm1_raw_position'], TARGET_RAW))
+                         and detail['arm2_raw_target'] == [512.0] * 4)
+        detail['counts_ok'] = counts_ok
+        moved = moved and counts_ok
         if not moved:
             return False, detail
         subprocess.run(['pkill', '-TERM', '-f', 'lib/cm530_hardware/cm530_mock_serial'], check=False)

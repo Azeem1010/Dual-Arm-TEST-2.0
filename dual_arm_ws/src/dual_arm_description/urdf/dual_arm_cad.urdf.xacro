@@ -2714,6 +2714,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm1_arm_shoulder_lift_joint">
       <command_interface name="position" />
@@ -2721,6 +2725,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm1_arm_elbow_flex_joint">
       <command_interface name="position" />
@@ -2728,6 +2736,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm1_arm_wrist_flex_joint">
       <command_interface name="position" />
@@ -2735,6 +2747,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm2_arm_shoulder_pan_joint">
       <command_interface name="position" />
@@ -2742,6 +2758,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm2_arm_shoulder_lift_joint">
       <command_interface name="position" />
@@ -2749,6 +2769,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm2_arm_elbow_flex_joint">
       <command_interface name="position" />
@@ -2756,6 +2780,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
     <joint name="arm2_arm_wrist_flex_joint">
       <command_interface name="position" />
@@ -2763,6 +2791,10 @@
         <param name="initial_value">0.0</param>
       </state_interface>
       <state_interface name="velocity" />
+      <xacro:if value="${'$(arg mode)' == 'hardware'}">
+        <state_interface name="raw_position" />
+        <state_interface name="raw_target" />
+      </xacro:if>
     </joint>
   </ros2_control>
   <xacro:if value="${'$(arg mode)' == 'sim'}">

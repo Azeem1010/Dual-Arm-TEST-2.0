@@ -2,6 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: motor table shows AX-12A counts from the firmware
+
+- `cm530_hardware` exports two more state interfaces per joint, `raw_position` (Present Position exactly as the last successful v17 `READ` returned it) and `raw_target` (the last `AX` the firmware answered `OK,AX` to; NaN until one is acknowledged, so always NaN when read-only). They appear on `/dynamic_joint_states`; no command to the board was added. Only the hardware branch of `dual_arm_cad.urdf.xacro` declares them (generator updated too), so simulation and mock have none.
+- Operator UI motor table: joint, motor ID, actual °, target °, difference °, actual count, target count, margin to limit °. The limit bar and the rad column were removed; rad and estimated velocity moved to the joint name tooltip. Counts are never derived from angles: in simulation the count columns stay empty. Counts expire after 1 s, a target or actual count outside the driver calibration's `min_raw..max_raw` is shown red, and a difference above 2° yellow.
+- PASS in WSL Jazzy: cm530_hardware 42 tests (3 new scheduler tests), dual_arm_hmi 262 tests, xacro gives 8 `raw_position` for hardware and 0 for sim and mock. `scripts/test_cm530_mock.py` all 7 phases PASS with new count checks: read-only gives `raw_position` 512 on all 8 joints and NaN `raw_target`; after moving arm1 to TARGET, `raw_target` = `raw_position` = [551, 483, 532, 561] and arm2 `raw_target` stays 512 (the AX acknowledged at activation). Evidence: evidence/cm530_mock_integration.json.
+- NOT_RUN: real CM-530 and motors, Orin.
+
 ## Latest result: vision upstream update to 4a40f30 (frame names)
 
 - Submodule `three-camera-vision-ros2` fast-forwarded b98fb4e → 4a40f30; the same diff applied to `src/vision_pkg` and `src/vision_interfaces` with `git apply --ignore-whitespace --directory=dual_arm_ws/src`, keeping the local `publish_debug_image` additions. sources.lock.json updated.

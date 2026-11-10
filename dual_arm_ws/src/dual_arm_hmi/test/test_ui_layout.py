@@ -98,14 +98,22 @@ def test_base_resolution_uses_the_planned_camera_size(app):
     window.close()
 
 
-def test_compact_width_hides_the_radian_column(app):
+def test_compact_width_hides_the_motor_id_column(app):
     wide = open_window(app, 'ready', (1920, 1080))
     compact = open_window(app, 'ready', (1280, 720))
-    label = '+0.100'
-    visible = lambda window: any(cell.isVisible() and cell.text() == label for cell in window.findChildren(QtWidgets.QLabel))
-    assert visible(wide) and not visible(compact)
+    ids = lambda window: [cell.isVisible() for cell in window.motor_panel._column_widgets[1]]
+    assert all(ids(wide)) and not any(ids(compact))
     wide.close()
     compact.close()
+
+
+def test_simulation_leaves_motor_counts_empty(app):
+    window = open_window(app, 'ready', (1920, 1080))
+    for _, cells, _ in window.motor_panel.rows.values():
+        assert cells['raw'].text() == '—' and cells['raw_target'].text() == '—'
+        assert cells['degrees'].text() != '—' and cells['target_degrees'].text() != '—'
+    assert window.motor_panel.counts_source.text() == '計數：模擬無'
+    window.close()
 
 
 def test_camera_focus_hides_the_rest_and_escape_returns(app):
@@ -227,4 +235,21 @@ def test_scenario_selector_changes_the_data(app):
     combo.activated.emit(combo.currentIndex())
     app.processEvents()
     assert window.source.scenario() == 'latched'
+    window.close()
+
+
+def test_hardware_read_only_shows_firmware_counts_but_no_target(app):
+    window = open_window(app, 'hw_read_only', (1920, 1080))
+    for _, cells, _ in window.motor_panel.rows.values():
+        assert cells['raw'].text().isdigit()
+        assert cells['raw_target'].text() == '—'
+    assert window.motor_panel.counts_source.text() == '計數：韌體回報'
+    window.close()
+
+
+def test_hardware_motion_shows_both_counts(app):
+    window = open_window(app, 'hw_blocked', (1920, 1080))
+    cells = window.motor_panel.rows['arm1_arm_shoulder_pan_joint'][1]
+    assert cells['raw'].text() == '90' and cells['raw_target'].text() == '90'
+    assert cells['motor_id'].text() == '17'
     window.close()

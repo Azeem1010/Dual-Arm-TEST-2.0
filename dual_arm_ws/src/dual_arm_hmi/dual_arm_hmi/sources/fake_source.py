@@ -30,6 +30,9 @@ STEP_PERIOD_S = 1.2
 
 _PREFILLED = (True, True) + (False,) * 6
 _HOME_POSE = (0.10, -0.60, 0.95, 0.40, -0.10, -0.60, 0.95, 1.44)
+# Demonstration counts around the v17 board HOME (arm_config.h home_A / home_C).
+_HOME_RAW = (90, 567, 712, 825, 590, 567, 712, 825)
+_DEMO_RAW_SPAN = 200
 _READY_ZONES = ZoneView(a_has_object=True, b_has_object=False, b_arm_clear=True, c_count=2)
 _CAL_PASS = {name: CameraStatus(fps=15.0, age_s=0.04, calibration='PASS') for name in CAMERAS}
 _CAL_FAIL = {name: CameraStatus(fps=15.0, age_s=0.04, calibration='FAIL') for name in CAMERAS}
@@ -234,18 +237,23 @@ class FakeSource(DataSource):
                   or WORK_SEQUENCE.index('ARM2:APPROACH_B') <= index <= WORK_SEQUENCE.index('ARM2:LIFT_B'))
         return ZoneView(a_has_object=True, b_has_object=has_object, b_arm_clear=not inside, c_count=2)
 
-    def _joints(self, moving, with_raw):
+    def _joints(self, moving, mode):
         if self._state.get('joint_age_s') is None:
             return ()
         phase = self._clock() - self._entered_at
+        # Counts only exist where a CM-530 (or its firmware mock) reports them; a target only once AX was acknowledged.
+        with_raw = mode is not None and mode.has_torque_step
+        with_target = mode in (Mode.HARDWARE_MOTION, Mode.MOCK_SERIAL)
         samples = []
-        for index, (name, home) in enumerate(zip(JOINT_NAMES, _HOME_POSE)):
+        for index, (name, home, home_raw) in enumerate(zip(JOINT_NAMES, _HOME_POSE, _HOME_RAW)):
             amplitude = 0.0 if not moving or index == 7 else 0.3
             position = home + amplitude * math.sin(phase * 0.8 + index)
             velocity = amplitude * 0.8 * math.cos(phase * 0.8 + index)
-            raw = round(512 + position / RADIANS_PER_COUNT) if with_raw else None
             command = position + 0.004 * ((-1) ** index) if moving else position
-            samples.append(JointSample(name, position, velocity, -1.5, 1.5, command, raw))
+            raw = home_raw + round((position - home) / RADIANS_PER_COUNT) if with_raw else None
+            raw_target = home_raw + round((command - home) / RADIANS_PER_COUNT) if with_target else None
+            limits = (max(0, home_raw - _DEMO_RAW_SPAN), min(1023, home_raw + _DEMO_RAW_SPAN)) if with_raw else None
+            samples.append(JointSample(name, position, velocity, -1.5, 1.5, command, raw, raw_target, limits))
         return tuple(samples)
 
     def snapshot(self):
@@ -261,7 +269,7 @@ class FakeSource(DataSource):
             self._lead_in = ''
         if state.get('mode') is Mode.SIMULATION and state.get('phase') is Phase.READY:
             state['gazebo_views'] = {key: CameraStatus(fps=2.0, age_s=0.2) for key, _ in GAZEBO_VIEWS}
-        state['joints'] = self._joints(moving, state.get('calibration_pass', False))
+        state['joints'] = self._joints(moving, state.get('mode'))
         state['events'] = tuple(self._log) + tuple(state.get('events', ()))
         state['feedback'] = self._feedback
         self._last = Snapshot(is_fake=True, **state)

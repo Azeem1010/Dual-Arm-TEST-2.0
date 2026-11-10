@@ -159,6 +159,10 @@ for arm in (1,2):
         ET.SubElement(joint,'command_interface',name='position')
         ET.SubElement(ET.SubElement(joint,'state_interface',name='position'),'param',name='initial_value').text='0.0'
         ET.SubElement(joint,'state_interface',name='velocity')
+        # AX-12A counts exactly as the v17 firmware reported them; hardware only.
+        counts = ET.SubElement(joint,'xacro:if',value="${'$(arg mode)' == 'hardware'}")
+        for name in ('raw_position','raw_target'):
+            ET.SubElement(counts,'state_interface',name=name)
 gazebo = ET.SubElement(ET.SubElement(robot,'xacro:if',value="${'$(arg mode)' == 'sim'}"),'gazebo')
 plugin = ET.SubElement(gazebo,'plugin',filename='libgz_ros2_control-system.so',name='gz_ros2_control::GazeboSimROS2ControlPlugin')
 ET.SubElement(plugin,'parameters').text='$(find dual_arm_controllers)/config/controllers.yaml'

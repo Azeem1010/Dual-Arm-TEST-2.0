@@ -16,8 +16,12 @@ namespace cm530_hardware
 
 struct ArmSample
 {
+  // Present Position exactly as the last successful READ returned it.
   RawPose raw{};
   std::chrono::steady_clock::time_point stamp{};
+  // The last AX the firmware answered OK,AX to; empty until one is acknowledged.
+  // OK,AX echoes nothing, so the host keeps the values it sent (spec 4.2).
+  std::optional<RawPose> acked_target{};
 };
 
 using ArmSamples = std::array<ArmSample, kArmCount>;
@@ -35,7 +39,10 @@ struct SchedulerOptions
 class Scheduler
 {
 public:
-  Scheduler(Link & link, SchedulerOptions options, const std::array<RawPose, kArmCount> & initial);
+  // initial_targets holds poses already acknowledged before the scheduler started.
+  Scheduler(
+    Link & link, SchedulerOptions options, const std::array<RawPose, kArmCount> & initial,
+    const std::array<std::optional<RawPose>, kArmCount> & initial_targets = {});
   ~Scheduler();
   Scheduler(const Scheduler &) = delete;
   Scheduler & operator=(const Scheduler &) = delete;
@@ -61,6 +68,7 @@ private:
   std::array<RawPose, kArmCount> last_sent_;
   mutable std::mutex mutex_;
   std::array<std::optional<RawPose>, kArmCount> targets_{};
+  std::array<std::optional<RawPose>, kArmCount> acked_{};
   ArmSamples samples_{};
   std::string fault_;
   std::atomic<bool> faulted_{false};

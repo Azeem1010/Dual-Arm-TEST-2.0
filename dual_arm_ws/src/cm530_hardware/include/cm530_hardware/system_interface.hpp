@@ -35,7 +35,9 @@ public:
 
 private:
   bool require_ok(const LinkResult & result, const std::string & action);
-  void publish_positions(const std::array<RawPose, kArmCount> & poses);
+  void publish_positions(
+    const std::array<RawPose, kArmCount> & poses,
+    const std::array<std::optional<RawPose>, kArmCount> & targets);
   void release_link();
 
   std::string port_;
@@ -49,9 +51,12 @@ private:
   std::unique_ptr<Link> link_;
   std::unique_ptr<Scheduler> scheduler_;
   std::array<RawPose, kArmCount> latest_raw_{};
+  std::array<std::optional<RawPose>, kArmCount> acked_target_{};
 
   std::array<std::string, kJointCount> position_state_;
   std::array<std::string, kJointCount> velocity_state_;
+  std::array<std::string, kJointCount> raw_position_state_;
+  std::array<std::string, kJointCount> raw_target_state_;
   std::array<std::string, kJointCount> position_command_;
   std::array<double, kJointCount> last_rad_{};
   std::array<std::chrono::steady_clock::time_point, kArmCount> last_stamp_{};

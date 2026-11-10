@@ -16,6 +16,11 @@ namespace cm530_hardware
 namespace
 {
 
+// AX-12A counts as the v17 firmware reported them, for display only. raw_target is
+// NaN until the firmware has acknowledged an AX for that arm.
+constexpr const char * kRawPositionInterface = "raw_position";
+constexpr const char * kRawTargetInterface = "raw_target";
+
 bool parse_bool(const std::string & text, const std::string & name)
 {
   if (text == "true") {
@@ -77,15 +82,21 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_init(
     const bool interfaces_ok =
       joint.command_interfaces.size() == 1 &&
       joint.command_interfaces[0].name == hardware_interface::HW_IF_POSITION &&
-      joint.state_interfaces.size() == 2 &&
+      joint.state_interfaces.size() == 4 &&
       joint.state_interfaces[0].name == hardware_interface::HW_IF_POSITION &&
-      joint.state_interfaces[1].name == hardware_interface::HW_IF_VELOCITY;
+      joint.state_interfaces[1].name == hardware_interface::HW_IF_VELOCITY &&
+      joint.state_interfaces[2].name == kRawPositionInterface &&
+      joint.state_interfaces[3].name == kRawTargetInterface;
     if (!interfaces_ok) {
-      RCLCPP_ERROR(get_logger(), "Joint '%s' needs position command and position+velocity state", joint.name.c_str());
+      RCLCPP_ERROR(
+        get_logger(), "Joint '%s' needs position command and position, velocity, %s, %s state",
+        joint.name.c_str(), kRawPositionInterface, kRawTargetInterface);
       return CallbackReturn::ERROR;
     }
     position_state_[index] = joint.name + "/" + hardware_interface::HW_IF_POSITION;
     velocity_state_[index] = joint.name + "/" + hardware_interface::HW_IF_VELOCITY;
+    raw_position_state_[index] = joint.name + "/" + kRawPositionInterface;
+    raw_target_state_[index] = joint.name + "/" + kRawTargetInterface;
     position_command_[index] = joint.name + "/" + hardware_interface::HW_IF_POSITION;
   }
   return CallbackReturn::SUCCESS;
@@ -100,13 +111,21 @@ bool CM530SystemInterface::require_ok(const LinkResult & result, const std::stri
   return false;
 }
 
-void CM530SystemInterface::publish_positions(const std::array<RawPose, kArmCount> & poses)
+void CM530SystemInterface::publish_positions(
+  const std::array<RawPose, kArmCount> & poses,
+  const std::array<std::optional<RawPose>, kArmCount> & targets)
 {
   for (std::size_t index = 0; index < kJointCount; ++index) {
-    const int raw = poses[index / kJointsPerArm][index % kJointsPerArm];
+    const std::size_t arm = index / kJointsPerArm;
+    const std::size_t joint = index % kJointsPerArm;
+    const int raw = poses[arm][joint];
     last_rad_[index] = calibration_->raw_to_rad(index, raw);
     set_state(position_state_[index], last_rad_[index]);
     set_state(velocity_state_[index], 0.0);
+    set_state(raw_position_state_[index], static_cast<double>(raw));
+    set_state(
+      raw_target_state_[index],
+      targets[arm] ? static_cast<double>((*targets[arm])[joint]) : std::numeric_limits<double>::quiet_NaN());
   }
 }
 
@@ -152,7 +171,8 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_configure(const rc
     }
     latest_raw_[static_cast<std::size_t>(arm)] = *read.pose;
   }
-  publish_positions(latest_raw_);
+  acked_target_ = {};
+  publish_positions(latest_raw_, acked_target_);
   RCLCPP_INFO(
     get_logger(), "CM-530 connected on %s (%s)", port_.c_str(),
     enable_motion_ ? "motion authorized" : "read-only");
@@ -194,9 +214,11 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_activate(const rcl
       {
         return CallbackReturn::ERROR;
       }
+      // OK,AX: the firmware accepted the measured pose as this arm's target.
+      acked_target_[static_cast<std::size_t>(arm)] = latest_raw_[static_cast<std::size_t>(arm)];
     }
   }
-  publish_positions(latest_raw_);
+  publish_positions(latest_raw_, acked_target_);
   for (std::size_t index = 0; index < kJointCount; ++index) {
     set_command(position_command_[index], last_rad_[index]);
   }
@@ -206,7 +228,7 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_activate(const rcl
   SchedulerOptions options;
   options.enable_motion = enable_motion_;
   options.max_step_raw = calibration_->max_step_raw();
-  scheduler_ = std::make_unique<Scheduler>(*link_, options, latest_raw_);
+  scheduler_ = std::make_unique<Scheduler>(*link_, options, latest_raw_, acked_target_);
   scheduler_->start();
   return CallbackReturn::SUCCESS;
 }
@@ -297,6 +319,11 @@ CM530SystemInterface::ReturnType CM530SystemInterface::read(
       // The firmware reports no velocity; this is a finite difference of READ samples.
       set_state(velocity_state_[index], (position - last_rad_[index]) / dt);
       last_rad_[index] = position;
+      set_state(raw_position_state_[index], static_cast<double>(samples[arm].raw[joint]));
+      set_state(
+        raw_target_state_[index],
+        samples[arm].acked_target ? static_cast<double>((*samples[arm].acked_target)[joint]) :
+        std::numeric_limits<double>::quiet_NaN());
     }
   }
   return ReturnType::OK;

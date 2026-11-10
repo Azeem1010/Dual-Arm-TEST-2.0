@@ -3,7 +3,7 @@ import json
 import pytest
 
 from dual_arm_hmi.model.state import Mode, Phase
-from dual_arm_hmi.sources.ros_parse import (FpsMeter, calibration_from_diagnostics, infer_phase, limits_from_urdf,
+from dual_arm_hmi.sources.ros_parse import (FpsMeter, calibration_from_diagnostics, calibration_raw_limits, firmware_counts, infer_phase, limits_from_urdf,
                                             mode_from_urdf, safety_from_json, task_from_json)
 
 STATUS = {'state': 'ARM1:LIFT_A', 'active_arm': 'arm1', 'holding': {'arm1': 'cap_3', 'arm2': 'empty'}, 'b_owner': '',
@@ -81,3 +81,37 @@ def test_fps_meter():
         meter.tick(tick * 0.1)
     assert meter.rate(1.0) == pytest.approx(10.0)
     assert meter.rate(10.0) == 0.0
+
+
+def test_firmware_counts_from_dynamic_joint_states():
+    names = ('arm1_arm_shoulder_pan_joint', 'arm1_arm_shoulder_lift_joint')
+    interfaces = ((('position', 'velocity', 'raw_position', 'raw_target'), (0.1, 0.0, 90.0, 92.0)),
+                  (('position', 'velocity', 'raw_position', 'raw_target'), (0.2, 0.0, 567.0, float('nan'))))
+    assert firmware_counts(names, interfaces) == {names[0]: (90, 92), names[1]: (567, None)}
+
+
+def test_simulation_has_no_firmware_counts():
+    interfaces = ((('position', 'velocity'), (0.1, 0.0)),)
+    assert firmware_counts(('arm1_arm_shoulder_pan_joint',), interfaces) == {}
+
+
+def test_out_of_protocol_counts_are_dropped_not_clamped():
+    interfaces = ((('raw_position', 'raw_target'), (1500.0, -3.0)),)
+    assert firmware_counts(('j',), interfaces) == {'j': (None, None)}
+
+
+def test_calibration_raw_limits_come_from_the_driver_calibration_file(tmp_path):
+    calibration = tmp_path / 'calibration.yaml'
+    calibration.write_text('joints:\n'
+                           '  arm1_arm_shoulder_pan_joint: {motor_id: 17, zero_raw: 512, direction: 1, min_raw: 40, max_raw: 980}\n'
+                           '  arm1_arm_shoulder_lift_joint: {motor_id: 3, zero_raw: null, direction: null, min_raw: null, max_raw: null}\n',
+                           encoding='utf-8')
+    urdf = (f'<robot name="r"><ros2_control name="s" type="system"><hardware><plugin>cm530_hardware/CM530SystemInterface</plugin>'
+            f'<param name="calibration_file">{calibration}</param></hardware></ros2_control></robot>')
+    assert calibration_raw_limits(urdf) == {'arm1_arm_shoulder_pan_joint': (40, 980)}
+
+
+@pytest.mark.parametrize('urdf', ('', 'not xml', '<robot name="r"/>',
+                                  '<robot name="r"><param name="calibration_file">/nonexistent/calibration.yaml</param></robot>'))
+def test_missing_calibration_gives_no_limits(urdf):
+    assert calibration_raw_limits(urdf) == {}

@@ -3,6 +3,7 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <thread>
 
 #include "cm530_hardware/scheduler.hpp"
@@ -63,7 +64,21 @@ protected:
     options.max_step_raw = max_step;
     options.min_cycle = 1ms;
     baseline_goal_writes = sim.goal_writes();
-    return std::make_unique<Scheduler>(*link, options, std::array{kCenter, kCenter});
+    // In motion mode the AX above was answered OK,AX, so it is the acknowledged target.
+    std::array<std::optional<RawPose>, cm530_hardware::kArmCount> acked{};
+    if (motion) {
+      acked = {kCenter, kCenter};
+    }
+    return std::make_unique<Scheduler>(*link, options, std::array{kCenter, kCenter}, acked);
+  }
+
+  std::optional<cm530_hardware::ArmSample> sample(const Scheduler & scheduler, Arm arm)
+  {
+    ArmSamples samples;
+    if (!scheduler.snapshot(samples)) {
+      return std::nullopt;
+    }
+    return samples[static_cast<std::size_t>(arm)];
   }
 
   bool sample_equals(const Scheduler & scheduler, Arm arm, const RawPose & expected)
@@ -149,4 +164,44 @@ TEST_F(SchedulerTest, StopJoinsPromptlyAndIsRepeatable)
   scheduler->stop();
   scheduler->stop();
   EXPECT_LT(std::chrono::steady_clock::now() - started, 500ms);
+}
+
+TEST_F(SchedulerTest, ReadOnlyModeReportsNoAcknowledgedTarget)
+{
+  auto scheduler = make(false);
+  scheduler->start();
+  EXPECT_TRUE(scheduler->submit(Arm::kArm2, RawPose{520, 512, 512, 512}));
+  sim.set_present(12, 431);
+  ASSERT_TRUE(eventually([&] {return sample_equals(*scheduler, Arm::kArm2, RawPose{431, 512, 512, 512});}));
+  scheduler->stop();
+  for (const Arm arm : cm530_hardware::kArms) {
+    const auto current = sample(*scheduler, arm);
+    ASSERT_TRUE(current);
+    EXPECT_FALSE(current->acked_target);
+  }
+}
+
+TEST_F(SchedulerTest, AcknowledgedTargetFollowsOkAx)
+{
+  auto scheduler = make(true);
+  ASSERT_TRUE(sample(*scheduler, Arm::kArm1)->acked_target == kCenter);
+  scheduler->start();
+  const RawPose target{530, 500, 512, 512};
+  ASSERT_TRUE(eventually([&] {return scheduler->submit(Arm::kArm1, target);}));
+  ASSERT_TRUE(eventually([&] {
+      const auto current = sample(*scheduler, Arm::kArm1);
+      return current && current->acked_target == target;
+    }));
+  scheduler->stop();
+  EXPECT_TRUE(sample(*scheduler, Arm::kArm2)->acked_target == kCenter);
+}
+
+TEST_F(SchedulerTest, RefusedTargetIsNeverReportedAsAcknowledged)
+{
+  auto scheduler = make(true, 50);
+  scheduler->start();
+  ASSERT_TRUE(eventually([&] {return scheduler->submit(Arm::kArm2, RawPose{512, 563, 512, 512});}));
+  ASSERT_TRUE(eventually([&] {return scheduler->faulted();}));
+  scheduler->stop();
+  EXPECT_TRUE(sample(*scheduler, Arm::kArm2)->acked_target == kCenter);
 }
