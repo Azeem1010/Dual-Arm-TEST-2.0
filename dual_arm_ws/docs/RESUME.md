@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-10：第一次 Orin 實機測試已匯入 evidence/hardware/（來源 Azeem1010/Dual-Arm-TEST-2.0 `fc4cd41`）。SETUP、P0、H0 `PASS`；H1 只做完 arm1：**A 區在手臂自身右方、j1 方向 +1**，與目前模擬（A 在左、−1）相反。軸心在板外約 10 mm、板寬約 235 mm，也與模型不同。只更新了文件與 `install_jazzy.sh`；模型、runtime.json、視覺設定未改，等使用者決定 D0。下方「A 區在手臂左邊」的敘述已被實測推翻。
+
 - 2026-11-10：操作介面規劃與使用者決定在 [UI_PLAN.md](UI_PLAN.md)，階段 0 假資料畫面已實作（`src/dual_arm_hmi`，evidence/hmi/stage0/），等使用者確認視覺並在 Orin 執行一次才算結案。階段 1 唯讀監看 `PASS`（evidence/hmi/stage1/，205 項測試，WSL 模擬實測）：UI 不會送出任何指令，全部按鈕含強制停止都未接通。階段 2 啟停管理 `PASS`（evidence/hmi/stage2/，242 項測試，十次模擬啟停與當掉後接回都無殘留）：介面可啟動、關閉、重置模擬，強制停止與任務按鈕仍未接通。下一步是階段 3。WSL 系統沒有繁中字型，要先裝 `fonts-noto-cjk`。使用者要求實機運作時 Gazebo 同時動作，設計在 UI_PLAN.md 第 9.1 節，尚未實作；不可在同一個 ROS domain 同時跑 `sim.launch.py` 和實機。
 - 2026-11-10：現場測試請照 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md)，換電腦用 [HANDOFF_PROMPT_NEXT_COMPUTER.md](HANDOFF_PROMPT_NEXT_COMPUTER.md)。安全監控鎖定可被手動 `switch_controllers` 繞過的問題（C32）已修正，只在 mock 驗證（evidence/c32/）。
 - 2026-11-10：所有文件已對照現行程式更新（evidence/docs_audit/）；`demo_pick_place.launch.py` 預設一輪與舊 pipeline 兩物體都 `PASS`。README 截圖已於 2026-11-10 用 coordinator 重新擷取。

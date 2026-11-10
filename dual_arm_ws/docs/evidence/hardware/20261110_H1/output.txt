@@ -1,0 +1,63 @@
+# H1 manual_position_terminal 輸出（測試人員貼回，2026-11-10 約 16:2x）
+## arm1 步驟 1–2
+orin@AGX-Orin:~$ cd ~/projects/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/"17 ROS to CM530 ver. dual arm"
+python3 manual_position_terminal.py --port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0 --baud 57600
+CM530 v17 / protocol 5 | arm1: (17, 3, 2, 15) | arm2: (12, 1, 8, 16)
+Close RoboPlus and other programs using /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0.
+PING | VERSION | AX,arm1,512,512,512,512 | AX,arm2,520,512,512,512
+TORQUE,arm1,0 | TORQUE,arm1,1 (requires a successful AX/HOME/HOLD target)
+LED,arm1,MOVING | LED,arm1,STOPPED (normal LED TX/ACK output is hidden)
+LED displays host-reported state only; STOPPED does not stop motors; demo does not change LEDs.
+Four-number shortcuts require --arm arm1/arm2. Single-number shortcuts are unsupported.
+demo: direct goals on --arm, or alternating arm1/arm2 when no --arm; q: quit
+Protocol 5: motor ACK means packet sent; LED ACK means GPIO updated. Neither proves motion state.
+HOME,arm1 | GET_HOME,arm1 | READ,arm1 | HOLD,arm1 (also arm2)
+HOME writes the board preset; HOLD reads current positions then writes goals; neither enables torque.
+READ returns measured positions; ROS decides arrival. BEGIN/PT/END/STOP remain unsupported.
+demo uses example positions 512/520, explicitly enables torque and leaves it enabled.
+Check that these goals suit the mechanism before running demo; 512 is not a calibrated home.
+TX -> VERSION
+RX <- VERSION,5
+TX -> PING
+RX <- PONG
+arm1/arm2> TORQUE,arm1,0
+TX -> TORQUE,arm1,0
+RX <- OK,TORQUE,arm1,0
+arm1/arm2> READ,arm1
+TX -> READ,arm1
+RX <- POS,arm1,167,499,570,787
+arm1/arm2>
+
+## arm1 步驟 3–4：j1 往手臂自身右方轉（測試人員貼回：「arm1手臂往右移動前後數值」）
+arm1/arm2> READ,arm1   
+TX -> READ,arm1
+RX <- POS,arm1,166,511,583,758
+arm1/arm2> READ,arm1
+TX -> READ,arm1
+RX <- POS,arm1,52,579,634,760
+# 測試人員口頭回報：轉的是俯視照片（P0/photos/IMG_0891.webp）「上方那隻」；右轉時手臂末端「往A區」。
+
+# 測試人員上傳俯視照片（存為 photos/H1_arm1_photo1.png）：上方手臂（arm1）由手扶持，前端朝照片上方（A 區側）偏轉。
+
+## arm1 步驟 6：j2 往上抬（測試人員回報「j2往上抬數值變小」）
+arm1/arm2> READ,arm1
+TX -> READ,arm1
+RX <- POS,arm1,192,498,510,829
+arm1/arm2> READ,arm1
+TX -> READ,arm1
+RX <- POS,arm1,193,384,507,827
+arm1/arm2>
+
+## arm1 步驟 7：完全伸直（測試人員扶持）
+arm1/arm2> READ,arm1
+TX -> READ,arm1
+RX <- POS,arm1,200,505,498,513
+# 照片 photos/H1_arm1_straight_front.png：從使用者側（泡棉板前方）平視拍攝，畫面左側手臂呈垂直朝上一直線。
+
+## arm1 步驟：GET_HOME
+arm1/arm2> GET_HOME,arm1
+TX -> GET_HOME,arm1
+RX <- HOME,arm1,90,567,712,825
+# 測試人員同時提供兩張圖（存於 provided/）：
+#  - tester_provided_analysis_screenshot.png：另一份分析的截圖（來源與作者未說明），主張 arm1 底座 raw≈196 正對場地、A 區在 arm1_base −Y、「raw 512 朝 +Y」指 arm1_base +Y、含「尺量 TCP (135,−80) mm」。非本次實測，僅存檔參考。
+#  - tester_provided_arm1_pose_photo.png：arm1 彎向泡棉板、吸盤朝下的照片，板上有 8 個藍色瓶蓋；拍攝時間與是否為 HOME 姿勢未說明。

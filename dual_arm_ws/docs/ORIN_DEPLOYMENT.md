@@ -44,6 +44,26 @@ sudo usermod -aG dialout $USER
 bash scripts/start_sim.sh mock
 ```
 
+### 安裝失敗時（2026-11-10 Orin 實際遇到）
+
+證據見 `docs/evidence/hardware/20261110_SETUP/`、`20261110_SETUP_retry/`。
+
+| 症狀 | 原因 | 處理 |
+|---|---|---|
+| `Conflicting values set for option Signed-By`，exit 100 | 系統已裝 `ros2-apt-source`（`ros2.sources` 內嵌金鑰），舊版腳本又新增 `ros2.list` | 現在的腳本偵測到 APT 已能讀 ROS 2 Noble 來源就沿用，不再新增。舊腳本留下的 `ros2.list` 先備份再改名停用，例如 `sudo mv /etc/apt/sources.list.d/ros2.list /etc/apt/sources.list.d/ros2.list.disabled` |
+| `unmet dependencies`，開發套件要求的版本比已安裝的函式庫舊，exit 100 | Ubuntu 來源缺 `noble-updates` | 新增 `/etc/apt/sources.list.d/dual-arm-noble-updates.sources`（內容如下），`sudo apt-get update` 後重跑腳本 |
+| 建置 `dual_arm_gripper` 時 `Could NOT find SWSCALE` | 缺 FFmpeg 開發套件 | 腳本已加入 `libswscale-dev` 等五個套件 |
+
+```text
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: noble-updates
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+```
+
+**注意：** Ubuntu 的 FFmpeg 6.1 開發套件安裝時會覆蓋 NVIDIA `ffmpeg`（8.0.1-nvidia1）的部分檔案，安裝紀錄出現 "Replaced by files in installed package ffmpeg"。對 Jetson 硬體影像編解碼的影響 `NOT_RUN`；相機或影像串流異常時先檢查這點。
+
 ### 找到裝置路徑
 
 使用固定路徑，不要用 `/dev/ttyUSB0`，重新插拔後編號可能改變。

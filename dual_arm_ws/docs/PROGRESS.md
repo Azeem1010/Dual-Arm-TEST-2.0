@@ -2,6 +2,15 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: first Orin hardware session imported (SETUP, P0, H0 PASS; H1 partial)
+
+- The on-site session of 2026-11-10 (code at `3fd258c`) is recorded in [Azeem1010/Dual-Arm-TEST-2.0](https://github.com/Azeem1010/Dual-Arm-TEST-2.0) `fc4cd41`. Its text records, outputs and photo hashes are copied to evidence/hardware/ with a reading in evidence/hardware/README.md; photos and large logs stay in that repo.
+- On the Orin: install first FAIL (ROS source Signed-By conflict, then missing noble-updates), build first FAIL (SWSCALE), then PASS; coordinator 259, HMI 262, CM530 42, Mock Serial 7 phases, mock start and stop. P0 PASS with the e-stop checked by spoken report only. H0 PASS: board path, `VERSION,5`, HOME values as expected, all 8 positions change when pushed.
+- H1, arm1 only: turning j1 toward the arm's own right decreases raw (direction +1) and points at zone A, so the user sees A | B | C. This is the opposite of the simulated far-side layout (commit `c7dfba3`, A on the arm's left, j1 −1) and agrees with the CAD orientation before that commit. Straight-up READ 200,505,498,513 roughly supports raw 512 = vertical. The j2 "lifts, raw decreases" note started near vertical, so its direction is not settled. Axes are about 10 mm outside the board edge (model: 63 mm inside) on the A/B and B/C lines; the board's short side works out to about 235 mm, not 300.
+- Applied the session's `install_jazzy.sh` change (reuse an existing ROS 2 Noble source; add five FFmpeg dev packages) and documented the three install failures in ORIN_DEPLOYMENT.md, including that the FFmpeg 6.1 dev packages overwrite files of NVIDIA's ffmpeg 8.0.1 (effect NOT_RUN). `bash -n` PASS; the script was not rerun here.
+- Updated COORDINATE_FRAMES.md, FUTURE_ROADMAP.md 3.1 and 3.2, MODIFICATION_PLAN.md D0/D1 and HOME_POSES.md with the measurements. **The model, runtime.json, vision configs and tests are unchanged**; changing the layout waits for the user's D0 decision.
+- NOT_RUN: arm2 H1, Moving Speed of 8 motors, motor 15 cable check, arm1 READ facing the field and at home_A, direct board measurement, V0, E0, H2. BLOCKED: H2 acceptance and H3 (owner fields empty), H4–H8 (D8). arm1 torque was left off on site.
+
 ## Latest result: motor table shows AX-12A counts from the firmware
 
 - `cm530_hardware` exports two more state interfaces per joint, `raw_position` (Present Position exactly as the last successful v17 `READ` returned it) and `raw_target` (the last `AX` the firmware answered `OK,AX` to; NaN until one is acknowledged, so always NaN when read-only). They appear on `/dynamic_joint_states`; no command to the board was added. Only the hardware branch of `dual_arm_cad.urdf.xacro` declares them (generator updated too), so simulation and mock have none.

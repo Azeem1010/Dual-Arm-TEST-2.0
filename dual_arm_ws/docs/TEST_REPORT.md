@@ -1,5 +1,21 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-10 Orin hardware session (on site, imported)
+
+Run on site by the tester with code `3fd258c`; source records in Azeem1010/Dual-Arm-TEST-2.0 `fc4cd41`, copies in evidence/hardware/. Not rerun here.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Install, first run | FAIL | ROS source Signed-By conflict, exit 100 (20261110_SETUP) |
+| Install and build, retry | PASS | after source reuse, noble-updates and FFmpeg dev packages; 13 packages (20261110_SETUP_retry) |
+| Offline tests on Orin | PASS | coordinator 259, HMI 262, CM530 42, Mock Serial 7 phases, mock start/stop |
+| P0 | PASS | e-stop by spoken report only; power-cut scope not recorded |
+| H0 read-only | PASS | `VERSION,5`, HOME as expected, 8 positions change by hand |
+| H1 arm1 | NOT_RUN (partial) | j1 +1, A on the arm's own right, straight READ 200,505,498,513; j2 direction unclear |
+| H1 arm2 | NOT_RUN | |
+| Layout against model | FAIL | A side, base-to-edge distance and board width differ; model not changed |
+| `install_jazzy.sh` change applied here | PASS (`bash -n` only) | not executed on this machine |
+
 ## 2026-11-10 Operator UI stage 2 (start and stop)
 
 Commands are in evidence/hmi/stage2/stage2_*.sh and stage2_live_check.py. Isolated with ROS_DOMAIN_ID=79, GZ_PARTITION=hmi_stage2 and a temporary state directory. The copied check script excludes the interface's own node; the run itself used the earlier version.

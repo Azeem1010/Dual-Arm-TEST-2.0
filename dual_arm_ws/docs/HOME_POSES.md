@@ -1,5 +1,7 @@
 # home_A / home_C 姿態換算
 
+> **2026-11-10 H1 實測（arm1，[evidence/hardware/20261110_H1](evidence/hardware/20261110_H1/record.md)）：** j1 往手臂自身右方轉時 raw 變小，末端朝 A 區，即 **j1 方向 +1、A 在手臂右方**，與下方模擬假設（−1、A 在左）相反。伸直時 READ 200,505,498,513，大致支持 j2～j4 raw 512 = 垂直伸直。`GET_HOME,arm1` = 90,567,712,825。底座正對場地與 home_A 姿勢的 READ 仍 `NOT_RUN`，所以 192.3 還不能替換；arm2 全部 `NOT_RUN`。模擬數值尚未修改。
+>
 > **2026-11-10 狀態：** 本文件的方向與零點都是模擬假設。j1 方向、j2 方向與零點和實機紀錄有矛盾（`BLOCKED`，D0、D1），見 [FUTURE_ROADMAP.md](FUTURE_ROADMAP.md) 第 3.1、3.2 節，確認方法見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 4 節。實機 HOME 由 `calibration.yaml` 換算，不使用本文件的數值或 SRDF 的 named state。
 
 目前第 17 版韌體來源的設定如下；若實際控制板刷入不同版本，需以 `GET_HOME` 回覆為準。
