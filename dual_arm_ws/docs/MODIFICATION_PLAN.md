@@ -224,8 +224,8 @@ AI 不可自行執行。沒有使用者在現場明確授權時，一律停在�
 | WP7 視覺 gateway | `BLOCKED` | `docs/evidence/wp7/` | 取料點由視覺決定 `PASS`（修正後連續 3 次，校正無效會被拒絕）。區域與格位仍用真值，等 D7。實機 `frame_id` 不一致（C20）尚未處理 |
 | WP8 驅動強化 | `PASS` | `docs/evidence/wp8/` | 第 1～3 項與 controllers 模板完成，Mock Serial 驗證。第 4 項（READ 重試）等 D2。`c-review` 需要此環境沒有的 Workflow 工具，`NOT_RUN`。實機 `NOT_RUN` |
 | WP9 安全監控 | `PASS` | `docs/evidence/wp9/` | MoveIt mock 驗證，C29 由 22 秒縮短到約 1.2 秒。這是軟體互鎖，不取代實體急停。`hardware.launch.py` 在 `enable_motion` 時自動帶上；啟動時若心跳尚未到達會先鎖定，需 `/safety/reset`。實機與 Gazebo 物理 `NOT_RUN`，實機急停心跳來源尚未存在 |
-| WP10 操作工具 | `PASS` | `docs/evidence/wp10/` | Mock Serial 與 MoveIt mock。`manual_xy` 是命令列工具，WP1 定義的 `ManualXY.srv` 目前沒有使用者。實機校正工作表的門檻等 D6 |
-| WP11 幾何碰撞 | `BLOCKED` | | 等 D0、D3 |
+| WP10 操作工具 | `PASS` | `docs/evidence/wp10/` | Mock Serial 與 MoveIt mock。`manual_xy` 是命令列工具，WP1 定義的 `ManualXY.srv` 目前沒有使用者。實機校正工作表的門檻等 D6。2026-11-10 新增 `fit_axis_circle`（畫圓找 j1 軸心，只產生報告），單元測試 PASS，實際量測 `NOT_RUN` |
+| WP11 幾何碰撞 | `BLOCKED` | | 等 D3（D0 已於 2026-11-10 決定）。格位位移研究已在新配置重跑（`docs/evidence/checks_20261110/t1/`）；板寬與軸心位置量測後要再重跑 |
 | WP12 ESP32 | `PASS` | `docs/evidence/wp12/` | 後端以替身節點驗證。真正的 ESP32 `NOT_RUN`，模組對應、真空時間等現場確認項目見 `ORIN_DEPLOYMENT.md` 第 6.1 節 |
 | WP13 文件 | `PASS` | `docs/evidence/wp13/` | `TEST_PLAN.md`、`ORIN_DEPLOYMENT.md`、`ROS_INTERFACES.md`；部署步驟尚未實際執行 |
 | H0～H8 | `BLOCKED` | | 需要使用者現場授權 |

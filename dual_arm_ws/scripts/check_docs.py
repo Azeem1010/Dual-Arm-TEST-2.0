@@ -24,7 +24,7 @@ SKIP_PARTS = {'.git', 'third_party', 'build', 'install', 'log', 'node_modules', 
 LINK = re.compile(r'!?\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)')
 HTML_SRC = re.compile(r'<img[^>]+src="([^"]+)"')
 # Any wording of a zone order, so stale ones are seen; see COORDINATE_FRAMES.md for the current one.
-LAYOUT = re.compile(r'([ABC]) ?[|｜、,] ?([ABC]) ?[|｜、,] ?([ABC])|Zone [ABC]|[ABC] 區\*{0,2}（[左右中]）')
+LAYOUT = re.compile(r'([ABC]) ?[|｜、,/] ?([ABC]) ?[|｜、,/] ?([ABC])|Zone [ABC]|[ABC] 區\*{0,2}（[左右中]）')
 
 
 def skipped(path):

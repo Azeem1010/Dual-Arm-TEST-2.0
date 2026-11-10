@@ -67,7 +67,7 @@
 
 ## 已知來源與工具
 
-- 照片：`C:/Users/39165/AppData/Local/Temp/codex-clipboard-1fc3dd90-212f-44af-890f-72f8ab0c955d.png`。應複製到專案 docs/reference，避免暫存檔消失。
+- 照片：已複製為 [reference/physical_camera_mount.png](reference/physical_camera_mount.png)（2026-11-10 核對 MD5 與原暫存檔相同），cad/README.md 引用的是這份。
 - 韌體來源：`third_party/CM530_ROS_BRIDGE/17 ROS to CM530 ver. dual arm/APP/inc/arm_config.h`。
 - home_A=[90,567,712,825]、home_C=[590,567,712,825]；原始位置值不是 URDF rad。CAD 零位 raw offset / 方向尚缺，已透過非同步問題詢問使用者。
 - SolidWorks COM `SldWorks.Application` 註冊存在，尚未驗證自動化能否啟動。沒有授權修改來源 checkout；工作副本應置於 `cad/`，匯出與生成器改指向工作副本。

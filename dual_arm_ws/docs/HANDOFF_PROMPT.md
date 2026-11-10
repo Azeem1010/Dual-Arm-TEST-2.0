@@ -53,7 +53,7 @@
 3. 修改前先確認沒有模擬在執行：pgrep -af 'gz sim'。不要同時跑新舊流程。
 4. 實際執行建置與測試，原始輸出存到 docs/evidence/。不能只憑閱讀程式判定通過。
 5. 狀態只能用 PASS、FAIL、BLOCKED、NOT_RUN。以下都不算通過：合成影像、Mock Serial、Gazebo 座標、MoveIt 規劃成功、序列埠 ACK。
-6. 改了模型、launch、world 或校正，要重跑受影響的檢查。修改 C/C++ 要跑 ASan/UBSan、TSan。AGENTS.md 指定的 Trail of Bits 技能不可用時，記為 NOT_RUN，不要跳過不提。
+6. 改了模型、launch、world 或校正，要重跑受影響的檢查，用 scripts/run_checks.sh t0／t1／t2（哪種修改跑哪層見 docs/TEST_PLAN.md 第 4 節；t2 約 40 分鐘，放在背景跑，失敗的步驟修正後用 STEPS 只重跑那幾步）。修改 C/C++ 要跑 ASan/UBSan、TSan。AGENTS.md 指定的 Trail of Bits 技能不可用時，記為 NOT_RUN，不要跳過不提。
 7. 每完成一個工作包，更新 MODIFICATION_PLAN.md 第 6 節、docs/PROGRESS.md、docs/TEST_REPORT.md、docs/RESUME.md，寫清楚未完成和未驗證的部分。額度快用完時，優先把目前進度、指令和下一步寫進 RESUME.md。
 
 ## 對方專案的參照方式

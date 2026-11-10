@@ -8,6 +8,8 @@
 
 `corrections.json` 記錄可重現的修正：兩臂末端支架、吸盤固定件與其相關固定件，繞 CAD 座標的吸盤軸旋轉 180°。修正後鏡頭支架向前伸出；吸盤接觸點與馬達運動軸保持原位。對照圖為 `../docs/evidence/camera_mount_corrected_side.png`，實機照片在 `../docs/reference/physical_camera_mount.png`。
 
+STEP 與 SLDPRT 保持原始組合的方位。2026-11-10 起模擬把整組（雙臂與平台）繞世界 Z 轉 180°，讓 A 區在手臂右方；這個擺放只寫在 `scripts/generate_cad_robot.py` 和 `generate_world.py`，不在 CAD 檔裡，見 [COORDINATE_FRAMES.md](../docs/COORDINATE_FRAMES.md)。
+
 生成器讀取 pinned 原始 STEP，再套用此修正清單，保持零件索引可追溯。不要把已修正的 STEP 再當作原始輸入套一次旋轉。
 
 `working/` 是原生 SolidWorks 檔案的工作副本，**其中 SLDASM / SLDPRT 尚未完成方向修改**。本機 SolidWorks 2019（27.5）開啟組合件回傳 8192 / swFutureVersion，無法編輯較新版檔案；它們不能被當成已修正版交付。原生特徵樹與組合約束的更新需使用相容版本 SolidWorks，或由可用 STEP 另行匯入建模。原始來源仍保留在 third_party 以追溯。

@@ -245,6 +245,12 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<你的控制
 ros2 run dual_arm_coordinator check_calibration_sheet <你的工作表.yaml>
 ```
 
+底座旋轉軸的位置用手冊 3.1 節的畫圓法量：填 `src/dual_arm_coordinator/config/hardware/axis_circle_sheet.template.yaml` 的複本，再用下面的指令擬合。報告包含軸心位置、誤差估計，有 READ 值時也算 j1 方向；同樣只產生報告，不寫入校正檔：
+
+```bash
+ros2 run dual_arm_coordinator fit_axis_circle <你的點位表.yaml> [報告.json]
+```
+
 ### 用 ROS 讀取實機（Orin）
 
 `port` 請換成實際裝置：

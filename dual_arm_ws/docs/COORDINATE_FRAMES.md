@@ -99,14 +99,14 @@ y_world = y_base_origin - x_vision
 |---|---|---|
 | 模型配置轉換 | `PASS` | `test_cad_pose.py`，264 個元件，2026-11-10 依轉 180° 配置重跑（evidence/a_right_layout_20261110/）；只代表模型符合本文件，不代表符合實機 |
 | 模擬 static TF | `PASS` | `tf2_echo` 讀到平移 (0, 0, 0.014)、yaw 90° |
-| 模擬兩物體搬運 | `PASS` | 2026-11-10 新配置重跑：舊 pipeline 兩物體與 coordinator 一輪都通過（evidence/a_right_layout_20261110/）；Gazebo 真值，不是視覺驅動 |
+| 模擬兩物體搬運 | `PASS` | 2026-11-10 新配置重跑：舊 pipeline 兩物體與 coordinator 一輪都通過（evidence/a_right_layout_20261110/），回歸 `two` 也通過（evidence/checks_20261110/t2/）；Gazebo 真值，不是視覺驅動 |
 | 實機 A 區方向 | `PASS` | 2026-11-10 俯視照片與 H1（arm1）：A 區在手臂右方，模型已改成一致；arm2 `NOT_RUN` |
 | 底座到板緣距離 | `FAIL` | 實測軸心在板外約 10 mm（未讀到 mm），模型約在板內 63 mm |
 | A/B 分界與旋轉軸是否對齊 | `PASS` | 實測 arm1 在 A/B、arm2 在 B/C 分界，相距 200 mm，與模型 x = ±0.10 一致；直尺 1 mm，口頭回報 |
 | 場地短邊 | `FAIL` | 推算約 235 mm，模型與 `env_vision.yaml` 為 300 mm；尚未直接量 |
 | 上述 `calibrate_caps` 輸入方式 | `NOT_RUN` | 依程式公式推導，尚未實際執行 |
 | 手臂 2 軸向 | `NOT_RUN` | 待 OpenCV 端確認 |
-| 視覺目標轉換（模擬） | `PASS` | `gateways/vision.py` 以 TF 轉到 `world`，evidence/wp7/ |
+| 視覺目標轉換（模擬） | `PASS` | `gateways/vision.py` 以 TF 轉到 `world`，evidence/wp7/；2026-11-10 新配置的視覺取料一次 `PASS`（evidence/checks_20261110/t2_rerun/），連續 3 次 `NOT_RUN` |
 | 實機 `armN_base` TF | `NOT_RUN` | 需要實測，尚未發布 |
 
 ## 待釐清

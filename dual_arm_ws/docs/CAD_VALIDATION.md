@@ -12,6 +12,6 @@ Installed simulation layout (2026-11-10, zone side measured on arm1): the whole 
 
 Actual CAD hole centers in world metres: x = -0.1675 / -0.1325; y = -0.015, 0.020, 0.055, 0.090. Hole width is 25 mm. Slots are row-major from user side, left then right. Geometry extraction records include tessellation bounding tolerance; centers and straight-edge dimensions are used separately from those expanded bounds.
 
-FAIL: at least the far-left final row slot is unreachable with a downward suction axis at the original low placement plane under the current numerical CAD model. See SLOT_ADJUSTMENT.md. Do not broaden hardware limits to conceal this.
+FAIL: slot 1 (installed x = 0.1675, y = -0.090, nearest the user on the C side; `test_ik.py`, `report_reach.py`) is unreachable with a downward suction axis at the original low placement plane under the current numerical CAD model. See SLOT_ADJUSTMENT.md. Do not broaden hardware limits to conceal this.
 
 Actual Gazebo views: evidence/view_isometric_gazebo.png, view_top_gazebo.png, view_front_gazebo.png, view_side_gazebo.png. Images are runtime evidence, not image-generation output.

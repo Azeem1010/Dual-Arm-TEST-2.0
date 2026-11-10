@@ -20,7 +20,7 @@
 
 每次實際放置的驗證容差：XY 距離 ≤2 mm、Z 誤差 ≤1.5 mm；吸附插件保留既有 1 mm 接觸範圍。收到吸附 ACK 本身不算取物成功，還必須通過抬升跟隨檢查。任一錯誤停止序列，不自動釋放仍被持有的物體，也不移動／重設物體位置來製造成功。
 
-最新結構化證據在 `docs/evidence/transfer_pipeline.json`，本次文字紀錄為 `revised_pipeline.log`；只有最終 `pipeline_completed` 且 `status=PASS` 才代表本次指定物體數展示完成。`--count 1|2|3` 可選數量，預設三個。執行中的 FAIL 預設狀態不是完成結果。歷史三物體 PASS 在 before_revision_20261109，不能替代新版驗證。
+最新結構化證據在 `docs/evidence/transfer_pipeline.json`（2026-11-10 在 A 區位於手臂右方的配置跑 `--count 2`，PASS，紀錄在 evidence/checks_20261110/t2_rerun/），本次文字紀錄為 `revised_pipeline.log`；只有最終 `pipeline_completed` 且 `status=PASS` 才代表本次指定物體數展示完成。`--count 1|2|3` 可選數量，預設三個。執行中的 FAIL 預設狀態不是完成結果。歷史三物體 PASS 在 before_revision_20261109，不能替代新版驗證。
 
 重跑需要新的模擬場景（不是把執行中的物體瞬移回 A）：
 
