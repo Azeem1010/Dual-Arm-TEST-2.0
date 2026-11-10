@@ -1,5 +1,26 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-10 Tiered checks on the A-right layout
+
+WSL Ubuntu 24.04 + Jazzy, `scripts/run_checks.sh` from `55196a5` plus this stage's working-tree changes. Index, failure causes and fixes in evidence/checks_20261110/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| t0 `check_docs.py` | PASS | 0 broken links; listed zone-order statements reviewed |
+| t1: model generation, `test_cad_pose`, build, HOME poses, HOME collision | PASS | t1/ |
+| t1 `test_ik.py` | FAIL | 16/18, known, unchanged |
+| t1 `report_reach.py` | report | caps 4/8, slots 7/8, same as the old layout |
+| t1 coordinator / HMI / vision_pkg pytest | PASS | 272 / 262 / 99 |
+| t1 slot study, proposal verification, slot self-collision | PASS | rerun on the new layout; mirrors the old results |
+| t2 `smoke_runtime.py sim` | FAIL | functional items PASS; shutdown check FAIL in t2/ and t2_rerun/, PASS in t2_aborted/ |
+| t2 image and coordinate checks, regression `two` | PASS | t2/ |
+| t2 old pipeline two objects | FAIL, then PASS | ROS domain mismatch in the runner; t2_rerun/ |
+| t2 MotionGateway, safety supervisor (MoveIt mock) | PASS | t2/ |
+| t2 operator tools (MoveIt mock) | PASS, FAIL, PASS | static TF left running in t2/; first fix lost the TF (t2_rerun/); second fix PASS with no leftover (t2_operator_tools/) |
+| t2 vision probe and vision pick | FAIL, then PASS | parked caps counted in zone C; park point moved; t2_rerun/ |
+| t2 README screenshots | PASS | published to docs/images/ |
+| regression `faults`, `batch`, 3 vision picks, CM-530 tests, hardware | NOT_RUN | |
+
 ## 2026-11-10 Simulation layout: zone A on the arm's right
 
 WSL Ubuntu 24.04 + Jazzy after `generate_cad_robot.py`, `generate_world.py` and `scripts/build.sh`. Index and caveats in evidence/a_right_layout_20261110/README.md.
@@ -11,7 +32,8 @@ WSL Ubuntu 24.04 + Jazzy after `generate_cad_robot.py`, `generate_world.py` and 
 | `report_home_poses.py` | PASS | home_A (-166.3, -27.7, 140.8) mm, home_C (151.6, -35.0, 140.8) mm, inside limits |
 | `test_ik.py` | FAIL | 16/18; arm1 (-0.2, -0.085) and arm2 slot 1 (0.1675, -0.09), mirrors of the previous two failures |
 | coordinator / HMI / vision_pkg pytest | PASS | 259 / 262 / 99; coordinator first run had 5 fixture failures (park point and vision stub sides), fixed |
-| HOME collision, slot self-collision | PASS | 08_sim_checks.log (its exit codes are unreliable, see README) |
+| HOME collision | PASS | 08_sim_checks.log (its exit codes are unreliable, see README) |
+| slot proposals, slot self-collision | FAIL / not valid | `verify_slot_proposals.py` raised (old-layout joint solutions); self-collision checked those same old solutions. Corrected the same day after rerunning the slot study, see the checks entry above |
 | `smoke_runtime.py sim` | FAIL | all functional items PASS; shutdown check FAIL twice (Gazebo SIGINT timeout) |
 | `run_pipeline.sh --count 2`, first | FAIL | missed sign in the "cleared B" check |
 | `run_pipeline.sh --count 2`, after fix | PASS | 11_transfer_pipeline.json, slots 3 and 4 |

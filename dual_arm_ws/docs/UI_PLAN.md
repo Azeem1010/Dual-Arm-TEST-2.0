@@ -316,7 +316,7 @@ WSLg 與 Orin 各跑一次，結果放 `docs/evidence/hmi/`，狀態只用 `PASS
 | WSL 系統繁中字型 | `FAIL` | 確認時為 0 個，需用 sudo 安裝 `fonts-noto-cjk` |
 | 高 DPI 150% | `NOT_RUN` | 目前只測 100% |
 | 使用者視覺確認 | `NOT_RUN` | 等使用者看過畫面 |
-| Orin 實際執行 | `NOT_RUN` | 還不確定 Orin 上是否已裝 ROS Jazzy |
+| Orin 實際執行 | `NOT_RUN` | 2026-11-10 Orin 已裝好 Jazzy 並建置、通過 HMI 262 項離線測試（evidence/hardware/20261110_SETUP_retry/）；介面本身還沒在 Orin 開過 |
 
 ## 14. 風險與未決
 

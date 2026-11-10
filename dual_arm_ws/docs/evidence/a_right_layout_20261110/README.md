@@ -23,7 +23,7 @@
 | HMI pytest | PASS（262） | 06_hmi_pytest.log |
 | vision_pkg pytest | PASS（99） | 07_vision_pytest.log |
 | HOME 碰撞（3 組姿態） | PASS | 08_sim_checks.log、../home_collision.json |
-| 格位候選自碰撞（3 種位移，各 0 / 248 invalid） | PASS | 08_sim_checks.log |
+| 格位候選自碰撞（3 種位移，各 0 / 248 invalid） | 無效 | 08_sim_checks.log。**更正（同日稍後）：** 這項讀的是 `slot_adjustment.json` 裡舊配置算出的關節解，結果不代表新配置。同一份日誌裡 `verify_slot_proposals.py` 其實是 FAIL（traceback：toward_arm_y 在格位 1 FK 不符），被錯誤的 exit 碼蓋過，當時漏報。重跑位移研究後兩項都通過，見 ../checks_20261110/t1/ |
 | 冒煙測試（控制器、回授、三相機、MoveIt 規劃） | 項目 PASS；整體 FAIL | 08_sim_runtime_first.json、10_sim_runtime_rerun.json：兩次都是 Gazebo 收到 SIGINT 後 5 秒內沒結束，被判 `shutdown: FAIL`。舊紀錄（`gazebo_pipeline_launch.log`、HMI stage2 launch 日誌）也出現過同一訊息，判斷是既有的間歇問題，與配置無關的推論**未驗證** |
 | 模擬影像格位／座標驗證 | 與改版前相同 | ../sim_detection.json（環境相機 grid FAIL，改版前也是 FAIL；手臂相機 PASS）、../sim_coordinate_validation.json（三顆 PASS） |
 | 舊 pipeline 兩物體搬運，第一次 | FAIL | 09_transfer_pipeline_FAIL.json：`demo_transfer_pipeline.py` 的「物件已離開 B」判斷寫死 `x > -0.10`，鏡像時漏改。已改成 `x < 0.10` |
@@ -38,5 +38,5 @@
 ## 未做
 
 - 視覺驅動的取料（`test_vision_pick_sim.py`）與 `probe_sim_vision.py`：座標已改，未重跑。
-- `measure_slot_adjustment.py`（格位位移研究）：座標已改，未重跑，`slot_adjustment.json` 仍是舊配置。
-- README 截圖（`capture_readme_images.py`）未重新擷取，仍是舊配置。
+- `measure_slot_adjustment.py`（格位位移研究）：本階段未重跑；已在 ../checks_20261110/t1/ 補跑。
+- README 截圖（`capture_readme_images.py`）：本階段未重新擷取；已在 ../checks_20261110/t2/ 重新擷取並發布到 docs/images/。視覺取料與 probe 的重跑結果也在 ../checks_20261110/。

@@ -39,23 +39,26 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 | 八物體完整搬運 | ❌ 未完成，目前模型只搆得到 4 個瓶蓋、7 個 C 格 |
 | 視覺自動定位 | 🟡 模擬中取料點可由視覺決定；區域與格位還沒接，實體相機尚未校正 |
 | ESP32 吸盤 | 🟡 程式完成，只用替身節點測過，還沒接實機 |
-| 實機校正、Orin 部署 | ❌ 未完成，需要現場操作 |
+| Orin 部署 | 🟡 2026-11-10 已在 Orin 安裝、建置並通過離線測試與 Mock；唯讀連線 PASS，手動方向確認只做完 Arm 1 |
+| 實機校正 | ❌ 未完成，需要現場量測 |
 
 **實機控制預設關閉**，必須完成實測校正才能開啟。任務節點目前也會拒絕以實機模式啟動。
 
 ## 工作區配置
 
-> 2026-11-10 實機量測（arm1）：手臂在遠離使用者側，A 區在手臂自身右方，使用者由左至右看到 A | B | C，模擬已改成這個配置，定義見 [COORDINATE_FRAMES.md](dual_arm_ws/docs/COORDINATE_FRAMES.md)。**下方截圖是改版前的舊配置（C、B、A），尚未重新擷取。**
+> 2026-11-10 實機量測（arm1）：手臂在遠離使用者側，A 區在手臂自身右方，使用者由左至右看到 A | B | C，模擬已改成這個配置，定義見 [COORDINATE_FRAMES.md](dual_arm_ws/docs/COORDINATE_FRAMES.md)。下方截圖已在新配置重新擷取（2026-11-10，`run_checks.sh t2`，[checks_20261110](dual_arm_ws/docs/evidence/checks_20261110/README.md)）。
 
-![工作區頂視圖，由左至右為 C、B、A 三區](dual_arm_ws/docs/images/layout_top.png)
+![工作區頂視圖，由左至右為 A、B、C 三區](dual_arm_ws/docs/images/layout_top.png)
 
-| 區域 | 用途 | 負責手臂 |
+| 區域（使用者看過去） | 用途 | 負責手臂 |
 |---|---|---|
-| **A 區**（右） | 瓶蓋起始位置 | Arm 1 取物 |
+| **A 區**（左） | 瓶蓋起始位置 | Arm 1 取物 |
 | **B 區**（中） | 交接區，同一時間只有一支手臂能進入 | Arm 1 放下、Arm 2 取走 |
-| **C 區**（左） | 八個白色放置格 | Arm 2 放置 |
+| **C 區**（右） | 八個白色放置格 | Arm 2 放置 |
 
-泡棉板 600 × 300 mm，三區各 200 × 300 mm。
+兩支手臂在遠離使用者的長邊，面向使用者：Arm 1 的旋轉軸在 A/B 分界，Arm 2 在 B/C 分界。
+
+泡棉板規格是 600 × 300 mm，三區各 200 × 300 mm，模擬也用這個尺寸。2026-11-10 現場推算短邊約 235 mm、旋轉軸在板外約 10 mm（模擬在板內約 63 mm），尚未直接量測，量完再修正模型。
 
 ## 搬運流程
 
@@ -109,7 +112,7 @@ flowchart TD
 |:---:|:---:|
 | ![Gazebo 模型](dual_arm_ws/docs/images/home.png) | <img src="dual_arm_ws/docs/images/real_arm.jpg" alt="實機手臂與瓶蓋" width="360"> |
 
-模型由 SolidWorks CAD 轉換而來。實機與模擬的零位、底座位置都還需要實測核對，模擬成功不代表實機可以直接執行。
+模型由 SolidWorks CAD 轉換而來。A 區方向與 Arm 1 的 j1 方向已和實機一致；零點、底座到板緣距離、板寬還沒依實測修正，Arm 2 也還沒確認方向。模擬成功不代表實機可以直接執行。
 
 ---
 

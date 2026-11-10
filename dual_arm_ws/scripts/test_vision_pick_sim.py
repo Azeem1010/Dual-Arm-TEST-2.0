@@ -21,7 +21,9 @@ from vision_interfaces.srv import GetPickTarget
 from test_transfer_regression import Regression
 
 GZ = shutil.which('gz') or '/opt/ros/jazzy/opt/gz_tools_vendor/bin/gz'
-PARK = (0.35, 0.30)
+# Beyond A's outer edge (A is x -0.30..-0.10), so no zone counts it. C is every x >= 0.10,
+# so parking on the +x side would add to the C count.
+PARK = (-0.35, 0.30)
 ARM1_BASE = (-0.10, 0.08725)
 
 

@@ -12,6 +12,7 @@
 你要協助一位現場測試人員，在 Jetson AGX Orin 上從零建置一個 ROS 2 Jazzy 雙機械手臂專案，依照專案的實機測試手冊逐階段測試，取得後續開發必要的實測資料。全程用繁體中文。測試人員不一定熟悉這個專案，請每一步說清楚目的、指令、該看到什麼、什麼情況要停。
 
 專案：https://github.com/xian1022/dual_arm_system（main 分支，工作區 dual_arm_ws/）
+上一次現場（2026-11-10）的結果在 dual_arm_ws/docs/evidence/hardware/README.md：SETUP、P0、H0 PASS，H1 只做完 arm1（A 區在手臂右方、j1 方向 +1）。這次接著補 H1，再往後走。arm1 在上次結束時扭力是關的，上電前要扶好。
 硬體：兩支 PhantomX Pincher（每支 4 顆 AX-12A，共 8 顆）、一片 CM-530（韌體 v17）、ESP32 吸盤（micro-ROS）、三顆 USB 相機。最終目標是把瓶蓋 A→B→C 搬運，但這次只做到取得校正資料為止。
 馬達 ID：arm1 的 j1～j4 = 17、3、2、15；arm2 = 12、1、8、16。
 
@@ -41,6 +42,7 @@
    git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
    cd dual_arm_system/dual_arm_ws
    已經有 clone 的話先 git status，有未提交修改就停下來問，不要丟棄。乾淨才 git pull --recurse-submodules。
+   上次在 Orin 已改過 APT 來源（停用重複的 ros2.list、新增 noble-updates），處理方式見 docs/ORIN_DEPLOYMENT.md 第 3 節；安裝再失敗時照那張表查。
 3. 確認 docs/HARDWARE_TEST_GUIDE.md 與 docs/HANDOFF_PROMPT_HARDWARE_TESTER.md 存在。不存在代表負責人的修改還沒推上來，停下來。
 4. 安裝與建置（install 需要 sudo，先告訴測試人員會安裝什麼再執行）：
    sudo bash scripts/install_jazzy.sh
@@ -52,7 +54,7 @@
    source /opt/ros/jazzy/setup.bash
    source install/setup.bash
 6. 離線基準測試，全部不需要硬體。結果要記錄：
-   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 259 passed
+   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 272 passed
    (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)           # 預期 262 passed
    colcon test --packages-select cm530_hardware && colcon test-result --verbose     # 預期 42 項全過
    python3 scripts/test_cm530_mock.py                                               # 預期 7 個階段 PASS
@@ -109,17 +111,17 @@ H0
 - cm530_probe 完整輸出：status、韌體版本、home.arm1、home.arm2（預期 [90,567,712,825]、[590,567,712,825]）、8 個 position
 - 手推手臂時 position 是否改變
 
-H1（arm1、arm2 各一份）
-- TORQUE 0 後的基準 READ 四個值
-- 站在底座後方面向手臂前方，把底座往手臂自身右方轉：j1 變大或變小 → 方向 +1 或 −1
-- 這個右轉朝向 A 區還是 C 區（解決 D0），附照片
-- j2 往上抬：讀值變大或變小（D1）
-- 手臂完全伸直時的 READ 四個值，以及「伸直」的實際方向（例如垂直朝上），附照片。要確認先前說的「全部 raw 512 = 伸直」是否成立
-- arm1 額外：GET_HOME,arm1 回覆；底座正對世界 +Y 時的 READ,arm1；擺到實機 home_A 姿勢時的 READ,arm1（替換 HOME_POSES.md 的暫定值 192.3）。先和測試人員確認 +Y 是哪個方向，寫在紀錄裡
+H1（照 HARDWARE_TEST_GUIDE.md「2026-11-10 之後還要補的項目」那張表，逐項交回）
+- arm2：TORQUE 0 後的基準 READ；底座往手臂自身右方轉時 j1 變大或變小（方向 +1 或 −1）；這個右轉朝向 A 區還是 C 區，附照片；伸直時的 READ 與照片
+- arm1、arm2 的 j2：從往場地側前傾約 30° 扳回垂直方向約 15°，前後兩筆 READ，寫明扳的方向（D1）。不要從接近垂直的姿勢開始
+- 兩支手臂各一份畫圓法工作表（src/dual_arm_coordinator/config/hardware/axis_circle_sheet.template.yaml 的複本，至少 5 點、分布 90° 以上，每點附 READ），以及 ros2 run dual_arm_coordinator fit_axis_circle 的完整輸出。細桿是否和手臂正前方同方向要拍照
+- 擺到實機 home_A 姿勢時的 READ,arm1、home_C 姿勢時的 READ,arm2
+- 泡棉板短邊的直接量測（F1、F2 各一次）
+- C 區 8 個格位中心在 F2、L 上的讀值，以及格位編號怎麼對應（有標記就拍照；沒有就記下離使用者最近、靠 B 區的是哪一格）
+- 示教 READ：arm2 吸盤對準每個 C 格中心、離表面約 5 mm；arm1、arm2 各對準 B 區中央一次。這些只是量測資料，不可填進任何實機設定
 - 8 顆馬達的 Moving Speed（register 32），用 RoboPlus 或 DYNAMIXEL Wizard 讀，讀前關掉其他占用序列埠的程式。0 代表最高速
 - 馬達 ID 15 線材狀態：手動轉動時 READ 是否連續變化
-- 尺量兩支手臂底座到 A、B、C 三區邊界的距離（寫明從哪一點量到哪一點）
-- 依手冊 3.1 節在桌上貼出的 world 原點與軸向（俯視照），以及兩支底座旋轉軸中心的 x、y
+- 所有長度都寫明是在哪條膠帶上、從哪一點量到哪一點
 
 V0
 - 三顆相機的 /dev/v4l/by-id/ 路徑與實際對應（環境、手臂1、手臂2）

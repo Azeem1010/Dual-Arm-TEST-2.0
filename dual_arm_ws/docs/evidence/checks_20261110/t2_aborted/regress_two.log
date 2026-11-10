@@ -1,0 +1,17 @@
+$ env PYTHONPATH=/mnt/e/dual_arm_system/dual_arm_ws/scripts:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_vision_adapter/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_hmi/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_coordinator/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/vision_interfaces/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_interfaces/lib/python3.12/site-packages:/opt/ros/jazzy/opt/gz_sim_vendor/lib/python:/opt/ros/jazzy/opt/sdformat_vendor/lib/python:/opt/ros/jazzy/opt/gz_transport_vendor/lib/python:/opt/ros/jazzy/opt/gz_msgs_vendor/lib/python:/opt/ros/jazzy/opt/gz_math_vendor/lib/python:/opt/ros/jazzy/lib/python3.12/site-packages timeout 2400 python3 scripts/test_transfer_regression.py two /tmp/dual_arm_checks_6441/regress_two docs/evidence/checks_20261110/t2/regress_two.json
+start_accepted {'status': 'PASS', 'detail': None}
+Coordinator exited while waiting for end of run
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py", line 213, in main
+    {'two': harness.two_objects, 'batch': harness.batch, 'faults': harness.faults}[group]()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py", line 77, in two_objects
+    status = self.wait_end(2 * OBJECT_TIMEOUT_S)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py", line 60, in wait_end
+    return self.wait_status(lambda s: s['state'] in ('SUCCEEDED', 'FULL', 'FAULT') and not s['busy'], timeout, 'end of run')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 114, in wait_status
+    raise RuntimeError(f'Coordinator exited while waiting for {label}')
+RuntimeError: Coordinator exited while waiting for end of run
+
+FAIL

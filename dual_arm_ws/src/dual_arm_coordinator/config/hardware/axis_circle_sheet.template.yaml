@@ -1,0 +1,20 @@
+# j1 axis worksheet for `ros2 run dual_arm_coordinator fit_axis_circle`.
+# Copy into the evidence folder, one file per arm, and fill in measured values only.
+# Method: docs/HARDWARE_TEST_GUIDE.md section 3.1, "底座轉角（j1）與旋轉軸".
+#
+# f: distance along the F tape (toward the user), l: along the L tape (toward B/C).
+# Write where the F and L zeros are in `reference`. raw: the j1 value of READ,armN
+# taken while the pointer is held at that mark; give it for every point or for none.
+# Use at least five marks spread over 90 degrees or more; three marks fit exactly
+# and give no error estimate.
+arm: null            # arm1 or arm2
+unit: mm
+reference: null      # e.g. "F1/L tapes; F zero on arm1 axis mark, L zero at F1 crossing"
+pointer: null        # what was fixed to the base, how far it reaches, and whether it is along the arm's forward direction
+ruler: null          # e.g. "1 mm steel ruler, 30 cm"
+points:
+  - {f: null, l: null, raw: null}
+  - {f: null, l: null, raw: null}
+  - {f: null, l: null, raw: null}
+  - {f: null, l: null, raw: null}
+  - {f: null, l: null, raw: null}

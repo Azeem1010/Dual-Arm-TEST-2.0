@@ -1,0 +1,10 @@
+$ timeout 1800 python3 scripts/demo_transfer_pipeline.py --count 2
+stopped {"reason": "Simulator not ready"}
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 225, in <module>
+    demo.run()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 143, in run
+    self.wait(lambda:len(self.joints)==8 and all(n in self.poses for n in names) and self.clock is not None,
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_one.py", line 77, in wait
+    raise RuntimeError(reason)
+RuntimeError: Simulator not ready

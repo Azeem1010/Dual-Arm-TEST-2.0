@@ -22,6 +22,7 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 
 | 項目 | 指令 |
 |---|---|
+| 分層檢查（見第 4 節） | `bash scripts/run_checks.sh t0\|t1\|t2 OUT_DIR`，結果在 `OUT_DIR/summary.tsv` |
 | 完整建置 | `bash scripts/build.sh` |
 | Coordinator 單元測試 | `cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test` |
 | 驅動單元測試 | `colcon test --base-paths src --packages-select cm530_hardware` |
@@ -75,6 +76,18 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 | `cm530_hardware` | gtest、Mock Serial、ASan/UBSan、TSan |
 | 安全監控 | 單元測試、安全監控情境 |
 | URDF、SRDF、world、`runtime.json` 的 HOME | `build.sh`、模型檢查（`validate_model.py`、`test_cad_pose.py`、`check_home_collision.py`）、回歸 `two` |
+| 場地座標、區域或格位設定 | 上一列全部，加上可達性（`report_reach.py`）、舊 pipeline 兩物體、視覺取料 |
+| 只改文件 | `run_checks.sh t0`：連結全部有效，並逐條看過列出的區域順序描述 |
+
+`scripts/run_checks.sh` 的三層對應：
+
+| 層 | 內容 | 約略時間 |
+|---|---|---|
+| `t0` | 文件連結、區域順序描述清單 | < 1 分鐘 |
+| `t1` | 產生模型與場景、`test_cad_pose.py`、`build.sh`（含 `validate_model.py`）、HOME、IK、可達性、coordinator／HMI／vision 單元測試、HOME 碰撞、格位候選與自碰撞 | 約 5 分鐘 |
+| `t2` | 冒煙測試、模擬影像與座標驗證、回歸 `two`、舊 pipeline 兩物體、運動 gateway／操作工具／安全監控（mock）、視覺取料一次、README 截圖 | 約 40 分鐘 |
+
+`t2` **不含**回歸 `faults`、`batch`、視覺取料連續 3 次與 CM-530 的 gtest／Mock Serial／sanitizer；上表要求這些時要另外跑。所有層都會跑完每一步，再以退出碼 1 表示有失敗；已知失敗也算失敗，由紀錄說明原因。修正後只重跑失敗的步驟時，用環境變數 `STEPS` 列出步驟名稱（`vision_pick` 要連同 `generate_sim_vision_calibration`、`probe_sim_vision`），結果放到新的 `OUT_DIR`，原來那次的紀錄保留不動。
 
 ## 5. 可靠度的計法
 

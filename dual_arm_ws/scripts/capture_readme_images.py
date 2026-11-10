@@ -118,7 +118,8 @@ def publish(raw_dir, images_dir):
         for y in range(foam_top, foam_bottom, 20):
             cv2.line(top, (x, y), (x, min(y + 11, foam_bottom)), (255, 255, 255), 3)
     label_y = foam_bottom - 26  # The arms are on the far side, at the top of this view.
-    for text, x in (('Zone C', cx - 2 * boundary), ('Zone B', cx), ('Zone A', cx + 2 * boundary)):
+    # The top camera shows world -X on the image left, where zone A is (A | B | C, measured 2026-11-10).
+    for text, x in (('Zone A', cx - 2 * boundary), ('Zone B', cx), ('Zone C', cx + 2 * boundary)):
         outlined(top, text, (x, label_y))
     cv2.imwrite(str(images_dir / 'layout_top.png'), top[cy - half_h:cy + half_h, cx - half_w:cx + half_w])
     return 0

@@ -44,6 +44,7 @@
 開發環境是 WSL2 Ubuntu 24.04 + ROS 2 Jazzy。
 
 ```bash
+bash scripts/run_checks.sh t0|t1|t2 OUT   # 分層檢查，哪種變更跑哪層見 docs/TEST_PLAN.md 第 4 節
 bash scripts/build.sh                     # 完整建置，也會重新產生 named states
 bash scripts/start_sim.sh gui             # 或 headless、mock
 bash scripts/run_pipeline.sh --count 2    # 需要另開終端和乾淨的場景

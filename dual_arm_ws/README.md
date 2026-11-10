@@ -15,7 +15,7 @@
 | 八個物體完整搬運 | 未完成 | 目前模型只搆得到 4 個瓶蓋、7 個 C 格 |
 | 視覺自動定位 | 部分 | 模擬中 Arm 1 取料點可由視覺決定；區域與格位還沒接，實體相機尚未校正 |
 | ESP32 吸盤 | 僅模擬測試 | 程式完成，只用替身節點測過。韌體沒有真空感測，吸取結果要人工確認 |
-| Jetson Orin | 未實測 | 所需軟體套件都有 arm64 版本，但還沒在 Orin 上跑過 |
+| Jetson Orin | 部分實測 | 2026-11-10 已在 AGX Orin 安裝、建置，離線測試、Mock 與 CM-530 唯讀連線都 PASS；實機動作仍未放行 |
 
 **實機控制預設是關閉的。** 模擬成功不代表實機可以直接動作，詳見「6. 連接實機」。
 
@@ -97,7 +97,7 @@ bash scripts/start_sim.sh gui
 
 ## 4. Jetson AGX Orin 安裝
 
-> 本專案還沒有實際在 Orin 上建置或執行過，遇到問題請記錄下來。完整的實機放行步驟見 [ORIN_DEPLOYMENT.md](docs/ORIN_DEPLOYMENT.md)。
+> 2026-11-10 已在 AGX Orin（Ubuntu 24.04.5）照本節建置成功。安裝時遇過 ROS 套件來源衝突、缺 `noble-updates`、缺 FFmpeg 開發套件，處理方式見 [ORIN_DEPLOYMENT.md](docs/ORIN_DEPLOYMENT.md) 第 3 節；完整的實機放行步驟也在該文件。
 
 ### 步驟 1：確認系統版本
 
@@ -144,10 +144,10 @@ SSH 連線不會自動顯示圖形視窗。
 sudo usermod -aG dialout $USER
 ```
 
-接上後查裝置名稱：
+接上後查裝置的固定路徑（重新插拔後 `/dev/ttyUSB0` 這類編號可能改變，指令裡一律用 `by-id` 路徑）：
 
 ```bash
-ls /dev/ttyUSB* /dev/ttyACM*
+ls -l /dev/serial/by-id/
 ```
 
 接下來請看「6. 連接實機」。
@@ -214,7 +214,7 @@ pkill -f 'gz sim'
 4. 不要把模擬用的 HOME 假設值（`runtime.json`）抄到實機校正檔，模擬的速度比例也不能用在實機。
 5. 啟動 `enable_motion:=true` 時會一起帶起 `safety_supervisor`。急停心跳遺失或 coordinator 失效時，它會停用手臂控制器並鎖定，要呼叫 `/safety/reset` 才能解除。這是軟體互鎖，不能取代實體急停，而且實機的心跳來源還沒做。
 
-**要到現場測試，請照 [實機測試手冊](docs/HARDWARE_TEST_GUIDE.md) 的順序做。** 下面只是個別指令的說明。**A 區方向、j1、j2 的方向與零點目前證據矛盾，要先完成手冊的 H1 手動確認。**
+**要到現場測試，請照 [實機測試手冊](docs/HARDWARE_TEST_GUIDE.md) 的順序做。** 下面只是個別指令的說明。**2026-11-10 的 H1 已確認 A 區在手臂右方、Arm 1 的 j1 方向 +1；Arm 2 的方向、j2 的方向與各軸零點還沒確認，要先完成手冊的 H1。**
 
 ### 第一次連線：只讀不動
 
@@ -232,12 +232,12 @@ python manual_position_terminal.py --port COM4
 在 Orin 上可以用只允許唯讀指令的工具，同樣不會讓手臂動作：
 
 ```bash
-ros2 run dual_arm_coordinator cm530_probe --port /dev/ttyUSB0
+ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<你的控制板>
 ```
 
 ### 量測校正值
 
-照 [HOME_CALIBRATION_TEST.md](third_party/CM530_ROS_BRIDGE/17%20ROS%20to%20CM530%20ver.%20dual%20arm/HOME_CALIBRATION_TEST.md) 量測，把結果填進 `src/cm530_hardware/config/calibration.yaml`。**任何欄位留空，驅動都會拒絕啟動**，這是刻意的設計。
+照[實機測試手冊](docs/HARDWARE_TEST_GUIDE.md)的 H2 量測（只用直尺和手機照片；韌體附的 [HOME_CALIBRATION_TEST.md](third_party/CM530_ROS_BRIDGE/17%20ROS%20to%20CM530%20ver.%20dual%20arm/HOME_CALIBRATION_TEST.md) 是背景說明），通過檢查後才把結果填進 `src/cm530_hardware/config/calibration.yaml`。**任何欄位留空，驅動都會拒絕啟動**，這是刻意的設計。
 
 量測前可以先填 `src/dual_arm_coordinator/config/hardware/calibration_worksheet.template.yaml` 的複本，再離線檢查。這個工具只回報候選值，不會寫入任何校正檔：
 
@@ -250,7 +250,7 @@ ros2 run dual_arm_coordinator check_calibration_sheet <你的工作表.yaml>
 `port` 請換成實際裝置：
 
 ```bash
-ros2 launch dual_arm_bringup hardware.launch.py port:=/dev/ttyUSB0 calibration_file:=$PWD/src/cm530_hardware/config/calibration.yaml
+ros2 launch dual_arm_bringup hardware.launch.py port:=/dev/serial/by-id/<你的控制板> calibration_file:=$PWD/src/cm530_hardware/config/calibration.yaml
 ```
 
 這個模式只會讀位置，不會送出任何動作。用手扳動手臂，確認 `/joint_states` 的方向和角度都正確。
@@ -346,15 +346,23 @@ dual_arm_system/
 
 ## 10. 驗證與接手開發
 
+改完要跑哪些檢查，依 [TEST_PLAN.md](docs/TEST_PLAN.md) 第 4 節。`scripts/run_checks.sh` 把它們分成三層，每一步的退出碼、耗時和日誌記在 `OUT_DIR/summary.tsv`：
+
 ```bash
-python3 scripts/test_cad_pose.py
-(cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)
-python3 scripts/report_home_poses.py
-colcon test --base-paths src --packages-select cm530_hardware
-colcon test-result --test-result-base build/cm530_hardware
+bash scripts/run_checks.sh t0 docs/evidence/<日期>_<主題>/t0   # 文件連結與區域描述，不到 1 分鐘，不需要 ROS
+bash scripts/run_checks.sh t1 docs/evidence/<日期>_<主題>/t1   # 模型、建置、HOME、IK、可達性、單元測試、碰撞，約 5 分鐘
+bash scripts/run_checks.sh t2 docs/evidence/<日期>_<主題>/t2   # Gazebo、MoveIt mock、視覺取料、README 截圖，約 40 分鐘
 ```
 
-`bash scripts/build.sh`、`run_pipeline.sh`、`scripts/test_cm530_mock.py` 會覆寫 `docs/evidence/` 裡已追蹤的舊紀錄，要保留的結果請先另存，舊檔用 `git restore` 還原。
+`t2` 時間長，可以放著讓它跑，結束後看 `summary.tsv`。只想重跑失敗的幾步時，把步驟名稱（`summary.tsv` 第一欄）放進 `STEPS`，例如 `STEPS="legacy_pipeline_two vision_pick" bash scripts/run_checks.sh t2 OUT_DIR`；`vision_pick` 需要一起列出 `generate_sim_vision_calibration probe_sim_vision`。任何一步失敗腳本都會退出 1，但會跑完整層；已知的失敗（例如 `test_ik.py` 16/18）也記為失敗，原因寫在該次的紀錄裡。CM-530 驅動另外用：
+
+```bash
+colcon test --base-paths src --packages-select cm530_hardware
+colcon test-result --test-result-base build/cm530_hardware
+python3 scripts/test_cm530_mock.py
+```
+
+`bash scripts/build.sh`、`run_pipeline.sh`、`scripts/test_cm530_mock.py` 等工具會覆寫 `docs/evidence/` 裡已追蹤的舊紀錄。`run_checks.sh` 會把被覆寫的新檔案存到 `OUT_DIR/outputs/`，再從 HEAD 還原；模型或配置改變、追蹤的證據本身要更新時，加 `KEEP_EVIDENCE=1`，新檔留在原處，HEAD 版本存到 `OUT_DIR/replaced/`。單獨執行這些工具時，要保留的結果請先另存，舊檔用 `git restore` 還原。
 
 | 文件 | 內容 |
 |---|---|

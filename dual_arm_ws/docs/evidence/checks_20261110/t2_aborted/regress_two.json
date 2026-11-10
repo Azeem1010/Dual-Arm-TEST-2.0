@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "start_accepted": {
+      "status": "PASS",
+      "detail": null
+    }
+  },
+  "observations": {},
+  "group": "two",
+  "error": "Coordinator exited while waiting for end of run\nTraceback (most recent call last):\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 213, in main\n    {'two': harness.two_objects, 'batch': harness.batch, 'faults': harness.faults}[group]()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 77, in two_objects\n    status = self.wait_end(2 * OBJECT_TIMEOUT_S)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 60, in wait_end\n    return self.wait_status(lambda s: s['state'] in ('SUCCEEDED', 'FULL', 'FAULT') and not s['busy'], timeout, 'end of run')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 114, in wait_status\n    raise RuntimeError(f'Coordinator exited while waiting for {label}')\nRuntimeError: Coordinator exited while waiting for end of run\n"
+}

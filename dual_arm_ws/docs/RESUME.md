@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-10：新增分層檢查 `scripts/run_checks.sh t0|t1|t2`（TEST_PLAN.md 第 4 節），只重跑部分步驟用 `STEPS`。在 A 在右的配置跑完 t1、t2（evidence/checks_20261110/）：除了已知的 IK 16/18 與冒煙測試的關閉檢查（Gazebo 結束逾時，時有時無）外全部 `PASS`，視覺取料、格位位移研究、README 截圖都已重跑。t2 抓到配置改版時漏改的停放點，已修正。新增 `fit_axis_circle` 畫圓找軸心工具與現場補量清單（HARDWARE_TEST_GUIDE.md）。板寬與軸心到板緣距離仍是 CAD 值，等現場量測。
+
 - 2026-11-10：使用者依 H1 實測決定 D0，模擬改為 CAD 整組轉 180°：A 區在 -X（手臂右方）、兩臂 j1 方向 +1。單元測試、HOME、舊 pipeline 兩物體、coordinator 一輪都 `PASS`（evidence/a_right_layout_20261110/）。板寬與軸心到板緣距離仍是 CAD 值，待現場直接量測；視覺取料、格位位移研究、README 截圖未重跑。
 
 - 2026-11-10：第一次 Orin 實機測試已匯入 evidence/hardware/（來源 Azeem1010/Dual-Arm-TEST-2.0 `fc4cd41`）。SETUP、P0、H0 `PASS`；H1 只做完 arm1：**A 區在手臂自身右方、j1 方向 +1**，與目前模擬（A 在左、−1）相反。軸心在板外約 10 mm、板寬約 235 mm，也與模型不同。只更新了文件與 `install_jazzy.sh`；模型、runtime.json、視覺設定未改，等使用者決定 D0。下方「A 區在手臂左邊」的敘述已被實測推翻。

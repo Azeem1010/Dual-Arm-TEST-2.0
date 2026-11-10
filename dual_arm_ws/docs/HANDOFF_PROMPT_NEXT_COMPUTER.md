@@ -20,7 +20,7 @@
 4. 只有在沒有 build/ 時才安裝與建置：sudo bash scripts/install_jazzy.sh（需要使用者同意）、bash scripts/build.sh。不要把別台電腦的 build/、install/、log/ 複製過來。
 5. 建立基準，全部不需要硬體，結果回報給使用者：
    (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)
-   應為 259 passed。
+   應為 272 passed。
    python3 scripts/test_cm530_mock.py
    這支會覆寫 docs/evidence/ 的舊紀錄，跑完先把結果另存，再用 git restore 還原舊檔。
 
