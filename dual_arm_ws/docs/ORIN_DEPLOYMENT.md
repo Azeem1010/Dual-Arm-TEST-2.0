@@ -73,7 +73,7 @@ ls -l /dev/serial/by-id/
 ls -l /dev/v4l/by-id/
 ```
 
-先前的紀錄中，控制板是 `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0`，請以實際結果為準。相機路徑填入 `src/vision_pkg/config/cameras.yaml`，手眼相機 1 的 `rotate: 180` 來自 2026-11-06 的實測，要重新確認。
+先前的紀錄中，控制板是 `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0`，請以實際結果為準。相機路徑填入 `src/vision_pkg/config/cameras.yaml`（用操作介面啟動時也可以填 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.*_cam_device`）。實機用 ROS domain 0，模擬用 43，終端機要 `unset ROS_DOMAIN_ID`。手眼相機 1 的 `rotate: 180` 來自 2026-11-06 的實測，要重新確認。
 
 ## 4. H0、H1：只讀與手動確認
 

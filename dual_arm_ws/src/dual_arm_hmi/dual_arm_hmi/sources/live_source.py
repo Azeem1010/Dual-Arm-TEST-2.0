@@ -3,7 +3,7 @@ from dataclasses import replace
 import os
 import time
 
-from ..launcher.profiles import build_plan, journal_settings, new_journal_path
+from ..launcher.profiles import build_plan, domain_for, journal_settings, new_journal_path
 from ..launcher.process import gazebo_processes
 from ..model.state import Action, CommandFeedback, EventRecord, Level, Mode, Phase
 from .base import DataSource
@@ -13,8 +13,11 @@ _RESIDUAL_CHECK_S = 2.0
 
 
 class LiveSource(DataSource):
-    def __init__(self, ros, launcher, profiles, workspace, settings_store, clock=time.time):
+    def __init__(self, ros, launcher, profiles, workspace, settings_store, clock=time.time, reconnect=None):
+        """ros watches ROS_DOMAIN_ID. reconnect(domain) gives a new monitor on another domain; without it the
+        monitor never moves, which is only right when every mode shares one domain."""
         self._ros, self._launcher, self._profiles = ros, launcher, profiles
+        self._reconnect, self._domain = reconnect, str(os.environ.get('ROS_DOMAIN_ID', '')).strip()
         self._workspace, self._store, self._clock = workspace, settings_store, clock
         self._settings = settings_store.load()
         self._selected = Mode(self._settings.get('mode', Mode.SIMULATION.value))
@@ -23,6 +26,21 @@ class LiveSource(DataSource):
         self._restart_mode, self._shutdown_requested = None, False
         self._residual, self._residual_checked = False, -1e9
         self._last_state = None
+        # A system adopted from an earlier interface is watched on its own domain.
+        status = launcher.status()
+        adopted = _mode_named(status.mode) if status.state in ('running', 'stopping') else None
+        self._watch(adopted or self._selected)
+
+    def _watch(self, mode):
+        """Move the monitor to the domain this mode runs on."""
+        if self._reconnect is None or mode is None:
+            return
+        domain = domain_for(mode, self._profiles)
+        if not domain.isdigit() or domain == self._domain:
+            return
+        self._ros.close()
+        self._ros, self._domain = self._reconnect(int(domain)), domain
+        self._note(Level.NEUTRAL, f'監看 ROS domain {domain}（{mode.value}）')
 
     # --- DataSource ---
 
@@ -36,6 +54,9 @@ class LiveSource(DataSource):
     def select_mode(self, mode):
         self._selected = mode
         self._remember(mode=mode.value)
+        # While a system runs the monitor stays with it; the panel only offers a choice when stopped.
+        if self._launcher.status().state not in ('running', 'stopping'):
+            self._watch(mode)
 
     def set_cycles(self, cycles):
         self._cycles = cycles
@@ -72,7 +93,10 @@ class LiveSource(DataSource):
             self._feedback = CommandFeedback(Action.START_SYSTEM, '已拒絕', plan.problem)
             self._note(Level.DANGER, f'無法啟動：{plan.problem}')
             return
-        error = self._launcher.start(mode.value, plan.command)
+        self._watch(mode)
+        if plan.notice:
+            self._note(Level.WARN, plan.notice)
+        error = self._launcher.start(mode.value, plan.command, dict(plan.environment))
         if error:
             self._feedback = CommandFeedback(Action.START_SYSTEM, '已拒絕', error)
             self._note(Level.DANGER, f'無法啟動：{error}')
@@ -148,6 +172,13 @@ class LiveSource(DataSource):
                        launch_managed=managed or not base.ros_connected, launch_problem=problem, launch_warning=warning,
                        residual_processes=self._residual_gazebo(managed), feedback=self._feedback or base.feedback,
                        events=events, cycles=self._cycles)
+
+
+def _mode_named(value):
+    try:
+        return Mode(value)
+    except ValueError:
+        return None
 
 
 class SettingsStore:

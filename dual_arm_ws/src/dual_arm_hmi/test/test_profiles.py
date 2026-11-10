@@ -2,7 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from dual_arm_hmi.launcher.profiles import apply_environment, build_plan, load_profiles, workspace_from_prefix
+from dual_arm_hmi.launcher.profiles import (apply_environment, build_plan, domain_for, domain_problem, load_profiles,
+                                            workspace_from_prefix)
 from dual_arm_hmi.model.state import Mode
 
 PACKAGED = Path(__file__).resolve().parents[1] / 'config' / 'profiles.yaml'
@@ -76,3 +77,46 @@ def test_workspace_from_install_prefix(tmp_path):
     prefix = tmp_path / 'ws' / 'install' / 'dual_arm_hmi'
     prefix.mkdir(parents=True)
     assert workspace_from_prefix(prefix) == str((tmp_path / 'ws').resolve())
+
+
+def hardware_profiles(profiles, **hardware):
+    profiles['hardware'] = {**profiles['hardware'], 'port': '/dev/serial/by-id/x', **hardware}
+    return profiles
+
+
+def test_hardware_runs_on_its_own_domain(profiles):
+    plan = build_plan(Mode.HARDWARE_READ_ONLY, hardware_profiles(profiles), WORKSPACE, '', 1, environ={'ROS_DOMAIN_ID': '43'})
+    assert not plan.problem and dict(plan.environment) == {'ROS_DOMAIN_ID': '0'}
+
+
+def test_hardware_domain_ignores_the_environment(profiles):
+    # The simulation domain may be exported in the shell; hardware must not follow it.
+    assert domain_for(Mode.HARDWARE_MOTION, profiles, {'ROS_DOMAIN_ID': '43'}) == '0'
+    assert domain_for(Mode.SIMULATION, profiles, {'ROS_DOMAIN_ID': '43'}) == '43'
+
+
+def test_simulation_plan_keeps_the_interface_domain(profiles):
+    assert build_plan(Mode.SIMULATION, profiles, WORKSPACE, '', 1).environment == ()
+
+
+@pytest.mark.parametrize('domain, words', [('43', '相同'), ('', '0～101'), ('abc', '0～101'), ('102', '0～101')])
+def test_unusable_hardware_domain_is_refused(profiles, domain, words):
+    plan = build_plan(Mode.HARDWARE_READ_ONLY, hardware_profiles(profiles, ros_domain_id=domain), WORKSPACE, '', 1,
+                      environ={'ROS_DOMAIN_ID': '43'})
+    assert words in plan.problem and not plan.command
+    assert words in domain_problem(profiles, {'ROS_DOMAIN_ID': '43'})
+
+
+def test_camera_devices_reach_the_vision_launch(profiles):
+    plan = build_plan(Mode.HARDWARE_READ_ONLY,
+                      hardware_profiles(profiles, env_cam_device='/dev/v4l/by-id/env', arm1_cam_device='/dev/v4l/by-id/a1',
+                                        arm2_cam_device='/dev/v4l/by-id/a2'), WORKSPACE, '', 1)
+    vision = next(part for part in plan.command[2].split(' & ') if 'vision.launch.py' in part)
+    assert 'env_cam_device:=/dev/v4l/by-id/env' in vision and 'arm1_cam_device:=/dev/v4l/by-id/a1' in vision
+    assert 'arm2_cam_device:=/dev/v4l/by-id/a2' in vision and not plan.notice
+
+
+def test_missing_camera_devices_start_with_a_notice(profiles):
+    plan = build_plan(Mode.HARDWARE_READ_ONLY, hardware_profiles(profiles, arm1_cam_device='/dev/v4l/by-id/a1'), WORKSPACE, '', 1)
+    assert plan.command and 'env_cam_device' in plan.notice and 'arm2_cam_device' in plan.notice
+    assert 'arm1_cam_device' not in plan.notice and 'env_cam_device:=' not in plan.command[2]

@@ -5,7 +5,7 @@
 | 啟動方式 | 指令 |
 |---|---|
 | 管理系統（預設，只能開一個） | `ros2 run dual_arm_hmi hmi` |
-| 只看不操作（可再開第二個） | `ros2 run dual_arm_hmi hmi --monitor` |
+| 只看不操作（可再開第二個） | `ros2 run dual_arm_hmi hmi --monitor`；監看實機加 `--hardware` |
 | 假資料 | `ros2 run dual_arm_hmi hmi --fake` |
 | Windows 捷徑 | 雙擊 `scripts/hmi_windows.bat` |
 | Orin 桌面捷徑 | 執行一次 `bash scripts/install_hmi_shortcut.sh` |
@@ -203,10 +203,11 @@ src/dual_arm_hmi/
 
 - `safety_supervisor` 在模擬要設 `require_estop:=false`，否則沒有心跳會一直鎖定。
 - 各模式獨立於 UI 執行，UI 當掉時系統不跟著結束，重開可接回。
-- `ROS_DOMAIN_ID`、`GZ_PARTITION` 和 `scripts/start_sim.sh` 一致。
+- 模擬、Mock、Mock Serial 的 `ROS_DOMAIN_ID`、`GZ_PARTITION` 和 `scripts/start_sim.sh` 一致（43）。
+- 實機改用 `hardware.ros_domain_id`（預設 0，不受環境變數影響），和模擬相同或不是 0～101 的整數時拒絕啟動，避免模擬的回授與影像混進實機。選擇模式時監看節點跟著換到該模式的 domain，系統執行中不換；接回先前的系統時用該系統的 domain。
 - 就緒以 `list_controllers` 為準，spawner 可能誤報失敗（ROS_INTERFACES 缺口 10）。
 - `cycles` 是介面上的啟動選項（模擬），`prefilled_slots` 在設定檔，任務中都不能改。
-- 設定檔：套件內 `config/profiles.yaml`，使用者覆寫放 `~/.ros/dual_arm_hmi/profiles.yaml`。實機的 `port`、`controllers_file` 沒填時拒絕啟動並說明原因。
+- 設定檔：套件內 `config/profiles.yaml`，使用者覆寫放 `~/.ros/dual_arm_hmi/profiles.yaml`。實機的 `port`、`controllers_file` 沒填時拒絕啟動並說明原因。三顆相機路徑填 `hardware.env_cam_device`、`arm1_cam_device`、`arm2_cam_device`；沒填的改用 `vision_pkg` 的 `config/cameras.yaml`，事件紀錄會提醒，兩處都空的相機不啟動。
 - 工作階段記錄在 `~/.ros/dual_arm_hmi/session.json`，每次啟動的紀錄檔在 `~/.ros/dual_arm_hmi/logs/`。
 - 啟動的每個程序都帶 `DUAL_ARM_HMI_SESSION` 標記；關閉時依序送 SIGINT、SIGTERM、SIGKILL，再清除同一個 `GZ_PARTITION` 的 Gazebo 與帶標記的殘留程序。
 - 系統若不是由介面啟動（例如在終端機），介面只監看，不能關閉它。

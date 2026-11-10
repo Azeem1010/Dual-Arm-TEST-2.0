@@ -153,7 +153,10 @@ Orin 的安裝與 ESP32 agent 的建置見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.
 cd ~/projects/dual_arm_system/dual_arm_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
+unset ROS_DOMAIN_ID
 ```
+
+實機一律用 ROS 預設的 domain 0（操作介面的 `hardware.ros_domain_id` 也是 0）。模擬用 43，終端機若曾 `export ROS_DOMAIN_ID=43` 或其他值，`unset` 後才看得到實機，也不會收到模擬的資料。
 
 找到控制板的固定路徑，下面用 `<控制板>` 表示：
 
@@ -256,7 +259,7 @@ ls -l /dev/v4l/by-id/
 ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<環境> arm1_cam_device:=/dev/v4l/by-id/<手臂1> arm2_cam_device:=/dev/v4l/by-id/<手臂2>
 ```
 
-把路徑填到 `src/vision_pkg/config/cameras.yaml`，以後就不用每次打。
+把路徑填到 `src/vision_pkg/config/cameras.yaml`，以後就不用每次打。用操作介面啟動實機時，也可以填在 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.env_cam_device` 等欄位（優先於 cameras.yaml）。
 
 | 看什麼 | 應該是 |
 |---|---|

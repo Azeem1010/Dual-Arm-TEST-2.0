@@ -32,12 +32,14 @@ class Ros:
 class Launcher:
     def __init__(self):
         self.status_value, self.started = LaunchStatus(), []
+        self.environments = []
 
     def status(self):
         return self.status_value
 
     def start(self, mode, command, environment=None):
         self.started.append((mode, command))
+        self.environments.append(dict(environment or {}))
         self.status_value = LaunchStatus('running', mode, started_at=100.0, log_path='/log')
         return ''
 
@@ -181,3 +183,76 @@ def test_residual_gazebo_blocks_start(parts, monkeypatch):
     source._residual_checked = -1e9
     state = evaluate_actions(source.snapshot())[Action.START_SYSTEM]
     assert not state.enabled and 'Gazebo' in state.reason
+
+
+HARDWARE_PROFILES = {**PROFILES, 'hardware': {'port': '/dev/serial/by-id/x', 'ros_domain_id': '0'}}
+
+
+class Monitors:
+    """Stand-in for RosSource creation: records which domain each new monitor joins."""
+
+    def __init__(self):
+        self.domains, self.closed = [], 0
+
+    def __call__(self, domain):
+        self.domains.append(domain)
+        monitor = Ros()
+        original = monitor.close
+
+        def close():
+            self.closed += 1
+            original()
+        monitor.close = close
+        return monitor
+
+
+@pytest.fixture
+def hardware_parts(monkeypatch):
+    monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
+    monkeypatch.setenv('ROS_DOMAIN_ID', '43')
+    monitors, launcher = Monitors(), Launcher()
+    first = monitors(43)
+    source = LiveSource(first, launcher, HARDWARE_PROFILES, '/ws', Store(), clock=lambda: 100.0, reconnect=monitors)
+    return source, monitors, launcher
+
+
+def test_selecting_hardware_moves_the_monitor_to_the_hardware_domain(hardware_parts):
+    source, monitors, _ = hardware_parts
+    source.select_mode(Mode.HARDWARE_READ_ONLY)
+    assert monitors.domains == [43, 0] and monitors.closed == 1
+    source.select_mode(Mode.HARDWARE_MOTION)
+    assert monitors.domains == [43, 0]
+    source.select_mode(Mode.SIMULATION)
+    assert monitors.domains == [43, 0, 43] and monitors.closed == 2
+
+
+def test_hardware_start_runs_on_the_hardware_domain(hardware_parts):
+    source, monitors, launcher = hardware_parts
+    source.select_mode(Mode.HARDWARE_READ_ONLY)
+    source.invoke(Action.START_SYSTEM)
+    assert launcher.started and launcher.environments[0] == {'ROS_DOMAIN_ID': '0'}
+    assert any('cameras.yaml' in event.message for event in source.snapshot().events)
+
+
+def test_the_monitor_stays_with_a_running_system(hardware_parts):
+    source, monitors, launcher = hardware_parts
+    source.select_mode(Mode.HARDWARE_READ_ONLY)
+    source.invoke(Action.START_SYSTEM)
+    source.select_mode(Mode.SIMULATION)
+    assert monitors.domains == [43, 0]
+
+
+def test_an_adopted_hardware_system_is_watched_on_its_domain(monkeypatch):
+    monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
+    monkeypatch.setenv('ROS_DOMAIN_ID', '43')
+    monitors, launcher = Monitors(), Launcher()
+    launcher.status_value = LaunchStatus('running', Mode.HARDWARE_READ_ONLY.value, adopted=True)
+    LiveSource(monitors(43), launcher, HARDWARE_PROFILES, '/ws', Store({'mode': Mode.SIMULATION.value}),
+               clock=lambda: 100.0, reconnect=monitors)
+    assert monitors.domains == [43, 0]
+
+
+def test_without_reconnect_the_monitor_never_moves(parts):
+    source, ros, *_ = parts
+    source.select_mode(Mode.HARDWARE_READ_ONLY)
+    assert source._ros is ros

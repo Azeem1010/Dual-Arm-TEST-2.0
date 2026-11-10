@@ -69,7 +69,8 @@ class _Stamped:
 
 
 class RosSource(DataSource):
-    def __init__(self, clock=time.monotonic):
+    def __init__(self, clock=time.monotonic, domain_id=None):
+        """domain_id None follows ROS_DOMAIN_ID; otherwise this node joins that domain."""
         self._clock = clock
         self._lock = threading.Lock()
         self._images = {f'raw/{name}': _Stream() for name in CAMERAS}
@@ -87,7 +88,7 @@ class RosSource(DataSource):
         self._expect_down = False
         self._events, self._previous = deque(maxlen=_EVENT_LIMIT), {}
         self._context = Context()
-        rclpy.init(context=self._context)
+        rclpy.init(context=self._context, domain_id=domain_id)
         self._node = Node('dual_arm_hmi_monitor', context=self._context)
         self._group = ReentrantCallbackGroup()
         self._subscribe()

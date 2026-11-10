@@ -2,7 +2,8 @@
 # 實機欄位留空時，介面會拒絕啟動並說明原因，不會猜測路徑。
 
 environment:
-  # 和 scripts/start_sim.sh 相同；執行介面前已設定的環境變數優先
+  # 模擬、Mock、Mock Serial 用。和 scripts/start_sim.sh 相同；執行介面前已設定的環境變數優先
+  # 實機不用這個值，改用 hardware.ros_domain_id
   ROS_DOMAIN_ID: '43'
   GZ_PARTITION: dual_arm_pipeline_demo
 
@@ -20,5 +21,12 @@ hardware:
   calibration_file: ''      # 空白 = 套件內 calibration.yaml（目前全為 null，驅動會拒絕啟動）
   controllers_file: ''      # 實機動作必填，容差必須是實測值
   vision_calib_dir: ''      # 空白 = vision_pkg 的預設目錄
+  # 相機路徑用 ls /dev/v4l/by-id/ 查。空白 = vision_pkg 的 config/cameras.yaml；兩處都空時該相機不會啟動
+  env_cam_device: ''
+  arm1_cam_device: ''
+  arm2_cam_device: ''
+  # 實機專用的 ROS domain，不可和模擬相同，避免模擬的回授與影像混進實機。
+  # 0 是 ROS 預設值，現場終端機不設 ROS_DOMAIN_ID 就能看到實機；這個設定不受環境變數影響
+  ros_domain_id: '0'
 
 startup_warning_s: 240      # 啟動超過這個秒數仍未就緒時提示
