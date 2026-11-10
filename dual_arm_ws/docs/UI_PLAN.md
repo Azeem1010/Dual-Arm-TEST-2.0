@@ -1,6 +1,6 @@
 # 操作介面（HMI）實作規劃
 
-更新：2026-11-10。**階段 0～2 已實作並在 WSL 模擬中驗證：假資料畫面、唯讀監看、由介面啟動與關閉系統。階段 0 還差使用者視覺確認與 Orin 執行；階段 3 以後都是 `NOT_RUN`。**
+更新：2026-11-11。**階段 0～3 已實作並在 WSL 模擬中驗證：假資料畫面、唯讀監看、由介面啟動與關閉系統、任務控制（開始、取消、強制停止、解除鎖定、回 HOME、復歸）。階段 0 還差使用者視覺確認與 Orin 執行；階段 4 以後都是 `NOT_RUN`。實機模式只接通強制停止，其他任務操作等階段 5。**
 
 | 啟動方式 | 指令 |
 |---|---|
@@ -164,7 +164,7 @@ src/dual_arm_hmi/
 
 **模擬的限制：** `recover` 會檢查 B 區沒有物件，但 Gazebo 裡沒有人能用手清空吸盤或 B 區，所以瓶蓋還在吸盤上或 B 區時，復歸會被拒絕。這種情況用「重置模擬」處理：重啟系統並使用新的 `journal_path`（舊 journal 會讓 coordinator 以 `FAULT` 開始）。
 
-**`/dual_arm/go_home` 要求：** 任務未執行、未鎖定、人工確認吸盤已清空，動作前做碰撞檢查，兩臂依序移動。實機模式維持拒絕，等 H5 通過。Token 的設計在階段 3 定案。
+**`/dual_arm/go_home` 要求：** 任務未執行、未鎖定、人工確認吸盤已清空，動作前做碰撞檢查，兩臂依序移動。實機模式維持拒絕，等 H5 通過。**階段 3 定案：不用 token**，`ConfirmStep.success` 就是勾選的人工確認；按鈕在未勾選時不能按，送出後介面會清掉勾選。理由：回 HOME 只是經 MoveIt 碰撞檢查的移動，不會改任務紀錄；真正改紀錄的復歸仍用一次性 token。移動失敗或被停止時任務進入 `FAULT`。模擬中紀錄顯示有持物時拒絕，因為沒有人能拿掉吸盤上的瓶蓋，改用「重置模擬」。
 
 ## 8. 畫面內容
 
@@ -243,7 +243,7 @@ src/dual_arm_hmi/
 |---|---|---|
 | `scripts/install_jazzy.sh` | 加 `fonts-noto-cjk`、`python3-pyqt5` | 0 |
 | `src/vision_pkg` 三個節點 | 新增 `publish_debug_image`，發布 `/vision/*/debug_image`。`_render` 目前被 `show_debug` 擋住，要讓繪圖和 `imshow` 分開控制 | 1 |
-| `src/dual_arm_bringup` | 新增 `hmi_sim.launch.py`（已完成，尚未含 `safety_supervisor`，階段 3 加入） | 2 |
+| `src/dual_arm_bringup` | 新增 `hmi_sim.launch.py`（已完成；階段 3 加入 `safety_supervisor`，`require_estop:=false`） | 2 |
 | `scripts/` | 新增 `hmi_windows.bat`、`install_hmi_shortcut.sh` | 2 |
 | `safety_monitor.py`、`safety_supervisor.py` | 新增 `/safety/trigger_stop`，直接鎖定，由 `/safety/reset` 解除 | 3 |
 | `coordinator_node.py` | 新增 `/dual_arm/go_home` | 3 |
@@ -311,6 +311,11 @@ WSLg 與 Orin 各跑一次，結果放 `docs/evidence/hmi/`，狀態只用 `PASS
 | 階段 2 離線測試 | `PASS` | 242 項，含真實程序的啟停、訊號升級、接回、殘留清除，[evidence/hmi/stage2/](evidence/hmi/stage2/) |
 | 階段 2 十次啟停 | `PASS` | 以介面按鈕啟停模擬十次：就緒 29.8～36.6 秒、關閉 3.7～10.3 秒，每次都沒有殘留的 Gazebo、帶標記程序或 ROS 節點。原始判定誤把介面自己的節點算成殘留，更正說明在 05_assessment.json |
 | 階段 2 當掉後接回 | `PASS` | 介面在系統就緒時被強制結束，新開的介面接回同一個工作階段並正常關閉，無殘留 |
+| 階段 3 離線測試 | `PASS` | HMI 291、coordinator 285 項，[evidence/hmi/stage3/](evidence/hmi/stage3/) |
+| 階段 3 一輪搬運 | `PASS` | 以介面按鈕「開始工作」到 `SUCCEEDED`，245.6 秒 |
+| 階段 3 未持物停止後復歸 | `PASS` | 手臂移動中按強制停止，0.3 秒鎖定並停用控制器；解除鎖定、回 HOME、復歸後再開始到 `SUCCEEDED` |
+| 階段 3 持物停止後重置模擬 | `PASS`（重跑） | 手臂 1 吸著瓶蓋時停止，回 HOME 被拒絕並改用重置模擬，46.1 秒後 `IDLE`。第一次實測的第三次取料因 A 區可達性限制（C30）自己故障，沒有測到持物，照實記錄 |
+| 階段 3 停在限位外的恢復 | `FAIL`（已知缺口） | 手臂停在關節限位外時回 HOME 無法規劃，模擬只能重置；實機程序在 H5 前定出 |
 | Windows 與 Orin 捷徑 | `PASS` | `.bat` 的路徑轉換與 `.desktop` 內容已驗證；實際雙擊開啟 `NOT_RUN` |
 | 階段 1 唯讀 | `PASS` | `ros2 node info` 只有 `/rosout`、`/parameter_events` 發布者，client 只有 `list_controllers`、`get_parameters`，沒有 action |
 | UI 對系統的負載 | `PASS` | WSL 模擬速度：無 UI 0.182、有 UI 0.183 倍實時；刷新平均 1.0 ms。相機約 2 FPS 是 WSL 渲染限制，無法驗證 10 FPS 目標 |

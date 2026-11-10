@@ -144,7 +144,7 @@ def test_f12_stops_without_a_dialog(app):
     # Off screen there is no active window for a key press; the WSLg check sends a real one.
     window = open_window(app, 'working', (1920, 1080))
     sent = []
-    window.source.invoke = sent.append
+    window.source.invoke = lambda action, cleared=False: sent.append(action)
     shortcuts = [item for item in window.findChildren(QtWidgets.QShortcut) if item.key().toString() == 'F12']
     assert len(shortcuts) == 1 and shortcuts[0].context() == Qt.ApplicationShortcut
     shortcuts[0].activated.emit()
@@ -155,7 +155,7 @@ def test_f12_stops_without_a_dialog(app):
 def test_stop_button_sends_stop_without_a_dialog(app):
     window = open_window(app, 'working', (1920, 1080))
     sent = []
-    window.source.invoke = sent.append
+    window.source.invoke = lambda action, cleared=False: sent.append(action)
     QTest.mouseClick(window.control.stop, Qt.LeftButton)
     assert sent == [Action.STOP]
     window.close()
@@ -170,7 +170,7 @@ def test_start_button_cannot_take_keyboard_focus(app):
 def test_confirmation_defaults_to_no(app, monkeypatch):
     window = open_window(app, 'ready', (1920, 1080))
     sent = []
-    window.source.invoke = sent.append
+    window.source.invoke = lambda action, cleared=False: sent.append(action)
     monkeypatch.setattr(QtWidgets.QMessageBox, 'exec_', lambda self: self.defaultButton() and QtWidgets.QMessageBox.No)
     window._on_action(Action.SHUTDOWN)
     assert sent == []

@@ -75,7 +75,7 @@
 | C27 | B 區已有物件時略過 arm1，`scene_remove_b_object` 會移除場景中不存在的物件 | WP3 已處理：沒有登錄過就不送移除 |
 | C31 | 模擬相機固定在頭頂，兩臂在 Home 時擋住 C 區與部分 A 區（arm2 只找到 1 格，arm1 少看到 2 顆）；實機相機在手臂上，遮擋情況不同。環境相機也因 Gazebo 0.2 倍實時，取不滿定位場地所需的影像 | 需使用者決定（D7）。在此之前區域與格位狀態用真值，取料點用視覺 |
 | C32 | `safety_supervisor` 鎖定且控制器已停用後，手動 `switch_controllers --activate` 仍能啟動控制器，`/safety/status` 繼續回報 `controllers_stopped: true`（修正前的紀錄：`docs/evidence/safety_order/`） | 已修正（`docs/evidence/c32/`，只驗證 mock）。鎖定期間每 0.2 秒檢查控制器，發現啟動就再停用，約 0.3 秒內停下；狀態改為實際結果。這段空窗仍在，手動切換依然禁止 |
-| C30 | 模擬中 8 個瓶蓋起始位置只有 cap_3～6 在 arm1 朝下 IK 範圍內（`docs/evidence/wp6/03_analysis.txt`），目前佈局無法搬完八件 | 與格位 1（D3）一併由使用者決定。不可靠放寬限位來通過 |
+| C30 | 模擬中 8 個瓶蓋起始位置只有 cap_3～6 在 arm1 朝下 IK 範圍內（`docs/evidence/wp6/03_analysis.txt`），目前佈局無法搬完八件。2026-11-11 介面階段 3 實測又遇到一次：同一模擬第三次取料，手臂 1 下降到 (-0.14, 0.035) 的瓶蓋時肘關節到 1.5 rad 限位，停在 16.6 mm 外，之後回 HOME 因起始狀態超出限位無法規劃（evidence/hmi/stage3/） | 與格位 1（D3）一併由使用者決定。不可靠放寬限位來通過 |
 | C29 | Coordinator 被強制結束後，已送出的軌跡不會停止。Gazebo 實測手臂又動了約 22 秒、0.26 rad，期間 MoveIt 拒絕新軌跡 | WP9 要在 coordinator 失效時停用 arm controllers。實機放行前必須完成 |
 | C28 | Gazebo 吸盤要求橫向誤差 1 mm 以內，但模擬視覺的 arm1 最大誤差紀錄為 1.09 mm（`sim_coordinate_validation.json`） | 已處理：到位容差收緊為 0.5 mm 後，視覺取料連續 3 次通過。外掛的容許值沒有放寬 |
 

@@ -5,6 +5,9 @@ This is a software interlock. It does not replace a physical emergency stop.
 import threading
 import time
 
+# The operator interface translates this text; keep both in step.
+OPERATOR_STOP = 'Operator software stop'
+
 
 class SafetyMonitor:
     """Latches on the first unsafe input and stays latched until an explicit reset."""
@@ -48,6 +51,17 @@ class SafetyMonitor:
                 return False
             self._reason = self._problem()
             return self._reason is not None
+
+    def trigger(self, reason):
+        """Latch on request, e.g. the operator's stop button. Returns True if this call latched.
+
+        Unlike a missing heartbeat, nothing has to be fixed afterwards, so reset clears it.
+        """
+        with self._lock:
+            if self._reason is not None:
+                return False
+            self._reason = reason
+            return True
 
     @property
     def reason(self):

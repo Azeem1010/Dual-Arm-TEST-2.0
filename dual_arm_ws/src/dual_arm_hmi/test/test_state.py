@@ -269,3 +269,11 @@ def test_next_slot():
     assert next_slot(TaskStatus(occupied=(True, True) + (False,) * 6)) == 3
     assert next_slot(TaskStatus(slot=5)) == 5
     assert next_slot(TaskStatus(occupied=(True,) * 8)) == 0
+
+
+def test_simulated_fault_while_holding_points_to_reset_simulation():
+    task = TaskStatus(state='FAULT', message='Task canceled', holding=(('arm1', 'held'), ('arm2', 'empty')))
+    held = Snapshot(mode=Mode.SIMULATION, phase=Phase.READY, ros_connected=True, task=task, arms_at_home=False)
+    assert '重置模擬' in banner(held).next_step
+    empty = replace(held, task=replace(task, holding=(('arm1', 'empty'), ('arm2', 'empty'))))
+    assert '回 HOME' in banner(empty).next_step

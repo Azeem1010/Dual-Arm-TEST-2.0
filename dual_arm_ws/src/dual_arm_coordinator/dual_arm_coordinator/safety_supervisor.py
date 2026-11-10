@@ -17,7 +17,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, String
 from std_srvs.srv import Trigger
 
-from .safety_monitor import SafetyMonitor
+from .safety_monitor import OPERATOR_STOP, SafetyMonitor
 
 _RESEND_PERIOD_S = 0.5
 _VERIFY_PERIOD_S = 0.2
@@ -43,6 +43,7 @@ class SafetySupervisor(Node):
         self.create_subscription(Bool, '/safety/estop', lambda message: self.monitor.on_estop(message.data), 10, callback_group=self.group)
         self.create_subscription(Bool, '/dual_arm/permit', lambda _message: self.monitor.on_permit(), 10, callback_group=self.group)
         self.create_service(Trigger, '/safety/reset', self._reset, callback_group=self.group)
+        self.create_service(Trigger, '/safety/trigger_stop', self._trigger_stop, callback_group=self.group)
         self.create_timer(0.05, self._tick, callback_group=self.group)
         self.create_timer(0.2, self._publish, callback_group=self.group)
 
@@ -113,6 +114,20 @@ class SafetySupervisor(Node):
             applied = self.applied
         reason = self.monitor.reason
         self.status.publish(String(data=json.dumps({'latched': reason is not None, 'reason': reason or '', 'controllers_stopped': applied})))
+
+    def _trigger_stop(self, _request, response):
+        """Software stop: latch and deactivate the arm controllers, as for any other unsafe input.
+
+        It does not cut motor power; the physical emergency stop stays the primary stop.
+        """
+        if self.monitor.trigger(OPERATOR_STOP):
+            self.get_logger().error(f'Stopping the arm controllers: {OPERATOR_STOP}')
+            with self.lock:
+                self.applied, self.listing = False, None
+            response.success, response.message = True, 'Latched; the arm controllers are being deactivated'
+        else:
+            response.success, response.message = True, f'Already latched: {self.monitor.reason}'
+        return response
 
     def _reset(self, _request, response):
         if self.monitor.reason is None:

@@ -12,8 +12,11 @@ class DataSource(ABC):
         """The latest BGR image for a camera, or None when there is no current image."""
 
     @abstractmethod
-    def invoke(self, action):
-        """Send an operator action. Must not block."""
+    def invoke(self, action, cleared=False):
+        """Send an operator action. Must not block.
+
+        cleared: the operator ticked that the tools and zone B are clear (HOME and recovery).
+        """
 
     @abstractmethod
     def select_mode(self, mode):

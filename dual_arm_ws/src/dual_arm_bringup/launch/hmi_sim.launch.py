@@ -1,7 +1,8 @@
-"""Everything the operator interface shows in simulation.
+"""Everything the operator interface shows and controls in simulation.
 
-The Gazebo task, the three vision nodes publishing their annotated images, and the
-calibration status monitor. The task still decides zones from Gazebo ground truth.
+The Gazebo task, the three vision nodes publishing their annotated images, the
+calibration status monitor and safety_supervisor, which carries out the interface's
+stop button. The task still decides zones from Gazebo ground truth.
 """
 from ament_index_python.packages import get_package_share_directory as share
 from launch import LaunchDescription
@@ -26,6 +27,9 @@ def generate_launch_description():
         }.items()),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(launch_dir + 'calibration.launch.py'),
                                  launch_arguments={'calib_dir': calib_dir}.items()),
+        # Simulation has no emergency-stop heartbeat; the stop button and a lost coordinator still latch.
+        Node(package='dual_arm_coordinator', executable='safety_supervisor', output='screen',
+             parameters=[{'require_estop': False}]),
     ]
     for name in ('env', 'arm1', 'arm2'):
         overrides = {'use_sim_time': True, 'show_debug': False, 'publish_debug_image': True, 'calib_dir': calib_dir}

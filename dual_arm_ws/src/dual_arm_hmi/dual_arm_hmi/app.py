@@ -60,6 +60,7 @@ def live_source(monitor_only, hardware=False):
     from .launcher.profiles import apply_environment, domain_for, domain_problem, load_profiles, workspace_from_prefix
     from .model.state import Mode
     from .sources.live_source import LiveSource, SettingsStore
+    from .sources.ros_command import RosCommander
     from .sources.ros_source import RosSource
 
     profiles = load_profiles(os.path.join(get_package_share_directory('dual_arm_hmi'), 'config', 'profiles.yaml'))
@@ -73,7 +74,8 @@ def live_source(monitor_only, hardware=False):
             raise SystemExit(problem)
         return RosSource(domain_id=int(domain_for(Mode.HARDWARE_READ_ONLY, profiles)))
     return LiveSource(RosSource(), Launcher(STATE_DIR), profiles, workspace_from_prefix(get_package_prefix('dual_arm_hmi')),
-                      SettingsStore(str(STATE_DIR / 'settings.json')), reconnect=lambda domain: RosSource(domain_id=domain))
+                      SettingsStore(str(STATE_DIR / 'settings.json')), reconnect=lambda domain: RosSource(domain_id=domain),
+                      commander=lambda domain: RosCommander(domain_id=domain))
 
 
 def main(argv=None):

@@ -110,6 +110,13 @@ class MotionGateway:
         q = self.current(arm)
         return tcp_error(self._models[arm], q, self.home_tcp(arm)) <= self._cfg['tcp_error_limit_m']
 
+    def home_state(self, arm):
+        """at_home for status reports: never waits, and None when the joint state is missing or old."""
+        q, _, age = self._sample(arm)
+        if q is None or age > self._cfg['joint_state_max_age_s']:
+            return None
+        return bool(tcp_error(self._models[arm], q, self.home_tcp(arm)) <= self._cfg['tcp_error_limit_m'])
+
     # --- ROS call helpers ---
 
     def _wait(self, future, timeout, label):

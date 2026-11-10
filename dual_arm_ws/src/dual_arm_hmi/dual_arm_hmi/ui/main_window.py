@@ -250,7 +250,7 @@ class MainWindow(QMainWindow):
     # --- actions ---
 
     def _send(self, action):
-        self.source.invoke(action)
+        self.source.invoke(action, cleared=self.control.tools_cleared.isChecked())
         self.refresh()
 
     def _on_action(self, action):

@@ -115,3 +115,23 @@ def test_calibration_raw_limits_come_from_the_driver_calibration_file(tmp_path):
                                   '<robot name="r"><param name="calibration_file">/nonexistent/calibration.yaml</param></robot>'))
 def test_missing_calibration_gives_no_limits(urdf):
     assert calibration_raw_limits(urdf) == {}
+
+
+def test_at_home_needs_an_explicit_true_for_both_arms():
+    from dual_arm_hmi.sources.ros_parse import task_from_json
+    base = {'state': 'IDLE', 'occupied': [False] * 8}
+    home = task_from_json(json.dumps({**base, 'at_home': {'arm1': True, 'arm2': True}}))
+    assert home.both_at_home
+    for value in ({'arm1': True, 'arm2': None}, {'arm1': True, 'arm2': 'yes'}, {'arm1': True}, None):
+        task = task_from_json(json.dumps({**base, 'at_home': value}))
+        assert not task.both_at_home, value
+    assert not task_from_json(json.dumps(base)).both_at_home
+
+
+def test_latched_simulation_stays_ready_but_hardware_does_not():
+    from dual_arm_hmi.model.state import Mode, Phase
+    from dual_arm_hmi.sources.ros_parse import infer_phase
+    stopped = {'joint_state_broadcaster': 'active', 'arm1_controller': 'inactive', 'arm2_controller': 'inactive'}
+    assert infer_phase(Mode.SIMULATION, stopped, True, latched=True) is Phase.READY
+    assert infer_phase(Mode.SIMULATION, stopped, True, latched=False) is Phase.STARTING
+    assert infer_phase(Mode.HARDWARE_MOTION, stopped, True, latched=True) is Phase.READ_ONLY

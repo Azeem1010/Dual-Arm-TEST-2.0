@@ -27,9 +27,16 @@ def task_from_json(text):
             b_owner=str(data.get('b_owner', '')), occupied=tuple(bool(value) for value in data['occupied']),
             slot=int(data.get('slot', 0)), completed=int(data.get('completed', 0)), message=str(data.get('message', '')),
             busy=bool(data.get('busy', False)), recovery_token=str(data.get('recovery_token', '')),
-            suction_step=str(data.get('suction_step', '')), suction_token=str(data.get('suction_token', '')))
+            suction_step=str(data.get('suction_step', '')), suction_token=str(data.get('suction_token', '')),
+            at_home=_at_home(data.get('at_home')))
     except (ValueError, KeyError, TypeError, AttributeError):
         return None
+
+
+def _at_home(value):
+    """Only an explicit true counts as HOME; anything else is unknown."""
+    value = value if isinstance(value, dict) else {}
+    return tuple((arm, value[arm] if isinstance(value.get(arm), bool) else None) for arm in ('arm1', 'arm2'))
 
 
 def safety_from_json(text):
@@ -115,11 +122,17 @@ def calibration_raw_limits(urdf):
     return limits
 
 
-def infer_phase(mode, controllers, connected):
-    """Without a launcher the phase comes from what the controller manager reports."""
+def infer_phase(mode, controllers, connected, latched=False):
+    """Without a launcher the phase comes from what the controller manager reports.
+
+    A safety latch deactivates the arm controllers. Without a torque step (simulation, Mock) the
+    system is still up, so it stays READY and the latch is shown on its own.
+    """
     if not connected:
         return Phase.STOPPED
     if all(controllers.get(name) == 'active' for name in ARM_CONTROLLERS):
+        return Phase.READY
+    if latched and not mode.has_torque_step and all(name in controllers for name in ARM_CONTROLLERS):
         return Phase.READY
     if controllers.get(BROADCASTER) == 'active' and (mode.has_torque_step or mode is Mode.HARDWARE_READ_ONLY):
         return Phase.READ_ONLY

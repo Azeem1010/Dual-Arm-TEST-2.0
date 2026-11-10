@@ -19,7 +19,8 @@ from vision_interfaces.msg import GridState, ZoneState
 from vision_pkg.node_common import image_msg_to_bgr
 
 from ..model.joints import JOINT_NAMES, JointSample
-from ..model.state import (CAMERA_STALE_S, GAZEBO_VIEWS, CameraStatus, CommandFeedback, EventRecord, Level, Mode, Phase, Snapshot, ZoneView)
+from ..model.state import (CAMERA_STALE_S, GAZEBO_VIEWS, CameraStatus, CommandFeedback, EventRecord, Level, Mode, Phase,
+                           SafetyStatus, Snapshot, ZoneView)
 from .base import DataSource
 from .ros_parse import (FpsMeter, calibration_from_diagnostics, calibration_raw_limits, firmware_counts, infer_phase, limits_from_urdf,
                         mode_from_urdf, safety_from_json, task_from_json)
@@ -201,7 +202,7 @@ class RosSource(DataSource):
         """A shutdown the operator asked for is recorded as such, not as a failure."""
         self._expect_down = expected
 
-    def invoke(self, action):
+    def invoke(self, action, cleared=False):
         self._feedback = CommandFeedback(action, '已拒絕', _REFUSED)
         self._note(Level.WARN, f'{action.value}：{_REFUSED}')
 
@@ -300,7 +301,8 @@ class RosSource(DataSource):
             known = controllers or {}
             mode = mode_from_urdf(self._urdf, known)
             if connected:
-                phase = infer_phase(mode, known, True)
+                latched = (self._safety.fresh(now, _STATUS_MAX_AGE_S) or SafetyStatus()).latched
+                phase = infer_phase(mode, known, True, latched)
                 self._last_phase = phase
             else:
                 # After losing a running system, keep the phase so the loss is announced.
@@ -321,6 +323,7 @@ class RosSource(DataSource):
             mode=mode, phase=phase, ros_connected=connected, monitor_only=True, task=task, safety=safety,
             controllers_active=all(known.get(name) == 'active' for name in ('arm1_controller', 'arm2_controller')),
             decision_source=self._observation if task is not None else '', joints=joints, joint_age_s=joint_age, cameras=cameras,
-            zones=zones, zones_authoritative=authoritative, wrong_slots=wrong, gazebo_views=views, feedback=self._feedback)
+            zones=zones, zones_authoritative=authoritative, wrong_slots=wrong, gazebo_views=views, feedback=self._feedback,
+            arms_at_home=task is not None and task.both_at_home)
         self._note_changes(snapshot)
         return Snapshot(**{**snapshot.__dict__, 'events': tuple(self._events)})

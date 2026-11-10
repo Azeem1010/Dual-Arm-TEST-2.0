@@ -37,8 +37,8 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 
 | 任務與安全節點 | 來源 | 發布 | 訂閱 | Service／Action |
 |---|---|---|---|---|
-| `dual_arm_coordinator` | `dual_arm_coordinator` | `/dual_arm/status`、`/dual_arm/permit`、`/handoff/b_state`、`/gripper/armN/command` | `/joint_states`、`/safety/estop`、`/gripper/armN/state`、`/ground_truth/cap_{1..8}` | Server：`/dual_arm/{start,cancel,confirm,recover}`。Client：`/move_action`、`/execute_trajectory`、`/apply_planning_scene`、`/check_state_validity`、`/get_planning_scene` |
-| `safety_supervisor` | `dual_arm_coordinator` | `/safety/status` | `/safety/estop`、`/dual_arm/permit` | Server：`/safety/reset`。Client：`/controller_manager/switch_controller`、`/controller_manager/list_controllers` |
+| `dual_arm_coordinator` | `dual_arm_coordinator` | `/dual_arm/status`、`/dual_arm/permit`、`/handoff/b_state`、`/gripper/armN/command` | `/joint_states`、`/safety/estop`、`/gripper/armN/state`、`/ground_truth/cap_{1..8}` | Server：`/dual_arm/{start,cancel,confirm,recover,go_home}`。Client：`/move_action`、`/execute_trajectory`、`/apply_planning_scene`、`/check_state_validity`、`/get_planning_scene` |
+| `safety_supervisor` | `dual_arm_coordinator` | `/safety/status` | `/safety/estop`、`/dual_arm/permit` | Server：`/safety/reset`、`/safety/trigger_stop`。Client：`/controller_manager/switch_controller`、`/controller_manager/list_controllers` |
 
 參數 `observation_source:=vision_pick` 時，`dual_arm_coordinator` 另外使用 `/vision/arm1/get_pick_target`、`/vision/calibration_status`、三支相機 `image_raw` 與 TF。實機設定目前會被 coordinator 拒絕啟動。
 
@@ -66,7 +66,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/vision/calibration_status` | `diagnostic_msgs/msg/DiagnosticArray` | 三支相機 PASS／FAIL 與原因 | reliable、depth 10；每 0.5 秒 |
 | `/vision/{env,arm1,arm2}/debug_image` | `sensor_msgs/msg/Image` | 視覺節點的標註影像（`bgr8`），給操作介面顯示。需 `publish_debug_image:=true`，預設不發布 | best-effort；隨視覺處理頻率 |
 
-| `/dual_arm/status` | `std_msgs/msg/String`（JSON） | 狀態、持物、B 區擁有者、格位、token | transient_local、depth 1；5 Hz |
+| `/dual_arm/status` | `std_msgs/msg/String`（JSON） | 狀態、持物、B 區擁有者、格位、token、`at_home`（每臂 true／false，關節狀態過期時為 null） | transient_local、depth 1；5 Hz |
 | `/dual_arm/permit` | `std_msgs/msg/Bool` | Coordinator 存活與是否允許；停止發布代表失效 | 10 Hz |
 | `/handoff/b_state` | `std_msgs/msg/String`（JSON） | B 區擁有者 | transient_local、depth 1 |
 | `/safety/estop` | `std_msgs/msg/Bool` | 急停心跳，`true` 為觸發；實機來源尚不存在 | 需持續發布 |
@@ -101,7 +101,9 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `/dual_arm/start`、`/dual_arm/cancel` | `std_srvs/srv/Trigger` | 開始、取消；開始只代表已接受，結果看 `/dual_arm/status` |
 | `/dual_arm/confirm` | `dual_arm_interfaces/srv/ConfirmStep` | 人工吸盤步驟的一次性確認 |
 | `/dual_arm/recover` | `dual_arm_interfaces/srv/ConfirmStep` | 現場清空後復歸 |
+| `/dual_arm/go_home` | `dual_arm_interfaces/srv/ConfirmStep` | 兩臂依序回 HOME，佔用 B 區的手臂先走；`success` 是人工確認吸盤與 B 區已清空，`token` 不使用。任務未執行、未鎖定才接受；模擬中有持物時拒絕（改用重置模擬）。結果看 `at_home`，移動失敗或被停止時任務進入 `FAULT` |
 | `/safety/reset` | `std_srvs/srv/Trigger` | 輸入恢復正常後解除鎖定並重新啟用 controller |
+| `/safety/trigger_stop` | `std_srvs/srv/Trigger` | 軟體停止：以 `Operator software stop` 鎖定並停用手臂 controller，用 `/safety/reset` 解除。不切斷馬達電源，不能取代實體急停 |
 
 `dual_arm_interfaces/srv/ManualXY` 已定義，但目前沒有服務端，`manual_xy` 是命令列工具。
 

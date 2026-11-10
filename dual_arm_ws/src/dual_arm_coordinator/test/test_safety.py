@@ -1,6 +1,6 @@
 import unittest
 
-from dual_arm_coordinator.safety_monitor import SafetyMonitor
+from dual_arm_coordinator.safety_monitor import OPERATOR_STOP, SafetyMonitor
 
 ESTOP_AGE, PERMIT_AGE = 2.0, 1.0
 
@@ -101,6 +101,31 @@ class Reset(Base):
         self.monitor.reset()
         self.monitor.on_estop(True)
         self.assertTrue(self.monitor.update())
+
+
+class OperatorStop(Base):
+    def test_trigger_latches_healthy_inputs(self):
+        self.healthy()
+        self.assertTrue(self.monitor.trigger(OPERATOR_STOP))
+        self.assertEqual(self.monitor.reason, OPERATOR_STOP)
+        self.assertFalse(self.monitor.update())
+
+    def test_trigger_keeps_an_earlier_reason(self):
+        self.monitor.on_estop(True)
+        self.monitor.update()
+        self.assertFalse(self.monitor.trigger(OPERATOR_STOP))
+        self.assertIn('asserted', self.monitor.reason)
+
+    def test_reset_clears_an_operator_stop_once_inputs_are_healthy(self):
+        self.healthy()
+        self.monitor.trigger(OPERATOR_STOP)
+        self.assertIsNone(self.monitor.reset())
+        self.assertIsNone(self.monitor.reason)
+
+    def test_reset_after_operator_stop_still_needs_the_heartbeat(self):
+        self.monitor.trigger(OPERATOR_STOP)
+        self.assertIn('not been received', self.monitor.reset())
+        self.assertEqual(self.monitor.reason, OPERATOR_STOP)
 
 
 class Configuration(unittest.TestCase):

@@ -1,0 +1,124 @@
+{
+  "ready": {
+    "ok": true,
+    "seconds": 50.2,
+    "state": {
+      "phase": "就緒",
+      "latched": false,
+      "controllers_active": true,
+      "arms_at_home": false,
+      "busy": false,
+      "state": "IDLE",
+      "message": "",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "啟動系統|完成|",
+      "banner": "就緒"
+    }
+  },
+  "stop_holding": {
+    "reached_holding": true,
+    "state_before_stop": "ARM1:LIFT_A",
+    "latched": true,
+    "latch_s": 1.0,
+    "faulted": true,
+    "stop_feedback": {
+      "phase": "完成",
+      "message": "已鎖定，控制器停用",
+      "seconds": 0.3
+    },
+    "after_stop": {
+      "phase": "就緒",
+      "latched": true,
+      "controllers_active": true,
+      "arms_at_home": false,
+      "busy": false,
+      "state": "FAULT",
+      "message": "Task canceled",
+      "holding": {
+        "arm1": "held",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "強制停止|完成|已鎖定，控制器停用",
+      "banner": "安全鎖定"
+    },
+    "reset": {
+      "phase": "完成",
+      "message": "Latch cleared and arm controllers activated",
+      "seconds": 0.3
+    },
+    "recover_state": {
+      "enabled": false,
+      "reason": "兩臂需先回 HOME"
+    },
+    "go_home": {
+      "phase": "已拒絕",
+      "message": "An arm may still hold an object, which cannot be removed in simulation; reset the simulation instead",
+      "seconds": 0.3
+    },
+    "banner": "任務故障",
+    "reset_simulation": {
+      "ok": true,
+      "seconds": 46.1,
+      "state": {
+        "phase": "就緒",
+        "latched": false,
+        "controllers_active": true,
+        "arms_at_home": false,
+        "busy": false,
+        "state": "IDLE",
+        "message": "",
+        "holding": {
+          "arm1": "empty",
+          "arm2": "empty"
+        },
+        "occupied": [
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "feedback": "啟動系統|完成|",
+        "banner": "就緒"
+      }
+    }
+  },
+  "shutdown": {
+    "stopped": true,
+    "leftovers": {
+      "gazebo": [],
+      "tagged": [],
+      "ros_nodes": []
+    }
+  },
+  "criteria": {
+    "stop_holding_reset_simulation": true,
+    "clean_shutdown": true
+  }
+}

@@ -151,6 +151,8 @@ class CoordinatorNode(Node):
         self.create_service(Trigger, '/dual_arm/cancel', self._cancel, callback_group=self.group)
         self.create_service(ConfirmStep, '/dual_arm/confirm', self._confirm, callback_group=self.group)
         self.create_service(ConfirmStep, '/dual_arm/recover', self._recover, callback_group=self.group)
+        # success = the operator confirmed the tools and zone B are clear; the token is not used.
+        self.create_service(ConfirmStep, '/dual_arm/go_home', self._go_home, callback_group=self.group)
         self.create_timer(0.1, self._watchdog, callback_group=self.group)
         self.create_timer(0.2, self.publish_status, callback_group=self.group)
         self.publish_status()
@@ -207,7 +209,9 @@ class CoordinatorNode(Node):
             busy = self.busy
         suction_token, suction_step = self.suction_gate.current
         status = {**data, 'busy': busy, 'recovery_token': token if operation == RECOVERY else '',
-                  'suction_step': suction_step or '', 'suction_token': suction_token or ''}
+                  'suction_step': suction_step or '', 'suction_token': suction_token or '',
+                  # null when the joint state is missing or old, so a display never assumes HOME.
+                  'at_home': {arm: self.motion.home_state(arm) for arm in ('arm1', 'arm2')}}
         self.status_publisher.publish(String(data=json.dumps(status, sort_keys=True)))
         self.handoff_publisher.publish(String(data=json.dumps({'owner': data['b_owner'], 'state': data['state']})))
 
@@ -260,6 +264,39 @@ class CoordinatorNode(Node):
         except TokenError as error:
             response.accepted, response.message = False, str(error)
         return response
+
+    def _go_home(self, request, response):
+        """Start moving both arms HOME; like start, the outcome is reported on /dual_arm/status."""
+        with self.lock:
+            if self.busy:
+                response.accepted, response.message = False, 'A task is running'
+                return response
+            self.cancel.clear()
+            try:
+                self.guard()
+            except TaskFault as error:
+                response.accepted, response.message = False, str(error)
+                return response
+            problem = self.transfer.home_problem(request.success, self.config['mode'] == 'simulation')
+            if problem is not None:
+                response.accepted, response.message = False, problem
+                return response
+            self.busy = True
+            self.worker = threading.Thread(target=self._run_home, daemon=True)
+            self.worker.start()
+        response.accepted, response.message = True, 'Accepted; HOME is reported as at_home on /dual_arm/status'
+        return response
+
+    def _run_home(self):
+        try:
+            order = self.transfer.go_home()
+            self.get_logger().info(f'Both arms are HOME (moved in order {order})')
+        except Exception as error:
+            self.get_logger().error(f'HOME stopped: {error}')
+        finally:
+            with self.lock:
+                self.busy = False
+            self.publish_status()
 
     def _recover(self, request, response):
         with self.lock:

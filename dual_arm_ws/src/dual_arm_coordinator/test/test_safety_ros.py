@@ -59,6 +59,7 @@ class Supervisor(unittest.TestCase):
         self.node.create_subscription(String, '/safety/status', self.on_status, qos, callback_group=group)
         self.estop = self.node.create_publisher(Bool, '/safety/estop', 10)
         self.reset_client = self.node.create_client(Trigger, '/safety/reset', callback_group=group)
+        self.stop_client = self.node.create_client(Trigger, '/safety/trigger_stop', callback_group=group)
         self.executor = MultiThreadedExecutor(num_threads=6, context=self.context)
         for node in (self.manager, self.supervisor, self.node):
             self.executor.add_node(node)
@@ -148,6 +149,31 @@ class Supervisor(unittest.TestCase):
         response = self.reset()
         self.assertFalse(response.success)
         self.assertTrue(self.all_states('inactive'))
+
+    def call(self, client):
+        self.assertTrue(client.wait_for_service(timeout_sec=TIMEOUT_S))
+        future = client.call_async(Trigger.Request())
+        self.wait_for(future.done, 'the reply')
+        return future.result()
+
+    def test_operator_stop_deactivates_after_a_reset(self):
+        self.prepare_reset()
+        self.assertTrue(self.reset().success)
+        self.wait_for(lambda: self.all_states('active') and self.status['latched'] is False, 'the reset')
+        response = self.call(self.stop_client)
+        self.assertTrue(response.success, response.message)
+        self.wait_for(lambda: self.all_states('inactive'), 'the controllers to stop')
+        self.wait_for(lambda: self.stopped_and_latched() and self.status['reason'] == 'Operator software stop',
+                      'the status to show the operator stop')
+        # Nothing has to be fixed after an operator stop, so a reset brings the controllers back.
+        self.assertTrue(self.reset().success)
+        self.wait_for(lambda: self.all_states('active'), 'the controllers to be active again')
+
+    def test_operator_stop_while_latched_keeps_the_first_reason(self):
+        response = self.call(self.stop_client)
+        self.assertTrue(response.success)
+        self.assertIn('Already latched', response.message)
+        self.assertNotEqual(self.status['reason'], 'Operator software stop')
 
 
 if __name__ == '__main__':

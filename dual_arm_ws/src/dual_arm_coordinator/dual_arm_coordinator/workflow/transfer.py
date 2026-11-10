@@ -80,6 +80,38 @@ class Transfer:
         self.journal.update(state='FAULT', message=str(error))
         self.gate.issue(RECOVERY)
 
+    def home_problem(self, cleared, simulation):
+        """Why the arms may not be sent HOME now, or None. Checked before anything moves."""
+        if cleared is not True:
+            return 'Operator did not confirm that the tools and zone B are clear'
+        if simulation and any(value != 'empty' for value in self.journal.data['holding'].values()):
+            # Nobody can take an object off a simulated suction cup, so the confirmation cannot be true.
+            return 'An arm may still hold an object, which cannot be removed in simulation; reset the simulation instead'
+        return None
+
+    def go_home(self):
+        """Move both arms HOME one after the other; the arm that owns zone B leaves first.
+
+        MoveIt plans each move against the other arm and the planning scene. A failed or
+        stopped move faults the task, since the arm is then somewhere unrecorded.
+        Returns the arms in the order they were handled.
+        """
+        first = self.journal.data['b_owner'] or ARMS[0]
+        order = [first] + [arm for arm in ARMS if arm != first]
+        try:
+            for arm in order:
+                self.io.guard()
+                if not self.io.at_home(arm):
+                    self.journal.update(active_arm=arm)
+                    self.io.move_home(arm)
+        except Exception as error:
+            self._fault(error)
+            if isinstance(error, TaskFault):
+                raise
+            raise TaskFault(str(error)) from error
+        self.journal.update(active_arm='')
+        return order
+
     def recover(self, token, cleared):
         """Return to IDLE after a person cleared the tools and zone B.
 

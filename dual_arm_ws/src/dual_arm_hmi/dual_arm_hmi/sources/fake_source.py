@@ -129,7 +129,7 @@ class FakeSource(DataSource):
         if self._state.get('phase') is Phase.STOPPED:
             self._state = {**self._state, 'mode': mode}
 
-    def invoke(self, action):
+    def invoke(self, action, cleared=False):
         now = self._clock()
         self._feedback = CommandFeedback(action, '已送出')
         self._note(Level.NEUTRAL, f'操作：{action.value}')

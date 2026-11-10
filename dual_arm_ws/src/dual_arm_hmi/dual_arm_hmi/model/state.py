@@ -100,6 +100,13 @@ class TaskStatus:
     recovery_token: str = ''
     suction_step: str = ''
     suction_token: str = ''
+    # (arm, True/False/None); None when the coordinator has no fresh joint state.
+    at_home: Tuple[Tuple[str, Optional[bool]], ...] = ()
+
+    @property
+    def both_at_home(self):
+        homes = dict(self.at_home)
+        return all(homes.get(arm) is True for arm in ('arm1', 'arm2'))
 
     def held_by(self, arm):
         return dict(self.holding).get(arm, 'empty')
@@ -508,6 +515,9 @@ def _attention_banner(s):
         return Banner(Level.WARN, '啟動時間過長', s.launch_warning, '查看紀錄檔，必要時關閉後重新啟動')
     if s.task is not None and s.task.state == 'FAULT':
         next_step = '清空吸盤與 B 區，勾選後按「回 HOME」' if not s.arms_at_home else '清空吸盤與 B 區，勾選後按「復歸」'
+        if s.mode is Mode.SIMULATION and any(value != 'empty' for _, value in s.task.holding):
+            # Nobody can take an object off a simulated suction cup; the coordinator refuses HOME then.
+            next_step = '模擬中無法取下吸盤上的物件，請按「重置模擬」'
         return Banner(Level.DANGER, '任務故障', s.task.message, next_step)
     if s.task is not None and s.task.suction_token:
         return Banner(Level.WARN, '等待吸盤確認', s.task.suction_step, '確認實際結果後按成功或失敗')

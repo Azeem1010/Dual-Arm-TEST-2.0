@@ -1,8 +1,17 @@
-# Development status — 2026-11-10
+# Development status — 2026-11-11
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: tiered checks on the A-right layout, docs reviewed, axis circle-fit tool
+## Latest result: operator UI stage 3 (task control, stop, HOME, recovery)
+
+- New services: `/safety/trigger_stop` on `safety_supervisor` (latches with `Operator software stop` and deactivates the arm controllers; `/safety/reset` clears it) and `/dual_arm/go_home` on the coordinator (arms HOME one after the other, the B owner first, MoveIt-planned; `success` is the operator's confirmation and no token is used; refused in simulation while the journal shows an arm holding; a failed or stopped move faults the task). `/dual_arm/status` adds `at_home` per arm, null when the joint state is old.
+- `hmi_sim.launch.py` now runs `safety_supervisor` with `require_estop:=false`.
+- The interface sends commands from a separate node (`ros_command.py`), so `--monitor` still has no clients that command. Each command shows sent, accepted or refused, and the outcome from the status topics. Hardware modes get only the stop until stage 5. A latched simulation keeps the READY phase so the latch is shown on its own.
+- Unit tests PASS: HMI 291, coordinator 285. Gazebo acceptance through the window (evidence/hmi/stage3/): one cycle SUCCEEDED; stop while moving with nothing held, then reset, HOME, recover and a second run SUCCEEDED; stop while arm 1 holds a cap, HOME refused, reset simulation to IDLE (rerun; the first attempt's third pick faulted on its own at the elbow limit, C30).
+- Found: an arm stopped past a joint limit cannot be planned HOME (`CheckStartStateBounds`); simulation can only be reset. A hardware procedure is needed before H5.
+- NOT_RUN: suction confirmation and torque on (stage 5), the stop in Mock and Mock Serial, hardware.
+
+## Earlier result: tiered checks on the A-right layout, docs reviewed, axis circle-fit tool
 
 - New `scripts/run_checks.sh t0|t1|t2 OUT_DIR` (TEST_PLAN.md section 4): t0 `check_docs.py` (Markdown links and a list of zone-order statements to review), t1 model, build, HOME, IK, reach, unit tests, collision and slot study, about 5 min, t2 Gazebo and MoveIt mock runs, vision pick and README screenshots, about 40 min. `STEPS` reruns only named steps. Each step's exit code is recorded before anything else; the earlier runners reported the exit code of `date`, which hid a FAIL (see the correction below). New `scripts/report_reach.py` (downward IK for every cap start and slot).
 - README, dual_arm_ws/README.md, REQUIREMENTS, HARDWARE_TEST_GUIDE, handoff prompts, TEST_PLAN, UI_PLAN, SLOT_ADJUSTMENT reviewed against the A | B | C layout and the H1 findings. `check_docs.py` PASS: 0 broken links, every listed statement current or marked historical.

@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-11：操作介面階段 3 完成（UI_PLAN 第 13 節，evidence/hmi/stage3/）。新增 `/safety/trigger_stop`（軟體停止，鎖定並停用控制器）與 `/dual_arm/go_home`（不用 token，`success` 是人工確認；模擬中有持物時拒絕），`/dual_arm/status` 多了 `at_home`；`hmi_sim.launch.py` 加入 `safety_supervisor`（`require_estop:=false`）。介面以獨立的命令節點送出指令，`--monitor` 仍然只讀。WSL 模擬實測：一輪搬運、未持物停止後復歸再開始、持物停止後重置模擬都 `PASS`。實機只接通強制停止。發現：同一模擬第三次取料時手臂 1 肘關節到限位（C30），停在限位外時回 HOME 無法規劃。
 - 2026-11-11：使用者以示意圖確認實物格位編號（使用者側視角）：1、2 最靠近手臂 2，往使用者依序到 7、8，單號在左。模擬、介面格位圖、`vision_pkg` 三處都不一致；使用者決定併入階段 C，和場地尺寸一起改，見 MODIFICATION_PLAN D3。另檢查介面與實機相容性，同日修正兩項：介面設定檔新增三顆相機路徑；實機改用專用的 `hardware.ros_domain_id`（預設 0），監看節點跟著模式換 domain，新增 `--monitor --hardware`（UI_PLAN 第 9 節，介面單元測試 276 項 `PASS`，監看節點加入指定 domain 已在 WSL 實測）。仍未解決：沒有急停心跳發布者，實機動作會一直鎖定。
 - 2026-11-10：新增分層檢查 `scripts/run_checks.sh t0|t1|t2`（TEST_PLAN.md 第 4 節），只重跑部分步驟用 `STEPS`。在 A 在右的配置跑完 t1、t2（evidence/checks_20261110/）：除了已知的 IK 16/18 與冒煙測試的關閉檢查（Gazebo 結束逾時，時有時無）外全部 `PASS`，視覺取料、格位位移研究、README 截圖都已重跑。t2 抓到配置改版時漏改的停放點，已修正。新增 `fit_axis_circle` 畫圓找軸心工具與現場補量清單（HARDWARE_TEST_GUIDE.md）。板寬與軸心到板緣距離仍是 CAD 值，等現場量測。
 

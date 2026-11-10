@@ -639,5 +639,66 @@ class Isolation(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
 
 
+class GoHome(Base):
+    def fault_in_b(self):
+        self.world.fail['suction'] = 2
+        self.assert_faulted()
+        self.world.fail.clear()
+
+    def test_arm_owning_b_leaves_first(self):
+        self.fault_in_b()
+        self.assertEqual(self.state['b_owner'], 'arm1')
+        self.world.position['arm2'] = (0.0, 0.0)
+        self.world.calls.clear()
+        self.assertEqual(self.transfer.go_home(), ['arm1', 'arm2'])
+        self.assertEqual([call[1] for call in self.calls_named('move_home')], ['arm1', 'arm2'])
+        self.assertTrue(self.world.at_home('arm1') and self.world.at_home('arm2'))
+        # HOME does not recover: the fault and its token stay until /dual_arm/recover.
+        self.assertEqual(self.state['state'], 'FAULT')
+        self.assertEqual(self.gate.current[1], RECOVERY)
+
+    def test_arm2_first_when_it_owns_b(self):
+        self.journal.update(b_owner='arm2')
+        self.world.position.update(arm1=(0.0, 0.0), arm2=SETTINGS.b_place)
+        self.assertEqual(self.transfer.go_home(), ['arm2', 'arm1'])
+        self.assertEqual([call[1] for call in self.calls_named('move_home')], ['arm2', 'arm1'])
+
+    def test_arm_already_home_is_not_moved(self):
+        self.world.position['arm2'] = (0.0, 0.0)
+        self.transfer.go_home()
+        self.assertEqual([call[1] for call in self.calls_named('move_home')], ['arm2'])
+        self.assertEqual(self.state['active_arm'], '')
+
+    def test_failed_move_faults_the_task(self):
+        self.world.position['arm1'] = (0.0, 0.0)
+        self.world.fail['move_home'] = 1
+        with self.assertRaises(TaskFault):
+            self.transfer.go_home()
+        self.assertEqual(self.state['state'], 'FAULT')
+        self.assertIn('injected move_home', self.state['message'])
+        self.assertEqual(self.gate.current[1], RECOVERY)
+
+    def test_stop_during_home_faults_and_moves_nothing_further(self):
+        self.world.position.update(arm1=(0.0, 0.0), arm2=(0.0, 0.0))
+        self.world.cancel_after = 1
+        with self.assertRaises(TaskCancelled):
+            self.transfer.go_home()
+        self.assertEqual(len(self.calls_named('move_home')), 1)
+        self.assertEqual(self.state['state'], 'FAULT')
+
+    def test_needs_the_operator_confirmation(self):
+        self.assertIn('did not confirm', self.transfer.home_problem(False, simulation=True))
+        self.assertIsNone(self.transfer.home_problem(True, simulation=True))
+
+    def test_simulation_refuses_while_an_arm_may_hold_an_object(self):
+        for value in ('held', 'unknown'):
+            with self.subTest(value):
+                holding = {'arm1': 'empty', 'arm2': value}
+                self.journal.update(holding=holding)
+                self.assertIn('reset the simulation', self.transfer.home_problem(True, simulation=True))
+                # On hardware a person can take the object off, which the confirmation states.
+                self.assertIsNone(self.transfer.home_problem(True, simulation=False))
+
+
 if __name__ == '__main__':
     unittest.main()

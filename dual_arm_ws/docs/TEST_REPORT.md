@@ -1,5 +1,20 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-11 Operator UI stage 3 (task control)
+
+Commands are in evidence/hmi/stage3/stage3_*.sh and stage3_live_check.py. Isolated with ROS_DOMAIN_ID=78, GZ_PARTITION=hmi_stage3 and a temporary state directory and journal; the window runs offscreen and confirmation dialogs answer yes.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Build, HMI and coordinator unit tests | PASS | 01_build.log, 02_pytest.log; 291 / 285 |
+| pyflakes on the changed files | PASS | 02_lint.log |
+| One cycle through the start button | PASS | 04_live_check.json `cycle`; SUCCEEDED in 245.6 s |
+| Stop while moving with nothing held, reset, HOME, recover, start again | PASS | `stop_empty`; latched and controllers stopped 0.3 s after the press; second run SUCCEEDED |
+| Stop while holding, HOME refused, reset simulation | FAIL, then PASS | first run: the third pick faulted at the arm1 elbow limit before holding (C30); rerun on a fresh simulation, 04_live_check_holding.json |
+| Shutdown leftovers | PASS | none in either run |
+| HOME from a state past a joint limit | FAIL (known gap) | MoveIt `CheckStartStateBounds`; simulation must be reset |
+| Suction confirmation, torque on, Mock and Mock Serial stop, hardware | NOT_RUN | |
+
 ## 2026-11-10 Tiered checks on the A-right layout
 
 WSL Ubuntu 24.04 + Jazzy, `scripts/run_checks.sh` from `55196a5` plus this stage's working-tree changes. Index, failure causes and fixes in evidence/checks_20261110/README.md.

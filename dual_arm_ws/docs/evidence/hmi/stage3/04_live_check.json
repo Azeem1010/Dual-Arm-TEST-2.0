@@ -1,0 +1,305 @@
+{
+  "ready": {
+    "ok": true,
+    "seconds": 54.0,
+    "state": {
+      "phase": "就緒",
+      "latched": false,
+      "controllers_active": true,
+      "arms_at_home": false,
+      "busy": false,
+      "state": "IDLE",
+      "message": "",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "啟動系統|完成|",
+      "banner": "就緒"
+    }
+  },
+  "cycle": {
+    "result": {
+      "phase": "完成",
+      "message": "任務結果：SUCCEEDED",
+      "seconds": 245.6
+    },
+    "state": {
+      "phase": "就緒",
+      "latched": false,
+      "controllers_active": true,
+      "arms_at_home": true,
+      "busy": false,
+      "state": "SUCCEEDED",
+      "message": "",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "開始工作|完成|任務結果：SUCCEEDED",
+      "banner": "就緒"
+    }
+  },
+  "stop_empty": {
+    "reached_approach": true,
+    "holding_before_stop": {
+      "arm1": "empty",
+      "arm2": "empty"
+    },
+    "latched": true,
+    "latch_s": 0.3,
+    "faulted": true,
+    "stop_feedback": {
+      "phase": "完成",
+      "message": "已鎖定，控制器停用",
+      "seconds": 1.3
+    },
+    "after_stop": {
+      "phase": "就緒",
+      "latched": true,
+      "controllers_active": false,
+      "arms_at_home": false,
+      "busy": false,
+      "state": "FAULT",
+      "message": "Task canceled",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "強制停止|完成|已鎖定，控制器停用",
+      "banner": "安全鎖定"
+    },
+    "start_while_latched": {
+      "enabled": false,
+      "reason": "安全鎖定中"
+    },
+    "recover_before_reset": {
+      "enabled": false,
+      "reason": "請先解除鎖定"
+    },
+    "reset": {
+      "phase": "完成",
+      "message": "Latch cleared and arm controllers activated",
+      "seconds": 0.3
+    },
+    "go_home_without_tick": {
+      "enabled": false,
+      "reason": "請先勾選已清空"
+    },
+    "go_home": {
+      "phase": "完成",
+      "message": "兩臂已在 HOME",
+      "seconds": 4.4
+    },
+    "after_home": {
+      "phase": "就緒",
+      "latched": false,
+      "controllers_active": true,
+      "arms_at_home": true,
+      "busy": false,
+      "state": "FAULT",
+      "message": "Task canceled",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "回 HOME|完成|兩臂已在 HOME",
+      "banner": "任務故障"
+    },
+    "recover": {
+      "phase": "完成",
+      "message": "Recovered; send a new start",
+      "seconds": 0.3
+    },
+    "after_recover": {
+      "phase": "就緒",
+      "latched": false,
+      "controllers_active": true,
+      "arms_at_home": true,
+      "busy": false,
+      "state": "IDLE",
+      "message": "",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "復歸|完成|Recovered; send a new start",
+      "banner": "就緒"
+    },
+    "restart": {
+      "phase": "完成",
+      "message": "任務結果：SUCCEEDED",
+      "seconds": 190.8
+    },
+    "after_restart": {
+      "phase": "就緒",
+      "latched": false,
+      "controllers_active": true,
+      "arms_at_home": true,
+      "busy": false,
+      "state": "SUCCEEDED",
+      "message": "",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "開始工作|完成|任務結果：SUCCEEDED",
+      "banner": "就緒"
+    }
+  },
+  "stop_holding": {
+    "reached_holding": false,
+    "state_before_stop": "FAULT",
+    "latched": true,
+    "latch_s": 0.3,
+    "faulted": true,
+    "stop_feedback": {
+      "phase": "完成",
+      "message": "已鎖定，控制器停用",
+      "seconds": 1.0
+    },
+    "after_stop": {
+      "phase": "就緒",
+      "latched": true,
+      "controllers_active": true,
+      "arms_at_home": false,
+      "busy": false,
+      "state": "FAULT",
+      "message": "arm1 to (-0.14, 0.035, 0.054): arm1 did not settle within 0.0005 m, last error 0.01664 m",
+      "holding": {
+        "arm1": "empty",
+        "arm2": "empty"
+      },
+      "occupied": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "feedback": "強制停止|完成|已鎖定，控制器停用",
+      "banner": "安全鎖定"
+    },
+    "reset": {
+      "phase": "完成",
+      "message": "Latch cleared and arm controllers activated",
+      "seconds": 0.4
+    },
+    "recover_state": {
+      "enabled": false,
+      "reason": "兩臂需先回 HOME"
+    },
+    "go_home": {
+      "phase": "失敗",
+      "message": "arm1 home failed: status 6, MoveIt code -26",
+      "seconds": 0.3
+    },
+    "banner": "任務故障",
+    "reset_simulation": {
+      "ok": true,
+      "seconds": 51.0,
+      "state": {
+        "phase": "就緒",
+        "latched": false,
+        "controllers_active": true,
+        "arms_at_home": false,
+        "busy": false,
+        "state": "IDLE",
+        "message": "",
+        "holding": {
+          "arm1": "empty",
+          "arm2": "empty"
+        },
+        "occupied": [
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "feedback": "啟動系統|完成|",
+        "banner": "就緒"
+      }
+    }
+  },
+  "shutdown": {
+    "stopped": true,
+    "leftovers": {
+      "gazebo": [],
+      "tagged": [],
+      "ros_nodes": []
+    }
+  },
+  "criteria": {
+    "one_cycle_succeeded": true,
+    "stop_empty_recovered_and_restarted": true,
+    "stop_holding_reset_simulation": false,
+    "clean_shutdown": true
+  }
+}

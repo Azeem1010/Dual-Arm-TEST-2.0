@@ -4,7 +4,7 @@ from dataclasses import replace
 import pytest
 
 from dual_arm_hmi.launcher.process import LaunchStatus
-from dual_arm_hmi.model.state import Action, Mode, Phase, Snapshot, TaskStatus, banner, evaluate_actions
+from dual_arm_hmi.model.state import Action, Mode, Phase, SafetyStatus, Snapshot, TaskStatus, banner, evaluate_actions
 from dual_arm_hmi.sources import live_source
 from dual_arm_hmi.sources.live_source import LiveSource
 
@@ -256,3 +256,186 @@ def test_without_reconnect_the_monitor_never_moves(parts):
     source, ros, *_ = parts
     source.select_mode(Mode.HARDWARE_READ_ONLY)
     assert source._ros is ros
+
+
+ALL_SERVICES = {name for names in live_source.TASK_ACTIONS.values() for name in names}
+
+
+class Commander:
+    """Stand-in for RosCommander: records calls and hands back replies the test chooses."""
+
+    def __init__(self, domain=None, services=None):
+        self.domain, self.sent, self.queued, self.closed = domain, [], [], False
+        self.services = set(services if services is not None else ALL_SERVICES)
+
+    def available(self, service):
+        return service in self.services
+
+    def send(self, batch, calls):
+        self.sent.append((batch, calls))
+
+    def reply(self, ok=True, message='ok', index=-1):
+        from dual_arm_hmi.sources.ros_command import Reply
+        batch, calls = self.sent[index]
+        self.queued += [(batch, Reply(service, ok, message)) for service, _ in calls]
+
+    def results(self):
+        done, self.queued = self.queued, []
+        return done
+
+    def close(self):
+        self.closed = True
+
+
+@pytest.fixture
+def commanded(monkeypatch):
+    monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
+    ros, launcher, clock, made = Ros(), Launcher(), [100.0], []
+
+    def make(domain):
+        made.append(Commander(domain))
+        return made[-1]
+    source = LiveSource(ros, launcher, PROFILES, '/ws', Store(), clock=lambda: clock[0], commander=make)
+    source.invoke(Action.START_SYSTEM)
+    ros.base = connected(task=TaskStatus())
+    source.snapshot()
+    return source, ros, made, clock
+
+
+def test_task_actions_are_wired_only_with_a_commander(commanded, parts):
+    source, *_ = commanded
+    wired = source.snapshot().wired_actions
+    assert {Action.STOP, Action.START_TASK, Action.GO_HOME, Action.RECOVER, Action.SAFETY_RESET} <= wired
+    assert Action.TORQUE_ON not in wired and Action.SUCTION_OK not in wired
+    assert Action.START_TASK not in parts[0].snapshot().wired_actions
+
+
+def test_start_task_follows_sent_accepted_and_the_result(commanded):
+    source, ros, made, clock = commanded
+    source.invoke(Action.START_TASK)
+    assert made[0].sent[-1][1][0][0] == '/dual_arm/start' and source.snapshot().feedback.phase == '已送出'
+    made[0].reply(True, 'Accepted')
+    assert source.snapshot().feedback.phase == '已接受'
+    ros.base = connected(task=TaskStatus(state='ARM1:PICK', busy=True))
+    assert source.snapshot().feedback.phase == '已接受'
+    ros.base = connected(task=TaskStatus(state='SUCCEEDED'))
+    feedback = source.snapshot().feedback
+    assert feedback.phase == '完成' and 'SUCCEEDED' in feedback.message
+
+
+def test_a_refused_start_shows_the_reason(commanded):
+    source, _, made, _ = commanded
+    source.invoke(Action.START_TASK)
+    made[0].reply(False, 'Busy, faulted or full')
+    feedback = source.snapshot().feedback
+    assert feedback.phase == '已拒絕' and 'Busy' in feedback.message
+
+
+def test_a_faulted_run_is_reported_as_failed(commanded):
+    source, ros, made, _ = commanded
+    source.invoke(Action.START_TASK)
+    made[0].reply()
+    source.snapshot()
+    ros.base = connected(task=TaskStatus(state='ARM2:PLACE', busy=True))
+    source.snapshot()
+    ros.base = connected(task=TaskStatus(state='FAULT', message='Task canceled'))
+    feedback = source.snapshot().feedback
+    assert feedback.phase == '失敗' and 'Task canceled' in feedback.message
+
+
+def test_stop_calls_the_supervisor_and_the_task(commanded):
+    source, ros, made, clock = commanded
+    source.invoke(Action.STOP)
+    assert [service for service, _ in made[0].sent[-1][1]] == ['/safety/trigger_stop', '/dual_arm/cancel']
+    made[0].queued = [(made[0].sent[-1][0], live_reply('/safety/trigger_stop', True)),
+                      (made[0].sent[-1][0], live_reply('/dual_arm/cancel', False, 'No task is running'))]
+    # One refusal does not undo the stop that did happen.
+    assert source.snapshot().feedback.phase == '已接受'
+    ros.base = connected(task=TaskStatus(), safety=SafetyStatus(latched=True, reason='Operator software stop'))
+    clock[0] += 2
+    feedback = source.snapshot().feedback
+    assert feedback.phase == '完成' and '鎖定' in feedback.message
+
+
+def test_stop_skips_missing_services_and_refuses_when_none_exist(commanded):
+    source, _, made, _ = commanded
+    made[0].services = {'/dual_arm/cancel'}
+    source.invoke(Action.STOP)
+    assert [service for service, _ in made[0].sent[-1][1]] == ['/dual_arm/cancel']
+    made[0].services = set()
+    count = len(made[0].sent)
+    source.invoke(Action.STOP)
+    assert len(made[0].sent) == count and source.snapshot().feedback.phase == '已拒絕'
+
+
+def test_recover_sends_the_published_token_and_the_confirmation(commanded):
+    source, ros, made, _ = commanded
+    ros.base = connected(task=TaskStatus(state='FAULT', recovery_token='abc'))
+    source.snapshot()
+    source.invoke(Action.RECOVER, cleared=True)
+    service, request = made[0].sent[-1][1][0]
+    assert service == '/dual_arm/recover' and request.token == 'abc' and request.success is True
+    made[0].reply(True, 'Recovered; send a new start')
+    assert source.snapshot().feedback.phase == '完成'
+
+
+def test_go_home_without_the_tick_sends_no_confirmation(commanded):
+    source, _, made, _ = commanded
+    source.invoke(Action.GO_HOME)
+    assert made[0].sent[-1][1][0][1].success is False
+
+
+def test_go_home_is_judged_by_the_reported_position(commanded):
+    source, ros, made, clock = commanded
+    source.invoke(Action.GO_HOME, cleared=True)
+    made[0].reply()
+    source.snapshot()
+    ros.base = connected(task=TaskStatus(state='FAULT', busy=True))
+    source.snapshot()
+    ros.base = connected(task=TaskStatus(state='FAULT', message='arm1 home: MoveIt planning failed'), arms_at_home=False)
+    feedback = source.snapshot().feedback
+    assert feedback.phase == '失敗' and 'MoveIt' in feedback.message
+    source.invoke(Action.GO_HOME, cleared=True)
+    made[0].reply()
+    source.snapshot()
+    ros.base = connected(task=TaskStatus(state='FAULT'), arms_at_home=True)
+    clock[0] += 2
+    assert source.snapshot().feedback.phase == '完成'
+
+
+def test_late_replies_to_an_older_command_are_ignored(commanded):
+    source, _, made, _ = commanded
+    source.invoke(Action.START_TASK)
+    source.invoke(Action.CANCEL_TASK)
+    made[0].reply(False, 'old', index=0)
+    assert source.snapshot().feedback.action is Action.CANCEL_TASK
+    assert source.snapshot().feedback.phase == '已送出'
+
+
+def test_hardware_gets_only_the_stop(commanded):
+    source, ros, made, _ = commanded
+    ros.base = connected(mode=Mode.HARDWARE_MOTION, task=TaskStatus())
+    snapshot = source.snapshot()
+    assert Action.STOP in snapshot.wired_actions and Action.SAFETY_RESET not in snapshot.wired_actions
+    count = len(made[0].sent)
+    source.invoke(Action.SAFETY_RESET)
+    assert len(made[0].sent) == count and '階段 5' in source.snapshot().feedback.message
+
+
+def test_commands_follow_the_monitor_to_another_domain(monkeypatch):
+    monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
+    monkeypatch.setenv('ROS_DOMAIN_ID', '43')
+    made, monitors = [], Monitors()
+
+    def make(domain):
+        made.append(Commander(domain, services=()))
+        return made[-1]
+    source = LiveSource(monitors(43), Launcher(), HARDWARE_PROFILES, '/ws', Store(), clock=lambda: 100.0,
+                        reconnect=monitors, commander=make)
+    source.select_mode(Mode.HARDWARE_READ_ONLY)
+    assert [item.domain for item in made] == [None, 0] and made[0].closed
+
+
+def live_reply(service, ok, message='ok'):
+    from dual_arm_hmi.sources.ros_command import Reply
+    return Reply(service, ok, message)
