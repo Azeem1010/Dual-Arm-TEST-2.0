@@ -1,0 +1,23 @@
+# H1 arm2，manual_position_terminal.py 輸出（測試人員貼回，2026-11-11 約 13:1x）
+# 註：TORQUE,arm2,0 的回覆與啟動畫面未貼回。
+## j1 往手臂自身右方轉（測試人員：手臂末端往 A/B 那一側）
+arm1/arm2> READ,arm2  
+TX -> READ,arm2
+RX <- POS,arm2,499,506,508,511
+arm1/arm2> READ,arm2
+TX -> READ,arm2
+RX <- POS,arm2,461,504,508,511
+## j2 往上抬
+arm1/arm2> READ,arm2
+TX -> READ,arm2
+RX <- POS,arm2,514,505,524,511
+arm1/arm2> READ,arm2
+TX -> READ,arm2
+RX <- POS,arm2,514,468,523,511
+## 完全伸直
+TX -> READ,arm2
+RX <- POS,arm2,507,516,523,511
+## 補貼：TORQUE,arm2,0
+arm1/arm2> TORQUE,arm2,0
+TX -> TORQUE,arm2,0
+RX <- OK,TORQUE,arm2,0

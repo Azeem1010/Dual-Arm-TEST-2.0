@@ -1,0 +1,10 @@
+# 2026-11-11T12:02:14+08:00 開工前裝置檢查（未開序列埠）
+$ ls -l /dev/serial/by-id/
+usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0 -> ../../ttyUSB0   （裝置時間 11月 11 11:57，表示今天重新接上或重開機）
+$ ls -l /dev/v4l/by-id/
+usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index0 -> ../../video2
+usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index1 -> ../../video3
+$ fuser -v /dev/ttyUSB0
+（無輸出：無程式占用）
+$ pgrep manual_position|cm530|ros2 launch|micro_ros
+（無）

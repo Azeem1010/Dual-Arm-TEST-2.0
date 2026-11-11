@@ -1,0 +1,308 @@
+<title>arm1 j1 底座角度量測</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* layout: single reading column, two numbered diagrams (real sequence), calculator at the end */
+:root{
+  --bg:#f6f5f2; --panel:#ffffff; --fg:#1f2328; --muted:#5d636b; --line:#c9ccd1;
+  --board:#f7c9dc; --board-edge:#d98aa9; --tape:#e9e3c8; --ruler:#8a96a3;
+  --accent:#0b6bcb; --warn:#b5470f; --ok:#1a7f4b;
+  --sans:"Noto Sans TC",system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#16181b; --panel:#1e2125; --fg:#e7e9ec; --muted:#a3a9b1; --line:#3a3f46;
+  --board:#5a3445; --board-edge:#a0607c; --tape:#5b5640; --ruler:#9aa6b3;
+  --accent:#5aa9ff; --warn:#ff9a62; --ok:#4cc38a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16181b; --panel:#1e2125; --fg:#e7e9ec; --muted:#a3a9b1; --line:#3a3f46;
+  --board:#5a3445; --board-edge:#a0607c; --tape:#5b5640; --ruler:#9aa6b3;
+  --accent:#5aa9ff; --warn:#ff9a62; --ok:#4cc38a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:28px}
+h1{font-size:1.5rem;margin:0;text-wrap:balance}
+h2{font-size:1.15rem;margin:0;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--muted)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.fig{overflow-x:auto}
+svg{display:block;width:100%;min-width:520px;height:auto}
+svg text{font-family:var(--sans);fill:var(--fg)}
+ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+code,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+code{background:color-mix(in srgb,var(--line) 40%,transparent);padding:1px 5px;border-radius:4px;font-size:.9em}
+.note{border-left:3px solid var(--warn);padding-left:12px;color:var(--fg)}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+label{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+input{font:inherit;font-family:var(--mono);padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);min-width:0}
+input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.out{font-family:var(--mono);font-size:1.05rem;padding:10px 12px;border-radius:6px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>arm1 底座 j1 角度量測</h1>
+    <p class="lead">俯視圖：手臂底座在上方（遠離使用者），使用者在下方。由使用者看過去左到右是 A｜B｜C。比例約略，只表示量什麼、從哪量到哪。</p>
+  </header>
+
+  <section>
+    <h2>1. 量斜放鋼尺的角度（鋼尺先不要動）</h2>
+    <div class="fig">
+    <svg viewBox="0 0 640 430" role="img" aria-label="斜線角度量測示意圖">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--warn)"/></marker>
+      </defs>
+      <!-- board -->
+      <rect x="40" y="90" width="560" height="280" fill="var(--board)" stroke="var(--board-edge)" stroke-width="2"/>
+      <line x1="226.7" y1="90" x2="226.7" y2="370" stroke="var(--tape)" stroke-width="6"/>
+      <line x1="413.3" y1="90" x2="413.3" y2="370" stroke="var(--tape)" stroke-width="6"/>
+      <text x="133" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">A</text>
+      <text x="320" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">B</text>
+      <text x="507" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">C</text>
+      <text x="320" y="410" text-anchor="middle" font-size="13" fill="var(--muted)">使用者站這側</text>
+      <text x="610" y="96" font-size="11" fill="var(--muted)" text-anchor="end" dy="-8">板子長邊</text>
+      <!-- line E and F -->
+      <line x1="20" y1="70" x2="620" y2="70" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="24" y="62" font-size="12" fill="var(--muted)">線 E：過舵盤中心、平行板子長邊</text>
+      <line x1="226.7" y1="70" x2="226.7" y2="400" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="234" y="395" font-size="12" fill="var(--muted)">線 F：過舵盤中心、平行區域分界膠帶</text>
+      <!-- arm2 base -->
+      <rect x="401" y="50" width="24" height="24" rx="4" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+      <text x="432" y="48" font-size="12" fill="var(--muted)">arm2 底座</text>
+      <!-- ruler diagonal -->
+      <line x1="226.7" y1="70" x2="65.9" y2="299.6" stroke="var(--ruler)" stroke-width="12" stroke-linecap="square" opacity=".75"/>
+      <!-- arm over ruler -->
+      <line x1="226.7" y1="70" x2="133" y2="203.8" stroke="var(--fg)" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+      <circle cx="133" cy="203.8" r="6" fill="var(--panel)" stroke="var(--fg)" stroke-width="2"/>
+      <text x="92" y="196" font-size="12">吸盤末端</text>
+      <!-- base O -->
+      <rect x="214.7" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="2"/>
+      <circle cx="226.7" cy="70" r="3.5" fill="var(--warn)"/>
+      <text x="246" y="50" font-size="13" font-weight="700">O＝arm1 舵盤中心</text>
+      <!-- e offset -->
+      <line x1="262" y1="70" x2="262" y2="90" stroke="var(--warn)" stroke-width="1.6" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+      <text x="268" y="86" font-size="12" fill="var(--warn)">e＝O 到板邊（板外為正）</text>
+      <!-- P -->
+      <circle cx="119.4" cy="223" r="5.5" fill="var(--accent)"/>
+      <text x="60" y="244" font-size="13" font-weight="700" fill="var(--accent)">P（鋼尺 200 mm）</text>
+      <!-- dx -->
+      <line x1="105" y1="72" x2="105" y2="221" stroke="var(--accent)" stroke-width="1.8" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <text x="58" y="150" font-size="15" font-weight="700" fill="var(--accent)">dx</text>
+      <!-- dy -->
+      <line x1="121.5" y1="223" x2="224.5" y2="223" stroke="var(--accent)" stroke-width="1.8" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <text x="160" y="240" font-size="15" font-weight="700" fill="var(--accent)">dy</text>
+      <!-- angle -->
+      <path d="M226.7 115 A45 45 0 0 1 200.9 106.9" fill="none" stroke="var(--warn)" stroke-width="2"/>
+      <text x="196" y="134" font-size="15" font-weight="700" fill="var(--warn)">θ</text>
+    </svg>
+    </div>
+    <ol>
+      <li>在鋼尺上「距舵盤中心 <b>200 mm</b>」的位置，用麥克筆在板面點一點，叫它 <b>P</b>。</li>
+      <li><b>dy</b>：從 P 沿著<b>板子長邊方向</b>量到線 F。若舵盤中心剛好在 A｜B 分界膠帶的延長線上，線 F 就是那條膠帶，直接量 P 到膠帶的距離。</li>
+      <li><b>dx</b>：從 P <b>垂直</b>量到板子長邊，得到一個數字，再加上 e（舵盤中心在板邊外多遠）。舵盤中心在板內時，e 是負的。</li>
+      <li>量 e：舵盤中心到板子長邊的垂直距離，記下它在板外還是板內。</li>
+      <li>每個長度量兩次，兩次差超過 2 mm 就重量。回報 <code>dx、dy、e</code>，以及 P 到板邊的原始距離。</li>
+    </ol>
+    <p class="note">「垂直量」的意思是：另一把尺要和被量的線成直角。可以用書本或盒子的直角靠著對齊。</p>
+  </section>
+
+  <section>
+    <h2>2. 重做線 F（j1 正對場地）</h2>
+    <div class="fig">
+    <svg viewBox="0 0 640 400" role="img" aria-label="線F量測示意圖">
+      <rect x="40" y="90" width="560" height="280" fill="var(--board)" stroke="var(--board-edge)" stroke-width="2"/>
+      <line x1="226.7" y1="90" x2="226.7" y2="370" stroke="var(--tape)" stroke-width="6"/>
+      <line x1="413.3" y1="90" x2="413.3" y2="370" stroke="var(--tape)" stroke-width="6"/>
+      <text x="133" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">A</text>
+      <text x="320" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">B</text>
+      <text x="507" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">C</text>
+      <text x="320" y="392" text-anchor="middle" font-size="13" fill="var(--muted)">使用者站這側</text>
+      <!-- ruler along F, offset so its edge passes through O -->
+      <rect x="226.7" y="70" width="14" height="250" fill="var(--ruler)" opacity=".75"/>
+      <line x1="226.7" y1="70" x2="226.7" y2="320" stroke="var(--warn)" stroke-width="2"/>
+      <text x="248" y="300" font-size="12" fill="var(--warn)">尺邊（要通過舵盤中心、和膠帶平行）</text>
+      <!-- arm -->
+      <line x1="226.7" y1="70" x2="226.7" y2="238" stroke="var(--fg)" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+      <circle cx="226.7" cy="238" r="6" fill="var(--panel)" stroke="var(--fg)" stroke-width="2"/>
+      <text x="120" y="243" font-size="12">吸盤末端 ≥150 mm</text>
+      <rect x="214.7" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="2"/>
+      <circle cx="226.7" cy="70" r="3.5" fill="var(--warn)"/>
+      <text x="246" y="50" font-size="13" font-weight="700">O＝arm1 舵盤中心</text>
+      <rect x="401" y="50" width="24" height="24" rx="4" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+      <text x="432" y="48" font-size="12" fill="var(--muted)">arm2 底座</text>
+    </svg>
+    </div>
+    <ol>
+      <li>鋼尺和區域分界膠帶<b>平行</b>擺放，尺邊通過舵盤中心，從底座往使用者的方向延伸。</li>
+      <li>手臂放低往前伸，吸盤末端離舵盤中心至少 150 mm。從正上方看，舵盤中心和吸盤末端兩點都要壓在同一條尺邊上。</li>
+      <li>穩定後在 pose_guide 按 <code>Ctrl+C</code>，記下 j1。鬆手後重新對齊，共做三次：<code>lineF_3</code>、<code>lineF_4</code>、<code>lineF_5</code>。</li>
+      <li>拍一張俯視照，要看得到舵盤、尺邊和吸盤末端。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>3. arm2：線 F 與線 L（量末端偏移）</h2>
+    <p class="lead">arm2 底座在 B｜C 分界附近。手臂面向使用者時，手臂自身的<b>右邊是 A/B 側</b>，<b>左邊是 C 區外側</b>。線 L 朝手臂左邊，也就是 C 區外側。</p>
+    <div class="fig">
+    <svg viewBox="0 0 640 430" role="img" aria-label="arm2 線F與線L示意圖">
+      <defs>
+        <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+        <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--warn)"/></marker>
+      </defs>
+      <rect x="40" y="90" width="560" height="280" fill="var(--board)" stroke="var(--board-edge)" stroke-width="2"/>
+      <line x1="226.7" y1="90" x2="226.7" y2="370" stroke="var(--tape)" stroke-width="6"/>
+      <line x1="413.3" y1="90" x2="413.3" y2="370" stroke="var(--tape)" stroke-width="6"/>
+      <text x="133" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">A</text>
+      <text x="320" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">B</text>
+      <text x="507" y="352" text-anchor="middle" font-size="22" font-weight="700" opacity=".55">C</text>
+      <text x="320" y="410" text-anchor="middle" font-size="13" fill="var(--muted)">使用者站這側</text>
+      <!-- arm1 base faint -->
+      <rect x="214.7" y="58" width="24" height="24" rx="4" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+      <text x="150" y="48" font-size="12" fill="var(--muted)">arm1 底座</text>
+      <!-- line F ruler for arm2 -->
+      <rect x="413.3" y="70" width="14" height="250" fill="var(--ruler)" opacity=".75"/>
+      <line x1="413.3" y1="70" x2="413.3" y2="320" stroke="var(--warn)" stroke-width="2"/>
+      <text x="300" y="300" font-size="12" fill="var(--warn)" text-anchor="end">線 F 尺邊</text>
+      <!-- arm on F with offset -->
+      <line x1="413.3" y1="70" x2="395" y2="243" stroke="var(--fg)" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+      <circle cx="395" cy="243" r="6" fill="var(--panel)" stroke="var(--fg)" stroke-width="2"/>
+      <line x1="397" y1="262" x2="411" y2="262" stroke="var(--accent)" stroke-width="1.8" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+      <text x="330" y="280" font-size="13" font-weight="700" fill="var(--accent)">偏移（例：偏 A/B 側）</text>
+      <line x1="445" y1="72" x2="445" y2="241" stroke="var(--accent)" stroke-width="1.8" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+      <text x="452" y="170" font-size="13" font-weight="700" fill="var(--accent)">s：沿尺到末端</text>
+      <!-- line L ruler -->
+      <rect x="413.3" y="56" width="200" height="14" fill="var(--ruler)" opacity=".75"/>
+      <line x1="413.3" y1="70" x2="613" y2="70" stroke="var(--warn)" stroke-width="2"/>
+      <text x="615" y="50" font-size="12" fill="var(--warn)" text-anchor="end">線 L 尺邊（沿板子長邊，朝 C 外側）</text>
+      <!-- arm on L -->
+      <line x1="413.3" y1="70" x2="580" y2="112" stroke="var(--fg)" stroke-width="5" stroke-linecap="round" opacity=".35" stroke-dasharray="2 7"/>
+      <circle cx="580" cy="112" r="6" fill="var(--panel)" stroke="var(--fg)" stroke-width="2" opacity=".8"/>
+      <line x1="592" y1="72" x2="592" y2="110" stroke="var(--accent)" stroke-width="1.8" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+      <text x="520" y="140" font-size="12" fill="var(--accent)">偏移（偏板內）</text>
+      <!-- base O2 -->
+      <rect x="401.3" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="2"/>
+      <circle cx="413.3" cy="70" r="3.5" fill="var(--warn)"/>
+      <text x="300" y="30" font-size="13" font-weight="700">O＝arm2 舵盤中心</text>
+      <path d="M380 34 L408 62" stroke="var(--fg)" stroke-width="1" fill="none"/>
+    </svg>
+    </div>
+    <ol>
+      <li><b>線 F</b>：尺邊通過 arm2 舵盤中心、和 B｜C 分界膠帶平行，朝使用者。手臂平放在尺上方，吸盤末端離舵盤中心 15～20 cm。</li>
+      <li><b>線 L</b>：尺邊通過 arm2 舵盤中心、沿板子長邊，朝 C 區外側。手臂往那邊平放。</li>
+      <li>每次結束前量兩個數字。<b>偏移</b>：吸盤末端中心偏離尺邊幾 cm，以及偏向哪一側。<b>s</b>：從舵盤中心沿尺量到末端的投影，幾 cm。</li>
+      <li>偏移只要在 2 cm 以內就不用硬調，量出來交給下面的計算器修正即可。每次都要鬆手、轉開、重新對齊，做三次。</li>
+    </ol>
+  </section>
+
+  <section id="c-slots">
+    <h2>4. C 區 8 格中心尺量（F、L 讀值）</h2>
+    <p class="lead">參考線沿用現場膠帶：<b>F1</b>＝A｜B 分界（過 arm1 軸心），<b>F2</b>＝B｜C 分界（過 arm2 軸心），兩條都從手臂側往使用者量，單位 mm。<b>L</b>＝手臂側長邊，0 在和 F1 的交點，往 B/C 方向為正。</p>
+    <div class="fig">
+    <svg viewBox="0 0 640 400" role="img" aria-label="C 格尺量示意圖">
+      <defs>
+        <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+      </defs>
+      <rect x="40" y="90" width="560" height="224" fill="var(--board)" stroke="var(--board-edge)" stroke-width="2"/>
+      <!-- L tape along arm-side edge -->
+      <rect x="40" y="86" width="560" height="8" fill="var(--tape)"/>
+      <!-- F1 F2 tapes -->
+      <rect x="223" y="90" width="7" height="224" fill="var(--tape)"/>
+      <rect x="410" y="90" width="7" height="224" fill="var(--tape)"/>
+      <!-- tick marks on F2 every 2 cm -->
+      <g stroke="var(--muted)" stroke-width="1">
+        <line x1="417" y1="108.7" x2="423" y2="108.7"/><line x1="417" y1="127.3" x2="423" y2="127.3"/><line x1="417" y1="146" x2="423" y2="146"/><line x1="417" y1="164.7" x2="423" y2="164.7"/><line x1="417" y1="183.3" x2="423" y2="183.3"/><line x1="417" y1="202" x2="423" y2="202"/><line x1="417" y1="220.7" x2="423" y2="220.7"/><line x1="417" y1="239.3" x2="423" y2="239.3"/><line x1="417" y1="258" x2="423" y2="258"/><line x1="417" y1="276.7" x2="423" y2="276.7"/><line x1="417" y1="295.3" x2="423" y2="295.3"/>
+      </g>
+      <text x="133" y="300" text-anchor="middle" font-size="22" font-weight="700" opacity=".5">A</text>
+      <text x="320" y="300" text-anchor="middle" font-size="22" font-weight="700" opacity=".5">B</text>
+      <text x="226.5" y="332" text-anchor="middle" font-size="13" font-weight="700">F1</text>
+      <text x="413.5" y="332" text-anchor="middle" font-size="13" font-weight="700">F2</text>
+      <text x="610" y="80" text-anchor="end" font-size="12" font-weight="700">L 線（手臂側長邊）→ +L</text>
+      <text x="230" y="80" font-size="11" fill="var(--muted)">L = 0</text>
+      <text x="320" y="370" text-anchor="middle" font-size="13" fill="var(--muted)">使用者站這側</text>
+      <!-- bases -->
+      <rect x="214" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="1.5"/>
+      <text x="200" y="52" font-size="12" text-anchor="end">arm1</text>
+      <rect x="401" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="1.5"/>
+      <text x="390" y="52" font-size="12" text-anchor="end">arm2</text>
+      <!-- slots -->
+      <g font-size="13" font-weight="700" text-anchor="middle">
+        <rect x="437" y="112" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="451" y="131">1</text>
+        <rect x="485" y="112" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="131">2</text>
+        <rect x="437" y="157" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="451" y="176">3</text>
+        <rect x="485" y="157" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="176">4</text>
+        <rect x="437" y="202" width="28" height="28" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="437" y1="202" x2="465" y2="230" stroke="var(--accent)" stroke-width="1"/><line x1="465" y1="202" x2="437" y2="230" stroke="var(--accent)" stroke-width="1"/>
+        <text x="425" y="246" fill="var(--accent)" font-size="12">5</text>
+        <rect x="485" y="202" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="221">6</text>
+        <rect x="437" y="247" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="451" y="266">7</text>
+        <rect x="485" y="247" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="266">8</text>
+      </g>
+      <circle cx="451" cy="216" r="3.5" fill="var(--accent)"/>
+      <!-- F reading: horizontal to F2 -->
+      <line x1="447" y1="216" x2="419" y2="216" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#ar5)"/>
+      <text x="300" y="214" font-size="12" fill="var(--accent)" font-weight="700">F 讀值：在 F2 刻度上讀</text>
+      <!-- L reading: vertical up to L tape -->
+      <line x1="451" y1="212" x2="451" y2="96" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#ar5)"/>
+      <text x="458" y="104" font-size="12" fill="var(--accent)" font-weight="700">L 讀值：在 L 刻度上讀</text>
+    </svg>
+    </div>
+    <ol>
+      <li><b>找格子中心</b>：在每個方格（或白紙標籤下的方孔）畫兩條對角線，交點就是中心，用麥克筆點一下。</li>
+      <li><b>F 讀值</b>：用直角物（書、盒子的角）一邊貼著 F2 膠帶，另一邊對準中心點，在 F2 的刻度上讀數字（從手臂側長邊往使用者，mm）。圖中以格 5 為例。</li>
+      <li><b>L 讀值</b>：直角物一邊貼著手臂側長邊的 L 膠帶，另一邊對準中心點，在 L 刻度上讀數字（從 F1 起算，mm）。L 刻度不夠長時：先讀中心到 F2 的水平距離，再加上 F1 到 F2 的距離（20 cm），並寫明用了哪一種。</li>
+      <li>每格量一次，有疑問的格子再量一次，兩次差超過 2 mm 就重量。</li>
+      <li>最後拍一張俯視照：看得到 8 個中心點和 F2、L 膠帶。</li>
+    </ol>
+    <p class="note">回報格式（一格一行）：<code>格 1：F = ___ mm，L = ___ mm</code>，並寫明 L 是直接讀刻度還是「到 F2 距離 + 200」。</p>
+  </section>
+
+  <section>
+    <h2>對齊偏移修正</h2>
+    <p class="lead">規則：末端偏向<b>手臂自身右邊</b>時，讀值會偏小，要加回去；偏向左邊時讀值偏大，要扣掉。實測兩支手臂都是往右轉時 j1 變小。</p>
+    <div class="calc">
+      <label for="rj">j1 讀值（raw）<input id="rj" type="number" step="1" value="200"></label>
+      <label for="off">偏移（cm）<input id="off" type="number" step="0.1" value="1.0"></label>
+      <label for="s">s：沿尺到末端（cm）<input id="s" type="number" step="0.1" value="20"></label>
+      <label for="side">偏向哪邊
+        <select id="side" style="font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)">
+          <option value="1">手臂右邊（線 F：A/B 側｜線 L：板內）</option>
+          <option value="-1">手臂左邊（線 F：C 外側｜線 L：板外）</option>
+        </select>
+      </label>
+    </div>
+    <div class="out" id="out2" aria-live="polite"></div>
+    <p class="lead" style="font-size:.85rem">預填的是示意數字，不是實測值。</p>
+  </section>
+
+  <section>
+    <h2>現場試算</h2>
+    <p class="lead">輸入第 1 部分量到的值，即時算出 θ（從線 F 往 A 區偏轉的角度）。正式數值仍由記錄者存檔重算。</p>
+    <div class="calc">
+      <label for="pe">P 到板邊（mm）<input id="pe" type="number" step="0.5" value="145"></label>
+      <label for="e">e：舵盤中心在板外（mm，板內填負）<input id="e" type="number" step="0.5" value="20"></label>
+      <label for="dy">dy（mm）<input id="dy" type="number" step="0.5" value="115"></label>
+    </div>
+    <div class="out" id="out" aria-live="polite"></div>
+    <p class="lead" style="font-size:.85rem">預填的是示意數字，不是實測值。</p>
+  </section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function calc(){
+  const pe=parseFloat($('pe').value),e=parseFloat($('e').value),dy=parseFloat($('dy').value);
+  if([pe,e,dy].some(Number.isNaN)){$('out').textContent='請填入三個數字';return}
+  const dx=pe+e, th=Math.atan2(dy,dx)*180/Math.PI, r=Math.hypot(dx,dy);
+  $('out').textContent=`dx = ${dx.toFixed(1)} mm　θ = atan2(dy, dx) = ${th.toFixed(1)}°　（P 到 O 的距離 ${r.toFixed(0)} mm，應接近 200）`;
+}
+['pe','e','dy'].forEach(id=>$(id).addEventListener('input',calc));calc();
+function calc2(){
+  const rj=parseFloat($('rj').value),off=parseFloat($('off').value),s=parseFloat($('s').value),sd=parseInt($('side').value,10);
+  if([rj,off,s].some(Number.isNaN)||s<=0){$('out2').textContent='請填入讀值、偏移與 s';return}
+  const d=Math.atan2(off,s)*180/Math.PI, raw=d/(300/1023), c=rj+sd*raw;
+  $('out2').textContent=`修正量 ${sd>0?'+':'−'}${d.toFixed(1)}° = ${sd>0?'+':'−'}${raw.toFixed(0)} raw　→　修正後 j1 ≈ ${c.toFixed(0)}`;
+}
+['rj','off','s','side'].forEach(id=>$(id).addEventListener('input',calc2));calc2();
+</script>

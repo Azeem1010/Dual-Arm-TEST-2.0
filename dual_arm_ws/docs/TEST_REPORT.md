@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-11 Field results imported (Orin, Dual-Arm-TEST-2.0 `13a5b4f`)
+
+Results are the field tester's; this repo only copies the text records.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| UPDATE to `8ad9d47`: build, coordinator 285, HMI 293, CM530 42, Mock Serial 7 stages, mock start/stop | PASS | evidence/hardware/20261111_UPDATE/ |
+| P0 daily recheck | PASS | evidence/hardware/20261111_P0/; e-stop verbal report, no video |
+| H1 both arms (torque off) | NOT_RUN | in progress; Moving Speed not read, circle method skipped; j1, j2, straight, HOME, board width, C slots and teach readings taken (evidence/hardware/20261111_H1/) |
+| V0 camera mapping | NOT_RUN | in progress; by-path mapping by covering each camera, arm1_cam rotate 180 still correct under a provisional definition (evidence/hardware/20261111_V0/) |
+| Offline FK check of arm2 C-slot teach READs against tape-measured slots | PASS | radius within about 3 mm for 8 slots (evidence/hardware/20261111_fk_crosscheck/); H1-level evidence only, not calibration |
+
 ## 2026-11-11 Operator UI screenshots
 
 | Check | Result | Evidence / scope |

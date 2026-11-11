@@ -65,8 +65,8 @@
     },
     "mapping_mode": "simulation_assumed",
     "hardware_use_allowed": false,
-    "zero_reference": "User-stated physical zero: all four motors at raw 512 with the arm straight, read as vertical. CAD equivalent is q=(0,-35,-55,0) deg, so raw_at_cad_zero j2..j4 = 631.35/699.55/512. arm1 j1 direction measured 2026-11-10; the 2026-11-10 straight-up READ 200,505,498,513 roughly supports raw 512 = vertical for j2..j4. Other directions are inferred.",
-    "arm1_j1_status": "Simulation j1 direction is +1 for both arms. arm1 +1 is measured (2026-11-10 H1: turning to the arm's own right lowers raw and points at zone A); arm2 +1 is assumed, not measured. raw_at_cad_zero 192.3 is still a placeholder that makes home_A (raw 90) a 30 deg right turn toward zone A; replace it with the READ taken with the base facing the field.",
+    "zero_reference": "User-stated physical zero: all four motors at raw 512 with the arm straight, read as vertical. CAD equivalent is q=(0,-35,-55,0) deg, so raw_at_cad_zero j2..j4 = 631.35/699.55/512. j1 direction measured on both arms (arm1 2026-11-10, arm2 2026-11-11). j2 measured 2026-11-11 on both arms: leaning toward the user raises raw, matching +1. Straight-up READs arm1 200,505,498,513 and arm2 507,516,523,511 roughly support raw 512 = vertical for j2..j4. j3 and j4 directions are inferred; FK of the arm2 C-slot teach READs with this mapping matches the tape-measured slot radii within about 3 mm (docs/evidence/hardware/20261111_fk_crosscheck/). All of this is H1-level evidence, not calibration.",
+    "arm1_j1_status": "Simulation j1 direction is +1 for both arms. Both are measured (H1 2026-11-10 arm1, 2026-11-11 arm2: turning to the arm's own right lowers raw and points toward zone A). raw_at_cad_zero 192.3 (arm1) and 512 (arm2) were simulation choices; the 2026-11-11 H1 READs with the base facing the field were about 193 and 519 (+-5 deg, docs/evidence/hardware/20261111_H1/), so they are kept. Exact values come from H2.",
     "assumption_note": "Simulation only. Not measured calibration; the wrist upper limit was widened to 1.65 rad in simulation so raw 825 fits, without physical clearance checks."
   }
 }

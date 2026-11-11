@@ -2,7 +2,16 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: operator UI screenshots in the READMEs; stale saved zones found
+## Latest result: 2026-11-11 hardware evidence imported (H1 both arms, V0 mapping)
+
+- Imported the text records of the Orin field tests from Azeem1010/Dual-Arm-TEST-2.0 commit `13a5b4f` into `docs/evidence/hardware/` (20261111_H1, _P0, _UPDATE, _V0, SUMMARY, tester report; the updated 20261110_H1 record). Photos, camera snapshots and large logs stay in the source repo; their hashes are kept. Three CSV names ending in a dot (invalid on Windows) were renamed by dropping the dot.
+- Field status: UPDATE to `8ad9d47` PASS (coordinator 285, HMI 293, CM530 42, Mock Serial 7 stages); P0 recheck PASS; H1 NOT_RUN (in progress: Moving Speed not read, circle method skipped); V0 in progress (by-path mapping done, arm1_cam rotate 180 still correct); E0, H2 NOT_RUN; H3 and later BLOCKED.
+- Facts that match the simulation: arm2 j1 is +1 like arm1; j1 facing the field is about 193 (arm1) and 519 (arm2), against simulation 192.3 and 512; both arms' j2 rises when leaning toward the user (+1). An offline FK check of the arm2 C-slot teach READs with the simulation mapping agrees with the tape-measured slot radii within about 3 mm (evidence/hardware/20261111_fk_crosscheck/). No simulation numbers were changed; these are H1 approximations, not calibration.
+- Facts that do not match and go to phase C (WP11): board short side 240 mm (model 300), axes about 5 mm outside the arm-side edge (model 63 mm inside), C slots 1 and 2 nearest the arms with the odd column next to B (model: rotated 180°, columns swapped).
+- Docs updated: MODIFICATION_PLAN D0, D1, D3 and WP11; COORDINATE_FRAMES; HOME_POSES (the "+Y at raw 512" question is resolved: it is `arm1_base` +Y); `runtime.json` note text only.
+- Open for the owner: D6 thresholds, H3 authorisation, by-path for the two arm cameras that have no serial number, axis offset 5 or 15 mm.
+
+## Earlier result: operator UI screenshots in the READMEs; stale saved zones found
 
 - New `scripts/capture_hmi_images.py` drives the real window against a simulation it starts itself, starts one transfer and presses stop. `ui_working.png` and `ui_stopped.png` are in both READMEs, with notes on what they show (simulated cameras uncalibrated in the interface calibration directory, zones for reference only, simulation slot numbering).
 - Found: in the A-right simulation the environment camera cannot locate the board at start-up and falls back to `~/.ros/dual_arm_calib/sim/zones.yaml`. On this WSL machine that file was saved on 2026-11-08 with the old layout, so zones A and C were swapped on screen. It was renamed to `zones.yaml.old_layout_20261108`; the camera now reports `ZONES MISSING`. Task decisions use ground truth and were not affected. The saved file records no layout, so it is reused silently after a layout change; on hardware it must be deleted when the field changes.

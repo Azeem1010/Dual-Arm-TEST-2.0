@@ -1,0 +1,312 @@
+# V0 第二次檢查 2026-11-11T15:52:22+08:00
+# git 8ad9d473bd6c0b0df99d93d617db3589f5025c33
+$ ls -l /dev/v4l/by-id/ /dev/v4l/by-path/
+/dev/v4l/by-id/:
+總用量 0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 11 11:57 usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index1 -> ../../video3
+lrwxrwxrwx 1 root root 12 11月 11 14:34 usb-SHENZHEN_AONI_ELECTRONIC_CO.__LTD_Live_Streamer_CAM_310P_20210120002-video-index0 -> ../../video4
+lrwxrwxrwx 1 root root 12 11月 11 14:34 usb-SHENZHEN_AONI_ELECTRONIC_CO.__LTD_Live_Streamer_CAM_310P_20210120002-video-index1 -> ../../video5
+
+/dev/v4l/by-path/:
+總用量 0
+lrwxrwxrwx 1 root root 12 11月 11 14:34 platform-3610000.usb-usb-0:4.3:1.0-video-index0 -> ../../video4
+lrwxrwxrwx 1 root root 12 11月 11 14:34 platform-3610000.usb-usb-0:4.3:1.0-video-index1 -> ../../video5
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.1:1.0-video-index0 -> ../../video0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.1:1.0-video-index1 -> ../../video1
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.3:1.0-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.3:1.0-video-index1 -> ../../video3
+lrwxrwxrwx 1 root root 12 11月 11 14:34 platform-3610000.usb-usbv2-0:4.3:1.0-video-index0 -> ../../video4
+lrwxrwxrwx 1 root root 12 11月 11 14:34 platform-3610000.usb-usbv2-0:4.3:1.0-video-index1 -> ../../video5
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.1:1.0-video-index0 -> ../../video0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.1:1.0-video-index1 -> ../../video1
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.3:1.0-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.3:1.0-video-index1 -> ../../video3
+$ lsusb -t
+/:  Bus 001.Port 001: Dev 001, Class=root_hub, Driver=tegra-xusb/4p, 480M
+    |__ Port 003: Dev 002, If 0, Class=Wireless, Driver=rtk_btusb, 12M
+    |__ Port 003: Dev 002, If 1, Class=Wireless, Driver=rtk_btusb, 12M
+    |__ Port 004: Dev 003, If 0, Class=Hub, Driver=hub/4p, 480M
+        |__ Port 001: Dev 004, If 0, Class=Human Interface Device, Driver=usbhid, 1.5M
+        |__ Port 002: Dev 005, If 0, Class=Human Interface Device, Driver=usbhid, 1.5M
+        |__ Port 002: Dev 005, If 1, Class=Human Interface Device, Driver=usbhid, 1.5M
+        |__ Port 003: Dev 015, If 0, Class=Video, Driver=uvcvideo, 480M
+        |__ Port 003: Dev 015, If 1, Class=Video, Driver=uvcvideo, 480M
+        |__ Port 003: Dev 015, If 2, Class=Audio, Driver=snd-usb-audio, 480M
+        |__ Port 003: Dev 015, If 3, Class=Audio, Driver=snd-usb-audio, 480M
+        |__ Port 004: Dev 006, If 0, Class=Hub, Driver=hub/4p, 480M
+            |__ Port 001: Dev 011, If 0, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 001: Dev 011, If 1, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 002: Dev 012, If 0, Class=Vendor Specific Class, Driver=ftdi_sio, 12M
+            |__ Port 003: Dev 013, If 0, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 003: Dev 013, If 1, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 004: Dev 014, If 0, Class=Hub, Driver=hub/4p, 480M
+/:  Bus 002.Port 001: Dev 001, Class=root_hub, Driver=tegra-xusb/4p, 10000M
+    |__ Port 003: Dev 002, If 0, Class=Hub, Driver=hub/4p, 10000M
+        |__ Port 004: Dev 003, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |__ Port 004: Dev 005, If 0, Class=Hub, Driver=hub/4p, 5000M
+$ v4l2-ctl -d /dev/video0 --info --list-formats-ext
+Driver Info:
+	Driver name      : uvcvideo
+	Card type        : USB 2.0 uvc pc Camera: USB 2.0 
+	Bus info         : usb-3610000.usb-4.4.1
+	Driver version   : 6.8.12
+	Capabilities     : 0x84a00001
+		Video Capture
+		Metadata Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : uvcvideo
+	Model            : USB 2.0 uvc pc Camera: USB 2.0 
+	Serial           : 
+	Bus info         : usb-3610000.usb-4.4.1
+	Media version    : 6.8.12
+	Hardware revision: 0x00000402 (1026)
+	Driver version   : 6.8.12
+Interface Info:
+	ID               : 0x03000002
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : USB 2.0 uvc pc Camera: USB 2.0 
+	Function         : V4L2 I/O
+	Flags            : default
+	Pad 0x01000007   : 0: Sink
+	  Link 0x02000013: from remote pad 0x100000a of entity 'Extension 6' (Video Pixel Formatter): Data, Enabled, Immutable
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
+
+	[0]: 'YUYV' (YUYV 4:2:2)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+$ v4l2-ctl -d /dev/video2 --info --list-formats-ext
+Driver Info:
+	Driver name      : uvcvideo
+	Card type        : USB 2.0 uvc pc Camera: USB 2.0 
+	Bus info         : usb-3610000.usb-4.4.3
+	Driver version   : 6.8.12
+	Capabilities     : 0x84a00001
+		Video Capture
+		Metadata Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : uvcvideo
+	Model            : USB 2.0 uvc pc Camera: USB 2.0 
+	Serial           : 
+	Bus info         : usb-3610000.usb-4.4.3
+	Media version    : 6.8.12
+	Hardware revision: 0x00000008 (8)
+	Driver version   : 6.8.12
+Interface Info:
+	ID               : 0x03000002
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : USB 2.0 uvc pc Camera: USB 2.0 
+	Function         : V4L2 I/O
+	Flags            : default
+	Pad 0x01000007   : 0: Sink
+	  Link 0x02000013: from remote pad 0x100000a of entity 'Extension 6' (Video Pixel Formatter): Data, Enabled, Immutable
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
+
+	[0]: 'YUYV' (YUYV 4:2:2)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+$ v4l2-ctl -d /dev/video4 --info --list-formats-ext
+Driver Info:
+	Driver name      : uvcvideo
+	Card type        : Live Streamer CAM 310P: Live St
+	Bus info         : usb-3610000.usb-4.3
+	Driver version   : 6.8.12
+	Capabilities     : 0x84a00001
+		Video Capture
+		Metadata Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : uvcvideo
+	Model            : Live Streamer CAM 310P: Live St
+	Serial           : 20210120002
+	Bus info         : usb-3610000.usb-4.3
+	Media version    : 6.8.12
+	Hardware revision: 0x00000120 (288)
+	Driver version   : 6.8.12
+Interface Info:
+	ID               : 0x03000002
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : Live Streamer CAM 310P: Live St
+	Function         : V4L2 I/O
+	Flags            : default
+	Pad 0x01000007   : 0: Sink
+	  Link 0x02000013: from remote pad 0x100000a of entity 'Extension 4' (Video Pixel Formatter): Data, Enabled, Immutable
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
+
+	[0]: 'MJPG' (Motion-JPEG, compressed)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1920x1080
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x600
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1280x720
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x576
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 640x360
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x768
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+	[1]: 'YUYV' (YUYV 4:2:2)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1920x1080
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x600
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1280x720
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x576
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 640x360
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.040s (25.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x768
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+$ fuser -v /dev/video*  (無輸出＝無程式占用)
+# 擷取：OpenCV CAP_V4L2, 640x480, 先讀 3 秒再存最後一張，未旋轉
+# ffmpeg 本機無 v4l2 輸入格式（Unknown input format: v4l2），改用 OpenCV
+snapshots/raw_port4.4.1_155152.jpg  <- /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.1:1.0-video-index0 (video0, Alcor, 無序號)
+snapshots/raw_port4.4.3_155152.jpg  <- /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0 (video2, Alcor, 無序號)
+snapshots/raw_port4.3_155152.jpg    <- /dev/v4l/by-path/platform-3610000.usb-usb-0:4.3:1.0-video-index0 (video4, AONI 310P, 序號 20210120002)
+
+# 16:0x 測試人員要求 HOME 到 home_A，未執行（H3 未授權、Moving Speed 未讀），改為人工擺位複查，見 20261111_H1/record.md 末段。
+# 2026-11-11T16:08:12 tag=baseline
+port 4.4.1: mean= 125.5 sharp=   133.8 -> snapshots/baseline_port4.4.1_160812.jpg
+port 4.4.3: mean= 130.2 sharp=   136.1 -> snapshots/baseline_port4.4.3_160812.jpg
+port 4.3: mean=  99.5 sharp=  1145.2 -> snapshots/baseline_port4.3_160812.jpg
+# 2026-11-11T16:10:01 tag=cover_arm1
+port 4.4.1: mean= 116.1 sharp=   153.4 -> snapshots/cover_arm1_port4.4.1_161001.jpg
+port 4.4.3: mean=   1.1 sharp=     3.0 -> snapshots/cover_arm1_port4.4.3_161001.jpg
+port 4.3: mean=  99.3 sharp=  1452.1 -> snapshots/cover_arm1_port4.3_161001.jpg
+# 2026-11-11T16:10:54 tag=cover_arm2
+port 4.4.1: mean=   0.6 sharp=     1.8 -> snapshots/cover_arm2_port4.4.1_161054.jpg
+port 4.4.3: mean= 118.2 sharp=   154.2 -> snapshots/cover_arm2_port4.4.3_161054.jpg
+port 4.3: mean= 115.8 sharp=   877.8 -> snapshots/cover_arm2_port4.3_161054.jpg
+# 2026-11-11T16:11:45 tag=cover_env
+port 4.4.1: mean= 127.2 sharp=   144.9 -> snapshots/cover_env_port4.4.1_161145.jpg
+port 4.4.3: mean= 126.8 sharp=   136.5 -> snapshots/cover_env_port4.4.3_161145.jpg
+port 4.3: mean=   0.5 sharp=     1.6 -> snapshots/cover_env_port4.3_161145.jpg
+# 2026-11-11T16:16:57 tag=orient_try1
+port 4.4.1: mean= 120.0 sharp=   149.7 -> snapshots/orient_try1_port4.4.1_161657.jpg
+port 4.4.3: mean= 125.1 sharp=   146.0 -> snapshots/orient_try1_port4.4.3_161657.jpg
+port 4.3: mean=   1.0 sharp=     1.0 -> snapshots/orient_try1_port4.3_161657.jpg
+# 2026-11-11T16:20:18 tag=orient_arm1
+port 4.4.1: mean= 115.9 sharp=   154.5 -> snapshots/orient_arm1_port4.4.1_162018.jpg
+port 4.4.3: mean= 124.2 sharp=   159.7 -> snapshots/orient_arm1_port4.4.3_162018.jpg
+port 4.3: mean=   0.5 sharp=     1.6 -> snapshots/orient_arm1_port4.3_162018.jpg
+# 2026-11-11T16:25:02 tag=orient_arm1_text
+port 4.4.1: mean= 116.2 sharp=   155.4 -> snapshots/orient_arm1_text_port4.4.1_162502.jpg
+port 4.4.3: mean= 122.8 sharp=   152.4 -> snapshots/orient_arm1_text_port4.4.3_162502.jpg
+port 4.3: mean=   1.0 sharp=     1.0 -> snapshots/orient_arm1_text_port4.3_162502.jpg
