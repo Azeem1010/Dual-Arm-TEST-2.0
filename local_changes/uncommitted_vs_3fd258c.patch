@@ -12,10 +12,19 @@ index 782718d..9d07d52 100644
  
  ```bash
 diff --git a/dual_arm_ws/docs/PROGRESS.md b/dual_arm_ws/docs/PROGRESS.md
-index d5dff72..c7b5f79 100644
+index d5dff72..7f5af68 100644
 --- a/dual_arm_ws/docs/PROGRESS.md
 +++ b/dual_arm_ws/docs/PROGRESS.md
-@@ -1,3 +1,18 @@
+@@ -1,3 +1,27 @@
++## 2026-11-11 Orin 實機：P0 複查 PASS、H1 PASS（兩臂方向）
++
++- P0 每日複查 PASS（口頭確認急停、人員、淨空）。H1 依 HARDWARE_TEST_GUIDE 完成 arm1、arm2，全程扭力關閉、只送 TORQUE,armN,0 與唯讀指令，未送 HOME/AX/HOLD/TORQUE 1。
++- 兩臂 j1 往手臂自身右方轉讀值變小（+1），右方＝A 區側，使用者看到 A｜B｜C；j2 上抬讀值變小；j2～j4 ≈ 512 時垂直伸直（目視）。
++- j1 近似值（±5°，非校正值）：正對場地 arm1≈193、arm2≈519；沿板邊朝手臂左方 arm1≈500、arm2≈806；home_A（90）在 arm1 正對場地往 A 側約 30°，home_C（590）在 arm2 正對場地往 C 外側約 21°。兩臂 j1 安裝角差約 90°。
++- ID15 讀值連續；連續 1387 次 READ 無通訊錯誤。板寬實測 24 cm（文件 300 mm）；軸心約在 A｜B、B｜C 分界外 0.5 cm、板外 0.5～1.5 cm。
++- NOT_RUN：Moving Speed（跳過）；BLOCKED：world 軸向（文件定義在實機配置下為左手系，待負責人）。新增唯讀擺位工具 evidence/hardware/20261111_H1/pose_guide.py（只經 cm530_probe 白名單送 READ）。
++- [H1 紀錄](evidence/hardware/20261111_H1/record.md)、[總表](evidence/hardware/SUMMARY.md)。D0、D1 待負責人決定；未修改模型、校正或實機設定。
++
 +## 2026-11-10 Orin 環境與建置 PASS（來源相容修復後）
 +
 +- 2026-11-10T14:51:51.979797+08:00：使用者授權修復來源並完成環境／建置。install_jazzy.sh 沿用既有 ROS Noble 來源，避免 Signed-By 衝突；補上 Gazebo FFmpeg 開發依賴。本機新增缺少的 noble-updates 來源。
