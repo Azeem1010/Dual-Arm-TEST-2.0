@@ -1,0 +1,132 @@
+# V0 前置檢查 2026-11-11T14:28:45+08:00
+$ ls -l /dev/v4l/by-id/ /dev/v4l/by-path/
+/dev/v4l/by-id/:
+總用量 0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 11 11:57 usb-Alcor_Micro__Corp._USB_2.0_uvc_pc_Camera-video-index1 -> ../../video3
+
+/dev/v4l/by-path/:
+總用量 0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.1:1.0-video-index0 -> ../../video0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.1:1.0-video-index1 -> ../../video1
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.3:1.0-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usb-0:4.4.3:1.0-video-index1 -> ../../video3
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.1:1.0-video-index0 -> ../../video0
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.1:1.0-video-index1 -> ../../video1
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.3:1.0-video-index0 -> ../../video2
+lrwxrwxrwx 1 root root 12 11月 11 11:57 platform-3610000.usb-usbv2-0:4.4.3:1.0-video-index1 -> ../../video3
+$ v4l2-ctl -d /dev/video0 --info --list-formats-ext
+Driver Info:
+	Driver name      : uvcvideo
+	Card type        : USB 2.0 uvc pc Camera: USB 2.0 
+	Bus info         : usb-3610000.usb-4.4.1
+	Driver version   : 6.8.12
+	Capabilities     : 0x84a00001
+		Video Capture
+		Metadata Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : uvcvideo
+	Model            : USB 2.0 uvc pc Camera: USB 2.0 
+	Serial           : 
+	Bus info         : usb-3610000.usb-4.4.1
+	Media version    : 6.8.12
+	Hardware revision: 0x00000402 (1026)
+	Driver version   : 6.8.12
+Interface Info:
+	ID               : 0x03000002
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : USB 2.0 uvc pc Camera: USB 2.0 
+	Function         : V4L2 I/O
+	Flags            : default
+	Pad 0x01000007   : 0: Sink
+	  Link 0x02000013: from remote pad 0x100000a of entity 'Extension 6' (Video Pixel Formatter): Data, Enabled, Immutable
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
+
+	[0]: 'YUYV' (YUYV 4:2:2)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+$ v4l2-ctl -d /dev/video2 --info --list-formats-ext
+Driver Info:
+	Driver name      : uvcvideo
+	Card type        : USB 2.0 uvc pc Camera: USB 2.0 
+	Bus info         : usb-3610000.usb-4.4.3
+	Driver version   : 6.8.12
+	Capabilities     : 0x84a00001
+		Video Capture
+		Metadata Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : uvcvideo
+	Model            : USB 2.0 uvc pc Camera: USB 2.0 
+	Serial           : 
+	Bus info         : usb-3610000.usb-4.4.3
+	Media version    : 6.8.12
+	Hardware revision: 0x00000008 (8)
+	Driver version   : 6.8.12
+Interface Info:
+	ID               : 0x03000002
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : USB 2.0 uvc pc Camera: USB 2.0 
+	Function         : V4L2 I/O
+	Flags            : default
+	Pad 0x01000007   : 0: Sink
+	  Link 0x02000013: from remote pad 0x100000a of entity 'Extension 6' (Video Pixel Formatter): Data, Enabled, Immutable
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
+
+	[0]: 'YUYV' (YUYV 4:2:2)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+$ lsusb -t
+/:  Bus 001.Port 001: Dev 001, Class=root_hub, Driver=tegra-xusb/4p, 480M
+    |__ Port 003: Dev 002, If 0, Class=Wireless, Driver=rtk_btusb, 12M
+    |__ Port 003: Dev 002, If 1, Class=Wireless, Driver=rtk_btusb, 12M
+    |__ Port 004: Dev 003, If 0, Class=Hub, Driver=hub/4p, 480M
+        |__ Port 001: Dev 004, If 0, Class=Human Interface Device, Driver=usbhid, 1.5M
+        |__ Port 002: Dev 005, If 0, Class=Human Interface Device, Driver=usbhid, 1.5M
+        |__ Port 002: Dev 005, If 1, Class=Human Interface Device, Driver=usbhid, 1.5M
+        |__ Port 004: Dev 006, If 0, Class=Hub, Driver=hub/4p, 480M
+            |__ Port 001: Dev 011, If 0, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 001: Dev 011, If 1, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 002: Dev 012, If 0, Class=Vendor Specific Class, Driver=ftdi_sio, 12M
+            |__ Port 003: Dev 013, If 0, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 003: Dev 013, If 1, Class=Video, Driver=uvcvideo, 480M
+            |__ Port 004: Dev 014, If 0, Class=Hub, Driver=hub/4p, 480M
+/:  Bus 002.Port 001: Dev 001, Class=root_hub, Driver=tegra-xusb/4p, 10000M
+    |__ Port 003: Dev 002, If 0, Class=Hub, Driver=hub/4p, 10000M
+        |__ Port 004: Dev 003, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |__ Port 004: Dev 005, If 0, Class=Hub, Driver=hub/4p, 5000M

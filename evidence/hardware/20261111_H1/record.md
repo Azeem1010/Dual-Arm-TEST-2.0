@@ -5,7 +5,7 @@
 實際輸入的指令與完整輸出：pose_guide_arm1_20261111_121458.csv（逐筆 READ）、pose_guide_analysis.txt；工具 pose_guide.py（本次新寫，只經 cm530_probe.Probe 白名單送 READ）
 量測工具與解析度：馬達 READ（1 raw ≈ 0.293°）；照片目視
 照片檔名：photos/H1_arm1_homeA_top.png（俯視）、photos/H1_arm1_homeA_side.png（側視）
-結果：PASS（手冊 H1 通過條件：兩支手臂方向有明確結論並有照片）；子項 Moving Speed NOT_RUN、world 軸向 BLOCKED，見文末
+結果：NOT_RUN（進行中）。2026-11-11 約 14:00 依 3fd258c 版手冊判 PASS；14:50 更新到 8ad9d47 後，新版手冊「2026-11-10 之後還要補的項目」尚有未做項目，改為進行中（見文末「依新版手冊的補做清單」）。原判定保留於此。
 
 ## 授權與範圍
 - 測試人員表示本人即負責人，要求以 HOME 指令讓手臂自行到 home_A。未執行：Moving Speed 未讀（韌體 v17 不設定 register 32，上電後值未知，可能為 0＝不限速）、HOME 為整姿態動作超出本次 H3「單軸 ±10 raw」範圍、message.txt 授權欄未填。改以扭力關閉、讀值導引人工擺位取得同樣資料。
@@ -137,3 +137,17 @@
 | world 原點與軸向膠帶、底座 world x/y | BLOCKED | 文件 world（+X=C→B→A、+Y=遠離使用者）在實機配置下會成左手系，需負責人決定軸向 |
 | arm1「底座正對 +Y」READ | BLOCKED | 同上；已以線 F／線 L 讀值替代，負責人定義軸向後可直接換算 |
 | arm2 線 F 第 1～3 次 | 不採用 | 缺偏移量 |
+
+## 依新版手冊（8ad9d47）的補做清單
+| 項目 | 狀態 | 說明 |
+|---|---|---|
+| arm2 H1 步驟 1～7 | 已做 | 本紀錄 arm2 段 |
+| j2 方向（兩臂）：從往場地側前傾約 30° 扳回垂直約 15° | NOT_RUN | 本次兩臂都是從接近垂直（arm1 j2=498、arm2 j2=505）開始抬，新版手冊指出無法判定方向；需重做 |
+| 畫圓法求軸心與 raw_facing_field（兩臂各一份 axis_circle 工作表＋fit_axis_circle） | NOT_RUN | 本次以線 F／線 L 對齊得 arm1≈193、arm2≈519（±5°），可作交叉驗證 |
+| 泡棉板短邊：F1、F2 各直接量一次 | 部分 | 測得板寬 24 cm，未分 F1、F2 |
+| C 區 8 格中心在 F2、L 讀值與編號 | NOT_RUN | |
+| C 格示教（arm2）、B 區交接示教（兩臂） | NOT_RUN | |
+| home_A、home_C READ | 已做 | |
+| Moving Speed | NOT_RUN | 跳過 |
+| ID 15 線材 | 已做 | 讀值連續 |
+- world 軸向 BLOCKED 解除：新版改用 F1、F2、L 參考線（F 垂直長邊指向使用者、L 沿手臂側長邊指向 B/C）。本次的線 F、線 L 方向與其相同。

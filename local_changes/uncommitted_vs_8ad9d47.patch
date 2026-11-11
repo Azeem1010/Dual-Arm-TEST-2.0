@@ -1,0 +1,52 @@
+diff --git a/dual_arm_ws/docs/PROGRESS.md b/dual_arm_ws/docs/PROGRESS.md
+index e63c65a..ed636fb 100644
+--- a/dual_arm_ws/docs/PROGRESS.md
++++ b/dual_arm_ws/docs/PROGRESS.md
+@@ -2,6 +2,14 @@
+ 
+ Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
+ 
++## 2026-11-11 Orin 現場：更新至 8ad9d47、P0 PASS、H1 進行中
++
++- UPDATE PASS：本機由 3fd258c 快轉到 8ad9d47（視覺 submodule 已是最新 4a40f30，無需更新）。build、coordinator 285、HMI 293、CM530 42、Mock Serial 7 階段、Mock 啟停全過。上游 install_jazzy.sh 與現場修正版相同。[紀錄](evidence/hardware/20261111_UPDATE/record.md)
++- P0 每日複查 PASS（口頭確認）。
++- H1（扭力關閉，只送 TORQUE,armN,0 與唯讀指令）：兩臂 j1 往手臂自身右方轉讀值變小（+1），右方＝A 區側，與 A-right 模擬一致；arm2 也是 +1。j1 正對場地 arm1≈193、arm2≈519（線 F 對齊，±5°，非校正值），兩臂 j1 安裝角差約 90°；home_A 在 arm1 正對場地往 A 側約 30°，home_C 在 arm2 往 C 外側約 21°。伸直 ≈ 512；ID15 讀值連續；1387 次 READ 無錯誤；板寬實測 24 cm。
++- H1 依新版手冊仍缺：兩臂 j2 從前傾 30° 重做（本次從接近垂直開始，無法判定）、畫圓法、短邊 F1/F2、C 格位與示教、B 區示教、Moving Speed。
++- 新增唯讀擺位工具 evidence/hardware/20261111_H1/pose_guide.py（只經 cm530_probe 白名單送 READ）。[H1 紀錄](evidence/hardware/20261111_H1/record.md)、[總表](evidence/hardware/SUMMARY.md)。
++
+ ## Latest result: operator UI screenshots in the READMEs; stale saved zones found
+ 
+ - New `scripts/capture_hmi_images.py` drives the real window against a simulation it starts itself, starts one transfer and presses stop. `ui_working.png` and `ui_stopped.png` are in both READMEs, with notes on what they show (simulated cameras uncalibrated in the interface calibration directory, zones for reference only, simulation slot numbering).
+diff --git a/dual_arm_ws/docs/evidence/hardware/20261110_H1/record.md b/dual_arm_ws/docs/evidence/hardware/20261110_H1/record.md
+index e8d62b2..0045e7b 100644
+--- a/dual_arm_ws/docs/evidence/hardware/20261110_H1/record.md
++++ b/dual_arm_ws/docs/evidence/hardware/20261110_H1/record.md
+@@ -1,11 +1,11 @@
+ 階段：H1 扭力關閉手動確認方向
+-日期與時間：2026-11-10 約 16:25 起（進行中）
++日期與時間：2026-11-10 約 16:25 起；當日中止，2026-11-11 於 20261111_H1/ 續做
+ 操作者／記錄者：人員代號 A、B、C（角色待確認）／Claude Code 協助記錄
+ 程式版本（git rev-parse HEAD）：3fd258c8e81c3bada92df92ef9a95e5749ca5178
+ 實際輸入的指令與完整輸出：見 output.txt（韌體附 manual_position_terminal.py，CM530 v17 / protocol 5；只送 VERSION、PING、TORQUE,arm1,0、READ）
+ 量測工具與解析度：馬達 READ（1 raw ≈ 0.293°）；方向為目視
+ 照片檔名：photos/H1_arm1_photo1.png（俯視，arm1 前端偏向 A 區側）、photos/H1_arm1_straight_front.png（伸直，從使用者側平視）
+-結果：NOT_RUN（進行中）
++結果：NOT_RUN（arm1 部分完成，當日中止；結論併入 20261111_H1）
+ 
+ ## arm1
+ | 項目 | 實測 | 結論 |
+@@ -19,7 +19,7 @@
+ | 伸直 READ 與方向 | READ 200,505,498,513；照片顯示垂直朝上（目視，從使用者側正面拍，非側視；未量傾角） | j2/j3/j4 與 512 差 −7/−14/+1 raw（≈ −2.1°/−4.1°/+0.3°），目視伸直下大致符合「512 = 垂直朝上伸直」；人手扶持與目視無法分辨數度內誤差，精確零點留待 H2 |
+ | GET_HOME,arm1 | HOME,arm1,90,567,712,825 | 與 H0、預期相符 |
+ | 底座正對 +Y 的 READ | NOT_RUN（+Y 定義待確認） | |
+-| 實機 home_A 姿勢 READ | NOT_RUN | |
++| 實機 home_A 姿勢 READ | NOT_RUN | 測試人員 2026-11-11 說明：provided/tester_provided_arm1_pose_photo.png 是先前以 HOME（板上預設值）指令到達的 home_A 姿態；量測移至 20261111_H1 |
+ 
+ ## 桌面量測參考線 F、L（手冊 3.1 節「桌面座標」）
+ 
+@@ -62,3 +62,5 @@
+ - j1 右轉時 j2 +68、j3 +51 也被帶動（扶持造成），不影響 j1 判斷。
+ - 觀察事實：arm1 在照片上方、靠 A 區；手臂自身右方朝 A 區。COORDINATE_FRAMES.md 的模擬配置寫「從手臂底座面向場地時 A 區在左邊」，與本觀察不同；模擬中兩臂 j1 方向假設為 −1，本實測 arm1 為 +1。是否修改模型由負責人決定（D0）。
+ - 測試人員提供的分析截圖與姿勢照片存於 provided/，來源未說明，不作為本次實測數據。
++- 世界座標問題：文件 world 定義 +X=C→B→A、+Y=遠離使用者；實機使用者看到 A｜B｜C，若 +Y 遠離使用者，+X 朝 C→B→A 會變成左手座標系，無法照文件貼出 world。待負責人決定（D0）。
++- 截圖中「尺量 TCP (135,−80) mm」的量測者、時間、原點，測試人員未說明。

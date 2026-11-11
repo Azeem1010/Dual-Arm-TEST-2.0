@@ -1,0 +1,42 @@
+ready_after_s=4
+$ ros2 control list_controllers
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  active
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  active
+$ ros2 topic echo --once /joint_states (names/positions)
+A message was lost!!!
+	total count change:1
+	total count: 1---
+header:
+  stamp:
+    sec: 1794379590
+    nanosec: 906622129
+  frame_id: base_link
+name:
+- arm1_arm_elbow_flex_joint
+- arm1_arm_shoulder_lift_joint
+- arm1_arm_shoulder_pan_joint
+- arm1_arm_wrist_flex_joint
+- arm2_arm_elbow_flex_joint
+- arm2_arm_shoulder_lift_joint
+- arm2_arm_shoulder_pan_joint
+- arm2_arm_wrist_flex_joint
+position:
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+velocity:
+- 0.0
+- 0.0
+- 0.0
+$ ros2 node list | grep move_group
+/move_group
+/move_group/moveit
+/move_group_private_187650703348464
+SIGINT 後 1s 結束
+process group 已清空

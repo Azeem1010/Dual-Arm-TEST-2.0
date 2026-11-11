@@ -1,6 +1,6 @@
 # Dual-Arm-TEST-2.0：雙機械手臂實機測試紀錄
 
-- 專案：[xian1022/dual_arm_system](https://github.com/xian1022/dual_arm_system)（main，測試時的 commit `3fd258c8e81c3bada92df92ef9a95e5749ca5178`）
+- 專案：[xian1022/dual_arm_system](https://github.com/xian1022/dual_arm_system)（main；11-10 與 11-11 上午用 `3fd258c`，11-11 14:50 起更新為 `8ad9d47`）
 - 測試日期：2026-11-10、2026-11-11（台灣時間）
 - 平台：Jetson AGX Orin，Ubuntu 24.04.5 LTS（aarch64），ROS 2 Jazzy
 - 硬體：PhantomX Pincher ×2（AX-12A ×8）、CM-530（韌體 v17／協定 5）、ESP32 吸盤（micro-ROS）、USB 相機 ×3
@@ -13,7 +13,7 @@
 
 ## 1. 一句話結論
 
-環境與建置全部通過，實機做到 **H1 PASS**（2026-11-11）：兩支手臂的 j1、j2 方向、伸直讀值、HOME 實際朝向都已取得。實測顯示 **A 區在手臂右方、使用者看到 A｜B｜C、兩臂 j1 方向 +1**，泡棉板寬 **24 cm**（文件 300 mm）。D0、D1、world 軸向、D6 門檻待負責人決定；Moving Speed 尚未讀取。
+環境與建置全部通過，11-11 下午已更新到上游最新 `8ad9d47` 並重新通過全部離線測試。實機做到 **H1 進行中**：兩支手臂的 j1 方向（+1，右方＝A 區，與上游 A-right 模擬一致）、伸直讀值、HOME 實際朝向都已取得；新版手冊要求補做 j2 重測（前傾 30° 起）、畫圓法、C 格位與示教等。泡棉板寬實測 **24 cm**（文件 300 mm）。D6 門檻、H3 授權待負責人；Moving Speed 尚未讀取。
 
 ## 2. 各階段狀態
 
@@ -23,8 +23,9 @@
 | SETUP 重試 | PASS | 修正來源、補 noble-updates 與 FFmpeg 開發套件後，安裝、建置、離線測試、Mock 全部通過 | [20261110_SETUP_retry](evidence/hardware/20261110_SETUP_retry/record.md) |
 | P0 開始前準備 | PASS | 急停、人員、量具、淨空、俯視照片（急停為口頭回報） | [20261110_P0](evidence/hardware/20261110_P0/record.md) |
 | H0 唯讀連線 | PASS | 控制板路徑、VERSION／PING、home 值相符，手推後 8 個讀值都會變 | [20261110_H0](evidence/hardware/20261110_H0/record.md) |
+| UPDATE（11-11） | PASS | 更新至 8ad9d47；build、coordinator 285、HMI 293、CM530 42、Mock Serial 7 階段、Mock 啟停 | [20261111_UPDATE](evidence/hardware/20261111_UPDATE/record.md) |
 | P0 每日複查（11-11） | PASS | 口頭確認急停、人員、淨空 | [20261111_P0](evidence/hardware/20261111_P0/record.md) |
-| H1 扭力關閉確認方向 | PASS（11-11） | 兩臂方向、j1 朝向、HOME 朝向完成；Moving Speed NOT_RUN（跳過）、world 軸向 BLOCKED | [20261110_H1](evidence/hardware/20261110_H1/record.md)、[20261111_H1](evidence/hardware/20261111_H1/record.md) |
+| H1 扭力關閉確認方向 | NOT_RUN（進行中） | 依舊版手冊曾判 PASS；新版手冊要求補做 j2 重測、畫圓法、短邊 F1/F2、C 格位與示教、B 區示教、Moving Speed | [20261110_H1](evidence/hardware/20261110_H1/record.md)、[20261111_H1](evidence/hardware/20261111_H1/record.md) |
 | V0 相機檢查 | NOT_RUN | 目前只接上 1 顆相機 | — |
 | E0 ESP32 吸盤 | NOT_RUN | — | — |
 | H2 校正量測 | 資料 NOT_RUN；驗收 BLOCKED | D6 門檻空白 | — |
@@ -141,7 +142,7 @@ F、L 加上朝上方向構成右手座標系，軸向和文件裡 `armN_base` �
 
 **照片**（[photos/](evidence/hardware/20261110_H1/photos/)）：`H1_arm1_photo1.png`（arm1 右轉朝 A 區）、`H1_arm1_straight_front.png`（伸直）、`H1_FL_tape_overview.png`、`H1_FL_tape_closeup.png`、`H1_FL_tape_user_side_end.png`。[annotations/](evidence/hardware/20261110_H1/annotations/) 裡的是 AI 依照片畫的示意圖，不是量測資料。[provided/](evidence/hardware/20261110_H1/provided/) 是測試人員另外提供、來源未說明的截圖與照片，只存檔參考，不當作實測數據。
 
-### 3.5 H1 第二天（2026-11-11）：完成，PASS
+### 3.5 H1 第二天（2026-11-11）：方向資料取得，依新版手冊仍進行中
 
 開工前 P0 複查 PASS（控制板 11:57 重新上電）。全程扭力關閉，只送 `TORQUE,armN,0` 與唯讀指令。測試人員以負責人身分要求用 `HOME` 讓手臂自行到 home_A，**未執行**：Moving Speed 未讀（韌體 v17 不設定 register 32，可能為 0＝不限速）、超出本次 H3「單軸 ±10 raw」範圍、message.txt 授權欄未填。改用新寫的唯讀工具 [`pose_guide.py`](evidence/hardware/20261111_H1/pose_guide.py)（只經 `cm530_probe` 白名單送 READ）依讀值導引人工擺位。
 
@@ -162,6 +163,13 @@ F、L 加上朝上方向構成右手座標系，軸向和文件裡 `armN_base` �
 - 底座：arm1 舵盤中心距 B｜C 膠帶 20.5 cm（A 側），arm2 距 A｜B 膠帶 20.5 cm（C 側）；兩支到使用者側長邊 24.5 cm，**板寬 24 cm** → 軸心在手臂側長邊外約 0.5 cm（arm1 斜線量測時為 1.5 cm）。
 - 資料問題（已記錄，未覆寫）：arm1 一次線 F 的 CSV 被同檔名覆寫（工具已改為拒絕覆寫）；arm2 線 F 前三次缺偏移量不採用；arm2 部分 CSV 檔名尾端多一個點，保留原名。
 - 量測示意圖：[`j1_measure_diagram.html`](evidence/hardware/20261111_H1/j1_measure_diagram.html)；換算腳本與輸出：`j1_diagonal_calc.py`、`j1_lineL_calc.py`、`arm2_lineF_calc.py`、`arm2_lineL_calc.py` 及對應 `_output.txt`。
+
+### 3.6 UPDATE：更新到上游 8ad9d47（2026-11-11 14:20～14:50）
+
+- 起因：要求依 `Azeem1010/three-camera-vision-ros2` 更新 OpenCV 端。查核後該 repo main 仍是 `4a40f30`，與專案 submodule 和 `src/vision_pkg` 相同，**視覺端不需更新**；落後的是主專案（本機 `3fd258c`，上游 `8ad9d47`，9 個 commit）。
+- 先備份本機修改與證據，再快轉更新。上游已收錄現場的 `install_jazzy.sh` 修正（逐字相同）與 11-10 證據（只差 CRLF）。
+- 結果全部 PASS：build、coordinator **285**、HMI **293**、CM530 **42**、Mock Serial **7 階段**、Mock 啟停（4 s ready、SIGINT 1 s 結束）。詳見 [20261111_UPDATE/record.md](evidence/hardware/20261111_UPDATE/record.md)。
+- 新版手冊把桌面參考改為 F1、F2、L 線，原本「world 軸向 BLOCKED」解除；H1 補做清單見 [20261111_H1/record.md](evidence/hardware/20261111_H1/record.md) 文末。
 
 ---
 
@@ -231,9 +239,10 @@ F、L 加上朝上方向構成右手座標系，軸向和文件裡 `armN_base` �
 
 ## 6. 下一步
 
-1. **負責人**：決定 D0、D1 與 world 軸向（主 repo 已有 A-right 模擬配置的 commit，需用本次 arm2 與 j1 朝向資料核對）；填寫 D6 門檻、H3 授權；確認板寬 24 cm 並更新文件與 `env_vision.yaml`。
-2. **現場**：讀 8 顆 Moving Speed（H3 前必要）；接齊 3 顆相機做 V0；建置 micro_ros_agent 做 E0；H2 只收資料。
-3. H3 以後需授權且 Moving Speed 已確認不是 0；H4～H8 BLOCKED（D8）。
+1. **現場 H1 補做**（新版手冊）：兩臂 j2 從前傾約 30° 扳回垂直 15°；畫圓法（細桿 ≥10 cm、≥5 點、分布 ≥90°）＋ `fit_axis_circle`；短邊在 F1、F2 各量；C 區 8 格位置與編號；C 格與 B 區示教 READ；Moving Speed。
+2. **V0**：三顆相機同型號無序號，`/dev/v4l/by-id/` 無法區分，需改用 `/dev/v4l/by-path/` 並固定插孔；只支援 YUYV，三顆共用一個 USB 2.0 hub 可能頻寬不足。
+3. **E0**：`micro_ros_agent` 已在 `~/microros_ws` 建好。
+4. **負責人**：D6 門檻、H3 授權；確認板寬 24 cm。H4～H8 BLOCKED（D8）。
 
 ## 7. 目錄
 
