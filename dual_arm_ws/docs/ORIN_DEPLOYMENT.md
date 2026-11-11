@@ -71,10 +71,10 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 ```bash
 ls -l /dev/serial/by-id/
-ls -l /dev/v4l/by-id/
+ls -l /dev/v4l/by-path/
 ```
 
-先前的紀錄中，控制板是 `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0`，請以實際結果為準。相機路徑填入 `src/vision_pkg/config/cameras.yaml`（用操作介面啟動時也可以填 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.*_cam_device`）。實機用 ROS domain 0，模擬用 43，終端機要 `unset ROS_DOMAIN_ID`。手眼相機 1 的 `rotate: 180` 來自 2026-11-06 的實測，要重新確認。
+先前的紀錄中，控制板是 `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0`，請以實際結果為準。兩顆手臂相機同型號且沒有序號，`/dev/v4l/by-id/` 無法區分，所以改用 `/dev/v4l/by-path/`。`src/vision_pkg/config/cameras.yaml` 已填入 2026-11-11 實測的三條 by-path（上游 64f28a0：環境 USB 埠 4.3、手臂1 4.4.3、手臂2 4.4.1）。by-path 綁定實體 USB 插孔，線不可互換；換插孔要重查並修改（用操作介面啟動時也可以填 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.*_cam_device`）。三顆接在同一個 USB 2.0 hub 時頻寬不足，第三顆會無法啟動串流，要把一顆手臂相機改接其他 root port。實機用 ROS domain 0，模擬用 43，終端機要 `unset ROS_DOMAIN_ID`。手眼相機 1 的 `rotate: 180` 來自 2026-11-06 的實測，要重新確認。
 
 ## 4. H0、H1：只讀與手動確認
 

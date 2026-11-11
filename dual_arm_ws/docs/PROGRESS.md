@@ -2,7 +2,14 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: hardware handoff no longer needs owner authorisation
+## Latest result: vision upstream update to 64f28a0 (camera by-path, arm2 YUYV)
+
+- Submodule `three-camera-vision-ros2` fast-forwarded 4a40f30 → 64f28a0; the same diff applied to `src/vision_pkg` with `git apply --ignore-whitespace --directory=dual_arm_ws/src`. sources.lock.json updated.
+- Upstream only changes config: `cameras.yaml` now holds the three `/dev/v4l/by-path/` paths measured in V0 on 2026-11-11 (env USB port 4.3 AONI 310P, arm1 4.4.3 Alcor, arm2 4.4.1 Alcor), and `usb_cam.yaml` sets arm2 to `yuyv2rgb` because the Alcor camera only supports YUYV. This settles the open by-path question: the paths are tied to the physical USB ports, so cables must not be swapped.
+- Upstream known issue: with all three cameras on one USB 2.0 hub the third stream fails to start (not enough bandwidth); one Alcor camera must move to another root port. Not checked here.
+- PASS in WSL Jazzy: `colcon build --packages-select vision_pkg`; vision_pkg 100 tests; HMI profile tests 20. NOT_RUN: real cameras on the Orin.
+
+## Earlier result: hardware handoff no longer needs owner authorisation
 
 - Team members are peers: the on-site member decides after the safety checks and records the decision; there is no separate owner sign-off. Changed in HANDOFF_PROMPT_HARDWARE_TESTER (no "owner fills in" block, no H3 authorisation, D0–D8 decided on site and recorded), HARDWARE_TEST_GUIDE, AGENTS, MODIFICATION_PLAN section 5 and TEST_PLAN section 6.
 - New "HOME 定位" section in HARDWARE_TEST_GUIDE: after P0 and H0 that day, the firmware `HOME` may be used at any time (e.g. both arms home to adjust cameras). Because v17 `HOME` writes only goal positions and Moving Speed is usually 0 (maximum) after power-up, the arm is first hand-guided to within 20 raw of HOME with the read-only `pose_guide.py`, then `HOME` with torque off, then `TORQUE,armN,1`. One arm at a time, hand on the e-stop.
@@ -16,7 +23,7 @@ Current status by work package is in MODIFICATION_PLAN.md section 6. Each sectio
 - Facts that match the simulation: arm2 j1 is +1 like arm1; j1 facing the field is about 193 (arm1) and 519 (arm2), against simulation 192.3 and 512; both arms' j2 rises when leaning toward the user (+1). An offline FK check of the arm2 C-slot teach READs with the simulation mapping agrees with the tape-measured slot radii within about 3 mm (evidence/hardware/20261111_fk_crosscheck/). No simulation numbers were changed; these are H1 approximations, not calibration.
 - Facts that do not match and go to phase C (WP11): board short side 240 mm (model 300), axes about 5 mm outside the arm-side edge (model 63 mm inside), C slots 1 and 2 nearest the arms with the odd column next to B (model: rotated 180°, columns swapped).
 - Docs updated: MODIFICATION_PLAN D0, D1, D3 and WP11; COORDINATE_FRAMES; HOME_POSES (the "+Y at raw 512" question is resolved: it is `arm1_base` +Y); `runtime.json` note text only.
-- Open for the owner: D6 thresholds, H3 authorisation, by-path for the two arm cameras that have no serial number, axis offset 5 or 15 mm.
+- Open for the owner: D6 thresholds, H3 authorisation, by-path for the two arm cameras that have no serial number (adopted upstream in 64f28a0), axis offset 5 or 15 mm.
 
 ## Earlier result: operator UI screenshots in the READMEs; stale saved zones found
 

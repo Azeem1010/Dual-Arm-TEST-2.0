@@ -297,11 +297,11 @@ python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板> --baud 
 **目的：** 確認三顆相機對應正確、畫面方向正確。這裡不做校正。
 
 ```bash
-ls -l /dev/v4l/by-id/
-ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<環境> arm1_cam_device:=/dev/v4l/by-id/<手臂1> arm2_cam_device:=/dev/v4l/by-id/<手臂2>
+ls -l /dev/v4l/by-path/
+ros2 launch vision_pkg vision.launch.py
 ```
 
-把路徑填到 `src/vision_pkg/config/cameras.yaml`，以後就不用每次打。用操作介面啟動實機時，也可以填在 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.env_cam_device` 等欄位（優先於 cameras.yaml）。
+`src/vision_pkg/config/cameras.yaml` 已填入 2026-11-11 實測的 by-path（環境 USB 埠 4.3、手臂1 4.4.3、手臂2 4.4.1）。兩顆手臂相機同型號沒有序號，不能用 by-id；by-path 綁定實體插孔，線不可互換。插孔改了就重查 `ls -l /dev/v4l/by-path/` 並改 cameras.yaml，或在 launch 加 `env_cam_device:=...` 等參數。三顆接同一個 USB 2.0 hub 時第三顆會無法啟動串流，要把一顆手臂相機改接其他 root port。用操作介面啟動實機時，也可以填在 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.env_cam_device` 等欄位（優先於 cameras.yaml）。
 
 | 看什麼 | 應該是 |
 |---|---|

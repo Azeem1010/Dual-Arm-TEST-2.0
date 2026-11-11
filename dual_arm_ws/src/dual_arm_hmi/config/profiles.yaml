@@ -21,7 +21,7 @@ hardware:
   calibration_file: ''      # 空白 = 套件內 calibration.yaml（目前全為 null，驅動會拒絕啟動）
   controllers_file: ''      # 實機動作必填，容差必須是實測值
   vision_calib_dir: ''      # 空白 = vision_pkg 的預設目錄
-  # 相機路徑用 ls /dev/v4l/by-id/ 查。空白 = vision_pkg 的 config/cameras.yaml；兩處都空時該相機不會啟動
+  # 相機路徑用 ls -l /dev/v4l/by-path/ 查（兩顆手臂相機無序號，不能用 by-id）。空白 = vision_pkg 的 config/cameras.yaml（已填 2026-11-11 實測值）；兩處都空時該相機不會啟動
   env_cam_device: ''
   arm1_cam_device: ''
   arm2_cam_device: ''
