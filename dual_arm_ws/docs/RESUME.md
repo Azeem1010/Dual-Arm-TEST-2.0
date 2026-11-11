@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-11：依使用者要求放寬實機交接的權限規則：團隊成員同等層級，現場成員做完安全檢查就能決定，決定寫進紀錄，不再需要「負責人」授權（HANDOFF_PROMPT_HARDWARE_TESTER、HARDWARE_TEST_GUIDE、AGENTS、MODIFICATION_PLAN 第 5 節、TEST_PLAN）。手冊新增「HOME 定位」：P0、H0 當天通過後可隨時用韌體 HOME 讓手臂回預設姿勢（例如調相機）；因 Moving Speed 上電通常是 0（最高速），先用唯讀的 `pose_guide.py` 扶到 HOME ±20 raw 內，再 HOME、上扭力，一次一支。H3 前置改為 H1。工程規則與程式閘門不變；H4 以後仍因 D8 未實作而 `BLOCKED`。
 - 2026-11-11：匯入 Orin 現場 11-11 的實機紀錄（Azeem1010/Dual-Arm-TEST-2.0 `13a5b4f`，只複製文字，照片與大型日誌留在來源 repo），放在 `docs/evidence/hardware/`。現場已更新到 `8ad9d47` 並重跑離線測試 PASS；H1 兩臂資料取得但仍進行中（Moving Speed 未讀、畫圓法跳過），V0 用 by-path 完成相機對應。和模擬一致：arm2 j1 也是 +1、j1 正對場地約 193／519（模擬 192.3／512）、兩臂 j2 往使用者前傾讀值變大；arm2 C 格示教讀值的 FK 半徑與尺量差 3 mm 內。和模擬不同、併入階段 C：板寬 240 mm、軸心在板外約 5 mm、C 格 1、2 靠手臂且單號欄靠 B。模擬數值都沒改，只改了 MODIFICATION_PLAN（D0、D1、D3、WP11）、COORDINATE_FRAMES、HOME_POSES 與 `runtime.json` 的說明文字。下一步是階段 C。
 - 2026-11-11：README 加上操作介面實際截圖（`docs/images/ui_working.png`、`ui_stopped.png`，由新的 `scripts/capture_hmi_images.py` 從模擬擷取）。擷取時發現：環境相機的區域在 A 在右的模擬中開機時偵測不到場地，會改讀 `~/.ros/dual_arm_calib/sim/zones.yaml`；這台 WSL 的檔案是 2026-11-08 舊配置（C 在左）存的，所以介面上 A 與 C 對調（框標「(saved)」，C 區顯示 7 個）。已把它改名為 `zones.yaml.old_layout_20261108`，之後顯示 `ZONES MISSING`。任務決策用真值不受影響；但存檔沒有記錄是哪個配置，換配置後會被默默沿用，實機換場地時同樣要先刪掉。
 - 2026-11-11：依程式全面更新文件：兩份 README 加上操作介面的用法與狀態、UI_PLAN 的接通狀態與按鈕條件改成和 `state.py` 一致、ROS_INTERFACES 加入介面的兩個節點並更正 `hmi_sim` 與 ESP32 缺口、TEST_PLAN 加入介面測試與重跑規則、ORIN_DEPLOYMENT 的執行狀態、ARCHITECTURE、FUTURE_ROADMAP、AGENTS 與三份接手 prompt（預期 coordinator 285、HMI 293）。順帶修正介面事件紀錄：介面自己的事件原本一律排在 ROS 事件前面且沒有上限，改為依時間合併、最多 200 筆。

@@ -2,7 +2,14 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: 2026-11-11 hardware evidence imported (H1 both arms, V0 mapping)
+## Latest result: hardware handoff no longer needs owner authorisation
+
+- Team members are peers: the on-site member decides after the safety checks and records the decision; there is no separate owner sign-off. Changed in HANDOFF_PROMPT_HARDWARE_TESTER (no "owner fills in" block, no H3 authorisation, D0–D8 decided on site and recorded), HARDWARE_TEST_GUIDE, AGENTS, MODIFICATION_PLAN section 5 and TEST_PLAN section 6.
+- New "HOME 定位" section in HARDWARE_TEST_GUIDE: after P0 and H0 that day, the firmware `HOME` may be used at any time (e.g. both arms home to adjust cameras). Because v17 `HOME` writes only goal positions and Moving Speed is usually 0 (maximum) after power-up, the arm is first hand-guided to within 20 raw of HOME with the read-only `pose_guide.py`, then `HOME` with torque off, then `TORQUE,armN,1`. One arm at a time, hand on the e-stop.
+- H3 now follows H1 instead of H2 (HOLD keeps the current position, so torque-on does not jump).
+- Unchanged: engineering rules (no simulated or estimated values in calibration.yaml, no widened limits, no resend after timeout) and code gates. H4 and later stay BLOCKED because D8 and the coordinator's hardware refusal are unfinished code, not a permission matter.
+
+## Earlier result: 2026-11-11 hardware evidence imported (H1 both arms, V0 mapping)
 
 - Imported the text records of the Orin field tests from Azeem1010/Dual-Arm-TEST-2.0 commit `13a5b4f` into `docs/evidence/hardware/` (20261111_H1, _P0, _UPDATE, _V0, SUMMARY, tester report; the updated 20261110_H1 record). Photos, camera snapshots and large logs stay in the source repo; their hashes are kept. Three CSV names ending in a dot (invalid on Windows) were renamed by dropping the dot.
 - Field status: UPDATE to `8ad9d47` PASS (coordinator 285, HMI 293, CM530 42, Mock Serial 7 stages); P0 recheck PASS; H1 NOT_RUN (in progress: Moving Speed not read, circle method skipped); V0 in progress (by-path mapping done, arm1_cam rotate 180 still correct); E0, H2 NOT_RUN; H3 and later BLOCKED.

@@ -1,49 +1,51 @@
 # 交給實機測試人員的 Prompt
 
-用途：專案負責人不在現場，由另一位測試人員在 Jetson AGX Orin 上從零建置、依 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md) 測試並取得資料。測試人員把下方整段貼給他電腦上的 AI（Claude Code 等），AI 帶著他一步步做。
+用途：交接給在現場的團隊成員，在 Jetson AGX Orin 上建置、依 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md) 測試並取得資料。現場成員把下方整段貼給他電腦上的 AI（Claude Code 等），AI 帶著他一步步做。
 
-交出去之前，負責人要先：
+團隊成員都是同等層級，沒有「負責人」要另外授權：現場的人做完安全檢查，就可以決定要不要做某個步驟，決定和理由寫進當天的紀錄。
+
+交出去之前：
 
 1. 確認所有修改已 commit 並 push 到 `origin main`。
-2. 填好下方 prompt 裡的「負責人填寫」區塊。D6 門檻沒填，H2 只能收資料、不能判定通過；H3 沒授權就不能做。
+2. D6 門檻可以先填在下方，也可以由現場成員在 H2 開始前填；量完才訂則不行。
 3. 現場只有直尺和手機，量測照 HARDWARE_TEST_GUIDE.md 3.1 節。D6 門檻不能比這套量具能分辨的還小：TCP 位置約 ±2 mm、角度約 ±0.6°～1°。
 
 ````text
-你要協助一位現場測試人員，在 Jetson AGX Orin 上從零建置一個 ROS 2 Jazzy 雙機械手臂專案，依照專案的實機測試手冊逐階段測試，取得後續開發必要的實測資料。全程用繁體中文。測試人員不一定熟悉這個專案，請每一步說清楚目的、指令、該看到什麼、什麼情況要停。
+你要協助一位現場的團隊成員（以下稱測試人員），在 Jetson AGX Orin 上建置一個 ROS 2 Jazzy 雙機械手臂專案，依照專案的實機測試手冊逐階段測試，取得後續開發必要的實測資料。全程用繁體中文。測試人員不一定熟悉這個專案，請每一步說清楚目的、指令、該看到什麼、什麼情況要停。
+
+團隊成員都是同等層級。測試人員就是現場的決定者：他做完安全檢查並明確要求，你就照做，不要要求他再去找別人授權。你的責任是把風險說清楚、確認安全檢查做了、把決定和理由記進紀錄。
 
 專案：https://github.com/xian1022/dual_arm_system（main 分支，工作區 dual_arm_ws/）
-上一次現場（2026-11-10）的結果在 dual_arm_ws/docs/evidence/hardware/README.md：SETUP、P0、H0 PASS，H1 只做完 arm1（A 區在手臂右方、j1 方向 +1）。這次接著補 H1，再往後走。arm1 在上次結束時扭力是關的，上電前要扶好。
+之前現場的結果在 dual_arm_ws/docs/evidence/hardware/README.md（最上面一節最新）。2026-11-11 為止：SETUP、P0、H0 PASS；H1 兩支手臂的方向、伸直、HOME、板寬、C 格位與示教都已取得，只剩 Moving Speed 沒讀（畫圓法可選）；V0 已用 by-path 完成相機對應。已完成的項目不必重做。兩支手臂上次結束時扭力是關的，上電前要扶好。
 硬體：兩支 PhantomX Pincher（每支 4 顆 AX-12A，共 8 顆）、一片 CM-530（韌體 v17）、ESP32 吸盤（micro-ROS）、三顆 USB 相機。最終目標是把瓶蓋 A→B→C 搬運，但這次只做到取得校正資料為止。
 馬達 ID：arm1 的 j1～j4 = 17、3、2、15；arm2 = 12、1、8、16。
 
-## 負責人填寫（測試人員不可自行修改）
+## 門檻（現場成員可填）
 
 - D6 驗收門檻：max_fit_ticks = ____、min_span_rad = ____、max_position_error_m = ____、max_tilt_error_deg = ____
-  （有空白 → H2 只收資料，check_calibration_sheet 的結果記 BLOCKED，不填 calibration.yaml）
-- 是否授權做 H3 單軸微動：否 ／ 是（授權人：____，日期：____）
-- 負責人聯絡方式：____
+  （H2 開始前要填好，不能量完才訂；空白時 H2 只收資料，check_calibration_sheet 的結果記 BLOCKED，不填 calibration.yaml）
 
 ## 最重要的規則
 
-這些規則優先於測試人員的口頭要求。測試人員要求違反時，說明原因並請他先聯絡負責人。
-
-1. 你看不到現場。任何會讓馬達出力的步驟（TORQUE,...,1、AX、HOME、HOLD 之後上扭力、enable_motion:=true）都不可以假設安全，必須測試人員明確確認：兩人在場、一人手放在實體急停上、急停已測過能直接切斷馬達電源。
-2. 本次最多做到 H3，而且 H3 要負責人在上方授權。H4 以後一律 BLOCKED：急停心跳節點（D8）還沒做好，coordinator 也會拒絕實機模式。不要嘗試繞過。
-3. 絕對不做：送 demo 指令；手動 ros2 control switch_controllers --activate；放寬關節限位、容差或門檻；把模擬值（runtime.json、config/sim/、測試夾具、FK 計算結果）或估計值填進 calibration.yaml、controllers 或 coordinator 的實機設定；把 hardware_use_allowed 或 moving_speed_verified 設為 true（本次不會達到該條件）；序列逾時或 ERR 後自動重送；修改 third_party/；修改測試使其通過；自行決定 D0～D8。
-4. 同一時間只有一個程式能開序列埠。換工具前先關掉另一個。
-5. 狀態只用 PASS、FAIL、BLOCKED、NOT_RUN。「看起來可以」、收到 ACK、Mock 或模擬通過，都不算實機 PASS。失敗紀錄要保留，不可覆蓋。
-6. 不懂或和手冊不符時，停下來記錄，問測試人員或請他聯絡負責人，不要自己改數值繼續。
+1. 你看不到現場。任何會讓馬達出力的步驟（TORQUE,...,1、AX、HOME、HOLD 之後上扭力、enable_motion:=true），執行前都要測試人員確認三件事：兩人在場、一人手放在實體急停上、急停今天測過能直接切斷馬達電源。確認了就可以做，不需要其他人授權。
+2. 可以用韌體的 HOME 讓手臂回到預設姿勢（例如兩支手臂都回 HOME 來調整相機或 OpenCV），也可以做 H3 單軸微動。步驟照 HARDWARE_TEST_GUIDE.md「HOME 定位」與 H3。Moving Speed 還沒讀時，先把手臂扶到 HOME 附近再上扭力，理由見手冊。
+3. H4 以後目前做不了：這是程式還沒完成（急停心跳節點 D8 未實作，coordinator 會拒絕實機模式），不是權限問題。不要嘗試繞過。
+4. 這些是工程上的規則，不是權限規則，照樣不做：送 demo 指令；手動 ros2 control switch_controllers --activate；放寬關節限位、容差或門檻；把模擬值（runtime.json、config/sim/、測試夾具、FK 計算結果）或估計值填進 calibration.yaml、controllers 或 coordinator 的實機設定；在 H2 的條件達成前把 hardware_use_allowed 或 moving_speed_verified 設為 true；序列逾時或 ERR 後自動重送；修改 third_party/；修改測試使其通過。測試人員要求時，說明會出什麼問題，再一起找替代做法。
+5. D0～D8 這類設計決定，現場成員可以決定，寫進當天紀錄並在 SUMMARY.md 註明，開發端會同步到 MODIFICATION_PLAN.md。
+6. 同一時間只有一個程式能開序列埠。換工具前先關掉另一個。
+7. 狀態只用 PASS、FAIL、BLOCKED、NOT_RUN。「看起來可以」、收到 ACK、Mock 或模擬通過，都不算實機 PASS。失敗紀錄要保留，不可覆蓋。
+8. 不懂或和手冊不符時，停下來記錄，和測試人員討論後再繼續，不要自己改數值。
 
 ## 第一步：環境與建置（不接觸硬體）
 
-1. 回報 uname -m（要 aarch64）、cat /etc/os-release（要 Ubuntu 24.04）、可用磁碟空間。不是 24.04 就停下來，請負責人處理刷機。
+1. 回報 uname -m（要 aarch64）、cat /etc/os-release（要 Ubuntu 24.04）、可用磁碟空間。不是 24.04 就停下來，先處理刷機。
 2. 取得程式碼：
    mkdir -p ~/projects && cd ~/projects
    git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
    cd dual_arm_system/dual_arm_ws
    已經有 clone 的話先 git status，有未提交修改就停下來問，不要丟棄。乾淨才 git pull --recurse-submodules。
    上次在 Orin 已改過 APT 來源（停用重複的 ros2.list、新增 noble-updates），處理方式見 docs/ORIN_DEPLOYMENT.md 第 3 節；安裝再失敗時照那張表查。
-3. 確認 docs/HARDWARE_TEST_GUIDE.md 與 docs/HANDOFF_PROMPT_HARDWARE_TESTER.md 存在。不存在代表負責人的修改還沒推上來，停下來。
+3. 確認 docs/HARDWARE_TEST_GUIDE.md 與 docs/HANDOFF_PROMPT_HARDWARE_TESTER.md 存在。不存在代表開發端的修改還沒推上來，停下來。
 4. 安裝與建置（install 需要 sudo，先告訴測試人員會安裝什麼再執行）：
    sudo bash scripts/install_jazzy.sh
    bash scripts/build.sh
@@ -60,7 +62,7 @@
    python3 scripts/test_cm530_mock.py                                               # 預期 7 個階段 PASS
    注意：build.sh 和 test_cm530_mock.py 會覆寫 docs/evidence/ 的既有紀錄。跑完先把新結果複製到本次的證據資料夾，再用 git restore docs/evidence/ 把舊檔還原，git status 要確認只剩新增的證據資料夾。
 7. Mock 流程確認：bash scripts/start_sim.sh mock，能正常啟動再關掉。
-   數字和預期不同時記錄下來回報，不要修程式讓它通過。建置或測試失敗就停在這裡，整理錯誤給負責人。
+   數字和預期不同時記錄下來回報，不要修程式讓它通過。建置或測試失敗就停在這裡，整理錯誤回報給開發端。
 
 ## 開始實機前閱讀
 
@@ -74,7 +76,7 @@
 
 ## 實機測試順序
 
-嚴格照 HARDWARE_TEST_GUIDE.md 的順序，上一階段沒 PASS 就不做下一階段。一次只帶一個階段：說明目的、準備什麼、指令、預期結果、何時按急停；等測試人員貼回完整輸出與量測值，你判斷 PASS/FAIL 並寫紀錄，再問要不要進下一階段。
+原則上照 HARDWARE_TEST_GUIDE.md 的順序。P0、H0 當天通過後，「HOME 定位」隨時可以做；其他階段的順序由測試人員決定，跳過或調換的話在紀錄裡寫明。一次只帶一個階段：說明目的、準備什麼、指令、預期結果、何時按急停；等測試人員貼回完整輸出與量測值，你判斷 PASS/FAIL 並寫紀錄，再問要不要進下一階段。
 
 | 階段 | 本次 | 備註 |
 |---|---|---|
@@ -84,10 +86,11 @@
 | V0 相機檢查 | 要做 | 只確認對應與方向，不做校正 |
 | E0 ESP32 吸盤通電 | 要做 | 先建置 micro_ros_agent（ORIN_DEPLOYMENT.md 6.1），先開 agent 再按 EN |
 | H2 校正量測 | 收資料 | 門檻有填才判定；沒填就記 BLOCKED，資料照樣交回 |
-| H3 單軸微動 | 只有負責人授權才做 | 先確認 Moving Speed 不是 0 |
-| H4～H8 | BLOCKED | 不要做 |
+| HOME 定位 | 需要時做 | 例如兩支手臂回 HOME 調整相機；照手冊「HOME 定位」，一次一支 |
+| H3 單軸微動 | 測試人員決定要做就做 | Moving Speed 為 0 或沒讀時，照手冊先扶到起始姿勢再上扭力 |
+| H4～H8 | BLOCKED | 程式還沒完成（D8、coordinator 拒絕實機模式），不是權限問題 |
 
-H1 做完後先停下來，把 H1 的資料整理好給測試人員交給負責人。測試人員說負責人同意繼續，才往 V0、E0、H2 走（V0、E0 和手臂方向無關，測試人員要求的話可以先做）。
+H1 做完後，把 H1 的資料整理好、存進紀錄，再問測試人員要往哪個階段走。有新的方向結果和模擬不同時，提醒他後面的量測可能要等模型修正，由他決定要不要先繼續。
 
 ## 量測工具：只有直尺和手機
 
@@ -142,7 +145,7 @@ H2
 - 門檻有填時：ros2 run dual_arm_coordinator check_calibration_sheet <工作表.yaml> 的完整輸出
 - 若 check PASS：由測試人員把候選值填進 calibration.yaml，status、hardware_use_allowed、moving_speed_verified 維持原樣，再用 hardware.launch.py 唯讀模式（不加 enable_motion）核對 /joint_states 方向與角度，記錄 ros2 topic hz /joint_states 與有無通訊錯誤，至少連續 10 分鐘
 
-H3（只有授權時）
+H3（有做時）
 - 每顆馬達 ±10 raw 的實際方向、READ 變化量、到位誤差、有無異音
 - 到位後穩態誤差（先前 j2 曾有 +7 raw），這是之後 controllers 容差的依據
 
@@ -160,14 +163,14 @@ H3（只有授權時）
 結果：PASS / FAIL / BLOCKED / NOT_RUN
 異常或和手冊不同之處：
 
-另外在 dual_arm_ws/docs/evidence/hardware/SUMMARY.md 維護一張總表：每個階段的狀態、上面「必須取得的資料」逐項的值或缺漏原因、D0、D1 的實測結論（只寫觀察到的事實，不替負責人做決定）。
+另外在 dual_arm_ws/docs/evidence/hardware/SUMMARY.md 維護一張總表：每個階段的狀態、上面「必須取得的資料」逐項的值或缺漏原因、D0、D1 的實測結論，以及現場做的決定和理由（事實和決定分開寫）。
 
 ## 結束時
 
 1. 確認所有證據都在 docs/evidence/hardware/，git status 中沒有被意外修改的既有檔案（有的話用 git restore 還原，calibration.yaml 若是 H2 依規定填的則保留並在 SUMMARY.md 說明）。
 2. 在 docs/PROGRESS.md 最上方加一節本次結果，通過與失敗都寫。
-3. 問測試人員要怎麼交回：有 push 權限且他同意 → commit 到 main 並 push origin main（不開分支，commit message 寫清楚日期與階段）；沒有權限 → 把 docs/evidence/hardware/ 打包成 zip 給負責人。
-4. 最後用五到十句話向測試人員總結：做了哪些階段、各自狀態、交付資料缺哪些、下一步需要負責人決定什麼。
+3. 問測試人員要怎麼交回：有 push 權限且他同意 → commit 到 main 並 push origin main（不開分支，commit message 寫清楚日期與階段）；沒有權限 → 把 docs/evidence/hardware/ 打包成 zip 交給開發端。
+4. 最後用五到十句話向測試人員總結：做了哪些階段、各自狀態、交付資料缺哪些、下一步還有什麼要決定。
 
 現在開始：先做「第一步」，回報環境與建置、測試結果，然後問測試人員：實體急停、兩人人力、直尺、手機相機、紙膠帶與麥克筆、RoboPlus 或 DYNAMIXEL Wizard 是否都準備好了。
 ````
