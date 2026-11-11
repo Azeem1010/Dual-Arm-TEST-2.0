@@ -197,6 +197,68 @@ input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
     </ol>
   </section>
 
+  <section id="c-slots">
+    <h2>4. C 區 8 格中心尺量（F、L 讀值）</h2>
+    <p class="lead">參考線沿用現場膠帶：<b>F1</b>＝A｜B 分界（過 arm1 軸心），<b>F2</b>＝B｜C 分界（過 arm2 軸心），兩條都從手臂側往使用者量，單位 mm。<b>L</b>＝手臂側長邊，0 在和 F1 的交點，往 B/C 方向為正。</p>
+    <div class="fig">
+    <svg viewBox="0 0 640 400" role="img" aria-label="C 格尺量示意圖">
+      <defs>
+        <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+      </defs>
+      <rect x="40" y="90" width="560" height="224" fill="var(--board)" stroke="var(--board-edge)" stroke-width="2"/>
+      <!-- L tape along arm-side edge -->
+      <rect x="40" y="86" width="560" height="8" fill="var(--tape)"/>
+      <!-- F1 F2 tapes -->
+      <rect x="223" y="90" width="7" height="224" fill="var(--tape)"/>
+      <rect x="410" y="90" width="7" height="224" fill="var(--tape)"/>
+      <!-- tick marks on F2 every 2 cm -->
+      <g stroke="var(--muted)" stroke-width="1">
+        <line x1="417" y1="108.7" x2="423" y2="108.7"/><line x1="417" y1="127.3" x2="423" y2="127.3"/><line x1="417" y1="146" x2="423" y2="146"/><line x1="417" y1="164.7" x2="423" y2="164.7"/><line x1="417" y1="183.3" x2="423" y2="183.3"/><line x1="417" y1="202" x2="423" y2="202"/><line x1="417" y1="220.7" x2="423" y2="220.7"/><line x1="417" y1="239.3" x2="423" y2="239.3"/><line x1="417" y1="258" x2="423" y2="258"/><line x1="417" y1="276.7" x2="423" y2="276.7"/><line x1="417" y1="295.3" x2="423" y2="295.3"/>
+      </g>
+      <text x="133" y="300" text-anchor="middle" font-size="22" font-weight="700" opacity=".5">A</text>
+      <text x="320" y="300" text-anchor="middle" font-size="22" font-weight="700" opacity=".5">B</text>
+      <text x="226.5" y="332" text-anchor="middle" font-size="13" font-weight="700">F1</text>
+      <text x="413.5" y="332" text-anchor="middle" font-size="13" font-weight="700">F2</text>
+      <text x="610" y="80" text-anchor="end" font-size="12" font-weight="700">L 線（手臂側長邊）→ +L</text>
+      <text x="230" y="80" font-size="11" fill="var(--muted)">L = 0</text>
+      <text x="320" y="370" text-anchor="middle" font-size="13" fill="var(--muted)">使用者站這側</text>
+      <!-- bases -->
+      <rect x="214" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="1.5"/>
+      <text x="200" y="52" font-size="12" text-anchor="end">arm1</text>
+      <rect x="401" y="58" width="24" height="24" rx="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="1.5"/>
+      <text x="390" y="52" font-size="12" text-anchor="end">arm2</text>
+      <!-- slots -->
+      <g font-size="13" font-weight="700" text-anchor="middle">
+        <rect x="437" y="112" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="451" y="131">1</text>
+        <rect x="485" y="112" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="131">2</text>
+        <rect x="437" y="157" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="451" y="176">3</text>
+        <rect x="485" y="157" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="176">4</text>
+        <rect x="437" y="202" width="28" height="28" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="437" y1="202" x2="465" y2="230" stroke="var(--accent)" stroke-width="1"/><line x1="465" y1="202" x2="437" y2="230" stroke="var(--accent)" stroke-width="1"/>
+        <text x="425" y="246" fill="var(--accent)" font-size="12">5</text>
+        <rect x="485" y="202" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="221">6</text>
+        <rect x="437" y="247" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="451" y="266">7</text>
+        <rect x="485" y="247" width="28" height="28" fill="var(--panel)" stroke="var(--fg)"/><text x="499" y="266">8</text>
+      </g>
+      <circle cx="451" cy="216" r="3.5" fill="var(--accent)"/>
+      <!-- F reading: horizontal to F2 -->
+      <line x1="447" y1="216" x2="419" y2="216" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#ar5)"/>
+      <text x="300" y="214" font-size="12" fill="var(--accent)" font-weight="700">F 讀值：在 F2 刻度上讀</text>
+      <!-- L reading: vertical up to L tape -->
+      <line x1="451" y1="212" x2="451" y2="96" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#ar5)"/>
+      <text x="458" y="104" font-size="12" fill="var(--accent)" font-weight="700">L 讀值：在 L 刻度上讀</text>
+    </svg>
+    </div>
+    <ol>
+      <li><b>找格子中心</b>：在每個方格（或白紙標籤下的方孔）畫兩條對角線，交點就是中心，用麥克筆點一下。</li>
+      <li><b>F 讀值</b>：用直角物（書、盒子的角）一邊貼著 F2 膠帶，另一邊對準中心點，在 F2 的刻度上讀數字（從手臂側長邊往使用者，mm）。圖中以格 5 為例。</li>
+      <li><b>L 讀值</b>：直角物一邊貼著手臂側長邊的 L 膠帶，另一邊對準中心點，在 L 刻度上讀數字（從 F1 起算，mm）。L 刻度不夠長時：先讀中心到 F2 的水平距離，再加上 F1 到 F2 的距離（20 cm），並寫明用了哪一種。</li>
+      <li>每格量一次，有疑問的格子再量一次，兩次差超過 2 mm 就重量。</li>
+      <li>最後拍一張俯視照：看得到 8 個中心點和 F2、L 膠帶。</li>
+    </ol>
+    <p class="note">回報格式（一格一行）：<code>格 1：F = ___ mm，L = ___ mm</code>，並寫明 L 是直接讀刻度還是「到 F2 距離 + 200」。</p>
+  </section>
+
   <section>
     <h2>對齊偏移修正</h2>
     <p class="lead">規則：末端偏向<b>手臂自身右邊</b>時，讀值會偏小，要加回去；偏向左邊時讀值偏大，要扣掉。實測兩支手臂都是往右轉時 j1 變小。</p>
