@@ -20,32 +20,43 @@ def box(name, xyz, size, color, static=True):
     parts.append(f'<model name="{name}"><static>{str(static).lower()}</static><pose>{xyz} 0 0 0</pose><link name="link"><collision name="collision"><geometry>{geom}</geometry></collision><visual name="visual"><geometry>{geom}</geometry><material><ambient>{color}</ambient><diffuse>{color}</diffuse></material></visual></link></model>')
 
 box('table', '0 0 -0.025', '0.8 0.7 0.05', '0.3 0.3 0.3 1')
-# Board A|B|C as the user sees it (measured 2026-11-10): x left-to-right, y away
-# from the user; arm bases are on the +Y edge. The source CAD platform, holes and
-# caps are turned 180 degrees about Z, matching generate_cad_robot.py.
-# White pads fill C flush with foam.
-# Static concave CAD platform collision preserves the actual eight cutouts.
-# Visuals belong to the articulated robot; avoid coincident duplicate surfaces.
-for index in (0,259):
-    parts.append(f'''<model name="platform_collision_{index}"><static>true</static><pose>0 -0.03 0 1.5707963267948966 0 3.141592653589793</pose><link name="body"><collision name="cad"><geometry><mesh><uri>model://dual_arm_description/meshes/cad/component_{index:03d}.stl</uri><scale>0.001 0.001 0.001</scale></mesh></geometry></collision></link></model>''')
-# Separate 600 x 300 mm foam sheet on the CAD platform, 4 mm thick in simulation.
-# Openings follow the measured CAD coordinates. This also covers the platform's
-# front notches, so the vision specification remains a rectangular workspace.
-box('foam_AB','-0.1 0 0.012','0.4 0.3 0.004','1 0.15 0.55 1')
-xs=[.1,.12,.145,.155,.18,.3]
-ys=[-.15,-.1025,-.0775,-.0675,-.0425,-.0325,-.0075,.0025,.0275,.15]
-for i in range(len(xs)-1):
-    for j in range(len(ys)-1):
-        if i in (1,3) and j in (1,3,5,7):
+# Board A|B|C as the user sees it: x left-to-right, y away from the user; the arm
+# bases are on the +Y edge (generate_cad_robot.py). Field geometry measured 2026-11-11
+# (docs/evidence/hardware/20261111_H1/): board 600 x 240 mm centred on the world
+# origin, j1 axes at (+-0.10, +0.125), about 5 mm outside the arm-side edge.
+BOARD_X_M, BOARD_Y_M = 0.6, 0.24
+ARM_AXIS_Y_M = 0.125
+PAD_M = 0.025
+# C slots, numbered as on the real board: 1 and 2 nearest the arms, odd slots in the
+# column next to B. Measured from the arm axes: rows 75/110/145/180 mm toward the
+# user, columns 235/270 mm from arm1's axis toward C (arm1 axis at x = -0.10).
+SLOT_COLUMNS_X_M = (round(-0.10 + 0.235, 4), round(-0.10 + 0.270, 4))
+SLOT_ROWS_Y_M = tuple(round(ARM_AXIS_Y_M - f, 4) for f in (0.075, 0.110, 0.145, 0.180))
+SLOTS_XY_M = [(SLOT_COLUMNS_X_M[col], SLOT_ROWS_Y_M[row]) for row in range(4) for col in range(2)]
+# Cap starts in A: a simulation choice, the C slot grid mirrored about x = 0 so arm1
+# reaches its caps the way arm2 reaches its slots. Real caps may lie anywhere in A.
+CAPS_XY_M = [(-x, y) for x, y in SLOTS_XY_M]
+# 10 mm base under the whole board, then a 4 mm foam layer whose top (z = 0.014) is
+# the working surface. In C the foam has 25 mm openings filled flush by white pads.
+box('board_base', '0 0 0.005', f'{BOARD_X_M} {BOARD_Y_M} 0.01', '1 0.15 0.55 1')
+box('foam_AB', '-0.1 0 0.012', f'0.4 {BOARD_Y_M} 0.004', '1 0.15 0.55 1')
+half = PAD_M / 2
+xs = sorted({0.1, BOARD_X_M / 2, *(round(x + d, 5) for x in SLOT_COLUMNS_X_M for d in (-half, half))})
+ys = sorted({-BOARD_Y_M / 2, BOARD_Y_M / 2, *(round(y + d, 5) for y in SLOT_ROWS_Y_M for d in (-half, half))})
+for i in range(len(xs) - 1):
+    for j in range(len(ys) - 1):
+        cx, cy = (xs[i] + xs[i + 1]) / 2, (ys[j] + ys[j + 1]) / 2
+        if any(abs(cx - x) < half and abs(cy - y) < half for x, y in SLOTS_XY_M):
             continue
-        box(f'foam_C_{i}_{j}',f'{(xs[i]+xs[i+1])/2} {(ys[j]+ys[j+1])/2} .012',f'{xs[i+1]-xs[i]} {ys[j+1]-ys[j]} .004','1 0.15 0.55 1')
-for row in range(4):
-    for col in range(2):
-        box(f'slot_{row*2+col+1}_pad', f'{0.1675-col*0.035} {-0.09+row*0.035} 0.007', '0.025 0.025 0.014', '1 1 1 1')
-for i in range(8):
-    parts.append(f'''<model name="cap_{i+1}"><pose>{-(0.14+(i%2)*0.06)} {0.1-(i//2)*0.065} 0.019 0 0 0</pose><link name="body"><inertial><mass>0.002</mass><inertia><ixx>0.000000067</ixx><iyy>0.000000067</iyy><izz>0.0000001</izz></inertia></inertial><collision name="collision"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry></collision><visual name="visual"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry><material><ambient>0 0.1 1 1</ambient><diffuse>0 0.1 1 1</diffuse></material></visual></link></model>''')
+        box(f'foam_C_{i}_{j}', f'{cx:.5f} {cy:.5f} 0.012', f'{xs[i + 1] - xs[i]:.5f} {ys[j + 1] - ys[j]:.5f} 0.004', '1 0.15 0.55 1')
+for index, (x, y) in enumerate(SLOTS_XY_M):
+    box(f'slot_{index + 1}_pad', f'{x} {y} 0.012', f'{PAD_M} {PAD_M} 0.004', '1 1 1 1')
+for i, (cap_x, cap_y) in enumerate(CAPS_XY_M):
+    parts.append(f'''<model name="cap_{i+1}"><pose>{cap_x} {cap_y} 0.019 0 0 0</pose><link name="body"><inertial><mass>0.002</mass><inertia><ixx>0.000000067</ixx><iyy>0.000000067</iyy><izz>0.0000001</izz></inertia></inertial><collision name="collision"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry></collision><visual name="visual"><geometry><cylinder><radius>0.01</radius><length>0.01</length></cylinder></geometry><material><ambient>0 0.1 1 1</ambient><diffuse>0 0.1 1 1</diffuse></material></visual></link></model>''')
 bridge = []
-for name, x, height, fov in [('env', 0, 0.8, 0.9), ('arm1', -0.2, 0.5, 0.7), ('arm2', 0.2, 0.5, 0.7)]:
+# Arm cameras sit over the cap and slot groups (x about -+0.15): the cap-wall error grows
+# away from the image centre and must stay inside the 1 mm suction budget (C31).
+for name, x, height, fov in [('env', 0, 0.8, 0.9), ('arm1', -0.15, 0.5, 0.7), ('arm2', 0.15, 0.5, 0.7)]:
     # Gazebo camera +X forward; optical z forward, x right, y down.
     parts.append(f'''<model name="{name}_camera"><static>true</static><pose>{x} 0 {height} 0 1.57079632679 1.57079632679</pose><link name="link"><sensor name="camera" type="camera"><always_on>true</always_on><update_rate>15</update_rate><topic>/{name}_cam/image_raw</topic><gz_frame_id>{name}_camera_optical_frame</gz_frame_id><camera><horizontal_fov>{fov}</horizontal_fov><image><width>640</width><height>480</height><format>R8G8B8</format></image><clip><near>0.01</near><far>5</far></clip><camera_info_topic>/{name}_cam/camera_info</camera_info_topic></camera></sensor></link></model>''')
     for suffix, ros, gz in [('image_raw', 'sensor_msgs/msg/Image', 'gz.msgs.Image'), ('camera_info', 'sensor_msgs/msg/CameraInfo', 'gz.msgs.CameraInfo')]:
@@ -70,4 +81,4 @@ for model in tree.find('world').findall('model'):
         bridge.append(f'- ros_topic_name: /ground_truth/{name}\n  gz_topic_name: /model/{name}/pose\n  ros_type_name: tf2_msgs/msg/TFMessage\n  gz_type_name: gz.msgs.Pose_V\n  direction: GZ_TO_ROS\n')
 ET.ElementTree(tree).write(ROOT / 'src/dual_arm_gazebo/worlds/dual_arm_workspace.sdf',encoding='unicode')
 (ROOT / 'src/dual_arm_gazebo/config/bridge.yaml').write_text(''.join(bridge))
-print('Generated physical board, eight flush white pads/caps and three fixed simulation cameras')
+print("Generated the measured 600 x 240 mm board, eight flush white pads, eight caps and three fixed simulation cameras")

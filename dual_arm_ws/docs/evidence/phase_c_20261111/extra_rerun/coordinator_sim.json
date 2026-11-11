@@ -1,0 +1,133 @@
+{
+  "status": "PASS",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "fresh_journal_is_idle_with_empty_c": {
+      "status": "PASS",
+      "detail": "IDLE"
+    },
+    "start_accepted": {
+      "status": "PASS",
+      "detail": "Accepted; the result is reported on /dual_arm/status"
+    },
+    "second_start_refused_while_busy": {
+      "status": "PASS",
+      "detail": "Busy, faulted or full; see /dual_arm/status"
+    },
+    "cancel_accepted": {
+      "status": "PASS",
+      "detail": "Cancellation requested"
+    },
+    "cancel_ends_in_fault_with_recovery_token": {
+      "status": "PASS",
+      "detail": "Task canceled"
+    },
+    "arm_stays_stopped_after_cancel": {
+      "status": "PASS",
+      "detail": {
+        "max_joint_drift_rad": 1.3370871965179276e-07
+      }
+    },
+    "cancel_interrupted_motion_before_target": {
+      "status": "PASS",
+      "detail": {
+        "tcp_m": [
+          -0.16759315594755758,
+          0.008684983694286079,
+          0.13516944961966507
+        ],
+        "tool_tilt_deg": 12.5486800812626
+      }
+    },
+    "start_refused_in_fault": {
+      "status": "PASS",
+      "detail": "Busy, faulted or full; see /dual_arm/status"
+    },
+    "wrong_recovery_token_refused": {
+      "status": "PASS",
+      "detail": "Token does not confirm recovery"
+    },
+    "recovery_refused_while_arm_is_not_home": {
+      "status": "PASS",
+      "detail": "arm1 is not at HOME"
+    },
+    "refused_recovery_issues_a_new_token": {
+      "status": "PASS",
+      "detail": null
+    },
+    "fault_survives_restart": {
+      "status": "PASS",
+      "detail": "Previous run did not finish; inspect and recover"
+    },
+    "token_from_previous_process_refused": {
+      "status": "PASS",
+      "detail": "Token does not confirm recovery"
+    },
+    "recovery_accepted_after_arm_is_home": {
+      "status": "PASS",
+      "detail": "Recovered; send a new start"
+    },
+    "second_run_accepted": {
+      "status": "PASS",
+      "detail": "Accepted; the result is reported on /dual_arm/status"
+    },
+    "interrupted_run_requires_recovery": {
+      "status": "PASS",
+      "detail": "Previous run did not finish; inspect and recover"
+    },
+    "start_refused_after_interrupted_run": {
+      "status": "PASS",
+      "detail": "Busy, faulted or full; see /dual_arm/status"
+    },
+    "recovery_after_interrupted_run": {
+      "status": "PASS",
+      "detail": "Recovered; send a new start"
+    },
+    "final_run_accepted": {
+      "status": "PASS",
+      "detail": "Accepted; the result is reported on /dual_arm/status"
+    },
+    "full_cycle_succeeded": {
+      "status": "PASS",
+      "detail": ""
+    },
+    "record_shows_slot_1_and_no_owner": {
+      "status": "PASS",
+      "detail": {
+        "occupied": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "b_owner": "",
+        "completed": 1,
+        "holding": {
+          "arm1": "empty",
+          "arm2": "empty"
+        }
+      }
+    },
+    "ground_truth_has_a_cap_in_slot_1": {
+      "status": "PASS",
+      "detail": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "observations": {
+    "joint_motion_after_coordinator_killed_rad": 0.2454894164035748,
+    "seconds_until_arm_stopped_after_kill": 10.457891276999362
+  }
+}

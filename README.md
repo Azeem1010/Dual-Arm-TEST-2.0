@@ -48,7 +48,7 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 
 ## 工作區配置
 
-> 2026-11-10 實機量測（arm1）：手臂在遠離使用者側，A 區在手臂自身右方，使用者由左至右看到 A | B | C，模擬已改成這個配置，定義見 [COORDINATE_FRAMES.md](dual_arm_ws/docs/COORDINATE_FRAMES.md)。下方截圖已在新配置重新擷取（2026-11-10，`run_checks.sh t2`，[checks_20261110](dual_arm_ws/docs/evidence/checks_20261110/README.md)）。
+> 2026-11-10 實機量測（arm1）：手臂在遠離使用者側，A 區在手臂自身右方，使用者由左至右看到 A | B | C，模擬已改成這個配置，定義見 [COORDINATE_FRAMES.md](dual_arm_ws/docs/COORDINATE_FRAMES.md)。2026-11-11 現場量到板寬、軸心位置與格位編號，模擬已依此更新（階段 C）；下方截圖在新配置重新擷取（2026-11-12，`run_checks.sh t2`，[phase_c_20261111](dual_arm_ws/docs/evidence/phase_c_20261111/README.md)）。
 
 ![工作區頂視圖，由左至右為 A、B、C 三區](dual_arm_ws/docs/images/layout_top.png)
 
@@ -60,7 +60,7 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 
 兩支手臂在遠離使用者的長邊，面向使用者：Arm 1 的旋轉軸在 A/B 分界，Arm 2 在 B/C 分界。
 
-泡棉板規格是 600 × 300 mm，三區各 200 × 300 mm，模擬也用這個尺寸。2026-11-10 現場推算短邊約 235 mm、旋轉軸在板外約 10 mm（模擬在板內約 63 mm），尚未直接量測，量完再修正模型。
+泡棉板實測 600 × 240 mm（2026-11-11），三區各 200 × 240 mm，旋轉軸在靠手臂的長邊外約 5 mm，模擬已改成這些實測值。C 區格位依實物編號：1、2 最靠手臂，單號在靠 B 區的那一欄。
 
 ## 搬運流程
 
@@ -122,8 +122,8 @@ flowchart TD
 |:---:|:---:|
 | ![Gazebo 模型](dual_arm_ws/docs/images/home.png) | <img src="dual_arm_ws/docs/images/real_arm.jpg" alt="實機手臂與瓶蓋" width="360"> |
 
-模型由 SolidWorks CAD 轉換而來。A 區方向與 Arm 1 的 j1 方向已和實機一致；零點、底座到板緣距離、板寬還沒依實測修正，Arm 2 也還沒確認方向。模擬成功不代表實機可以直接執行。
+模型由 SolidWorks CAD 轉換而來。A 區方向與 Arm 1 的 j1 方向已和實機一致；板寬、軸心到板緣距離與格位已依 2026-11-11 實測修正，Arm 2 的 j1 方向也已確認；各軸零點還沒校正（要等 H2）。模擬成功不代表實機可以直接執行。
 
 ---
 
-*畫面擷取自 2026-11-10 的 coordinator 兩物體搬運模擬，因為格位 1 目前搆不到，從格位 3 開始放。模型或流程改變後，用 `scripts/capture_readme_images.py` 重新擷取。*
+*畫面擷取自 2026-11-12 的 coordinator 兩物體搬運模擬，從空的 C 區開始，放到格位 1、2。模型或流程改變後，用 `scripts/capture_readme_images.py` 重新擷取。*

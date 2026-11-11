@@ -67,6 +67,18 @@ def test_order_slots_rejects_non_lattice():
     assert order_slots(pts[:7], 0)[0] is None
 
 
+def test_order_slots_top_left_numbers_from_the_top_row():
+    # Image y grows downward: (x, y) points of a 2 x 4 grid, top row at y = 0.
+    pts = [(0, 0), (10, 0), (0, 50), (10, 50), (0, 100), (10, 100), (0, 150), (10, 150)]
+    bottom, _ = order_slots(pts, 0)
+    top, _ = order_slots(pts, 0, 'top_left')
+    assert [pts[i] for i in bottom[:2]] == [(0, 150), (10, 150)]
+    assert [pts[i] for i in top[:2]] == [(0, 0), (10, 0)]
+    assert [pts[i] for i in top[6:]] == [(0, 150), (10, 150)]
+    order, why = order_slots(pts, 0, 'bottom_right')
+    assert order is None and 'slot_one_corner' in why
+
+
 def test_check_fill_order():
     c = check_fill_order([True, True, False, False, False, False, False, False])
     assert c.order_ok and c.wrong_slots == [] and c.next_slot == 3

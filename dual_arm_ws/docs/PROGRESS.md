@@ -2,7 +2,15 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: vision upstream update to 64f28a0 (camera by-path, arm2 YUYV)
+## Latest result: phase C, measured field geometry and slot numbering
+
+- Simulation now follows the 2026-11-11 measurements: board 600 × 240 mm, j1 axes at world (±0.10, 0.125) about 5 mm outside the arm-side edge, C slots numbered as on the real board (1 and 2 nearest the arms, odd column next to B at x 0.135, even at 0.170; rows y 0.050 / 0.015 / -0.020 / -0.055), cap starts at the mirrored slots, B place point (0, 0). `prefilled_slots` defaults to 0; the HMI slot grid puts slot 1 top-left; `vision_pkg` gained `slot_one_corner` (`top_left` in the hardware arm2 config). Details and run history: evidence/phase_c_20261111/README.md.
+- Simulated arm cameras moved from x ±0.20 to ±0.15, over the cap and slot groups: arm1 calibration error 1.15 mm → 0.70 mm (budget 1 mm, not widened). The camera static TF in `sim.launch.py` still had the old left/right order and was corrected.
+- Tests that hard-coded the old layout were updated (motion gateway, operator tools, legacy pipeline, vision pick, coordinator sim, regression, IK targets, unit tests). The slot-adjustment study belongs to the old layout and left t1.
+- Final runs: t1 PASS except the known IK 16/18 (cap_8 and slot 8 unreachable with the cup straight down); unit tests coordinator 285, HMI 293, vision 100. t2 PASS except the known intermittent Gazebo shutdown timeout in the smoke test. Batch from empty C places 7 objects and faults at slot 8. Regression `faults` PASS. Coordinator node test 1 of 2: the first run lost a `/dual_arm/recover` reply after the restart (ROS service, not layout), the rerun PASS. Operator UI screenshots retaken.
+- Found: the legacy pipeline's arm1 stopped 28 mm short when picking cap_1, the cap nearest the base (probably touching a neighbour; unconfirmed). Open: verified collision model (WP11), slot 8 (C30), occluded simulated cameras (C31, D7), axis offset 5 or 15 mm.
+
+## Earlier result: vision upstream update to 64f28a0 (camera by-path, arm2 YUYV)
 
 - Submodule `three-camera-vision-ros2` fast-forwarded 4a40f30 → 64f28a0; the same diff applied to `src/vision_pkg` with `git apply --ignore-whitespace --directory=dual_arm_ws/src`. sources.lock.json updated.
 - Upstream only changes config: `cameras.yaml` now holds the three `/dev/v4l/by-path/` paths measured in V0 on 2026-11-11 (env USB port 4.3 AONI 310P, arm1 4.4.3 Alcor, arm2 4.4.1 Alcor), and `usb_cam.yaml` sets arm2 to `yuyv2rgb` because the Alcor camera only supports YUYV. This settles the open by-path question: the paths are tied to the physical USB ports, so cables must not be swapped.

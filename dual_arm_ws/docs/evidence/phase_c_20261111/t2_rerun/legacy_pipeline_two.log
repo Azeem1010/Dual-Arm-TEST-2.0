@@ -1,0 +1,15 @@
+$ timeout 1800 python3 scripts/demo_transfer_pipeline.py --count 2
+pipeline_start {"objects": ["cap_1", "cap_2"], "destinations": [[0.135, 0.05, 0.019], [0.17, 0.05, 0.019]]}
+home_A_home_C_ready_start {"targets": {"arm1": null, "arm2": null}, "simultaneous": true}
+home_A_home_C_ready_done {"feedback": {"arm1": {"tcp": [-0.16634442840619562, 0.010018377157564276, 0.14080322096240777], "error_m": 0.0}, "arm2": {"tcp": [0.1515764228429556, 0.0026790476729339555, 0.1408027917327388], "error_m": 0.0}}}
+first_A_approach_start {"targets": {"arm1": [-0.135, 0.05, 0.054]}, "simultaneous": false}
+first_A_approach_feedback_failure {"feedback": {"arm1": {"tcp": [-0.12404028702045154, 0.0734951455127523, 0.04356484384284445], "error_m": 0.027946907794668602}}}
+stopped {"reason": "first_A_approach: TCP error exceeds 1 mm"}
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 228, in <module>
+    demo.run()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 171, in run
+    self.move_pair({'arm1':[float(a[0]),float(a[1]),.054]},'first_A_approach')
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 99, in move_pair
+    raise RuntimeError(stage+': TCP error exceeds 1 mm')
+RuntimeError: first_A_approach: TCP error exceeds 1 mm

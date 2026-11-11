@@ -17,7 +17,7 @@ def generate_launch_description():
         DeclareLaunchArgument('gz_args', default_value='-r -s'),
         DeclareLaunchArgument('cycles', default_value='1'),
         # Slot 1 is out of reach in the current layout; 2 starts the run at slot 3.
-        DeclareLaunchArgument('prefilled_slots', default_value='2'),
+        DeclareLaunchArgument('prefilled_slots', default_value='0'),
         DeclareLaunchArgument('journal_path', default_value=''),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(share('dual_arm_bringup') + '/launch/sim.launch.py'),
                                  launch_arguments={'gz_args': LaunchConfiguration('gz_args')}.items()),

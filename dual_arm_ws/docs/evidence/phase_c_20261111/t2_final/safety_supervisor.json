@@ -1,0 +1,200 @@
+{
+  "status": "PASS",
+  "scope": "Safety supervisor on MoveIt mock_components; no physics, no hardware",
+  "checks": {
+    "startup_reset_after_inputs_arrive": {
+      "status": "PASS",
+      "detail": "Latch cleared and arm controllers activated"
+    },
+    "controllers_active_when_healthy": {
+      "status": "PASS",
+      "detail": {
+        "arm2_controller": "active",
+        "arm1_controller": "active"
+      }
+    },
+    "motion_allowed_when_healthy": {
+      "status": "PASS",
+      "detail": null
+    },
+    "heartbeat_loss_latches": {
+      "status": "PASS",
+      "detail": {
+        "latched": true,
+        "reason": "Emergency-stop heartbeat is stale",
+        "controllers_stopped": true
+      }
+    },
+    "heartbeat_controllers_inactive": {
+      "status": "PASS",
+      "detail": {
+        "arm2_controller": "inactive",
+        "arm1_controller": "inactive"
+      }
+    },
+    "heartbeat_move_reported_failure": {
+      "status": "PASS",
+      "detail": "arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4"
+    },
+    "heartbeat_interrupted_before_target": {
+      "status": "PASS",
+      "detail": {
+        "tcp_m": [
+          -0.1626868803571371,
+          -0.006821845523068536,
+          0.11780958471097129
+        ],
+        "tool_tilt_deg": 9.481511565450475
+      }
+    },
+    "motion_refused_while_latched": {
+      "status": "PASS",
+      "detail": "arm1 home failed: status 6, MoveIt code -4"
+    },
+    "reset_refused_without_heartbeat": {
+      "status": "PASS",
+      "detail": "Emergency-stop heartbeat is stale"
+    },
+    "still_latched_after_refused_reset": {
+      "status": "PASS",
+      "detail": null
+    },
+    "latch_survives_heartbeat_return": {
+      "status": "PASS",
+      "detail": null
+    },
+    "controllers_stay_inactive_until_reset": {
+      "status": "PASS",
+      "detail": null
+    },
+    "manual_activation_is_accepted_by_controller_manager": {
+      "status": "PASS",
+      "detail": null
+    },
+    "manual_activation_is_stopped_again": {
+      "status": "PASS",
+      "detail": {
+        "latched": true,
+        "reason": "Emergency-stop heartbeat is stale",
+        "controllers_stopped": true
+      }
+    },
+    "controllers_still_inactive_after_manual_activation": {
+      "status": "PASS",
+      "detail": {
+        "arm2_controller": "inactive",
+        "arm1_controller": "inactive"
+      }
+    },
+    "reset_accepted_2_15": {
+      "status": "PASS",
+      "detail": "Latch cleared and arm controllers activated"
+    },
+    "coordinator_death_latches": {
+      "status": "PASS",
+      "detail": {
+        "latched": true,
+        "reason": "Coordinator stopped responding",
+        "controllers_stopped": true
+      }
+    },
+    "coordinator_controllers_inactive": {
+      "status": "PASS",
+      "detail": {
+        "arm2_controller": "inactive",
+        "arm1_controller": "inactive"
+      }
+    },
+    "coordinator_move_reported_failure": {
+      "status": "PASS",
+      "detail": "arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4"
+    },
+    "coordinator_interrupted_before_target": {
+      "status": "PASS",
+      "detail": {
+        "tcp_m": [
+          -0.16496410698052585,
+          0.0009231864936040503,
+          0.12925229914896563
+        ],
+        "tool_tilt_deg": 11.38638913792472
+      }
+    },
+    "arm_stops_soon_after_coordinator_death": {
+      "status": "PASS",
+      "detail": {
+        "seconds": 1.1403018740002153,
+        "before_wp9_seconds": 22.2
+      }
+    },
+    "reset_refused_while_coordinator_is_dead": {
+      "status": "PASS",
+      "detail": "Coordinator stopped responding"
+    },
+    "reset_accepted_3_22": {
+      "status": "PASS",
+      "detail": "Latch cleared and arm controllers activated"
+    },
+    "asserted_estop_latches": {
+      "status": "PASS",
+      "detail": {
+        "latched": true,
+        "reason": "Emergency stop is asserted",
+        "controllers_stopped": true
+      }
+    },
+    "estop_controllers_inactive": {
+      "status": "PASS",
+      "detail": {
+        "arm2_controller": "inactive",
+        "arm1_controller": "inactive"
+      }
+    },
+    "estop_move_reported_failure": {
+      "status": "PASS",
+      "detail": "arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4"
+    },
+    "estop_interrupted_before_target": {
+      "status": "PASS",
+      "detail": {
+        "tcp_m": [
+          -0.16610369188882518,
+          0.007709228533804569,
+          0.13797644355448985
+        ],
+        "tool_tilt_deg": 12.91665582909527
+      }
+    },
+    "reset_refused_while_estop_is_asserted": {
+      "status": "PASS",
+      "detail": "Emergency stop is asserted"
+    },
+    "reset_accepted_3_28": {
+      "status": "PASS",
+      "detail": "Latch cleared and arm controllers activated"
+    },
+    "motion_works_after_final_reset": {
+      "status": "PASS",
+      "detail": {
+        "tcp_m": [
+          -0.14000009846313544,
+          -0.030000110256384875,
+          0.0540007594186491
+        ],
+        "tool_tilt_deg": 0.0004551526484189628
+      }
+    }
+  },
+  "observations": {
+    "status_at_startup": {
+      "latched": true,
+      "reason": "Emergency-stop heartbeat has not been received",
+      "controllers_stopped": true
+    },
+    "heartbeat_seconds_until_controllers_stopped": 2.3934819559999596,
+    "heartbeat_seconds_until_arm_stopped": 2.4273139870001614,
+    "manual_activation_seconds_until_stopped": 0.2381609069998376,
+    "coordinator_seconds_until_arm_stopped": 1.1403018740002153,
+    "estop_seconds_until_arm_stopped": 0.2508196639992093
+  }
+}

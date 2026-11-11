@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "from_empty_start_accepted": {
+      "status": "PASS",
+      "detail": null
+    },
+    "seven_objects_then_slot_8_stops_the_run": {
+      "status": "PASS",
+      "detail": "arm2 cannot reach (0.17, -0.055, 0.054): No four-DOF solution satisfies XYZ and downward suction axis within model limits"
+    },
+    "ground_truth_has_caps_in_slots_1_to_7": {
+      "status": "PASS",
+      "detail": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ]
+    }
+  },
+  "observations": {
+    "eight_objects_from_empty_c": {
+      "status": "FAIL",
+      "state": "FAULT",
+      "message": "arm2 cannot reach (0.17, -0.055, 0.054): No four-DOF solution satisfies XYZ and downward suction axis within model limits",
+      "completed": 7,
+      "ground_truth_slots": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ]
+    }
+  },
+  "group": "batch"
+}

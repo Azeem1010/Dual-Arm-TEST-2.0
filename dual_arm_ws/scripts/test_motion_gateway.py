@@ -147,9 +147,10 @@ class Harness:
 
     def refusals(self):
         gw, heights, zones = self.gateway, self.config['heights'], self.config['zones']
-        slot_1 = zones['c_slots_xy_m'][0]
-        self.expect_refused('known_unreachable_slot_1_refused',
-                            lambda: gw.check_reachable('arm2', (*slot_1, heights['contact_z_m'] + 0.03)))
+        # Slot 8, farthest from the arms, has no downward-suction solution (ik_validation.json).
+        slot_8 = zones['c_slots_xy_m'][7]
+        self.expect_refused('known_unreachable_slot_8_refused',
+                            lambda: gw.check_reachable('arm2', (*slot_8, heights['contact_z_m'] + 0.03)))
         self.expect_refused('far_target_refused', lambda: gw.check_reachable('arm1', (0.6, 0.0, 0.05)))
         approach, contact = (*A_XY, heights['approach_z_m']), (*A_XY, heights['contact_z_m'])
         self.set_blocker([0.08, 0.08, 0.12], 0.07)

@@ -103,21 +103,21 @@ class Targets(Base):
 
 class Slots(Base):
     def test_grid_marks_cap_in_slot(self):
-        self.place('cap_1', 0.1675, -0.09)
+        self.place('cap_1', 0.135, 0.05)
         self.assertEqual(self.observer.grid().occupied, (True,) + (False,) * 7)
 
     def test_cap_off_slot_center_is_not_counted(self):
-        self.place('cap_1', 0.1675 - 0.005, -0.09)
+        self.place('cap_1', 0.135 - 0.005, 0.05)
         self.assertFalse(any(self.observer.grid().occupied))
 
     def test_verify_place_checks_slot_and_order(self):
-        self.place('cap_1', 0.1675, -0.09)
+        self.place('cap_1', 0.135, 0.05)
         view = self.observer.verify_place(1)
         self.assertTrue(view.placed and view.order_ok)
         self.assertFalse(self.observer.verify_place(2).placed)
 
     def test_out_of_order_slot_is_reported(self):
-        self.place('cap_1', 0.1325, -0.09)
+        self.place('cap_1', 0.17, 0.05)
         view = self.observer.verify_place(2)
         self.assertTrue(view.placed)
         self.assertFalse(view.order_ok)
@@ -134,7 +134,7 @@ class Prefilled(Base):
         self.assertEqual(self.observer.zone().c_object_count, 2)
 
     def test_placing_next_slot_keeps_order(self):
-        self.place('cap_5', 0.1675, -0.055)
+        self.place('cap_5', 0.135, 0.015)
         view = self.observer.verify_place(3)
         self.assertTrue(view.placed and view.order_ok)
         self.assertEqual(self.observer.zone().c_object_count, 3)

@@ -2,7 +2,7 @@
 
 更新：2026-11-11。狀態只使用 `PASS`、`FAIL`、`BLOCKED`、`NOT_RUN`。
 
-> **2026-11-10 起模擬依實測配置：A 區在手臂自身右方，使用者看到 A | B | C**（H1，[evidence/hardware/](evidence/hardware/README.md)；D0 由使用者依實測決定）。模型是原始 CAD 整組繞 world Z 轉 180°，取代 commit `c7dfba3` 的鏡像配置。板寬、軸心到板緣距離仍用 CAD 數值，與實測不同，見下方驗證狀態。
+> **2026-11-10 起模擬依實測配置：A 區在手臂自身右方，使用者看到 A | B | C**（H1，[evidence/hardware/](evidence/hardware/README.md)；D0 由使用者依實測決定）。模型是原始 CAD 整組繞 world Z 轉 180°，取代 commit `c7dfba3` 的鏡像配置。2026-11-11 起（階段 C）板寬 240 mm、軸心位置、C 區格位與編號也改用實測值，見下方模擬模型。
 
 ## 實機配置
 
@@ -69,16 +69,19 @@ launch 載入的是 `src/dual_arm_description/urdf/dual_arm_cad.urdf.xacro`，�
 
 | 項目 | 值 |
 |---|---|
-| 整體 | 原始 CAD 組合（手臂與平台）繞 world Z 轉 180°，不鏡射 |
-| 手臂 1 底座 | `world` (-0.10, +0.08725, 0)，yaw 180° |
-| 手臂 2 底座 | `world` (+0.10, +0.08725, 0)，yaw 180° |
+| 整體 | 原始 CAD 手臂繞 world Z 轉 180°，不鏡射；2026-11-11 起兩臂沿 world Y 平移到實測軸心位置。CAD 平台（600 × 300 mm、舊格位孔）不再匯出 |
+| 場地 | 600 × 240 mm，中心在 `world` 原點，頂面 z = 0.014；由 `generate_world.py` 產生（底板 10 mm、泡棉 4 mm、C 區 25 mm 白色墊片齊平） |
+| 手臂 1 底座 | `world` (-0.10, +0.125, 0)，yaw 180°（手臂側長邊外 5 mm，2026-11-11 實測） |
+| 手臂 2 底座 | `world` (+0.10, +0.125, 0)，yaw 180° |
 | j1 = 0 朝向 | `world` -Y，朝使用者 |
 | j1 方向 | 兩臂 +1（2026-11-10 arm1、2026-11-11 arm2 實測），`runtime.json` |
-| A 區 | x = -0.30～-0.10 |
-| C 區格位 | x = 0.1675（奇數格）/ 0.1325（偶數格），y = -0.090 + 列 × 0.035，格位 1、2 在 y = -0.090 |
+| A 區 | x = -0.30～-0.10，y = -0.12～0.12 |
+| B 區放置點 | (0, 0)，B 區中央 |
+| C 區格位 | 依實物編號：x = 0.135（奇數格，靠 B）／0.170（偶數格），y = 0.050、0.015、-0.020、-0.055（格位 1、2 最靠手臂）。由實測的 F、L 換算，見上方 2026-11-11 實測 |
+| A 區瓶蓋起始位置 | 模擬自選：C 區格位對 x = 0 的鏡像，x = -0.135／-0.170，y 同上 |
 | 環境相機 | 模擬影像由左至右為 A | B | C，`vision_sim`、`hmi_sim` launch 設 `field.reverse: true` |
 
-`0.08725` 沿用 CAD 的數值，不是實機量測值。
+2026-11-11 以前的模型用 CAD 的 `0.08725`（軸心在板內 63 mm）和 300 mm 板寬，已改成上表的實測值。
 
 ## 換算
 
@@ -90,7 +93,7 @@ y_link =  x_vision
 z_link =  z_vision + 0.014（模擬的場地頂面高度）
 ```
 
-`armN_base` 到 `world`（x_base_origin：arm1 為 -0.10，arm2 為 +0.10；y_base_origin = 0.08725）：
+`armN_base` 到 `world`（x_base_origin：arm1 為 -0.10，arm2 為 +0.10；y_base_origin = 0.125）：
 
 ```text
 x_world = x_base_origin + y_vision
@@ -107,7 +110,7 @@ y_world = y_base_origin - x_vision
 |---|---|
 | `front` | 瓶蓋中心到手臂底座那條長邊（遠離使用者）的距離，mm |
 | `side` | 瓶蓋中心到 A 區外側短邊的距離，mm |
-| `--front-edge-x-mm` | 旋轉軸到手臂底座那條長邊的實測距離，mm。預設 20 mm 與實測約 10 mm 不同，要輸入實測值 |
+| `--front-edge-x-mm` | 旋轉軸到手臂底座那條長邊的實測距離，mm。預設 20 mm 與實測不同（2026-11-11：軸心在板緣外約 5 mm，即 -5），要輸入實測值 |
 | `--outer-edge-y-mm` | A 區外側短邊在基座 y 的位置；旋轉軸對齊 A/B 分界、A 區寬 200 mm 時就是預設 -200 |
 
 `calibrate_homography` 以 TCP 碰點時，輸出軸向會跟著 TCP 讀值的座標系。兩種工具不可混用不同軸向。
@@ -116,15 +119,15 @@ y_world = y_base_origin - x_vision
 
 | 項目 | 狀態 | 說明 |
 |---|---|---|
-| 模型配置轉換 | `PASS` | `test_cad_pose.py`，264 個元件，2026-11-10 依轉 180° 配置重跑（evidence/a_right_layout_20261110/）；只代表模型符合本文件，不代表符合實機 |
+| 模型配置轉換 | `PASS` | `test_cad_pose.py`，2026-11-11 依實測底座位置重跑，262 個手臂元件（evidence/phase_c_20261111/）；只代表模型符合本文件，不代表符合實機 |
 | 模擬 static TF | `PASS` | `tf2_echo` 讀到平移 (0, 0, 0.014)、yaw 90° |
 | 模擬兩物體搬運 | `PASS` | 2026-11-10 新配置重跑：舊 pipeline 兩物體與 coordinator 一輪都通過（evidence/a_right_layout_20261110/），回歸 `two` 也通過（evidence/checks_20261110/t2/）；Gazebo 真值，不是視覺驅動 |
 | 實機 A 區方向 | `PASS` | 2026-11-10 俯視照片與 H1（arm1）：A 區在手臂右方，模型已改成一致；2026-11-11 arm2 也是 +1、右方為 A/B 側 |
-| 底座到板緣距離 | `FAIL` | 2026-11-11 實測軸心在手臂側長邊外約 5 mm（另一次 15 mm，直尺 0.5 cm），模型約在板內 63 mm；階段 C 修改 |
+| 底座到板緣距離 | `PASS` | 2026-11-11 實測軸心在手臂側長邊外約 5 mm（另一次 15 mm，直尺 0.5 cm），模型已改成 5 mm（階段 C） |
 | j1 正對場地讀值（模擬對應） | `PASS` | 2026-11-11 H1 近似值 arm1 約 193、arm2 約 519（±5°），與模擬 192.3、512 相符；不是校正值 |
-| C 區格位位置與編號 | `FAIL` | 2026-11-11 實測：1、2 最靠手臂、單號欄靠 B（x ≈ 0.135），模擬為 1、2 靠使用者、單號欄在外側（x = 0.1675）；階段 C 修改 |
+| C 區格位位置與編號 | `PASS` | 2026-11-11 實測：1、2 最靠手臂、單號欄靠 B；模擬、coordinator 設定、介面格位圖、`vision_pkg`（`slot_one_corner: top_left`）已改成一致（階段 C） |
 | A/B 分界與旋轉軸是否對齊 | `PASS` | 實測 arm1 在 A/B、arm2 在 B/C 分界，相距 200 mm，與模型 x = ±0.10 一致；直尺 1 mm，口頭回報 |
-| 場地短邊 | `FAIL` | 2026-11-11 在 F1、F2 直接量都是 240 mm，模型與 `env_vision.yaml` 為 300 mm；階段 C 修改 |
+| 場地短邊 | `PASS` | 2026-11-11 在 F1、F2 直接量都是 240 mm，模擬場地與 `env_vision.yaml` 已改成 240 mm（階段 C） |
 | 上述 `calibrate_caps` 輸入方式 | `NOT_RUN` | 依程式公式推導，尚未實際執行 |
 | 手臂 2 軸向 | `NOT_RUN` | 待 OpenCV 端確認 |
 | 視覺目標轉換（模擬） | `PASS` | `gateways/vision.py` 以 TF 轉到 `world`，evidence/wp7/；2026-11-10 新配置的視覺取料一次 `PASS`（evidence/checks_20261110/t2_rerun/），連續 3 次 `NOT_RUN` |

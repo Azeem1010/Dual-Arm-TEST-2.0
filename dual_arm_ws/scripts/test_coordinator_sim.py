@@ -28,7 +28,8 @@ from dual_arm_coordinator.homes import load_homes
 from dual_arm_coordinator.task_config import load
 from dual_arm_interfaces.srv import ConfirmStep
 
-PREFILLED = 2
+# The 2026-11-11 measured layout reaches slot 1, so runs start from an empty C.
+PREFILLED = 0
 
 
 class Harness:
@@ -137,8 +138,8 @@ class Harness:
 
     def idle_after_start(self):
         status = self.start_coordinator()
-        self.check('fresh_journal_is_idle_with_prefilled_slots',
-                   status['state'] == 'IDLE' and status['occupied'] == [True, True] + [False] * 6, status['state'])
+        self.check('fresh_journal_is_idle_with_empty_c',
+                   status['state'] == 'IDLE' and status['occupied'] == [False] * 8, status['state'])
 
     def wait_arm_moving(self, arm, timeout):
         """Planning takes time, so a cancel only tests motion once the TCP has left HOME."""
@@ -248,12 +249,12 @@ class Harness:
         self.check('final_run_accepted', response.success, response.message)
         status = self.wait_status(lambda s: s['state'] in ('SUCCEEDED', 'FAULT') and not s['busy'], 900, 'end of run')
         self.check('full_cycle_succeeded', status['state'] == 'SUCCEEDED', status['message'])
-        self.check('record_shows_slot_3_and_no_owner',
-                   status['occupied'] == [True, True, True] + [False] * 5 and status['b_owner'] == '' and
+        self.check('record_shows_slot_1_and_no_owner',
+                   status['occupied'] == [True] + [False] * 7 and status['b_owner'] == '' and
                    status['completed'] == 1 and set(status['holding'].values()) == {'empty'},
                    {key: status[key] for key in ('occupied', 'b_owner', 'completed', 'holding')})
         grid = self.truth.grid()
-        self.check('ground_truth_has_a_cap_in_slot_3', grid.success and grid.occupied[2], list(grid.occupied))
+        self.check('ground_truth_has_a_cap_in_slot_1', grid.success and grid.occupied[0], list(grid.occupied))
 
     def run(self):
         self.idle_after_start()

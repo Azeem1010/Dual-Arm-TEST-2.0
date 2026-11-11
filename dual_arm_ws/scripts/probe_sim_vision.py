@@ -29,7 +29,7 @@ from dual_arm_coordinator.task_config import load
 from vision_interfaces.msg import PickDetections
 from vision_interfaces.srv import GetGridState, GetPickTarget, GetZoneState, RecalibrateZones
 
-BASES = {'arm1': (-0.10, 0.08725), 'arm2': (0.10, 0.08725)}
+BASES = {'arm1': (-0.10, 0.125), 'arm2': (0.10, 0.125)}  # measured axis line, 2026-11-11
 GZ = shutil.which('gz') or '/opt/ros/jazzy/opt/gz_tools_vendor/bin/gz'
 
 

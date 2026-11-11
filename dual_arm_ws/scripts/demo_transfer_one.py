@@ -25,7 +25,10 @@ from moveit_msgs.msg import Constraints, JointConstraint
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src/dual_arm_coordinator'))
 from dual_arm_coordinator.kinematics import CadKinematics
-from runtime_settings import SETTINGS, CAP_CENTER_Z, configured_homes
+from runtime_settings import SETTINGS, CAP_CENTER_Z, configured_homes, CAPS_XY, SLOTS_XY, B_XY
+
+# cap_4 is the start nearest arm1's HOME TCP, the one the coordinator takes first; it goes to slot 1.
+OBJECT = 'cap_4'
 
 
 class Demo(Node):
@@ -38,7 +41,7 @@ class Demo(Node):
                        for a in ['arm1', 'arm2']}
         self.subscriptions_owned = [
             self.create_subscription(JointState, '/joint_states', lambda m: self.joints.update(zip(m.name,m.position)), 10),
-            self.create_subscription(TFMessage, '/ground_truth/cap_5', self.object_callback, qos_profile_sensor_data),
+            self.create_subscription(TFMessage, '/ground_truth/'+OBJECT, self.object_callback, qos_profile_sensor_data),
             self.create_subscription(Clock, '/clock', self.clock_callback, qos_profile_sensor_data)]
         self.publishers_owned = {}
         for arm in self.models:
@@ -47,7 +50,7 @@ class Demo(Node):
                 lambda m,a=arm: self.gripper.__setitem__(a,m.data), 10))
         self.client = ActionClient(self, MoveGroup, '/move_action')
         self.sequence = time.time_ns() // 1000
-        self.report = {'status':'FAIL','object':'cap_5','mode':'Gazebo ground-truth demonstration',
+        self.report = {'status':'FAIL','object':OBJECT,'mode':'Gazebo ground-truth demonstration',
                        'full_scene_acceptance':'NOT_RUN','events':[]}
 
     def clock_callback(self, msg):
@@ -127,9 +130,9 @@ class Demo(Node):
 
     def suction(self, arm, attach):
         self.sequence += 1
-        suffix = 'attach,cap_5' if attach else 'release'
+        suffix = 'attach,'+OBJECT if attach else 'release'
         command = f'{self.sequence},{suffix}'
-        expected = f'{self.sequence},'+('attached:cap_5' if attach else 'released')
+        expected = f'{self.sequence},'+('attached:'+OBJECT if attach else 'released')
         self.publishers_owned[arm].publish(String(data=command))
         self.wait(lambda: self.gripper.get(arm,'').startswith(str(self.sequence)+','),
                   20,'Suction status timeout; stopping without assuming attachment')
@@ -160,10 +163,10 @@ class Demo(Node):
         if not self.client.wait_for_server(timeout_sec=20):
             raise RuntimeError('MoveIt unavailable')
         a = self.object_xyz()
-        if np.linalg.norm(a-np.array([-.14,-.03,.019]))>.003:
-            raise RuntimeError('cap_5 is not at the expected A source; no automatic teleport/reset')
-        b = [0.,-.02,.019]
-        c = [.1675,-.055,CAP_CENTER_Z]
+        if np.linalg.norm(a-np.array([*CAPS_XY[int(OBJECT[4:])-1],CAP_CENTER_Z]))>.003:
+            raise RuntimeError(OBJECT+' is not at the expected A source; no automatic teleport/reset')
+        b = [*B_XY,CAP_CENTER_Z]
+        c = [*SLOTS_XY[0],CAP_CENTER_Z]
         self.record('start',A=a.tolist(),B=b,C=c)
         self.move('arm1',home=True,stage='home_A_ready')
         self.move('arm2',home=True,stage='home_C_ready')

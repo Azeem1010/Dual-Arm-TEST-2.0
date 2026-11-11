@@ -415,6 +415,8 @@ T2 = np.array([[0.001, 0, 0.20], [0, 0.001, -0.10], [0, 0, 1.0]])   # 場地 mm 
 
 
 def _arm2(tmp_path, scene, with_h=True, **over):
+    # synthetic.py draws the slots in the original bottom-left numbering; config uses the real top_left.
+    over.setdefault('slot_one_corner', 'bottom_left')
     if with_h:
         save_h(tmp_path, 'arm2_homography', T2 @ np.linalg.inv(S.arm2_field_to_img()), 'm')
     node = make_node(arm2_mod.Arm2VisionNode, 'arm2_vision_node', 'arm2_vision.yaml', tmp_path, **over)

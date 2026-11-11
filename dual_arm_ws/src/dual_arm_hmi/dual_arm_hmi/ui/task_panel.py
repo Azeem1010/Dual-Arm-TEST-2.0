@@ -99,7 +99,9 @@ class InterlockStrip(QWidget):
 
 
 class SlotGrid(QWidget):
-    """Slots 1 and 2 are the bottom row in the operator's view, as in vision_interfaces/GridState."""
+    """C slots in the operator's view (arms at the top): slots 1 and 2 are the top row,
+    nearest the arms, odd slots on the left next to B. This is the real board's
+    numbering, measured 2026-11-11 (docs/COORDINATE_FRAMES.md)."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -127,7 +129,7 @@ class SlotGrid(QWidget):
         height = (self.height() - gap * (_SLOT_ROWS - 1)) // _SLOT_ROWS
         for slot in range(1, 9):
             row, column = (slot - 1) // _SLOT_COLUMNS, (slot - 1) % _SLOT_COLUMNS
-            rect = QRect(column * (width + gap), (_SLOT_ROWS - 1 - row) * (height + gap), width, height)
+            rect = QRect(column * (width + gap), row * (height + gap), width, height)
             background, foreground, text = self._cell_style(slot)
             painter.fillRect(rect, theme.color(background))
             is_target = slot == self.target and not self.occupied[slot - 1] and slot not in self.wrong

@@ -19,7 +19,8 @@ def generate_launch_description():
     actions = [DeclareLaunchArgument('gz_args', default_value='-r -s'), IncludeLaunchDescription(PythonLaunchDescriptionSource(share('ros_gz_sim') + '/launch/gz_sim.launch.py'), launch_arguments={'gz_args': [LaunchConfiguration('gz_args'), ' ', share('dual_arm_gazebo'), '/worlds/dual_arm_workspace.sdf']}.items()), Node(package='robot_state_publisher', executable='robot_state_publisher', parameters=[{'robot_description': description, 'use_sim_time': True}]), Node(package='ros_gz_sim', executable='create', arguments=['-name', 'dual_arm', '-topic', '/robot_description'], output='screen'), Node(package='ros_gz_bridge', executable='parameter_bridge', parameters=[{'config_file': share('dual_arm_gazebo') + '/config/bridge.yaml'}]), Node(package='dual_arm_bringup', executable='move_group_lifetime', parameters=[params], output='screen')]
     for name in ['joint_state_broadcaster', 'arm1_controller', 'arm2_controller']:
         actions.append(Node(package='controller_manager', executable='spawner', arguments=[name, '--controller-manager-timeout', '120', '--switch-timeout', '120'], parameters=[{'use_sim_time': True}]))
-    for name, x, z in [('env', 0.0, 0.8), ('arm1', 0.2, 0.5), ('arm2', -0.2, 0.5)]:
+    # Same camera positions as generate_world.py (zone A and arm1 at -X).
+    for name, x, z in [('env', 0.0, 0.8), ('arm1', -0.15, 0.5), ('arm2', 0.15, 0.5)]:
         actions.append(Node(package='tf2_ros', executable='static_transform_publisher', arguments=['--x', str(x), '--y', '0', '--z', str(z), '--roll', '3.14159265359', '--frame-id', 'world', '--child-frame-id', name + '_camera_optical_frame']))
     # Vision base frames: x into the field, y to the arm's left, origin on the foam top (simulation z only).
     for arm in ['arm1', 'arm2']:

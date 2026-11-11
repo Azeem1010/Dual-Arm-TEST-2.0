@@ -75,7 +75,7 @@ def build_plan(mode, profiles, workspace, journal_path, cycles, environ=os.envir
     if mode is Mode.SIMULATION:
         sim = profiles.get('simulation') or {}
         return LaunchPlan(('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', f'gz_args:={sim.get("gz_args", "-r -s")}',
-                           f'cycles:={int(cycles)}', f'prefilled_slots:={int(sim.get("prefilled_slots", 2))}',
+                           f'cycles:={int(cycles)}', f'prefilled_slots:={int(sim.get("prefilled_slots", 0))}',
                            f'journal_path:={journal_path}', f'calib_dir:={sim.get("calib_dir", "~/.ros/dual_arm_calib/sim")}'))
     if mode is Mode.MOCK:
         return LaunchPlan(('ros2', 'launch', 'dual_arm_bringup', 'mock.launch.py', 'rviz:=false'))

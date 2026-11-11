@@ -1,0 +1,98 @@
+{
+  "status": "FAIL",
+  "mode": "Gazebo ground truth, three-object pipeline",
+  "transport_speed_scale": 1.0,
+  "contact_speed_scale": 0.5,
+  "full_scene_acceptance": "NOT_RUN",
+  "events": [
+    {
+      "stage": "pipeline_start",
+      "wall_time": 1794410636.779871,
+      "sim_time": 5.401,
+      "objects": [
+        "cap_1",
+        "cap_2"
+      ],
+      "destinations": [
+        [
+          0.135,
+          0.05,
+          0.019
+        ],
+        [
+          0.17,
+          0.05,
+          0.019
+        ]
+      ]
+    },
+    {
+      "stage": "home_A_home_C_ready_start",
+      "wall_time": 1794410636.7824829,
+      "sim_time": 5.401,
+      "targets": {
+        "arm1": null,
+        "arm2": null
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "home_A_home_C_ready_done",
+      "wall_time": 1794410655.922101,
+      "sim_time": 9.385,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            -0.16634442840619562,
+            0.010018377157564276,
+            0.14080322096240777
+          ],
+          "error_m": 0.0
+        },
+        "arm2": {
+          "tcp": [
+            0.1515764228429556,
+            0.0026790476729339555,
+            0.1408027917327388
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "first_A_approach_start",
+      "wall_time": 1794410655.9426627,
+      "sim_time": 9.385,
+      "targets": {
+        "arm1": [
+          -0.135,
+          0.05,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "first_A_approach_feedback_failure",
+      "wall_time": 1794410668.574407,
+      "sim_time": 12.423,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            -0.12404028702045154,
+            0.0734951455127523,
+            0.04356484384284445
+          ],
+          "error_m": 0.027946907794668602
+        }
+      }
+    },
+    {
+      "stage": "stopped",
+      "wall_time": 1794410668.5772607,
+      "sim_time": 12.423,
+      "reason": "first_A_approach: TCP error exceeds 1 mm"
+    }
+  ],
+  "error": "first_A_approach: TCP error exceeds 1 mm"
+}

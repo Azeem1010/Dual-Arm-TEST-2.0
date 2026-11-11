@@ -1,0 +1,25 @@
+$ bash -c cd\ src/dual_arm_hmi\ \&\&\ python3\ -m\ pytest\ -q\ -p\ no:cacheprovider\ test
+........................................................................ [ 24%]
+..F..................................................................... [ 49%]
+........................................................................ [ 73%]
+........................................................................ [ 98%]
+.....                                                                    [100%]
+=================================== FAILURES ===================================
+______ test_simulation_uses_the_interface_launch_with_cycles_and_journal _______
+
+profiles = {'environment': {'GZ_PARTITION': 'dual_arm_pipeline_demo', 'ROS_DOMAIN_ID': '43'}, 'hardware': {'arm1_cam_device': '',...on_file': ''}, 'simulation': {'calib_dir': '~/.ros/dual_arm_calib/sim', 'gz_args': '-r -s', 'prefilled_slots': 0}, ...}
+
+    def test_simulation_uses_the_interface_launch_with_cycles_and_journal(profiles):
+        plan = build_plan(Mode.SIMULATION, profiles, WORKSPACE, '/tmp/j.json', 3)
+        assert not plan.problem
+        assert plan.command[:4] == ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py')
+>       assert 'cycles:=3' in plan.command and 'journal_path:=/tmp/j.json' in plan.command and 'prefilled_slots:=2' in plan.command
+E       AssertionError: assert ('cycles:=3' in ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', ...) and 'journal_path:=/tmp/j.json' in ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', ...) and 'prefilled_slots:=2' in ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', ...))
+E        +  where ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', ...) = LaunchPlan(command=('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', 'prefilled_slots:=0', 'journal_path:=/tmp/j.json', 'calib_dir:=~/.ros/dual_arm_calib/sim'), problem='', environment=(), notice='').command
+E        +  and   ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', ...) = LaunchPlan(command=('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', 'prefilled_slots:=0', 'journal_path:=/tmp/j.json', 'calib_dir:=~/.ros/dual_arm_calib/sim'), problem='', environment=(), notice='').command
+E        +  and   ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', ...) = LaunchPlan(command=('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py', 'gz_args:=-r -s', 'cycles:=3', 'prefilled_slots:=0', 'journal_path:=/tmp/j.json', 'calib_dir:=~/.ros/dual_arm_calib/sim'), problem='', environment=(), notice='').command
+
+test/test_profiles.py:22: AssertionError
+=========================== short test summary info ============================
+FAILED test/test_profiles.py::test_simulation_uses_the_interface_launch_with_cycles_and_journal
+1 failed, 292 passed in 15.43s

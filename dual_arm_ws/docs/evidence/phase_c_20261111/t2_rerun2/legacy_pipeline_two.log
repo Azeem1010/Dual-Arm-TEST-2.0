@@ -1,0 +1,75 @@
+$ timeout 1800 python3 scripts/demo_transfer_pipeline.py --count 2
+pipeline_start {"objects": ["cap_4", "cap_6"], "destinations": [[0.135, 0.05, 0.019], [0.17, 0.05, 0.019]]}
+home_A_home_C_ready_start {"targets": {"arm1": null, "arm2": null}, "simultaneous": true}
+home_A_home_C_ready_done {"feedback": {"arm1": {"tcp": [-0.16634587894707353, 0.010018281876963986, 0.14080134307451128], "error_m": 0.0}, "arm2": {"tcp": [0.1515760281601263, 0.0026794286594088515, 0.1408019255801985], "error_m": 0.0}}}
+first_A_approach_start {"targets": {"arm1": [-0.17, 0.015, 0.054]}, "simultaneous": false}
+first_A_approach_done {"feedback": {"arm1": {"tcp": [-0.17002389253394048, 0.014946514305914371, 0.05413572672438843], "error_m": 0.00014782867233095187}}}
+first_A_contact_start {"targets": {"arm1": [-0.17, 0.015, 0.024300000000000002]}, "simultaneous": false}
+first_A_contact_done {"feedback": {"arm1": {"tcp": [-0.17000603927468563, 0.01499070721373842, 0.02441039928910893], "error_m": 0.00011095418762258833}}}
+attached {"arm": "arm1", "object": "cap_4"}
+first_A_lift_start {"targets": {"arm1": [-0.17, 0.015, 0.054]}, "simultaneous": false}
+first_A_lift_done {"feedback": {"arm1": {"tcp": [-0.17000620774797073, 0.014988079501216264, 0.05389434816285492], "error_m": 0.00010650326341597086}}}
+physical_lift_verified {"arm": "arm1", "object": "cap_4", "position": [-0.17000322862442865, 0.014992560080806008, 0.048464240403872705]}
+B_deposit_approach_start {"targets": {"arm1": [0.0, 0.0, 0.054]}, "simultaneous": false}
+B_deposit_approach_done {"feedback": {"arm1": {"tcp": [-0.00011593130387885925, -7.202709319304758e-05, 0.054001279450251], "error_m": 0.00013649031601486298}}}
+B_deposit_contact_start {"targets": {"arm1": [0.0, 0.0, 0.024300000000000002]}, "simultaneous": false}
+B_deposit_contact_done {"feedback": {"arm1": {"tcp": [5.546303089486171e-06, -9.68994906892437e-06, 0.02441633255635596], "error_m": 0.00011686710512043564}}}
+released {"arm": "arm1", "object": "cap_4"}
+B_arm1_retreat_start {"targets": {"arm1": [0.0, 0.0, 0.054]}, "simultaneous": false}
+B_arm1_retreat_done {"feedback": {"arm1": {"tcp": [6.254968945554676e-06, -9.261652950032576e-06, 0.05388220203209371], "error_m": 0.00011832693731660875}}}
+B_arm1_clear_start {"targets": {"arm1": null}, "simultaneous": false}
+B_arm1_clear_done {"feedback": {"arm1": {"tcp": [-0.16626714096721953, 0.01000629816337331, 0.1407574240216502], "error_m": 0.0}}}
+B_placement_verified {"object": "cap_4", "position": [-9.17961053568688e-07, -1.3540894166730782e-06, 0.018999980179940094]}
+parallel_A_B_approach_start {"targets": {"arm2": [-9.17961053568688e-07, -1.3540894166730782e-06, 0.054], "arm1": [-0.17, -0.02, 0.054]}, "simultaneous": true}
+parallel_A_B_approach_done {"feedback": {"arm2": {"tcp": [8.249968028605469e-05, -6.763733302351214e-05, 0.05405935008951454], "error_m": 0.00012196066741000426}, "arm1": {"tcp": [-0.1700073239635593, -0.019995347316616757, 0.0540585114066887], "error_m": 5.9151268943050335e-05}}}
+parallel_A_B_contact_start {"targets": {"arm2": [-9.17961053568688e-07, -1.3540894166730782e-06, 0.024300000000000002], "arm1": [-0.17, -0.02, 0.024300000000000002]}, "simultaneous": true}
+parallel_A_B_contact_done {"feedback": {"arm2": {"tcp": [-7.1472589953311405e-06, -1.0161929637568165e-05, 0.024430493945241744], "error_m": 0.00013093911541994877}, "arm1": {"tcp": [-0.1700065857389074, -0.020012512343553897, 0.02443357230613083], "error_m": 0.00013431861994256213}}}
+attached {"arm": "arm2", "object": "cap_4"}
+attached {"arm": "arm1", "object": "cap_6"}
+parallel_A_B_lift_start {"targets": {"arm2": [-9.17961053568688e-07, -1.3540894166730782e-06, 0.054], "arm1": [-0.17, -0.02, 0.054]}, "simultaneous": true}
+parallel_A_B_lift_done {"feedback": {"arm2": {"tcp": [-4.85637013595587e-06, -8.656201537792646e-06, 0.0539055395148785], "error_m": 9.48241275041222e-05}, "arm1": {"tcp": [-0.17000542426186988, -0.02000834782537903, 0.053908093457437106], "error_m": 9.244415271533694e-05}}}
+physical_lift_verified {"arm": "arm2", "object": "cap_4", "position": [5.666754288556619e-07, -1.4038682133576258e-06, 0.048487362064549816]}
+physical_lift_verified {"arm": "arm1", "object": "cap_6", "position": [-0.1699999000933643, -0.019998023156116648, 0.04849635107737346]}
+C_carry_start {"targets": {"arm2": [0.135, 0.05, 0.054]}, "simultaneous": false}
+C_carry_done {"feedback": {"arm2": {"tcp": [0.13496438895771326, 0.04990033430559938, 0.05401452952932628], "error_m": 0.0001068293227328101}}}
+B_clear_verified {"object": "cap_4"}
+parallel_C_release_B_approach_start {"targets": {"arm2": [0.135, 0.05, 0.0253], "arm1": [0.0, 0.0, 0.054]}, "simultaneous": true}
+parallel_C_release_B_approach_done {"feedback": {"arm2": {"tcp": [0.13500123444655743, 0.049997547033246555, 0.02532033178688567], "error_m": 2.0516394960151574e-05}, "arm1": {"tcp": [-0.0001063507978484781, -8.710118610758162e-05, 0.05400032465405455], "error_m": 0.0001374671387081675}}}
+released {"arm": "arm2", "object": "cap_4"}
+C_retreat_start {"targets": {"arm2": [0.135, 0.05, 0.054]}, "simultaneous": false}
+C_retreat_done {"feedback": {"arm2": {"tcp": [0.135004434555261, 0.04998961561793251, 0.053942894983483494], "error_m": 5.8210682719212564e-05}}}
+C_placement_verified {"object": "cap_4", "position": [0.13499777626353635, 0.05000396543711561, 0.01899918179176049]}
+arm2_clear_start {"targets": {"arm2": null}, "simultaneous": false}
+arm2_clear_done {"feedback": {"arm2": {"tcp": [0.15157903234057513, 0.0027512466667593896, 0.1407298213593885], "error_m": 0.0}}}
+B_deposit_approach_start {"targets": {"arm1": [0.0, 0.0, 0.054]}, "simultaneous": false}
+B_deposit_approach_done {"feedback": {"arm1": {"tcp": [-4.254881878183736e-07, -1.5234776033646452e-06, 0.05400032148994896], "error_m": 1.6141189526207604e-06}}}
+B_deposit_contact_start {"targets": {"arm1": [0.0, 0.0, 0.024300000000000002]}, "simultaneous": false}
+B_deposit_contact_done {"feedback": {"arm1": {"tcp": [6.353224147182326e-06, -1.0321034455310768e-05, 0.024419152315653128], "error_m": 0.00011976711374494347}}}
+released {"arm": "arm1", "object": "cap_6"}
+B_arm1_retreat_start {"targets": {"arm1": [0.0, 0.0, 0.054]}, "simultaneous": false}
+B_arm1_retreat_done {"feedback": {"arm1": {"tcp": [1.0481417321702921e-05, -1.3648414371361661e-05, 0.053823684193625015], "error_m": 0.00017715361385414895}}}
+B_arm1_clear_start {"targets": {"arm1": null}, "simultaneous": false}
+B_arm1_clear_done {"feedback": {"arm1": {"tcp": [-0.1662495326829224, 0.009986013413821632, 0.14074663401355025], "error_m": 0.0}}}
+B_placement_verified {"object": "cap_6", "position": [-1.4621424022147193e-06, 2.740101113408011e-07, 0.018997465072765677]}
+parallel_A_B_approach_start {"targets": {"arm2": [-1.4621424022147193e-06, 2.740101113408011e-07, 0.054]}, "simultaneous": false}
+parallel_A_B_approach_done {"feedback": {"arm2": {"tcp": [0.00012537957418257313, -9.92761133726712e-05, 0.05408891961303476], "error_m": 0.0001841351290061444}}}
+parallel_A_B_contact_start {"targets": {"arm2": [-1.4621424022147193e-06, 2.740101113408011e-07, 0.024300000000000002]}, "simultaneous": false}
+parallel_A_B_contact_done {"feedback": {"arm2": {"tcp": [-7.863748794436493e-06, -1.1082556125543985e-05, 0.024421342539064597], "error_m": 0.00012204082901937554}}}
+attached {"arm": "arm2", "object": "cap_6"}
+parallel_A_B_lift_start {"targets": {"arm2": [-1.4621424022147193e-06, 2.740101113408011e-07, 0.054]}, "simultaneous": false}
+parallel_A_B_lift_done {"feedback": {"arm2": {"tcp": [-6.9072992283456675e-06, -7.673260987361638e-06, 0.053881871107991156], "error_m": 0.00011852106976404881}}}
+physical_lift_verified {"arm": "arm2", "object": "cap_6", "position": [-3.5719860009934823e-07, 1.3884652569767786e-06, 0.04846562828187244]}
+C_carry_start {"targets": {"arm2": [0.17, 0.05, 0.054]}, "simultaneous": false}
+C_carry_done {"feedback": {"arm2": {"tcp": [0.1699610586326508, 0.04989895213339558, 0.05400669470157078], "error_m": 0.00010849848139699238}}}
+B_clear_verified {"object": "cap_6"}
+parallel_C_release_B_approach_start {"targets": {"arm2": [0.17, 0.05, 0.0253]}, "simultaneous": false}
+parallel_C_release_B_approach_done {"feedback": {"arm2": {"tcp": [0.17000695954968656, 0.049990784001001834, 0.025387648884281716], "error_m": 8.840643011231421e-05}}}
+released {"arm": "arm2", "object": "cap_6"}
+C_retreat_start {"targets": {"arm2": [0.17, 0.05, 0.054]}, "simultaneous": false}
+C_retreat_done {"feedback": {"arm2": {"tcp": [0.17000859423888537, 0.04999030735872155, 0.05390290773141711], "error_m": 9.795262556738224e-05}}}
+C_placement_verified {"object": "cap_6", "position": [0.16999607523254626, 0.0500012273976973, 0.018999999974691435]}
+arm2_clear_start {"targets": {"arm2": null}, "simultaneous": false}
+arm2_clear_done {"feedback": {"arm2": {"tcp": [0.15162687516046047, 0.002755796389968153, 0.1407068882586573], "error_m": 0.0}}}
+both_home_start {"targets": {"arm1": null, "arm2": null}, "simultaneous": true}
+both_home_done {"feedback": {"arm1": {"tcp": [-0.16634285504344654, 0.010089658287831057, 0.14080778021558418], "error_m": 0.0}, "arm2": {"tcp": [0.15161578597469055, 0.0027539493842767514, 0.1407281390767937], "error_m": 0.0}}}
+pipeline_completed {}

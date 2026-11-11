@@ -1,0 +1,8 @@
+$ timeout 1800 python3 scripts/demo_transfer_pipeline.py --count 2
+stopped {"reason": "Source object moved; fresh scene required: cap_5"}
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 225, in <module>
+    demo.run()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/demo_transfer_pipeline.py", line 159, in run
+    raise RuntimeError('Source object moved; fresh scene required: '+n)
+RuntimeError: Source object moved; fresh scene required: cap_5

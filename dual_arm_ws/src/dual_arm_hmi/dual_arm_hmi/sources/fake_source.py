@@ -292,7 +292,8 @@ _GREEN, _RED, _WHITE = (0, 255, 0), (0, 0, 255), (255, 255, 255)
 _ZONE_BGR = {'A': (255, 128, 0), 'B': (0, 200, 0), 'C': (0, 220, 255)}
 _ZONE_BOXES = {'A': ((36, 110), (220, 370)), 'B': ((250, 160), (392, 320)), 'C': ((424, 96), (612, 384))}
 _A_CAPS = ((80, 170), (150, 170), (80, 250), (150, 250), (80, 330), (150, 330))
-_C_SLOTS = tuple(((150 + column * 180, 390 - row * 100)) for row in range(4) for column in range(2))
+# Real numbering (2026-11-11): slot 1 top-left, nearest the arms, odd slots next to B.
+_C_SLOTS = tuple(((150 + column * 180, 90 + row * 100)) for row in range(4) for column in range(2))
 
 
 def _text(image, text, origin, color=_WHITE, scale=0.5):
@@ -375,5 +376,5 @@ def _draw_arm2(snapshot, annotated, now):
         cv2.rectangle(image, (center[0] - 42, center[1] - 42), (center[0] + 42, center[1] + 42), color, 2, cv2.LINE_AA)
         _text(image, str(slot), (center[0] - 38, center[1] - 26), color, 0.45)
         _text(image, f'{82 if filled else 1}%', (center[0] - 14, center[1] + 37), color, 0.35)
-    _text(image, 'slot 1 must be bottom-left in user view', (8, 18), (0, 255, 255))
+    _text(image, 'slot 1 must be top-left in user view', (8, 18), (0, 255, 255))
     return image

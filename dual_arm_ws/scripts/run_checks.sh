@@ -144,10 +144,9 @@ if [ "$TIER" = t1 ]; then
   step pytest_hmi bash -c 'cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test'
   step pytest_vision bash -c 'cd src/vision_pkg && python3 -m pytest -q -p no:cacheprovider tests'
   if no_sim_running home_collision; then step home_collision python3 scripts/check_home_collision.py; fi
-  # Slot proposal checks reuse joint solutions saved by the study, so rerun the study first.
-  step measure_slot_adjustment python3 scripts/measure_slot_adjustment.py
-  step verify_slot_proposals python3 scripts/verify_slot_proposals.py
-  if no_sim_running slot_self_collision; then step slot_self_collision python3 scripts/check_slot_self_collision.py; fi
+  # The slot-shift study (measure_slot_adjustment.py, verify_slot_proposals.py,
+  # check_slot_self_collision.py) belongs to the pre-2026-11-11 layout and is no longer
+  # run; the measured layout reaches slot 1 (docs/SLOT_ADJUSTMENT.md).
 fi
 
 if [ "$TIER" = t2 ]; then

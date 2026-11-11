@@ -24,7 +24,7 @@ GZ = shutil.which('gz') or '/opt/ros/jazzy/opt/gz_tools_vendor/bin/gz'
 # Beyond A's outer edge (A is x -0.30..-0.10), so no zone counts it. C is every x >= 0.10,
 # so parking on the +x side would add to the C count.
 PARK = (-0.35, 0.30)
-ARM1_BASE = (-0.10, 0.08725)
+ARM1_BASE = (-0.10, 0.125)  # measured axis line, 2026-11-11
 
 
 class VisionPick(Regression):
@@ -109,7 +109,7 @@ class VisionPick(Regression):
         status = self.wait_end(1400)
         self.check('two_objects_succeeded_with_vision_targets', status['state'] == 'SUCCEEDED', status['message'])
         slots = self.physical_slots()
-        self.check('ground_truth_has_caps_in_slots_3_and_4', slots == [False, False, True, True] + [False] * 4, slots)
+        self.check('ground_truth_has_caps_in_slots_1_and_2', slots == [True, True] + [False] * 6, slots)
         self.observe('final_cap_positions', dict(self.poses))
         self.observe('final_cap_rotations_xyzw', dict(self.rotations))
         self.observe('final_tcp', {arm: self.operator.tcp_report(arm) for arm in ('arm1', 'arm2')})
@@ -118,7 +118,8 @@ class VisionPick(Regression):
         deadline = time.monotonic() + 180
         while len(self.poses) < 8 and time.monotonic() < deadline:
             time.sleep(0.1)
-        self.check('unreachable_caps_parked', self.park_cap('cap_1') and self.park_cap('cap_2'))
+        # cap_8 is the only start arm1 cannot reach with the cup pointing down (ik_validation.json).
+        self.check('unreachable_caps_parked', self.park_cap('cap_8'))
         time.sleep(4.0)
         self.refused_without_calibration()
         self.write_record()

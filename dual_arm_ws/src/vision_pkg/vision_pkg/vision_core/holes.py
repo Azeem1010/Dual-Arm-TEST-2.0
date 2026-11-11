@@ -14,6 +14,12 @@
 
 手眼相機 2 的影像不一定是這個方向：參數 view_rotation_k（0..3）= 影像要「順時針」轉幾個 90° 才會變成
 上面的使用者視角。程式只用孔的相對位置排序，不需要看到 C 區外框。
+
+參數 slot_one_corner 選 1 號的位置：
+- bottom_left（預設，上圖）：1 號在左下，往上一排排編號。
+- top_left：1 號在左上，往下一排排編號。2026-11-11 實測的實物編號是這種：使用者看到 A｜B｜C、
+  手臂在遠側時，1、2 最靠手臂（上方），單號在靠 B 區的左欄。這是上圖的上下鏡像，view_rotation_k
+  無法表示，所以另設這個參數；此時 view_rotation_k 要把影像轉成「手臂在上、B 區在左」。
 """
 from __future__ import annotations
 
@@ -26,6 +32,7 @@ import numpy as np
 from .geometry import order_corners
 
 N_SLOTS = 8
+SLOT_ONE_CORNERS = ('bottom_left', 'top_left')   # 1 號的位置，見模組說明
 ROWS, COLS = 4, 2      # 使用者視角：4 排（由下往上）x 2 個（由左至右）
 
 
@@ -94,8 +101,11 @@ def _to_view(pts: np.ndarray, k: int) -> np.ndarray:
     return p
 
 
-def order_slots(centers: Sequence[Sequence[float]], view_rotation_k: int) -> Tuple[Optional[List[int]], str]:
+def order_slots(centers: Sequence[Sequence[float]], view_rotation_k: int,
+                slot_one_corner: str = 'bottom_left') -> Tuple[Optional[List[int]], str]:
     """把 8 個孔中心排成格位 1..8。回傳 (索引清單：第 i 項 = 格位 i+1 的孔索引, 訊息)；失敗時 (None, 原因)。"""
+    if slot_one_corner not in SLOT_ONE_CORNERS:
+        return None, f'slot_one_corner 必須是 {"、".join(SLOT_ONE_CORNERS)}（目前 {slot_one_corner}）'
     c = np.asarray(centers, np.float64).reshape(-1, 2)
     if len(c) != N_SLOTS:
         return None, f'孔數 {len(c)} != {N_SLOTS}'
@@ -118,13 +128,16 @@ def order_slots(centers: Sequence[Sequence[float]], view_rotation_k: int) -> Tup
     spread = max(abs(float(pu[r[0]] - pu[r[1]])) for r in rows)
     if min(gaps) <= 0 or spread > 0.5 * min(gaps):
         return None, f'孔位不像 4 排 x 2 個的格子（同排長軸差 {spread:.1f}px，排距最小 {min(gaps):.1f}px）'
+    if slot_one_corner == 'top_left':
+        rows = rows[::-1]                                # 由上往下
     order: List[int] = []
     for r in rows:
         order.extend(sorted(r, key=lambda i: ps[i]))     # 左 -> 右
     return [int(i) for i in order], 'ok'
 
 
-def locate_holes(field_mask: np.ndarray, hp: HoleParams, view_rotation_k: int) -> HoleLayout:
+def locate_holes(field_mask: np.ndarray, hp: HoleParams, view_rotation_k: int,
+                 slot_one_corner: str = 'bottom_left') -> HoleLayout:
     """找出 8 個方孔並依固定編號排序。數量不對或排列不像格子時 ok=False（不猜測）。"""
     cands = find_hole_candidates(field_mask, hp)
     good = [h for h in cands if h.ok]
@@ -134,7 +147,7 @@ def locate_holes(field_mask: np.ndarray, hp: HoleParams, view_rotation_k: int) -
         if bad:
             msg += '；被排除的候選：' + '；'.join(f'@({h.cx:.0f},{h.cy:.0f}) {h.reason}' for h in bad[:3])
         return HoleLayout(False, msg, [], cands)
-    order, why = order_slots([(h.cx, h.cy) for h in good], view_rotation_k)
+    order, why = order_slots([(h.cx, h.cy) for h in good], view_rotation_k, slot_one_corner)
     if order is None:
         return HoleLayout(False, why, [], cands)
     return HoleLayout(True, 'ok', [good[i] for i in order], cands)

@@ -9,6 +9,13 @@ are on the +Y edge, far from the user, and face -Y; zone A is on the arm's own
 right (-X), so the user sees A | B | C. This is the source CAD assembly rotated
 180 degrees about the world Z axis: each arm keeps its CAD chain and the platforms
 are turned, not flipped, so the source CAD itself is unchanged.
+
+Field geometry (measured 2026-11-11, docs/evidence/hardware/20261111_H1/): the foam
+board is 600 x 240 mm and both j1 axes are about 5 mm outside the arm-side long
+edge, so each arm is mounted at world y = +0.125 instead of the CAD 0.08725. The CAD
+platform (600 x 300 mm, holes at the old slot positions) no longer matches the
+field and is not exported; the board, pads and their collisions are in the world
+SDF from generate_world.py.
 """
 import json
 import math
@@ -21,6 +28,8 @@ items = json.loads((root/'docs/evidence/cad_inventory.json').read_text())
 by_id = {int(x['file'][10:13]):x for x in items}
 rotation = np.array([[1,0,0],[0,0,-1],[0,1,0]])
 shift = np.array([0,.03,0])
+# Measured axis line in world (2026-11-11): board half-width 0.120 m plus 5 mm.
+ARM_AXIS_Y_M = 0.125
 def world(point):
     return rotation @ np.array(point)/1000+shift
 def xyz(v):
@@ -66,7 +75,7 @@ for arm in (1,2):
         axes.append(rotation@np.array(cylinder['axis']))
     # base is the CAD-pose origin that link offsets are measured from; mount is where it is installed.
     base = np.array([.1 if arm==1 else -.1,-.08725,0.])
-    mount = np.array([-base[0],-base[1],0.])
+    mount = np.array([-base[0],ARM_AXIS_Y_M,0.])
     origins = [base]+pivots
     axis_report[f'arm{arm}'] = {'pivots_m':[p.tolist() for p in pivots],'axes':[a.tolist() for a in axes]}
     for group in range(5):
@@ -130,16 +139,13 @@ for arm in (1,2):
     axis_report[f'arm{arm}']['tcp_m'] = tip.tolist()
     tip_offsets[arm] = tip-origins[4]
 
-# Turning 180 degrees about world Z maps (x,y,z) to (-x,-y,z), matching the arm mounts.
+# The CAD platform meshes (platform_items) are not exported: the measured board is
+# narrower and its slots differ (see module docstring). The empty link is kept so the
+# SRDF and TF tree keep the same names.
 platform = ET.SubElement(robot,'link',name='field_platform')
 inertial = ET.SubElement(platform,'inertial')
 ET.SubElement(inertial,'mass',value='0.1')
 ET.SubElement(inertial,'inertia',ixx='0.0001',iyy='0.0001',izz='0.0001',ixy='0',ixz='0',iyz='0')
-for index in sorted(platform_items):
-    visual = ET.SubElement(platform,'visual',name=f'component_{index}')
-    ET.SubElement(visual,'origin',xyz=xyz([0,-shift[1],0]),rpy=f'{math.pi/2} 0 {math.pi}')
-    ET.SubElement(ET.SubElement(visual,'geometry'),'mesh',filename='package://dual_arm_description/meshes/cad/'+by_id[index]['file'],scale='0.001 0.001 0.001')
-    ET.SubElement(ET.SubElement(visual,'material',name=f'cad_{index}'),'color',rgba='1 0.15 0.55 1')
 joint = ET.SubElement(robot,'joint',name='field_platform_fixed',type='fixed')
 ET.SubElement(joint,'parent',link='world')
 ET.SubElement(joint,'child',link='field_platform')
@@ -172,4 +178,4 @@ for arm,offset in tip_offsets.items():
 ET.indent(robot)
 ET.ElementTree(robot).write(root/'src/dual_arm_description/urdf/dual_arm_cad.urdf.xacro',encoding='unicode')
 (root/'docs/evidence/cad_joint_mapping.json').write_text(json.dumps({'axis_geometry':axis_report,'component_assignment':assignment,'dynamics_status':'NOT_RUN','travel_limits_status':'NOT_RUN'},indent=2)+'\n')
-print('Generated articulated CAD model: 264 visuals, eight geometry-derived axes; fastener membership and dynamics require validation')
+print(f'Generated articulated CAD model: 262 arm visuals ({len(platform_items)} CAD platform meshes not exported), eight geometry-derived axes; fastener membership and dynamics require validation')

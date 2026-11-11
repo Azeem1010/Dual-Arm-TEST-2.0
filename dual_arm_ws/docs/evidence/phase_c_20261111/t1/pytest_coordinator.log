@@ -1,0 +1,77 @@
+$ bash -c cd\ src/dual_arm_coordinator\ \&\&\ python3\ -m\ pytest\ -q\ -p\ no:cacheprovider\ test
+........................................................................ [ 25%]
+................................................................F....... [ 50%]
+...................................................FFF.F................ [ 75%]
+.....................................................................    [100%]
+=================================== FAILURES ===================================
+____________ ShippedFiles.test_simulation_slots_match_world_formula ____________
+
+self = <test_task_config.ShippedFiles testMethod=test_simulation_slots_match_world_formula>
+
+    def test_simulation_slots_match_world_formula(self):
+        expected = [[0.1675 - col * 0.035, -0.09 + row * 0.035] for row in range(4) for col in range(2)]
+        for actual, wanted in zip(sim_doc()['zones']['c_slots_xy_m'], expected):
+>           self.assertAlmostEqual(actual[0], wanted[0])
+E           AssertionError: 0.135 != 0.1675 within 7 places (0.0325 difference)
+
+test/test_task_config.py:53: AssertionError
+______________________ Slots.test_grid_marks_cap_in_slot _______________________
+
+self = <test_truth.Slots testMethod=test_grid_marks_cap_in_slot>
+
+    def test_grid_marks_cap_in_slot(self):
+        self.place('cap_1', 0.1675, -0.09)
+>       self.assertEqual(self.observer.grid().occupied, (True,) + (False,) * 7)
+E       AssertionError: Tuples differ: (False, False, False, False, False, False, False, False) != (True, False, False, False, False, False, False, False)
+E       
+E       First differing element 0:
+E       False
+E       True
+E       
+E       - (False, False, False, False, False, False, False, False)
+E       ?                                            -------
+E       
+E       + (True, False, False, False, False, False, False, False)
+E       ?  ++++++
+
+test/test_truth.py:107: AssertionError
+___________________ Slots.test_out_of_order_slot_is_reported ___________________
+
+self = <test_truth.Slots testMethod=test_out_of_order_slot_is_reported>
+
+    def test_out_of_order_slot_is_reported(self):
+        self.place('cap_1', 0.1325, -0.09)
+        view = self.observer.verify_place(2)
+>       self.assertTrue(view.placed)
+E       AssertionError: False is not true
+
+test/test_truth.py:122: AssertionError
+________________ Slots.test_verify_place_checks_slot_and_order _________________
+
+self = <test_truth.Slots testMethod=test_verify_place_checks_slot_and_order>
+
+    def test_verify_place_checks_slot_and_order(self):
+        self.place('cap_1', 0.1675, -0.09)
+        view = self.observer.verify_place(1)
+>       self.assertTrue(view.placed and view.order_ok)
+E       AssertionError: False is not true
+
+test/test_truth.py:116: AssertionError
+_________________ Prefilled.test_placing_next_slot_keeps_order _________________
+
+self = <test_truth.Prefilled testMethod=test_placing_next_slot_keeps_order>
+
+    def test_placing_next_slot_keeps_order(self):
+        self.place('cap_5', 0.1675, -0.055)
+        view = self.observer.verify_place(3)
+>       self.assertTrue(view.placed and view.order_ok)
+E       AssertionError: False is not true
+
+test/test_truth.py:139: AssertionError
+=========================== short test summary info ============================
+FAILED test/test_task_config.py::ShippedFiles::test_simulation_slots_match_world_formula
+FAILED test/test_truth.py::Slots::test_grid_marks_cap_in_slot - AssertionErro...
+FAILED test/test_truth.py::Slots::test_out_of_order_slot_is_reported - Assert...
+FAILED test/test_truth.py::Slots::test_verify_place_checks_slot_and_order - A...
+FAILED test/test_truth.py::Prefilled::test_placing_next_slot_keeps_order - As...
+5 failed, 280 passed in 34.28s

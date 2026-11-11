@@ -113,7 +113,7 @@ def publish(raw_dir, images_dir):
     cx, cy = TOP_CENTER
     half_w, half_h = int(0.325 * TOP_PX_PER_M), int(0.172 * TOP_PX_PER_M)
     boundary = int(0.1 * TOP_PX_PER_M)
-    foam_top, foam_bottom = cy - int(0.15 * TOP_PX_PER_M), cy + int(0.15 * TOP_PX_PER_M)
+    foam_top, foam_bottom = cy - int(0.12 * TOP_PX_PER_M), cy + int(0.12 * TOP_PX_PER_M)  # 240 mm board
     for x in (cx - boundary, cx + boundary):
         for y in range(foam_top, foam_bottom, 20):
             cv2.line(top, (x, y), (x, min(y + 11, foam_bottom)), (255, 255, 255), 3)

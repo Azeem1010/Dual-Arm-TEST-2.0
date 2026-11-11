@@ -18,7 +18,7 @@ def generate_launch_description():
     actions = [
         DeclareLaunchArgument('gz_args', default_value='-r -s'),
         DeclareLaunchArgument('cycles', default_value='1'),
-        DeclareLaunchArgument('prefilled_slots', default_value='2'),
+        DeclareLaunchArgument('prefilled_slots', default_value='0'),
         DeclareLaunchArgument('journal_path', default_value=''),
         DeclareLaunchArgument('calib_dir', default_value='~/.ros/dual_arm_calib/sim'),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(launch_dir + 'demo_pick_place.launch.py'), launch_arguments={

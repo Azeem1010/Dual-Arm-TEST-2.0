@@ -1,0 +1,31 @@
+$ timeout 2400 python3 scripts/test_coordinator_sim.py /tmp/coordinator_sim docs/evidence/phase_c_20261111/extra/coordinator_sim.json
+fresh_journal_is_idle_with_empty_c {'status': 'PASS', 'detail': 'IDLE'}
+start_accepted {'status': 'PASS', 'detail': 'Accepted; the result is reported on /dual_arm/status'}
+second_start_refused_while_busy {'status': 'PASS', 'detail': 'Busy, faulted or full; see /dual_arm/status'}
+cancel_accepted {'status': 'PASS', 'detail': 'Cancellation requested'}
+cancel_ends_in_fault_with_recovery_token {'status': 'PASS', 'detail': 'Task canceled'}
+arm_stays_stopped_after_cancel {'status': 'PASS', 'detail': {'max_joint_drift_rad': 1.6927153678736317e-07}}
+cancel_interrupted_motion_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16742673530095803, 0.008868317159189922, 0.13596704436248624], 'tool_tilt_deg': 12.672881594887667}}
+start_refused_in_fault {'status': 'PASS', 'detail': 'Busy, faulted or full; see /dual_arm/status'}
+wrong_recovery_token_refused {'status': 'PASS', 'detail': 'Token does not confirm recovery'}
+recovery_refused_while_arm_is_not_home {'status': 'PASS', 'detail': 'arm1 is not at HOME'}
+refused_recovery_issues_a_new_token {'status': 'PASS', 'detail': None}
+fault_survives_restart {'status': 'PASS', 'detail': 'Previous run did not finish; inspect and recover'}
+/dual_arm/recover timed out
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 282, in main
+    passed = harness.run()
+             ^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 263, in run
+    self.restart_keeps_fault(status)
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 215, in restart_keeps_fault
+    refused = self.recover(old_token)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 137, in recover
+    return self.call(self.recover_client, ConfirmStep.Request(token=token, success=cleared, message='test'))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 129, in call
+    raise RuntimeError(f'{client.srv_name} timed out')
+RuntimeError: /dual_arm/recover timed out
+
+FAIL

@@ -1,5 +1,26 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-12 Phase C: measured field geometry and slot numbering
+
+Board 600 × 240 mm, j1 axes at world (±0.10, 0.125), C slots numbered as on the real board, caps at the mirrored slots, B at (0, 0), arm cameras at x ±0.15. Final runs on the finished code; earlier partial runs and their fixes are listed in evidence/phase_c_20261111/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| t1: model and world generation, `test_cad_pose`, build, HOME, reach, HOME collision | PASS | evidence/phase_c_20261111/t1_final/ |
+| t1: `test_ik.py` | FAIL | 16/18; cap_8 (-0.17, -0.055) and slot 8 (0.17, -0.055) have no downward-suction solution. The real arm reached slot 8 with the cup tilted about 9° |
+| t1: unit tests coordinator / HMI / vision | PASS | 285 / 293 / 100 |
+| t2: smoke test | FAIL | only `shutdown`: Gazebo did not stop within 5 s of SIGINT (known, intermittent; it passed in t2_camera/). Cameras, four views, controllers, MoveIt plan PASS |
+| t2: simulated images, coordinate validation | PASS | t2_final/ |
+| t2: regression `two` from an empty C area | PASS | caps in slots 1 and 2 |
+| t2: legacy pipeline two objects | PASS | now reads the layout from coordinator.yaml and picks nearest arm1 HOME first (cap_4, cap_6) |
+| t2: motion gateway, operator tools, safety supervisor (mock) | PASS | unreachable-target check now uses slot 8 |
+| t2: vision pick | PASS | arm1 calibration error 0.70 mm (budget 1 mm); was 1.15 mm with the camera at x -0.20 |
+| t2: README screenshots | PASS | docs/images/ retaken |
+| Regression `batch` (8 objects from empty C) | FAIL | 7 placed in slots 1–7; FAULT at slot 8 (unreachable). The test expects this and reports PASS. evidence/phase_c_20261111/batch/ |
+| Regression `faults` (B place point moved to (0, 0)) | PASS | 21 checks; evidence/phase_c_20261111/extra/ |
+| Coordinator node in Gazebo (`test_coordinator_sim.py`) | FAIL, then PASS | first run: `/dual_arm/recover` reply lost after the coordinator restart (`failed to send response (timeout)` in its log), unrelated to the layout; rerun on a fresh simulation PASS, 22 checks including a full cycle into slot 1 (extra_rerun/). 1 of 2 passed |
+| Zone and slot state by vision | BLOCKED | arm cameras at HOME: arm1 sees 3 caps, arm2 finds 0 slots (C31, D7 unchanged); tasks keep using ground truth for zones and slots |
+
 ## 2026-11-11 Field results imported (Orin, Dual-Arm-TEST-2.0 `13a5b4f`)
 
 Results are the field tester's; this repo only copies the text records.

@@ -76,36 +76,31 @@ class Regression(Harness):
         self.check('start_accepted', self.trigger('start').success)
         status = self.wait_end(2 * OBJECT_TIMEOUT_S)
         self.check('two_objects_succeeded', status['state'] == 'SUCCEEDED', status['message'])
-        self.check('record_has_slots_3_and_4',
-                   status['occupied'] == [True] * 4 + [False] * 4 and status['completed'] == 2 and status['b_owner'] == '',
+        self.check('record_has_slots_1_and_2',
+                   status['occupied'] == [True] * 2 + [False] * 6 and status['completed'] == 2 and status['b_owner'] == '',
                    {key: status[key] for key in ('occupied', 'completed', 'b_owner')})
         slots = self.physical_slots()
-        self.check('ground_truth_has_caps_in_slots_3_and_4', slots == [False, False, True, True] + [False] * 4, slots)
+        self.check('ground_truth_has_caps_in_slots_1_and_2', slots == [True, True] + [False] * 6, slots)
         scene = self.scene()
-        self.check('scene_matches_placed_objects', scene == {'world': ['cap_in_slot_3', 'cap_in_slot_4'], 'attached': []}, scene)
+        self.check('scene_matches_placed_objects', scene == {'world': ['cap_in_slot_1', 'cap_in_slot_2'], 'attached': []}, scene)
 
     # --- batch ---
 
     def batch(self):
         self.start_coordinator(cycles=8, prefilled=0, journal=self.fresh_journal('from_empty'))
         self.check('from_empty_start_accepted', self.trigger('start').success)
-        status = self.wait_end(180)
-        self.observe('eight_objects_from_empty_c', {'status': 'FAIL' if status['state'] != 'FULL' else 'PASS',
-                                                    'state': status['state'], 'message': status['message']})
-        self.check('slot_1_stops_the_run_before_any_object_moves',
-                   status['state'] == 'FAULT' and 'cannot reach' in status['message'] and status['b_owner'] == '' and
-                   set(status['holding'].values()) == {'empty'} and self.physical_slots() == [False] * 8, status['message'])
-        zone = self.truth.zone()
-        self.check('no_object_left_zone_a', zone.success and zone.a_has_object and not zone.b_has_object and zone.c_object_count == 0)
-        self.kill_coordinator()
-        self.start_coordinator(cycles=6, journal=self.fresh_journal('six'))
-        self.check('six_start_accepted', self.trigger('start').success)
-        status = self.wait_end(6 * OBJECT_TIMEOUT_S)
+        status = self.wait_end(8 * OBJECT_TIMEOUT_S)
         slots = self.physical_slots()
-        self.observe('six_objects_result', {'state': status['state'], 'message': status['message'], 'occupied': status['occupied'],
-                                            'completed': status['completed'], 'ground_truth_slots': slots})
-        self.check('six_objects_fill_slots_3_to_8', status['state'] == 'FULL' and status['completed'] == 6, status['message'])
-        self.check('ground_truth_has_caps_in_slots_3_to_8', slots == [False, False] + [True] * 6, slots)
+        self.observe('eight_objects_from_empty_c', {'status': 'FAIL' if status['state'] != 'FULL' else 'PASS',
+                                                    'state': status['state'], 'message': status['message'],
+                                                    'completed': status['completed'], 'ground_truth_slots': slots})
+        # 2026-11-11 layout: slot 8 and cap 8 are outside the model's downward-suction reach
+        # (docs/evidence/phase_c_20261111/), so seven objects move and the eighth cycle stops
+        # at the reach check before any arm moves.
+        self.check('seven_objects_then_slot_8_stops_the_run',
+                   status['state'] == 'FAULT' and 'cannot reach' in status['message'] and status['completed'] == 7 and
+                   status['b_owner'] == '' and set(status['holding'].values()) == {'empty'}, status['message'])
+        self.check('ground_truth_has_caps_in_slots_1_to_7', slots == [True] * 7 + [False], slots)
 
     # --- fault scenarios ---
 

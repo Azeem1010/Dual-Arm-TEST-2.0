@@ -19,7 +19,7 @@ def test_simulation_uses_the_interface_launch_with_cycles_and_journal(profiles):
     plan = build_plan(Mode.SIMULATION, profiles, WORKSPACE, '/tmp/j.json', 3)
     assert not plan.problem
     assert plan.command[:4] == ('ros2', 'launch', 'dual_arm_bringup', 'hmi_sim.launch.py')
-    assert 'cycles:=3' in plan.command and 'journal_path:=/tmp/j.json' in plan.command and 'prefilled_slots:=2' in plan.command
+    assert 'cycles:=3' in plan.command and 'journal_path:=/tmp/j.json' in plan.command and 'prefilled_slots:=0' in plan.command
 
 
 def test_mock_disables_rviz(profiles):

@@ -1,0 +1,7 @@
+$ timeout 5400 python3 scripts/test_transfer_regression.py batch /tmp/regress_batch docs/evidence/phase_c_20261111/batch/regress_batch.json
+from_empty_start_accepted {'status': 'PASS', 'detail': None}
+observation eight_objects_from_empty_c {'status': 'FAIL', 'state': 'FAULT', 'message': 'arm2 cannot reach (0.17, -0.055, 0.054): No four-DOF solution satisfies XYZ and downward suction axis within model limits', 'completed': 7, 'ground_truth_slots': [True, True, True, True, True, True, True, False]}
+seven_objects_then_slot_8_stops_the_run {'status': 'PASS', 'detail': 'arm2 cannot reach (0.17, -0.055, 0.054): No four-DOF solution satisfies XYZ and downward suction axis within model limits'}
+ground_truth_has_caps_in_slots_1_to_7 {'status': 'PASS', 'detail': [True, True, True, True, True, True, True, False]}
+PASS
+exit 0

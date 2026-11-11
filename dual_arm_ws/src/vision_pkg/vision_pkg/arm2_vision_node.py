@@ -16,7 +16,7 @@ Topic
                                 + 各孔比例 + verify_place 的順序檢查；影像中斷或孔位定位失敗時 valid=false
 
 格位編號（固定）：使用者站在場地長邊前、B 區在右手邊，最下排左 1、右 2，往上 3、4，… 最上排 7、8。
-手眼相機影像的方向由參數 view_rotation_k（0..3）對應，請看 debug 視窗確認 1 號在左下。
+手眼相機影像的方向由參數 view_rotation_k（0..3）對應，1 號的角落由 slot_one_corner 決定，請看 debug 視窗確認。
 此節點不呼叫其他 service；仍用 MultiThreadedExecutor，讓 service 等待新結果時不擋住影像接收。
 """
 from __future__ import annotations
@@ -46,7 +46,7 @@ from vision_pkg.node_common import (FlatParams, FrameBuffer, LatestValue, image_
                                     image_problem, publish_debug_image, read_ros_params, spin_node, stamp)
 from vision_pkg.vision_core.color_zone import MaskParams, to_hsv, mask_from_hsv
 from vision_pkg.vision_core.geometry import apply_homography
-from vision_pkg.vision_core.holes import (N_SLOTS, HoleLayout, HoleParams, check_fill_order, locate_holes,
+from vision_pkg.vision_core.holes import (N_SLOTS, SLOT_ONE_CORNERS, HoleLayout, HoleParams, check_fill_order, locate_holes,
                                           slot_ratios)
 
 CAM_NAME = calib_io.CAMERA_NAMES['arm2']
@@ -122,6 +122,9 @@ class Arm2VisionNode(Node):
         c.field_color = P.s('field_color')
         c.field_mp = P.group(MaskParams, 'field_mask')
         c.rot_k = P.i('view_rotation_k') % 4
+        c.slot_one_corner = P.s('slot_one_corner')
+        if c.slot_one_corner not in SLOT_ONE_CORNERS:
+            raise ValueError(f'slot_one_corner 必須是 {"、".join(SLOT_ONE_CORNERS)}（目前 {c.slot_one_corner}）')
         c.hole_median = max(1, P.i('hole_median_frames'))
         c.hole_hold_s = P.f('hole_hold_s')
         c.hole = P.group(HoleParams, 'hole')
@@ -190,7 +193,7 @@ class Arm2VisionNode(Node):
             self._set_result(GridResult(False, f'HSV 設定不可用（需要 {c.field_color} 與 {c.obj_color}）: {self.hsv.error}'))
             return
         field_mask = mask_from_hsv(to_hsv(frame, c.field_mp.blur_ksize), hsv[c.field_color], c.field_mp)
-        layout = locate_holes(field_mask, c.hole, c.rot_k)
+        layout = locate_holes(field_mask, c.hole, c.rot_k, c.slot_one_corner)
         if layout.ok:
             self._hole_hist.append(np.stack([h.corners for h in layout.holes]))
             self._last_good_t = now
@@ -348,7 +351,7 @@ class Arm2VisionNode(Node):
             put_text_centered(img, lines[0], (ctr[0], ctr[1] - 6), col, 0.35, 1)
             put_text_centered(img, lines[1], (ctr[0], ctr[1] + 8), col, 0.35, 1)
             put_text_centered(img, f'{res.ratios[slot - 1] * 100:.0f}%', (ctr[0], ctr[1] + half + 9), col, 0.35, 1)
-        put_text(img, f'slot 1 must be bottom-left in user view (view_rotation_k={self.cfg.rot_k})'
+        put_text(img, f'slot 1 must be {self.cfg.slot_one_corner.replace("_", "-")} in user view (view_rotation_k={self.cfg.rot_k})'
                       + ('  [held]' if res.held else ''), (8, 18), (0, 255, 255), 0.5, 1)
         put_text(img, 'in each hole: x / y = ' + ('base m' if res.base_xy is not None else 'pixel (arm2_homography not calibrated)'),
                  (8, 36), (0, 255, 255), 0.5, 1)
