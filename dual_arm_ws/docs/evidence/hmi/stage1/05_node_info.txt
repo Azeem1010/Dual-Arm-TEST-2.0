@@ -1,0 +1,39 @@
+/dual_arm_hmi_monitor
+  Subscribers:
+    /arm1_cam/image_raw: sensor_msgs/msg/Image
+    /arm1_controller/controller_state: control_msgs/msg/JointTrajectoryControllerState
+    /arm2_cam/image_raw: sensor_msgs/msg/Image
+    /arm2_controller/controller_state: control_msgs/msg/JointTrajectoryControllerState
+    /dual_arm/status: std_msgs/msg/String
+    /env_cam/image_raw: sensor_msgs/msg/Image
+    /joint_states: sensor_msgs/msg/JointState
+    /robot_description: std_msgs/msg/String
+    /safety/status: std_msgs/msg/String
+    /view_front/image_raw: sensor_msgs/msg/Image
+    /view_isometric/image_raw: sensor_msgs/msg/Image
+    /view_side/image_raw: sensor_msgs/msg/Image
+    /view_top/image_raw: sensor_msgs/msg/Image
+    /vision/arm1/debug_image: sensor_msgs/msg/Image
+    /vision/arm2/debug_image: sensor_msgs/msg/Image
+    /vision/arm2/grid_state: vision_interfaces/msg/GridState
+    /vision/calibration_status: diagnostic_msgs/msg/DiagnosticArray
+    /vision/env/debug_image: sensor_msgs/msg/Image
+    /vision/env/zone_state: vision_interfaces/msg/ZoneState
+  Publishers:
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+  Service Servers:
+    /dual_arm_hmi_monitor/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /dual_arm_hmi_monitor/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /dual_arm_hmi_monitor/get_parameters: rcl_interfaces/srv/GetParameters
+    /dual_arm_hmi_monitor/get_type_description: type_description_interfaces/srv/GetTypeDescription
+    /dual_arm_hmi_monitor/list_parameters: rcl_interfaces/srv/ListParameters
+    /dual_arm_hmi_monitor/set_parameters: rcl_interfaces/srv/SetParameters
+    /dual_arm_hmi_monitor/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+  Service Clients:
+    /controller_manager/list_controllers: controller_manager_msgs/srv/ListControllers
+    /dual_arm_coordinator/get_parameters: rcl_interfaces/srv/GetParameters
+  Action Servers:
+
+  Action Clients:
+

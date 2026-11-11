@@ -1,0 +1,164 @@
+=== sanitizer address,undefined
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+-- Found hardware_interface: 4.48.1 (/opt/ros/jazzy/share/hardware_interface/cmake)
+-- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found rmw_implementation_cmake: 7.3.4 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.83.0/BoostConfig.cmake (found version "1.83.0")  
+-- Found ament_cmake_gtest: 2.5.6 (/opt/ros/jazzy/share/ament_cmake_gtest/cmake)
+-- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built
+-- Found Threads: TRUE  
+-- Configuring done (54.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: /tmp/dual_arm_wp8/address
+[ 16%] Building CXX object CMakeFiles/cm530_core.dir/src/calibration.cpp.o
+[ 16%] Building CXX object CMakeFiles/cm530_core.dir/src/link.cpp.o
+[ 25%] Building CXX object CMakeFiles/cm530_core.dir/src/posix_serial.cpp.o
+[ 33%] Building CXX object gtest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[ 41%] Building CXX object CMakeFiles/cm530_core.dir/src/protocol.cpp.o
+[ 50%] Building CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[ 58%] Linking CXX static library libgtest_main.a
+[ 66%] Building CXX object CMakeFiles/cm530_core.dir/src/scheduler.cpp.o
+[ 66%] Built target gtest_main
+[ 75%] Linking CXX static library libcm530_core.a
+[ 75%] Built target cm530_core
+[ 83%] Linking CXX static library libgtest.a
+[ 83%] Built target gtest
+[ 91%] Building CXX object CMakeFiles/cm530_protocol_test.dir/test/test_protocol.cpp.o
+[100%] Linking CXX executable cm530_protocol_test
+[100%] Built target cm530_protocol_test
+[ 16%] Built target gtest_main
+[ 33%] Built target gtest
+[ 83%] Built target cm530_core
+[ 91%] Building CXX object CMakeFiles/cm530_calibration_test.dir/test/test_calibration.cpp.o
+[100%] Linking CXX executable cm530_calibration_test
+[100%] Built target cm530_calibration_test
+[ 11%] Built target gtest_main
+[ 17%] Building CXX object CMakeFiles/cm530_firmware_sim.dir/test/firmware_sim.cpp.o
+[ 29%] Built target gtest
+[ 35%] Building C object CMakeFiles/cm530_firmware_sim.dir/mnt/e/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/17_ROS_to_CM530_ver._dual_arm/APP/src/bridge.c.o
+[ 41%] Building C object CMakeFiles/cm530_firmware_sim.dir/mnt/e/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/17_ROS_to_CM530_ver._dual_arm/APP/src/ax12.c.o
+[ 76%] Built target cm530_core
+[ 82%] Building C object CMakeFiles/cm530_firmware_sim.dir/mnt/e/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/17_ROS_to_CM530_ver._dual_arm/APP/src/dynamixel.c.o
+[ 88%] Linking CXX static library libcm530_firmware_sim.a
+[ 88%] Built target cm530_firmware_sim
+[ 94%] Building CXX object CMakeFiles/cm530_link_test.dir/test/test_link.cpp.o
+[100%] Linking CXX executable cm530_link_test
+[100%] Built target cm530_link_test
+[ 11%] Built target gtest
+[ 23%] Built target gtest_main
+[ 52%] Built target cm530_firmware_sim
+[ 88%] Built target cm530_core
+[ 94%] Building CXX object CMakeFiles/cm530_scheduler_test.dir/test/test_scheduler.cpp.o
+[100%] Linking CXX executable cm530_scheduler_test
+[100%] Built target cm530_scheduler_test
+cm530_protocol_test exit=0 sanitizer_reports=0
+cm530_calibration_test exit=0 sanitizer_reports=0
+cm530_link_test exit=0 sanitizer_reports=0
+cm530_scheduler_test exit=0 sanitizer_reports=0
+=== sanitizer thread
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+-- Found hardware_interface: 4.48.1 (/opt/ros/jazzy/share/hardware_interface/cmake)
+-- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found rmw_implementation_cmake: 7.3.4 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.83.0/BoostConfig.cmake (found version "1.83.0")  
+-- Found ament_cmake_gtest: 2.5.6 (/opt/ros/jazzy/share/ament_cmake_gtest/cmake)
+-- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built
+-- Found Threads: TRUE  
+-- Configuring done (50.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: /tmp/dual_arm_wp8/thread
+[  8%] Building CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[ 25%] Building CXX object gtest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[ 25%] Building CXX object CMakeFiles/cm530_core.dir/src/link.cpp.o
+[ 33%] Building CXX object CMakeFiles/cm530_core.dir/src/calibration.cpp.o
+[ 41%] Building CXX object CMakeFiles/cm530_core.dir/src/posix_serial.cpp.o
+[ 50%] Building CXX object CMakeFiles/cm530_core.dir/src/protocol.cpp.o
+[ 58%] Linking CXX static library libgtest_main.a
+[ 66%] Building CXX object CMakeFiles/cm530_core.dir/src/scheduler.cpp.o
+[ 66%] Built target gtest_main
+[ 75%] Linking CXX static library libcm530_core.a
+[ 83%] Linking CXX static library libgtest.a
+[ 83%] Built target cm530_core
+[ 83%] Built target gtest
+[ 91%] Building CXX object CMakeFiles/cm530_protocol_test.dir/test/test_protocol.cpp.o
+[100%] Linking CXX executable cm530_protocol_test
+[100%] Built target cm530_protocol_test
+[ 50%] Built target gtest_main
+[ 66%] Built target cm530_core
+[ 83%] Built target gtest
+[ 91%] Building CXX object CMakeFiles/cm530_calibration_test.dir/test/test_calibration.cpp.o
+[100%] Linking CXX executable cm530_calibration_test
+[100%] Built target cm530_calibration_test
+[  5%] Building CXX object CMakeFiles/cm530_firmware_sim.dir/test/firmware_sim.cpp.o
+[ 11%] Building C object CMakeFiles/cm530_firmware_sim.dir/mnt/e/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/17_ROS_to_CM530_ver._dual_arm/APP/src/ax12.c.o
+[ 17%] Building C object CMakeFiles/cm530_firmware_sim.dir/mnt/e/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/17_ROS_to_CM530_ver._dual_arm/APP/src/bridge.c.o
+[ 52%] Built target cm530_core
+[ 64%] Built target gtest_main
+[ 76%] Built target gtest
+[ 82%] Building C object CMakeFiles/cm530_firmware_sim.dir/mnt/e/dual_arm_system/dual_arm_ws/third_party/CM530_ROS_BRIDGE/17_ROS_to_CM530_ver._dual_arm/APP/src/dynamixel.c.o
+[ 88%] Linking CXX static library libcm530_firmware_sim.a
+[ 88%] Built target cm530_firmware_sim
+[ 94%] Building CXX object CMakeFiles/cm530_link_test.dir/test/test_link.cpp.o
+[100%] Linking CXX executable cm530_link_test
+[100%] Built target cm530_link_test
+[ 11%] Built target gtest
+[ 23%] Built target gtest_main
+[ 58%] Built target cm530_core
+[ 88%] Built target cm530_firmware_sim
+[ 94%] Building CXX object CMakeFiles/cm530_scheduler_test.dir/test/test_scheduler.cpp.o
+[100%] Linking CXX executable cm530_scheduler_test
+[100%] Built target cm530_scheduler_test
+cm530_protocol_test exit=0 sanitizer_reports=0
+cm530_calibration_test exit=0 sanitizer_reports=0
+cm530_link_test exit=0 sanitizer_reports=0
+cm530_scheduler_test exit=0 sanitizer_reports=0

@@ -1,0 +1,60 @@
+EE.........................................................E.........................................................................................usage: python3 -m unittest confirm [-h] (--success | --failed)
+                                   [--message MESSAGE]
+python3 -m unittest confirm: error: one of the arguments --success --failed is required
+usage: python3 -m unittest confirm [-h] (--success | --failed)
+                                   [--message MESSAGE]
+python3 -m unittest confirm: error: argument --failed: not allowed with argument --success
+..usage: python3 -m unittest recover [-h] --cleared
+python3 -m unittest recover: error: the following arguments are required: --cleared
+..usage: python3 -m unittest [-h] {status,start,cancel,confirm,recover} ...
+python3 -m unittest: error: argument command: invalid choice: 'home' (choose from 'status', 'start', 'cancel', 'confirm', 'recover')
+...............................................................................................
+======================================================================
+ERROR: test_coordinator_node (unittest.loader._FailedTest.test_coordinator_node)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_coordinator_node
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/mnt/e/dual_arm_system/dual_arm_ws/src/dual_arm_coordinator/test/test_coordinator_node.py", line 6, in <module>
+    import rclpy
+ModuleNotFoundError: No module named 'rclpy'
+
+
+======================================================================
+ERROR: test_esp32_ros (unittest.loader._FailedTest.test_esp32_ros)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_esp32_ros
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/mnt/e/dual_arm_system/dual_arm_ws/src/dual_arm_coordinator/test/test_esp32_ros.py", line 6, in <module>
+    import rclpy
+ModuleNotFoundError: No module named 'rclpy'
+
+
+======================================================================
+ERROR: test_gripper_ros (unittest.loader._FailedTest.test_gripper_ros)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_gripper_ros
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/mnt/e/dual_arm_system/dual_arm_ws/src/dual_arm_coordinator/test/test_gripper_ros.py", line 5, in <module>
+    import rclpy
+ModuleNotFoundError: No module named 'rclpy'
+
+
+----------------------------------------------------------------------
+Ran 248 tests in 15.189s
+
+FAILED (errors=3)

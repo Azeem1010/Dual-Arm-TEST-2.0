@@ -1,0 +1,24 @@
+# 操作介面的啟動設定。要修改時複製到 ~/.ros/dual_arm_hmi/profiles.yaml，該檔優先。
+# 實機欄位留空時，介面會拒絕啟動並說明原因，不會猜測路徑。
+
+environment:
+  # 和 scripts/start_sim.sh 相同；執行介面前已設定的環境變數優先
+  ROS_DOMAIN_ID: '43'
+  GZ_PARTITION: dual_arm_pipeline_demo
+
+simulation:
+  gz_args: '-r -s'          # -s 不開 Gazebo 視窗，畫面改由介面的 Gazebo 視角顯示
+  prefilled_slots: 2        # 格位 1 在目前配置搆不到，從格位 3 開始
+  calib_dir: ~/.ros/dual_arm_calib/sim
+
+mock_serial:
+  # 空白 = 工作區內的測試夾具 src/cm530_hardware/test/fixtures/calibration_mock.yaml
+  calibration_file: ''
+
+hardware:
+  port: ''                  # /dev/serial/by-id/... 必填，不要用 /dev/ttyUSB0
+  calibration_file: ''      # 空白 = 套件內 calibration.yaml（目前全為 null，驅動會拒絕啟動）
+  controllers_file: ''      # 實機動作必填，容差必須是實測值
+  vision_calib_dir: ''      # 空白 = vision_pkg 的預設目錄
+
+startup_warning_s: 240      # 啟動超過這個秒數仍未就緒時提示

@@ -1,0 +1,144 @@
+=== supervisor up, no heartbeat yet
+--- controllers
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  inactive
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  inactive
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active  
+exit=0
+--- hardware
+	state: id=2 label=inactive
+	read/write rate: 100 Hz
+	is_async: False
+	command interfaces
+		arm2_arm_wrist_flex_joint/position [available] [unclaimed]
+		arm2_arm_elbow_flex_joint/position [available] [unclaimed]
+		arm2_arm_shoulder_lift_joint/position [available] [unclaimed]
+		arm1_arm_elbow_flex_joint/position [available] [unclaimed]
+		arm1_arm_shoulder_lift_joint/position [available] [unclaimed]
+		arm2_arm_shoulder_pan_joint/position [available] [unclaimed]
+		arm1_arm_wrist_flex_joint/position [available] [unclaimed]
+		arm1_arm_shoulder_pan_joint/position [available] [unclaimed]
+exit=0
+--- safety
+data: '{"latched": true, "reason": "Emergency-stop heartbeat has not been received", "controllers_stopped": true}'
+---
+exit=0
+=== order in ORIN_DEPLOYMENT: reset while hardware is inactive
+--- reset_inactive
+requester: making request: std_srvs.srv.Trigger_Request()
+
+response:
+std_srvs.srv.Trigger_Response(success=False, message='Controller activation was refused')
+
+exit=0
+--- controllers
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  inactive
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  inactive
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active  
+exit=0
+--- hardware
+	state: id=2 label=inactive
+	read/write rate: 100 Hz
+	is_async: False
+	command interfaces
+		arm2_arm_wrist_flex_joint/position [available] [unclaimed]
+		arm2_arm_elbow_flex_joint/position [available] [unclaimed]
+		arm2_arm_shoulder_lift_joint/position [available] [unclaimed]
+		arm1_arm_elbow_flex_joint/position [available] [unclaimed]
+		arm1_arm_shoulder_lift_joint/position [available] [unclaimed]
+		arm2_arm_shoulder_pan_joint/position [available] [unclaimed]
+		arm1_arm_wrist_flex_joint/position [available] [unclaimed]
+		arm1_arm_shoulder_pan_joint/position [available] [unclaimed]
+exit=0
+--- safety
+data: '{"latched": true, "reason": "Emergency-stop heartbeat has not been received", "controllers_stopped": true}'
+---
+exit=0
+=== then hardware active, reset
+--- activate_hardware
+[INFO] [1794245319.012004365] [_ros2cli_34877]: waiting for service /controller_manager/set_hardware_component_state to become available...
+Successfully set DualArmSystem to state lifecycle_msgs.msg.State(id=3, label='active')
+exit=0
+--- reset_active
+requester: making request: std_srvs.srv.Trigger_Request()
+
+response:
+std_srvs.srv.Trigger_Response(success=True, message='Latch cleared and arm controllers activated')
+
+exit=0
+--- controllers
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  active
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  active
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active
+exit=0
+--- hardware
+	state: id=3 label=active
+	read/write rate: 100 Hz
+	is_async: False
+	command interfaces
+		arm2_arm_wrist_flex_joint/position [available] [claimed]
+		arm2_arm_elbow_flex_joint/position [available] [claimed]
+		arm2_arm_shoulder_lift_joint/position [available] [claimed]
+		arm1_arm_elbow_flex_joint/position [available] [claimed]
+		arm1_arm_shoulder_lift_joint/position [available] [claimed]
+		arm2_arm_shoulder_pan_joint/position [available] [claimed]
+		arm1_arm_wrist_flex_joint/position [available] [claimed]
+		arm1_arm_shoulder_pan_joint/position [available] [claimed]
+exit=0
+--- safety
+data: '{"latched": false, "reason": "", "controllers_stopped": false}'
+---
+exit=0
+=== heartbeat lost
+--- controllers
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  inactive
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  inactive
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active  
+exit=0
+--- hardware
+	state: id=3 label=active
+	read/write rate: 100 Hz
+	is_async: False
+	command interfaces
+		arm2_arm_wrist_flex_joint/position [available] [unclaimed]
+		arm2_arm_elbow_flex_joint/position [available] [unclaimed]
+		arm2_arm_shoulder_lift_joint/position [available] [unclaimed]
+		arm1_arm_elbow_flex_joint/position [available] [unclaimed]
+		arm1_arm_shoulder_lift_joint/position [available] [unclaimed]
+		arm2_arm_shoulder_pan_joint/position [available] [unclaimed]
+		arm1_arm_wrist_flex_joint/position [available] [unclaimed]
+		arm1_arm_shoulder_pan_joint/position [available] [unclaimed]
+exit=0
+--- safety
+data: '{"latched": true, "reason": "Emergency-stop heartbeat is stale", "controllers_stopped": true}'
+---
+exit=0
+=== latched with no heartbeat: does a manual switch_controllers get past the latch?
+--- manual_switch
+Successfully switched controllers!
+Activated controllers: [ arm1_controller arm2_controller ]
+exit=0
+--- controllers
+[INFO] [1794245366.303038191] [_ros2cli_35109]: waiting for service /controller_manager/list_controllers to become available...
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  active
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  active
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active
+exit=0
+--- hardware
+	state: id=3 label=active
+	read/write rate: 100 Hz
+	is_async: False
+	command interfaces
+		arm2_arm_wrist_flex_joint/position [available] [claimed]
+		arm2_arm_elbow_flex_joint/position [available] [claimed]
+		arm2_arm_shoulder_lift_joint/position [available] [claimed]
+		arm1_arm_elbow_flex_joint/position [available] [claimed]
+		arm1_arm_shoulder_lift_joint/position [available] [claimed]
+		arm2_arm_shoulder_pan_joint/position [available] [claimed]
+		arm1_arm_wrist_flex_joint/position [available] [claimed]
+		arm1_arm_shoulder_pan_joint/position [available] [claimed]
+exit=0
+--- safety
+data: '{"latched": true, "reason": "Emergency-stop heartbeat is stale", "controllers_stopped": true}'
+---
+exit=0
+done

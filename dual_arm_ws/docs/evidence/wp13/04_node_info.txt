@@ -1,0 +1,83 @@
+=== node list
+/arm1_controller
+/arm2_controller
+/controller_manager
+/dual_arm_coordinator
+/dualarmsystem
+/joint_state_broadcaster
+/move_group
+/move_group/moveit
+/move_group_private_101270569354816
+/moveit_3571593043
+/moveit_simple_controller_manager
+/robot_state_publisher
+/safety_supervisor
+/transform_listener_impl_5c1ae47231a0
+=== coordinator
+/dual_arm_coordinator
+  Subscribers:
+    /gripper/arm1/state: std_msgs/msg/String
+    /gripper/arm2/state: std_msgs/msg/String
+    /ground_truth/cap_1: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_2: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_3: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_4: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_5: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_6: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_7: tf2_msgs/msg/TFMessage
+    /ground_truth/cap_8: tf2_msgs/msg/TFMessage
+    /joint_states: sensor_msgs/msg/JointState
+    /safety/estop: std_msgs/msg/Bool
+  Publishers:
+    /dual_arm/permit: std_msgs/msg/Bool
+    /dual_arm/status: std_msgs/msg/String
+    /gripper/arm1/command: std_msgs/msg/String
+    /gripper/arm2/command: std_msgs/msg/String
+    /handoff/b_state: std_msgs/msg/String
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+  Service Servers:
+    /dual_arm/cancel: std_srvs/srv/Trigger
+    /dual_arm/confirm: dual_arm_interfaces/srv/ConfirmStep
+    /dual_arm/recover: dual_arm_interfaces/srv/ConfirmStep
+    /dual_arm/start: std_srvs/srv/Trigger
+    /dual_arm_coordinator/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /dual_arm_coordinator/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /dual_arm_coordinator/get_parameters: rcl_interfaces/srv/GetParameters
+    /dual_arm_coordinator/get_type_description: type_description_interfaces/srv/GetTypeDescription
+    /dual_arm_coordinator/list_parameters: rcl_interfaces/srv/ListParameters
+    /dual_arm_coordinator/set_parameters: rcl_interfaces/srv/SetParameters
+    /dual_arm_coordinator/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+  Service Clients:
+    /apply_planning_scene: moveit_msgs/srv/ApplyPlanningScene
+    /check_state_validity: moveit_msgs/srv/GetStateValidity
+    /get_planning_scene: moveit_msgs/srv/GetPlanningScene
+  Action Servers:
+
+  Action Clients:
+    /execute_trajectory: moveit_msgs/action/ExecuteTrajectory
+    /move_action: moveit_msgs/action/MoveGroup
+=== supervisor
+/safety_supervisor
+  Subscribers:
+    /dual_arm/permit: std_msgs/msg/Bool
+    /safety/estop: std_msgs/msg/Bool
+  Publishers:
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+    /safety/status: std_msgs/msg/String
+  Service Servers:
+    /safety/reset: std_srvs/srv/Trigger
+    /safety_supervisor/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /safety_supervisor/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /safety_supervisor/get_parameters: rcl_interfaces/srv/GetParameters
+    /safety_supervisor/get_type_description: type_description_interfaces/srv/GetTypeDescription
+    /safety_supervisor/list_parameters: rcl_interfaces/srv/ListParameters
+    /safety_supervisor/set_parameters: rcl_interfaces/srv/SetParameters
+    /safety_supervisor/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+  Service Clients:
+    /controller_manager/switch_controller: controller_manager_msgs/srv/SwitchController
+  Action Servers:
+
+  Action Clients:
+

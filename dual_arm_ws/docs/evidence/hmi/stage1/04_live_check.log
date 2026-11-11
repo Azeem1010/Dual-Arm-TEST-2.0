@@ -1,0 +1,188 @@
+{
+  "ready": {
+    "mode": "模擬",
+    "phase": "就緒",
+    "connected": true,
+    "monitor_only": true,
+    "controllers_active": true,
+    "decision_source": "truth",
+    "task_state": "IDLE",
+    "busy": false,
+    "joints": 8,
+    "joint_age_s": 0.016369277000194415,
+    "commands_seen": 8,
+    "limits_seen": 8,
+    "cameras": {
+      "env": {
+        "fps": 1.8,
+        "age_s": 0.194,
+        "calibration": "FAIL",
+        "annotation": true
+      },
+      "arm1": {
+        "fps": 1.6,
+        "age_s": 0.129,
+        "calibration": "FAIL",
+        "annotation": true
+      },
+      "arm2": {
+        "fps": 1.2,
+        "age_s": 0.045,
+        "calibration": "FAIL",
+        "annotation": true
+      }
+    },
+    "gazebo_views": {
+      "view_isometric": 0.0,
+      "view_top": 0.0,
+      "view_front": 0.0,
+      "view_side": 0.0
+    },
+    "zones": {
+      "a_has_object": true,
+      "b_has_object": false,
+      "b_arm_clear": true,
+      "c_count": 0
+    },
+    "safety": null,
+    "banner": "監看中"
+  },
+  "speed_with_ui": {
+    "real_time_factor": 0.183,
+    "env_cam_fps": 1.97,
+    "wall_s": 27.4
+  },
+  "every_action_refused": true,
+  "annotation_differs_from_raw": {
+    "env": true,
+    "arm1": true,
+    "arm2": true
+  },
+  "stop_feedback": "已拒絕",
+  "gazebo_image_view_isometric": true,
+  "gazebo_image_view_top": true,
+  "gazebo_image_view_front": true,
+  "gazebo_image_view_side": true,
+  "start_call": "std_srvs.srv.Trigger_Response(success=True, message='Accepted; the result is reported on /dual_arm/status')",
+  "states_seen": [
+    "ARM1:INITIAL_HOME",
+    "ARM2:INITIAL_HOME",
+    "ARM1:APPROACH_A",
+    "ARM1:DESCEND_A",
+    "ARM1:LIFT_A",
+    "ARM1:HOME_HOLDING",
+    "ARM1:APPROACH_B",
+    "ARM1:DESCEND_B",
+    "ARM1:DETACH",
+    "ARM1:LIFT_B",
+    "ARM1:HOME_EMPTY",
+    "ARM2:PREFLIGHT",
+    "ARM2:APPROACH_B",
+    "ARM2:DESCEND_B",
+    "ARM2:ATTACH",
+    "ARM2:LIFT_B",
+    "ARM2:HOME_HOLDING",
+    "ARM2:APPROACH_C",
+    "ARM2:DESCEND_C",
+    "ARM2:DETACH",
+    "ARM2:LIFT_C",
+    "ARM2:HOME_EMPTY",
+    "SUCCEEDED"
+  ],
+  "refresh_ms": {
+    "mean": 1.0,
+    "max": 7.8,
+    "samples": 2013
+  },
+  "finished": {
+    "mode": "模擬",
+    "phase": "就緒",
+    "connected": true,
+    "monitor_only": true,
+    "controllers_active": true,
+    "decision_source": "truth",
+    "task_state": "SUCCEEDED",
+    "busy": false,
+    "joints": 8,
+    "joint_age_s": 0.05638774600083707,
+    "commands_seen": 8,
+    "limits_seen": 8,
+    "cameras": {
+      "env": {
+        "fps": 1.9,
+        "age_s": 0.31,
+        "calibration": "FAIL",
+        "annotation": true
+      },
+      "arm1": {
+        "fps": 2.5,
+        "age_s": 0.213,
+        "calibration": "FAIL",
+        "annotation": true
+      },
+      "arm2": {
+        "fps": 2.7,
+        "age_s": 0.164,
+        "calibration": "FAIL",
+        "annotation": true
+      }
+    },
+    "gazebo_views": {
+      "view_isometric": 0.0,
+      "view_top": 0.0,
+      "view_front": 0.0,
+      "view_side": 0.0
+    },
+    "zones": {
+      "a_has_object": true,
+      "b_has_object": false,
+      "b_arm_clear": true,
+      "c_count": 1
+    },
+    "safety": null,
+    "banner": "監看中"
+  },
+  "after_stop": {
+    "mode": "模擬",
+    "phase": "就緒",
+    "connected": false,
+    "monitor_only": true,
+    "controllers_active": false,
+    "decision_source": "",
+    "task_state": null,
+    "busy": false,
+    "joints": 8,
+    "joint_age_s": 6.23593948600319,
+    "commands_seen": 0,
+    "limits_seen": 8,
+    "cameras": {
+      "env": {
+        "fps": 0.0,
+        "age_s": 6.144,
+        "calibration": "NOT_RUN",
+        "annotation": false
+      },
+      "arm1": {
+        "fps": 0.0,
+        "age_s": 6.04,
+        "calibration": "NOT_RUN",
+        "annotation": false
+      },
+      "arm2": {
+        "fps": 0.0,
+        "age_s": 6.344,
+        "calibration": "NOT_RUN",
+        "annotation": false
+      }
+    },
+    "gazebo_views": {
+      "view_isometric": 0.0,
+      "view_top": 0.0,
+      "view_front": 0.0,
+      "view_side": 0.0
+    },
+    "zones": null,
+    "safety": null,
+    "banner": "ROS 連線中斷"
+  }
+}

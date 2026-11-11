@@ -1,0 +1,68 @@
+.................................................F...F.................. [ 88%]
+.........                                                                [100%]
+=================================== FAILURES ===================================
+_____________ ZoneBFailures.test_b_held_by_other_owner_is_refused ______________
+
+self = <test_workflow.ZoneBFailures testMethod=test_b_held_by_other_owner_is_refused>
+
+    def test_b_held_by_other_owner_is_refused(self):
+        self.transfer.zone.acquire('arm2', observation_clear=True)
+>       self.assert_faulted('B zone unavailable')
+
+test/test_workflow.py:335: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_workflow.py:150: in assert_faulted
+    self.transfer.run(limit)
+dual_arm_coordinator/workflow/transfer.py:36: in run
+    return self._run(limit)
+dual_arm_coordinator/workflow/transfer.py:55: in _run
+    Arm1Workflow(self.ctx).run()
+dual_arm_coordinator/workflow/arm1_workflow.py:66: in run
+    ctx.acquire_b(ARM, view)
+dual_arm_coordinator/workflow/context.py:40: in acquire_b
+    self.b_token = self.zone.acquire(arm, observation_clear=view.b_arm_clear)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def acquire(self, arm, *, observation_clear):
+        with self._lock:
+            if arm not in ('arm1', 'arm2') or self.owner is not None or self.faulted or observation_clear is not True:
+>               raise RuntimeError('B zone unavailable or observation not clear')
+E               RuntimeError: B zone unavailable or observation not clear
+
+dual_arm_coordinator/resources.py:16: RuntimeError
+_________ SlotVerification.test_unverified_placement_is_not_committed __________
+
+self = <test_workflow.SlotVerification testMethod=test_unverified_placement_is_not_committed>
+
+    def test_unverified_placement_is_not_committed(self):
+        for name, change in {'not placed': dict(placed=False), 'order': dict(order_ok=False),
+                             'invalid': dict(success=False)}.items():
+            with self.subTest(name):
+                self.world = World(self.path)
+                self.path.unlink(missing_ok=True)
+                self.make()
+                self.world.place_patch = lambda view: replace(view, **change)
+>               self.assert_faulted()
+
+test/test_workflow.py:371: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_workflow.py:150: in assert_faulted
+    self.transfer.run(limit)
+dual_arm_coordinator/workflow/transfer.py:36: in run
+    return self._run(limit)
+dual_arm_coordinator/workflow/transfer.py:56: in _run
+    Arm2Workflow(self.ctx).run()
+dual_arm_coordinator/workflow/arm2_workflow.py:80: in run
+    ctx.slots.commit(slot, placed=place.placed, order_ok=place.order_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def commit(self, slot, *, placed, order_ok):
+        if slot != self.reserved or placed is not True or order_ok is not True:
+>           raise RuntimeError('Placement unverified; reservation retained')
+E           RuntimeError: Placement unverified; reservation retained
+
+dual_arm_coordinator/resources.py:74: RuntimeError
+=========================== short test summary info ============================
+FAILED test/test_workflow.py::ZoneBFailures::test_b_held_by_other_owner_is_refused
+FAILED test/test_workflow.py::SlotVerification::test_unverified_placement_is_not_committed
+2 failed, 79 passed in 14.73s

@@ -1,0 +1,997 @@
+{
+  "status": "PASS",
+  "mode": "Gazebo ground truth, three-object pipeline",
+  "transport_speed_scale": 0.5,
+  "contact_speed_scale": 0.25,
+  "full_scene_acceptance": "NOT_RUN",
+  "events": [
+    {
+      "stage": "pipeline_start",
+      "wall_time": 1794221476.8026693,
+      "sim_time": 6.318,
+      "objects": [
+        "cap_5",
+        "cap_6"
+      ],
+      "destinations": [
+        [
+          -0.1675,
+          -0.055,
+          0.019
+        ],
+        [
+          -0.1325,
+          -0.055,
+          0.019
+        ]
+      ]
+    },
+    {
+      "stage": "home_A_home_C_ready_start",
+      "wall_time": 1794221476.8186507,
+      "sim_time": 6.318,
+      "targets": {
+        "arm1": null,
+        "arm2": null
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "home_A_home_C_ready_done",
+      "wall_time": 1794221515.9611776,
+      "sim_time": 13.995,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.16634466841988754,
+            -0.027680720018032918,
+            0.14080448347617494
+          ],
+          "error_m": 0.0
+        },
+        "arm2": {
+          "tcp": [
+            -0.1515760786791877,
+            -0.03502247051073163,
+            0.1408042620908081
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "first_A_approach_start",
+      "wall_time": 1794221515.9717305,
+      "sim_time": 13.995,
+      "targets": {
+        "arm1": [
+          0.14,
+          -0.03,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "first_A_approach_done",
+      "wall_time": 1794221535.4529955,
+      "sim_time": 17.7,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.14001434003932822,
+            -0.03001399641400804,
+            0.054032734291138446
+          ],
+          "error_m": 3.838059600052674e-05
+        }
+      }
+    },
+    {
+      "stage": "first_A_contact_start",
+      "wall_time": 1794221535.4625993,
+      "sim_time": 17.7,
+      "targets": {
+        "arm1": [
+          0.14,
+          -0.03,
+          0.024300000000000002
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "first_A_contact_done",
+      "wall_time": 1794221550.628678,
+      "sim_time": 20.548000000000002,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.14000174749670025,
+            -0.030005425250923676,
+            0.024328480302754488
+          ],
+          "error_m": 2.9045046691120084e-05
+        }
+      }
+    },
+    {
+      "stage": "attached",
+      "wall_time": 1794221550.6374774,
+      "sim_time": 20.554,
+      "arm": "arm1",
+      "object": "cap_5"
+    },
+    {
+      "stage": "first_A_lift_start",
+      "wall_time": 1794221550.649368,
+      "sim_time": 20.554,
+      "targets": {
+        "arm1": [
+          0.14,
+          -0.03,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "first_A_lift_done",
+      "wall_time": 1794221562.6659496,
+      "sim_time": 22.843,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.1400015820728177,
+            -0.030004560127686465,
+            0.05397287504051644
+          ],
+          "error_m": 2.7551064333380268e-05
+        }
+      }
+    },
+    {
+      "stage": "physical_lift_verified",
+      "wall_time": 1794221562.6690722,
+      "sim_time": 22.843,
+      "arm": "arm1",
+      "object": "cap_5",
+      "position": [
+        0.1400002889162275,
+        -0.030000464408029642,
+        0.04863925948284058
+      ]
+    },
+    {
+      "stage": "B_deposit_approach_start",
+      "wall_time": 1794221562.6877632,
+      "sim_time": 22.843,
+      "targets": {
+        "arm1": [
+          0.0,
+          -0.02,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_deposit_approach_done",
+      "wall_time": 1794221592.2017436,
+      "sim_time": 28.439,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            2.4649674899051427e-05,
+            -0.020018582614519987,
+            0.054000852334019675
+          ],
+          "error_m": 3.088116753473611e-05
+        }
+      }
+    },
+    {
+      "stage": "B_deposit_contact_start",
+      "wall_time": 1794221592.210822,
+      "sim_time": 28.439,
+      "targets": {
+        "arm1": [
+          0.0,
+          -0.02,
+          0.024300000000000002
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_deposit_contact_done",
+      "wall_time": 1794221605.4624019,
+      "sim_time": 30.994,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            -1.6138514493842238e-06,
+            -0.02000355193824914,
+            0.024331794815831115
+          ],
+          "error_m": 3.203328106143279e-05
+        }
+      }
+    },
+    {
+      "stage": "released",
+      "wall_time": 1794221605.4667804,
+      "sim_time": 30.998,
+      "arm": "arm1",
+      "object": "cap_5"
+    },
+    {
+      "stage": "B_arm1_retreat_start",
+      "wall_time": 1794221605.4794471,
+      "sim_time": 30.998,
+      "targets": {
+        "arm1": [
+          0.0,
+          -0.02,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_arm1_retreat_done",
+      "wall_time": 1794221616.7007008,
+      "sim_time": 33.136,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            -3.315158150040201e-06,
+            -0.020001446306525276,
+            0.053973725436767636
+          ],
+          "error_m": 2.6522344337865195e-05
+        }
+      }
+    },
+    {
+      "stage": "B_arm1_clear_start",
+      "wall_time": 1794221616.703927,
+      "sim_time": 33.136,
+      "targets": {
+        "arm1": null
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_arm1_clear_done",
+      "wall_time": 1794221649.0269725,
+      "sim_time": 39.488,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.16631830928009292,
+            -0.027684882432183852,
+            0.1407908338729434
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "B_placement_verified",
+      "wall_time": 1794221651.5847073,
+      "sim_time": 39.988,
+      "object": "cap_5",
+      "position": [
+        2.3768900026369662e-06,
+        -0.019999412837252695,
+        0.018999999882893654
+      ]
+    },
+    {
+      "stage": "parallel_A_B_approach_start",
+      "wall_time": 1794221651.6040695,
+      "sim_time": 39.988,
+      "targets": {
+        "arm2": [
+          2.3768900026369662e-06,
+          -0.019999412837252695,
+          0.054
+        ],
+        "arm1": [
+          0.2,
+          -0.03,
+          0.054
+        ]
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "parallel_A_B_approach_done",
+      "wall_time": 1794221681.3958375,
+      "sim_time": 45.816,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -2.2778367005512126e-05,
+            -0.020028687671440115,
+            0.05402060984909769
+          ],
+          "error_m": 4.375578535092958e-05
+        },
+        "arm1": {
+          "tcp": [
+            0.19999696314434637,
+            -0.030005078451776156,
+            0.05401963960065545
+          ],
+          "error_m": 2.0511632763127344e-05
+        }
+      }
+    },
+    {
+      "stage": "parallel_A_B_contact_start",
+      "wall_time": 1794221681.4130325,
+      "sim_time": 45.816,
+      "targets": {
+        "arm2": [
+          2.3768900026369662e-06,
+          -0.019999412837252695,
+          0.024300000000000002
+        ],
+        "arm1": [
+          0.2,
+          -0.03,
+          0.024300000000000002
+        ]
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "parallel_A_B_contact_done",
+      "wall_time": 1794221693.8569498,
+      "sim_time": 48.398,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            4.716197629345276e-06,
+            -0.02000219491901927,
+            0.024329250288691248
+          ],
+          "error_m": 2.9475273156487025e-05
+        },
+        "arm1": {
+          "tcp": [
+            0.20000205336379837,
+            -0.03000361692050181,
+            0.02433029131168743
+          ],
+          "error_m": 3.057551276020904e-05
+        }
+      }
+    },
+    {
+      "stage": "attached",
+      "wall_time": 1794221693.865246,
+      "sim_time": 48.402,
+      "arm": "arm2",
+      "object": "cap_5"
+    },
+    {
+      "stage": "attached",
+      "wall_time": 1794221693.874097,
+      "sim_time": 48.409,
+      "arm": "arm1",
+      "object": "cap_6"
+    },
+    {
+      "stage": "parallel_A_B_lift_start",
+      "wall_time": 1794221693.8913045,
+      "sim_time": 48.409,
+      "targets": {
+        "arm2": [
+          2.3768900026369662e-06,
+          -0.019999412837252695,
+          0.054
+        ],
+        "arm1": [
+          0.2,
+          -0.03,
+          0.054
+        ]
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "parallel_A_B_lift_done",
+      "wall_time": 1794221704.6902206,
+      "sim_time": 50.567,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            5.174965090247452e-06,
+            -0.020001465307870524,
+            0.05397040015942474
+          ],
+          "error_m": 2.980255730493251e-05
+        },
+        "arm1": {
+          "tcp": [
+            0.20000255783600157,
+            -0.0300032340321573,
+            0.053969365807060896
+          ],
+          "error_m": 3.091043943452727e-05
+        }
+      }
+    },
+    {
+      "stage": "physical_lift_verified",
+      "wall_time": 1794221704.6948779,
+      "sim_time": 50.567,
+      "arm": "arm2",
+      "object": "cap_5",
+      "position": [
+        3.1767324201441988e-06,
+        -0.01999904319893169,
+        0.04864292581073448
+      ]
+    },
+    {
+      "stage": "physical_lift_verified",
+      "wall_time": 1794221704.7083943,
+      "sim_time": 50.567,
+      "arm": "arm1",
+      "object": "cap_6",
+      "position": [
+        0.20000088572682517,
+        -0.030000065019049234,
+        0.048642671983180924
+      ]
+    },
+    {
+      "stage": "C_carry_start",
+      "wall_time": 1794221704.726903,
+      "sim_time": 50.567,
+      "targets": {
+        "arm2": [
+          -0.1675,
+          -0.055,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "C_carry_done",
+      "wall_time": 1794221735.119644,
+      "sim_time": 56.645,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.16747004342702862,
+            -0.05501259393424732,
+            0.054001456470126094
+          ],
+          "error_m": 3.2528829509285565e-05
+        }
+      }
+    },
+    {
+      "stage": "B_clear_verified",
+      "wall_time": 1794221735.1291325,
+      "sim_time": 56.645,
+      "object": "cap_5"
+    },
+    {
+      "stage": "parallel_C_release_B_approach_start",
+      "wall_time": 1794221735.1557863,
+      "sim_time": 56.645,
+      "targets": {
+        "arm2": [
+          -0.1675,
+          -0.055,
+          0.0253
+        ],
+        "arm1": [
+          0.0,
+          -0.02,
+          0.054
+        ]
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "parallel_C_release_B_approach_done",
+      "wall_time": 1794221799.5641367,
+      "sim_time": 69.104,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.16750093945253236,
+            -0.055000054333594256,
+            0.02530344584600737
+          ],
+          "error_m": 3.5720271424652954e-06
+        },
+        "arm1": {
+          "tcp": [
+            1.8624921562897245e-05,
+            -0.02001966866405272,
+            0.05400014500539976
+          ],
+          "error_m": 2.7088098408872792e-05
+        }
+      }
+    },
+    {
+      "stage": "released",
+      "wall_time": 1794221799.5688927,
+      "sim_time": 69.107,
+      "arm": "arm2",
+      "object": "cap_5"
+    },
+    {
+      "stage": "C_retreat_start",
+      "wall_time": 1794221799.5847106,
+      "sim_time": 69.107,
+      "targets": {
+        "arm2": [
+          -0.1675,
+          -0.055,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "C_retreat_done",
+      "wall_time": 1794221809.8085418,
+      "sim_time": 71.2,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.16750075429363065,
+            -0.05500313225904935,
+            0.05396567505749367
+          ],
+          "error_m": 3.4475813024444404e-05
+        }
+      }
+    },
+    {
+      "stage": "C_placement_verified",
+      "wall_time": 1794221812.4061258,
+      "sim_time": 71.7,
+      "object": "cap_5",
+      "position": [
+        -0.16749931577951266,
+        -0.0549970754230515,
+        0.01899924530086551
+      ]
+    },
+    {
+      "stage": "arm2_clear_start",
+      "wall_time": 1794221812.409317,
+      "sim_time": 71.7,
+      "targets": {
+        "arm2": null
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "arm2_clear_done",
+      "wall_time": 1794221829.7032628,
+      "sim_time": 75.2,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.15158847112512516,
+            -0.0350240456894596,
+            0.1407690590733961
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "B_deposit_approach_start",
+      "wall_time": 1794221829.7099133,
+      "sim_time": 75.2,
+      "targets": {
+        "arm1": [
+          0.0,
+          -0.02,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_deposit_approach_done",
+      "wall_time": 1794221830.7980945,
+      "sim_time": 75.465,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            5.432939543439236e-07,
+            -0.02000153367565606,
+            0.0540001283526506
+          ],
+          "error_m": 1.6321163382965132e-06
+        }
+      }
+    },
+    {
+      "stage": "B_deposit_contact_start",
+      "wall_time": 1794221830.80907,
+      "sim_time": 75.465,
+      "targets": {
+        "arm1": [
+          0.0,
+          -0.02,
+          0.024300000000000002
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_deposit_contact_done",
+      "wall_time": 1794221844.1100793,
+      "sim_time": 78.029,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            -1.3239839565405004e-06,
+            -0.020003064528540667,
+            0.024332547150429623
+          ],
+          "error_m": 3.271790442222903e-05
+        }
+      }
+    },
+    {
+      "stage": "released",
+      "wall_time": 1794221844.1178455,
+      "sim_time": 78.033,
+      "arm": "arm1",
+      "object": "cap_6"
+    },
+    {
+      "stage": "B_arm1_retreat_start",
+      "wall_time": 1794221844.1331797,
+      "sim_time": 78.033,
+      "targets": {
+        "arm1": [
+          0.0,
+          -0.02,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_arm1_retreat_done",
+      "wall_time": 1794221854.949543,
+      "sim_time": 80.193,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            -1.0029738133424115e-06,
+            -0.020003049758756115,
+            0.05396926969492989
+          ],
+          "error_m": 3.089755062529453e-05
+        }
+      }
+    },
+    {
+      "stage": "B_arm1_clear_start",
+      "wall_time": 1794221854.9544613,
+      "sim_time": 80.193,
+      "targets": {
+        "arm1": null
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "B_arm1_clear_done",
+      "wall_time": 1794221887.7470698,
+      "sim_time": 86.547,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.16631818105477988,
+            -0.02768397835325296,
+            0.14079243613834738
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "B_placement_verified",
+      "wall_time": 1794221890.1338532,
+      "sim_time": 87.047,
+      "object": "cap_6",
+      "position": [
+        1.9995873261614613e-06,
+        -0.02000066512778245,
+        0.01899638335489248
+      ]
+    },
+    {
+      "stage": "parallel_A_B_approach_start",
+      "wall_time": 1794221890.1447175,
+      "sim_time": 87.047,
+      "targets": {
+        "arm2": [
+          1.9995873261614613e-06,
+          -0.02000066512778245,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "parallel_A_B_approach_done",
+      "wall_time": 1794221919.9373133,
+      "sim_time": 92.895,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -2.229931629043648e-05,
+            -0.020029319389728392,
+            0.054019716665113876
+          ],
+          "error_m": 4.242935691061353e-05
+        }
+      }
+    },
+    {
+      "stage": "parallel_A_B_contact_start",
+      "wall_time": 1794221919.9472175,
+      "sim_time": 92.895,
+      "targets": {
+        "arm2": [
+          1.9995873261614613e-06,
+          -0.02000066512778245,
+          0.024300000000000002
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "parallel_A_B_contact_done",
+      "wall_time": 1794221932.3782008,
+      "sim_time": 95.489,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            5.143200074390203e-06,
+            -0.020001960240576697,
+            0.024324038099360318
+          ],
+          "error_m": 2.4277352391005463e-05
+        }
+      }
+    },
+    {
+      "stage": "attached",
+      "wall_time": 1794221932.3823967,
+      "sim_time": 95.493,
+      "arm": "arm2",
+      "object": "cap_6"
+    },
+    {
+      "stage": "parallel_A_B_lift_start",
+      "wall_time": 1794221932.3946948,
+      "sim_time": 95.493,
+      "targets": {
+        "arm2": [
+          1.9995873261614613e-06,
+          -0.02000066512778245,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "parallel_A_B_lift_done",
+      "wall_time": 1794221943.2528276,
+      "sim_time": 97.617,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            4.16710563554655e-06,
+            -0.02000483659659731,
+            0.05396768090651313
+          ],
+          "error_m": 3.265919612464057e-05
+        }
+      }
+    },
+    {
+      "stage": "physical_lift_verified",
+      "wall_time": 1794221943.2570767,
+      "sim_time": 97.617,
+      "arm": "arm2",
+      "object": "cap_6",
+      "position": [
+        1.261198403492217e-06,
+        -0.020003608854989745,
+        0.04864742240934204
+      ]
+    },
+    {
+      "stage": "C_carry_start",
+      "wall_time": 1794221943.2744796,
+      "sim_time": 97.617,
+      "targets": {
+        "arm2": [
+          -0.1325,
+          -0.055,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "C_carry_done",
+      "wall_time": 1794221969.1044939,
+      "sim_time": 102.798,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.13247022772054903,
+            -0.055007175310678766,
+            0.05399876611149834
+          ],
+          "error_m": 3.064957076172838e-05
+        }
+      }
+    },
+    {
+      "stage": "B_clear_verified",
+      "wall_time": 1794221969.1076353,
+      "sim_time": 102.798,
+      "object": "cap_6"
+    },
+    {
+      "stage": "parallel_C_release_B_approach_start",
+      "wall_time": 1794221969.1248329,
+      "sim_time": 102.798,
+      "targets": {
+        "arm2": [
+          -0.1325,
+          -0.055,
+          0.0253
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "parallel_C_release_B_approach_done",
+      "wall_time": 1794221981.9450536,
+      "sim_time": 105.304,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.1324996392953542,
+            -0.0550049412608511,
+            0.025332671195012757
+          ],
+          "error_m": 3.304471440641823e-05
+        }
+      }
+    },
+    {
+      "stage": "released",
+      "wall_time": 1794221981.9516418,
+      "sim_time": 105.308,
+      "arm": "arm2",
+      "object": "cap_6"
+    },
+    {
+      "stage": "C_retreat_start",
+      "wall_time": 1794221981.9646807,
+      "sim_time": 105.308,
+      "targets": {
+        "arm2": [
+          -0.1325,
+          -0.055,
+          0.054
+        ]
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "C_retreat_done",
+      "wall_time": 1794221992.9452145,
+      "sim_time": 107.468,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.13249924697198612,
+            -0.05500194879298598,
+            0.05397472408774992
+          ],
+          "error_m": 2.5362109245202798e-05
+        }
+      }
+    },
+    {
+      "stage": "C_placement_verified",
+      "wall_time": 1794221995.434253,
+      "sim_time": 107.968,
+      "object": "cap_6",
+      "position": [
+        -0.13250000446362845,
+        -0.05500094140350583,
+        0.018999943488082077
+      ]
+    },
+    {
+      "stage": "arm2_clear_start",
+      "wall_time": 1794221995.438003,
+      "sim_time": 107.968,
+      "targets": {
+        "arm2": null
+      },
+      "simultaneous": false
+    },
+    {
+      "stage": "arm2_clear_done",
+      "wall_time": 1794222012.3748102,
+      "sim_time": 111.146,
+      "feedback": {
+        "arm2": {
+          "tcp": [
+            -0.151572666725598,
+            -0.03502666190788847,
+            0.14076577614939526
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "both_home_start",
+      "wall_time": 1794222012.3791819,
+      "sim_time": 111.146,
+      "targets": {
+        "arm1": null,
+        "arm2": null
+      },
+      "simultaneous": true
+    },
+    {
+      "stage": "both_home_done",
+      "wall_time": 1794222013.559688,
+      "sim_time": 111.422,
+      "feedback": {
+        "arm1": {
+          "tcp": [
+            0.16634278156291812,
+            -0.027660418983116653,
+            0.14080802041732368
+          ],
+          "error_m": 0.0
+        },
+        "arm2": {
+          "tcp": [
+            -0.1515732449596095,
+            -0.035021727057176155,
+            0.140774227620395
+          ],
+          "error_m": 0.0
+        }
+      }
+    },
+    {
+      "stage": "pipeline_completed",
+      "wall_time": 1794222013.563393,
+      "sim_time": 111.422
+    }
+  ]
+}
