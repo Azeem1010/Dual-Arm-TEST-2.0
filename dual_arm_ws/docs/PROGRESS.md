@@ -1,9 +1,10 @@
-# Development status — 2026-11-12
+# Development status — 2026-11-13
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
 ## Latest result: camera roles for the USB bandwidth limit
 
+- 2026-11-13 (`52a6518`, made on the Orin, from Azeem1010/Dual-Arm-TEST-2.0 `env-scene-debug-image`): `env_scene_node` publishes its OpenCV overlay on `/vision/env/debug_image` (`publish_debug_image`, default true, also when the field is not found), so the operator UI shows the annotated env view on hardware instead of the raw image. `vision_hardware.launch.py` gains `show_debug` (OpenCV window, default false) and `publish_debug_image`; the vision_pkg include is scoped so its `show_debug:=false` no longer overrides env_scene. This is a local change to the imported `src/env_scene`, not upstream yet. Orin: overlay ~7 fps; Windows WSL rebuild and the 10 env_scene tests PASS (evidence/env_debug_image_20261113/).
 - User decisions (2026-11-12): the environment camera decides zones A, B and C; the arm cameras only monitor and must never stream together, switching with the moving arm (process start/stop, design option A); no end-to-end hardware dry-run mode; caps go only inside the black-taped visible part of zone A (operating rule). Design and plan: superpowers/specs/2026-11-12-camera-roles-design.md, superpowers/plans/2026-11-12-camera-roles.md.
 - Coordinator: arm 2 picks zone B at an observed position (`TaskIO.b_pick_target`, refused beyond `zones.b_pick_tolerance_m`, simulation 0.02 m, hardware null); new `observation_source=env_scene` (`gateways/env_scene.py`) maps the env_scene world coordinates and refuses `estimated` coordinates and invalid flags per use; zone B arm clearance from joint feedback. Simulation still uses truth / vision_pick and picks B at `b_place`.
 - `vision.launch.py` starts at most one arm camera (`arm_camera:=none|arm1|arm2`, default none). New `arm_camera_switch` and `env_scene_bridge` in `dual_arm_vision_adapter`, new `dual_arm_bringup/vision_hardware.launch.py`; the operator UI's hardware mode uses it and shows the rotation (「輪流中，鏡頭關閉」, 「僅監控」).

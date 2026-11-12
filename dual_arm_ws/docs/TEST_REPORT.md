@@ -1,5 +1,15 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-13 env_scene overlay for the operator UI
+
+`env_scene_node` publishes `/vision/env/debug_image`; `vision_hardware.launch.py` gains `show_debug` and `publish_debug_image` (`52a6518`). Details: evidence/env_debug_image_20261113/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Orin, env camera only: overlay ~7 fps 640x480 bgr8, window with `show_debug:=true`, zone state valid; env_scene 10, vision_pkg 104, vision_adapter 36, hmi 298 | PASS | reported in the commit message, not rerun here |
+| Windows WSL: rebuild `env_scene`, `dual_arm_bringup`; env_scene tests; launch `--show-args` | PASS | 10 tests; wsl_*.log |
+| Operator UI showing the overlay on this Windows machine | NOT_RUN | no camera attached |
+
 ## 2026-11-12 Camera roles for the USB bandwidth limit
 
 The environment camera decides zones A, B and C (`env_scene` source); the arm cameras only monitor and stream one at a time (`arm_camera_switch`). Details: evidence/camera_roles_20261112/README.md.

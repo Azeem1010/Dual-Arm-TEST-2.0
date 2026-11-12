@@ -177,7 +177,7 @@ src/dual_arm_hmi/
 | 區域 | 內容 | 來源 |
 |---|---|---|
 | 頂部狀態列 | 模式、ROS、系統、安全、任務、決策來源 | 綜合 |
-| 相機三格 | 判定框、FPS、影像延遲、校正結果、標註／原始切換 | `/vision/*/debug_image`、`/*_cam/image_raw`、`/vision/calibration_status` |
+| 相機三格 | 判定框、FPS、影像延遲、校正結果、標註／原始切換 | `/vision/*/debug_image`（實機的 `env` 由 `env_scene_node` 發布）、`/*_cam/image_raw`、`/vision/calibration_status` |
 | Gazebo 視角 | 等角、俯視、正面、側面，2 Hz。模擬標「Gazebo 模擬」，實機標「跟隨實機回授，非實機影像」，同步中斷要明顯標示 | `/view_{isometric,top,front,side}/image_raw` |
 | 馬達表 | deg、rad、raw、速度（估計）、命令誤差、限位位置條 | `/joint_states`、`/armN_controller/controller_state`、`/robot_description` |
 | 任務 | 八段進度、目前步驟、持物、B 區擁有者、C 區八格、完成數 | `/dual_arm/status`、`/vision/arm2/grid_state` |
@@ -249,6 +249,7 @@ src/dual_arm_hmi/
 |---|---|---|
 | `scripts/install_jazzy.sh` | 加 `fonts-noto-cjk`、`python3-pyqt5`（已完成） | 0 |
 | `src/vision_pkg` 三個節點 | 新增 `publish_debug_image`，發布 `/vision/*/debug_image`。`_render` 原本被 `show_debug` 擋住，已改成繪圖和 `imshow` 分開控制（已完成） | 1 |
+| `src/env_scene` | `env_scene_node` 發布框線影像 `/vision/env/debug_image`（`publish_debug_image` 預設開）；`vision_hardware.launch.py` 加 `show_debug`、`publish_debug_image`（已完成，2026-11-13 `52a6518`） | 1 |
 | `src/dual_arm_bringup` | 新增 `hmi_sim.launch.py`（已完成；階段 3 加入 `safety_supervisor`，`require_estop:=false`） | 2 |
 | `scripts/` | 新增 `hmi_windows.bat`、`install_hmi_shortcut.sh`（已完成） | 2 |
 | `safety_monitor.py`、`safety_supervisor.py` | 新增 `/safety/trigger_stop`，直接鎖定，由 `/safety/reset` 解除（已完成） | 3 |

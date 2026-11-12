@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-13：合入 Orin 上的修正 `52a6518`（Azeem1010/Dual-Arm-TEST-2.0 `env-scene-debug-image` 分支）：`env_scene_node` 發布框線影像 `/vision/env/debug_image`（`publish_debug_image` 預設開），實機操作介面的環境相機改顯示標註畫面；`vision_hardware.launch.py` 新增 `show_debug`（OpenCV 視窗，預設關）、`publish_debug_image`，vision_pkg 的 include 改成 scoped，不再蓋掉 env_scene 的 `show_debug`。這是對匯入的 `src/env_scene` 的本地修改，換上游版本時要帶過去。Windows 的 WSL 已重建、env_scene 10 項測試 PASS（`docs/evidence/env_debug_image_20261113/`）。
 - 2026-11-12：鏡頭分工調整（USB 頻寬）。使用者決定：環境相機負責 A/B/C 判斷，手臂鏡頭只監控、跟著動作的手臂輪流開（開關 usb_cam 程序），不做端到端試跑模式，瓶蓋只放 A 區黑框內。已完成：Arm 2 用觀測到的 B 區座標吸取（容許 `b_pick_tolerance_m`）、coordinator 新來源 `env_scene`、`vision.launch.py` 最多一顆手臂鏡頭、`arm_camera_switch`、`env_scene_bridge`、`vision_hardware.launch.py`、操作介面輪流顯示。env_camera_vision 暫用 `6b059eb` 匯入（使用者 2026-11-12 同意）；現場版本（A 區座標以黑框左緣為原點）推送後要換版並重新核對座標。coordinator 在手臂停妥後多等 0.5 s（env_scene 的處理與格位防抖延遲）才查詢。現場驗證見 HARDWARE_TEST_GUIDE V1，全部 NOT_RUN。2026-11-12 全專案檢查通過（`docs/evidence/project_check_20261112/`），只剩已知的 Gazebo 關閉逾時與一次 operator_tools 偶發（重跑 PASS）。設計與計畫：`docs/superpowers/`。
 - 2026-11-12：格位 8 改用傾斜吸盤，模擬八物體放滿 8 格（evidence/tilt_slot8_20261112/README.md）。使用者決定：放寬吸盤朝下（模擬上限 9°）、傾斜目標調高接觸高度、移動模擬 cap_8 到 (-0.24, 0.05)、軸心到板緣用 5 mm、模擬相機先不處理。IK 取「離目前關節最近」的傾斜解（傾斜最小的解會撞底座）；接觸高度依吸盤或持物瓶蓋的傾斜補償。實機設定新增 `cup_radius_m`、`max_tool_tilt_deg`，要現場量。手臂軸心、格位、瓶蓋起點集中到 `scripts/field_layout.py`。整體檢查（evidence/system_audit_20261112/）：live graph 無型別、QoS、缺伺服器問題；`run_checks.sh` 改為擋下並判定殘留的 coordinator 等節點。Orin 的 `orin-source` 分支與 `3fd258c` 相同，更新步驟在 ORIN_DEPLOYMENT「從舊版更新」。
 

@@ -324,7 +324,8 @@ ros2 launch vision_pkg vision.launch.py arm_camera:=arm2   # 先停掉上一個�
 **A 區放置規則：** 環境相機看不到 A 區最左端約 25%。A 區用黑色膠帶框出可見範圍，瓶蓋**只能放在黑框內**；框外的瓶蓋相機看不到，任務會以為 A 區已空。
 
 ```bash
-ros2 launch dual_arm_bringup vision_hardware.launch.py
+ros2 launch dual_arm_bringup vision_hardware.launch.py      # 加 show_debug:=true 另開 OpenCV 框線視窗（需桌面）
+ros2 topic hz /vision/env/debug_image               # env_scene 框線影像（操作介面顯示用，預設開）
 ros2 topic echo /vision/arm_cameras/state          # 目前開哪顆、phase
 ros2 service call /vision/env_scene/calibrate std_srvs/srv/Trigger     # C 格旁不可有瓶蓋
 ros2 service call /vision/env_scene/get_scene env_scene_interfaces/srv/GetEnvScene
