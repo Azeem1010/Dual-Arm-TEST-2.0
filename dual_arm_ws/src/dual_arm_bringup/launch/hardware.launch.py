@@ -54,6 +54,7 @@ def setup(context):
     enable_motion = require_bool(context, 'enable_motion')
     use_mock = require_bool(context, 'use_mock_serial')
     use_moveit = require_bool(context, 'use_moveit')
+    require_estop = require_bool(context, 'require_estop')
     controllers_file = LaunchConfiguration('controllers_file').perform(context)
     calibration = LaunchConfiguration('calibration_file').perform(context)
     port = MOCK_PORT if use_mock else LaunchConfiguration('port').perform(context)
@@ -97,7 +98,9 @@ def setup(context):
     if not use_mock:
         if enable_motion:
             # Fail closed: without a valid heartbeat the arm controllers stay stopped.
-            actions.append(Node(package='dual_arm_coordinator', executable='safety_supervisor', output='screen'))
+            # require_estop:=false is for the prototype only (no heartbeat node, D8).
+            actions.append(Node(package='dual_arm_coordinator', executable='safety_supervisor', output='screen',
+                                parameters=[{'require_estop': require_estop}]))
         return actions
     # The mock must create its pseudo-terminal before the driver opens it.
     mock = Node(package='cm530_hardware', executable='cm530_mock_serial',
@@ -114,5 +117,7 @@ def generate_launch_description():
         DeclareLaunchArgument('controllers_file', default_value=''),
         DeclareLaunchArgument('use_mock_serial', default_value='false'),
         DeclareLaunchArgument('use_moveit', default_value='true'),
+        DeclareLaunchArgument('require_estop', default_value='true',
+                              description='safety_supervisor 要求 /safety/estop 心跳；只有 prototype 設 false'),
         OpaqueFunction(function=setup),
     ])

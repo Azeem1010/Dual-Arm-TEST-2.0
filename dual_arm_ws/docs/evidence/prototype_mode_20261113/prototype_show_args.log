@@ -1,0 +1,93 @@
+Arguments (pass arguments as '<name>:=<value>'):
+
+    'port':
+        CM-530 序列埠
+        (default: '/dev/ttyUSB0')
+
+    'calibration_file':
+        馬達校正檔；預設是 prototype 估計值
+        (default: PathJoinSubstitution('FindPackageShare(pkg='cm530_hardware'), 'config', 'calibration_prototype.yaml''))
+
+    'use_mock_serial':
+        測試用 Mock Serial（要搭配 mock 校正檔）
+        (default: 'false')
+
+    'env_cam_device':
+        環境相機裝置；空 = cameras.yaml
+        (default: '')
+
+    'arm1_cam_device':
+        手臂 1 鏡頭裝置；空 = cameras.yaml
+        (default: '')
+
+    'arm2_cam_device':
+        手臂 2 鏡頭裝置；空 = cameras.yaml
+        (default: '')
+
+    'calib_dir':
+        vision_pkg 校正檔目錄（空 = 預設）
+        (default: '')
+
+    'cycles':
+        搬運幾件（1～8）
+        (default: '1')
+
+    'journal_path':
+        任務紀錄檔；空 = 設定檔的路徑
+        (default: '')
+
+    'enable_motion':
+        no description given
+        (default: 'false')
+
+    'controllers_file':
+        no description given
+        (default: '')
+
+    'use_moveit':
+        no description given
+        (default: 'true')
+
+    'require_estop':
+        safety_supervisor 要求 /safety/estop 心跳；只有 prototype 設 false
+        (default: 'true')
+
+    'show_debug':
+        env_scene 另開 OpenCV 框線視窗（需要桌面 DISPLAY）
+        (default: 'false')
+
+    'publish_debug_image':
+        env_scene 發布框線影像 /vision/env/debug_image 給操作介面
+        (default: 'true')
+
+    'env_cam_rotate':
+        env_cam 影像順時針旋轉 0/90/180/270；空 = 沿用 config/cameras.yaml
+        (default: '')
+
+    'arm1_cam_rotate':
+        arm1_cam 影像順時針旋轉 0/90/180/270；空 = 沿用 config/cameras.yaml
+        (default: '')
+
+    'arm2_cam_rotate':
+        arm2_cam 影像順時針旋轉 0/90/180/270；空 = 沿用 config/cameras.yaml
+        (default: '')
+
+    'undistort':
+        true/false 覆寫節點的去畸變設定；空字串 = 沿用 config
+        (default: '')
+
+    'respawn':
+        節點/相機異常結束時是否自動重啟
+        (default: 'true')
+
+    'arm_camera':
+        none/arm1/arm2：最多啟動一顆手臂鏡頭（頻寬限制）
+        (default: 'none')
+
+    'env_camera':
+        是否啟動環境相機
+        (default: 'true')
+
+    'vision_nodes':
+        是否啟動視覺節點（false = 只開相機）
+        (default: 'true')
