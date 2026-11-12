@@ -1,0 +1,61 @@
+Arguments (pass arguments as '<name>:=<value>'):
+
+    'env_cam_device':
+        環境相機裝置路徑；空 = vision_pkg 的 config/cameras.yaml
+        (default: '')
+
+    'arm1_cam_device':
+        手臂 1 鏡頭裝置路徑；空 = cameras.yaml
+        (default: '')
+
+    'arm2_cam_device':
+        手臂 2 鏡頭裝置路徑；空 = cameras.yaml
+        (default: '')
+
+    'calib_dir':
+        vision_pkg 校正檔目錄（空 = 預設）
+        (default: '')
+
+    'env_cam_rotate':
+        env_cam 影像順時針旋轉 0/90/180/270；空 = 沿用 config/cameras.yaml
+        (default: '')
+
+    'arm1_cam_rotate':
+        arm1_cam 影像順時針旋轉 0/90/180/270；空 = 沿用 config/cameras.yaml
+        (default: '')
+
+    'arm2_cam_rotate':
+        arm2_cam 影像順時針旋轉 0/90/180/270；空 = 沿用 config/cameras.yaml
+        (default: '')
+
+    'show_debug':
+        三個視覺節點是否開 debug 視窗（沒有 DISPLAY 時自動停用）
+        (default: 'true')
+
+    'publish_debug_image':
+        是否發布標註影像 /vision/*/debug_image 給操作介面
+        (default: 'false')
+
+    'undistort':
+        true/false 覆寫節點的去畸變設定；空字串 = 沿用 config
+        (default: '')
+
+    'respawn':
+        節點/相機異常結束時是否自動重啟
+        (default: 'true')
+
+    'arm_camera':
+        none/arm1/arm2：最多啟動一顆手臂鏡頭（頻寬限制）
+        (default: 'none')
+
+    'env_camera':
+        是否啟動環境相機
+        (default: 'true')
+
+    'vision_nodes':
+        是否啟動視覺節點（false = 只開相機）
+        (default: 'true')
+show-args exit 0
+dual_arm_vision_adapter arm_camera_switch
+dual_arm_vision_adapter calibration_status
+dual_arm_vision_adapter env_scene_bridge
