@@ -1,0 +1,76 @@
+# PROTOTYPE ESTIMATE (2026-11-13): not measured, not calibration evidence.
+#
+# Real arms on estimated values (user decision 2026-11-13: run the whole flow,
+# accuracy and suction success not required). Copied from config/sim/coordinator.yaml
+# (field layout measured 2026-11-11); changes are marked. Never copy these into
+# config/hardware/coordinator.yaml.
+schema_version: 1
+mode: prototype
+evidence_kind: prototype_estimate
+target_frame: world
+home_source: calibration
+journal_path: ~/.ros/dual_arm/prototype_journal.json
+arms:
+  arm1:
+    planning_group: arm1
+    controller: arm1_controller
+    tcp_link: arm1_tcp
+    moveit_base_frame: arm1_base_link
+    vision_base_frame: arm1_base
+  arm2:
+    planning_group: arm2
+    controller: arm2_controller
+    tcp_link: arm2_tcp
+    moveit_base_frame: arm2_base_link
+    vision_base_frame: arm2_base
+speeds:              # slower than simulation
+  transport_scale: 0.3
+  contact_scale: 0.2
+  acceleration_scale: 0.3
+heights:
+  surface_z_m: 0.014
+  cap_height_m: 0.01
+  cap_radius_m: 0.01
+  cup_radius_m: 0.009
+  contact_z_m: 0.0243
+  release_z_m: 0.0253
+  approach_z_m: 0.054
+  pick_z_tolerance_m: 0.0015
+zones:
+  a_min_xy_m: [-0.30, -0.12]
+  a_max_xy_m: [-0.10, 0.12]
+  b_place_xy_m: [0.0, 0.0]
+  b_pick_tolerance_m: 0.05     # simulation 0.02
+  c_slots_xy_m:
+    - [0.135, 0.050]
+    - [0.170, 0.050]
+    - [0.135, 0.015]
+    - [0.170, 0.015]
+    - [0.135, -0.020]
+    - [0.170, -0.020]
+    - [0.135, -0.055]
+    - [0.170, -0.055]
+motion:
+  planning_s: 10.0
+  planning_attempts: 3
+  goal_submit_s: 20.0
+  motion_s: 240.0
+  settle_s: 0.5
+  tcp_error_limit_m: 0.01      # simulation 0.0005
+  arrival_samples: 3
+  arrival_timeout_s: 30.0
+  joint_state_max_age_s: 1.0
+  waypoint_step_m: 0.002
+  waypoint_joint_jump_rad: 0.15
+  max_velocity_rad_s: 0.5
+  max_acceleration_rad_s2: 1.0
+  max_tool_tilt_deg: 9.0
+gripper:
+  backend: esp32
+  auto_confirm: true           # nobody confirms suction in the prototype
+  reply_timeout_s: 20.0
+  esp32_echo_timeout_s: 2.0
+  vacuum_settle_s: 1.0
+  esp32_modules:               # guess: E0 not run; swap if the wrong cup acts
+    arm1: 1
+    arm2: 2

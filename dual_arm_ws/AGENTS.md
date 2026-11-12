@@ -27,6 +27,7 @@
 - 校正、關節限位和回授都實測驗證前，實機維持停用。
 - 不可填假的校正值，`calibration.yaml` 的空欄位是刻意的。
 - 不可把模擬 HOME（`runtime.json`）複製到實機設定。
+- 例外（使用者 2026-11-13 決定）：實機 Prototype 模式的 `*_prototype.yaml` 與 `dual_arm_coordinator/config/prototype/` 可以用估計值與 `runtime.json` 的數值，檔頭第一行必須是 `# PROTOTYPE ESTIMATE (2026-11-13): not measured, not calibration evidence.`。這些檔案不是校正證據，正式檔案仍照上面兩條。
 - 不可為了通過檢查而放寬限位；確實需要時要經使用者同意，並記錄原因。
 - 驅動預設唯讀，不可改成預設可動作。
 - 通訊逾時後不可自動重送，因為協定沒有指令編號。

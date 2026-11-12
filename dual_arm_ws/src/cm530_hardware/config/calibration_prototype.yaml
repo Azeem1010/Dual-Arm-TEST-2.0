@@ -1,0 +1,35 @@
+# PROTOTYPE ESTIMATE (2026-11-13): not measured, not calibration evidence.
+#
+# Used only by dual_arm_bringup/hardware_prototype.launch.py (user decision
+# 2026-11-13: run the whole flow on the real arms, accuracy not required).
+# The strict calibration.yaml stays empty until H2.
+#
+# Sources:
+#   zero_raw, direction  dual_arm_coordinator/config/sim/runtime.json
+#                        (raw_at_cad_zero, direction; H1 READs support them,
+#                        see docs/evidence/hardware/20261111_H1 and _fk_crosscheck)
+#   min_raw, max_raw     URDF limits (j1..j3 +-1.5 rad, j4 -1.5..+1.65 rad)
+#                        converted at 1024 ticks per 300 deg, clamped to 0..1023
+#   expected_home        firmware home_A / home_C, same as calibration.yaml
+#   max_step_raw         small on purpose: Moving Speed may be 0 (full speed)
+#                        after power-up and was not checked
+#
+# The status and authorization flags below only satisfy the driver's gate; they
+# are not a calibration result.
+status: PASS
+evidence_kind: physical
+hardware_use_allowed: true
+moving_speed_verified: true
+max_step_raw: 20
+expected_home:
+  arm1: [90, 567, 712, 825]
+  arm2: [590, 567, 712, 825]
+joints:
+  arm1_arm_shoulder_pan_joint: {motor_id: 17, zero_raw: 192.3, direction: 1, min_raw: 0, max_raw: 486}
+  arm1_arm_shoulder_lift_joint: {motor_id: 3, zero_raw: 631.35, direction: 1, min_raw: 338, max_raw: 925}
+  arm1_arm_elbow_flex_joint: {motor_id: 2, zero_raw: 699.55, direction: 1, min_raw: 406, max_raw: 993}
+  arm1_arm_wrist_flex_joint: {motor_id: 15, zero_raw: 512, direction: 1, min_raw: 219, max_raw: 835}
+  arm2_arm_shoulder_pan_joint: {motor_id: 12, zero_raw: 512, direction: 1, min_raw: 219, max_raw: 805}
+  arm2_arm_shoulder_lift_joint: {motor_id: 1, zero_raw: 631.35, direction: 1, min_raw: 338, max_raw: 925}
+  arm2_arm_elbow_flex_joint: {motor_id: 8, zero_raw: 699.55, direction: 1, min_raw: 406, max_raw: 993}
+  arm2_arm_wrist_flex_joint: {motor_id: 16, zero_raw: 512, direction: 1, min_raw: 219, max_raw: 835}
