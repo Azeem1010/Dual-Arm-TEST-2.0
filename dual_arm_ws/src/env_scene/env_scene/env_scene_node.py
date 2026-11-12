@@ -3,7 +3,9 @@
 
 影像中由左至右：A（黑框，瓶蓋待取）| B | C（8 個方格）；相機在使用者這側（影像下方 = 使用者）。
 
-  srv     /vision/env_scene/get_scene   env_scene_interfaces/GetEnvScene   取得最新場景（不發布 topic）
+  srv     /vision/env_scene/get_scene   env_scene_interfaces/GetEnvScene   取得最新場景（場景結果不發布 topic）
+  pub     /vision/env/debug_image       sensor_msgs/Image（bgr8）  OpenCV 框線標註影像，給操作介面顯示
+                                        （publish_debug_image:=true 才發布；show_debug:=true 另開 OpenCV 視窗）
   srv     /vision/env_scene/calibrate   std_srvs/Trigger   場地/黑框/8 格重新定位（C 區 8 格請淨空、線材移開）
 
 標定結果存在 <calib_dir>/env_scene_layout.yaml，重啟沿用；沒有存檔時開機自動標定。
@@ -30,7 +32,7 @@ from env_scene_interfaces.msg import EnvScene, SceneObject
 from env_scene_interfaces.srv import GetEnvScene
 from vision_pkg import calib_io
 from vision_pkg.node_common import (Debouncer, FrameBuffer, LatestValue, image_msg_to_bgr, image_problem,
-                                    spin_node, stamp)
+                                    publish_debug_image, spin_node, stamp)
 from vision_pkg.vision_core.color_zone import MaskParams, ZoneFindParams
 
 from env_scene import scene_core as sc
@@ -38,6 +40,7 @@ from env_scene import scene_core as sc
 CAM_FRAME = 'env_camera_optical_frame'
 LAYOUT_FILE = 'env_scene_layout.yaml'
 MEAS_FILE = 'env_field_homography.yaml'     # calibrate_points 產生
+DEBUG_TOPIC = '/vision/env/debug_image'     # 操作介面讀這個 topic 顯示標註畫面
 NESTED = {'field_mask': MaskParams, 'field_find': ZoneFindParams, 'obj_mask': MaskParams}
 
 
@@ -66,12 +69,15 @@ class EnvSceneNode(Node):
         super().__init__('env_scene_node')
         for name, default in [('image_topic', '/env_cam/image_raw'), ('show_debug', True), ('process_hz', 10.0),
                               ('image_timeout_s', 1.0), ('service_timeout_s', 3.0), ('calib_dir', ''),
-                              ('calib_frames', 5), ('boot_wait_s', 10.0), ('occupied_frames', 3)]:
+                              ('calib_frames', 5), ('boot_wait_s', 10.0), ('occupied_frames', 3),
+                              ('publish_debug_image', True)]:
             self.declare_parameter(name, default)
         _declare_scene_params(self)
         g = lambda n: self.get_parameter(n).value
         self.p = _read_scene_params(self)
         self.show_debug = bool(g('show_debug'))
+        self.debug_pub = (self.create_publisher(Image, DEBUG_TOPIC, qos_profile_sensor_data)
+                          if bool(g('publish_debug_image')) else None)
         self.timeout = float(g('image_timeout_s'))
         self.srv_timeout = float(g('service_timeout_s'))
         self.calib_n = int(g('calib_frames'))
@@ -211,6 +217,7 @@ class EnvSceneNode(Node):
                     lay = self.layout or lay
             if lay is None or not lay.ok:
                 self._problem = '場地尚未定位' + (f'：{lay.message}' if lay else '')
+                self._show(frame, lay or sc.Layout(False, self._problem), None)
                 return
         hsv = self.hsv.value
         if hsv is None:
@@ -223,8 +230,16 @@ class EnvSceneNode(Node):
             res.slot_occupied = [d.update(o) for d, o in zip(debs, res.slot_occupied)]
         self._problem = ''
         self.state.set((lay, res))
+        self._show(frame, lay, res)
+
+    def _show(self, frame, lay: sc.Layout, res) -> None:
+        """畫框線：給 OpenCV 視窗（show_debug）和操作介面（publish_debug_image）。兩個都關就不畫。"""
+        if not self.show_debug and self.debug_pub is None:
+            return
+        img = sc.draw(frame, lay, res)
         if self.show_debug:
-            self._debug_img = sc.draw(frame, lay, res)
+            self._debug_img = img
+        publish_debug_image(self.debug_pub, img, self.get_clock().now().to_msg())
 
     # ---------------- 訊息 ----------------
     def _to_msg(self, lay: Optional[sc.Layout], res) -> EnvScene:

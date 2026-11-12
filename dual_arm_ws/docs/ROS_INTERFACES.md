@@ -27,7 +27,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `arm1_vision_node` | `vision_pkg` | `/vision/arm1/pick_target`、`/vision/arm1/detections` | `/arm1_cam/image_raw` | `/vision/arm1/get_pick_target` |
 | `arm2_vision_node` | `vision_pkg` | `/vision/arm2/grid_state` | `/arm2_cam/image_raw` | `/vision/arm2/get_grid_state`、`/vision/arm2/verify_place` |
 | `calibration_status` | `dual_arm_vision_adapter` | `/vision/calibration_status` | 三支相機 `image_raw` | 無 |
-| `env_scene_node` | `env_scene`（上游 env_camera_vision，實機） | 無（結果只走 service） | `/env_cam/image_raw` | `/vision/env_scene/get_scene`、`/vision/env_scene/calibrate` |
+| `env_scene_node` | `env_scene`（上游 env_camera_vision，實機） | `/vision/env/debug_image`（框線標註，`publish_debug_image` 預設開；場景結果只走 service） | `/env_cam/image_raw` | `/vision/env_scene/get_scene`、`/vision/env_scene/calibrate` |
 | `env_scene_bridge` | `dual_arm_vision_adapter`（實機，顯示用） | `/vision/env/zone_state`、`/vision/calibration_status`（只有 `env`） | `/dual_arm/status` | Client：`/vision/env_scene/get_scene` |
 | `arm_camera_switch` | `dual_arm_vision_adapter`（實機） | `/vision/arm_cameras/state`（JSON 字串，transient_local） | `/dual_arm/status` | 無；以子程序啟動／結束手臂鏡頭的 `vision.launch.py`，同時最多一顆 |
 | `ros_gz_bridge` | `ros_gz_bridge` + [bridge.yaml](../src/dual_arm_gazebo/config/bridge.yaml) | 相機影像與 `camera_info`、`/clock`、`/gripper/armN/state`、`/ground_truth/*`、`/gazebo/ground_truth` | `/gripper/armN/command` | 無 |
@@ -69,7 +69,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/vision/arm1/detections` | `vision_interfaces/msg/PickDetections` | 所有偵測到的瓶蓋 | reliable、depth 10 |
 | `/vision/arm2/grid_state` | `vision_interfaces/msg/GridState` | C 區八格，`frame_id=arm2_base_link`（數值仍是 `arm2_base` 軸向，見已知缺口 4） | reliable、depth 10 |
 | `/vision/calibration_status` | `diagnostic_msgs/msg/DiagnosticArray` | 三支相機 PASS／FAIL 與原因 | reliable、depth 10；每 0.5 秒 |
-| `/vision/{env,arm1,arm2}/debug_image` | `sensor_msgs/msg/Image` | 視覺節點的標註影像（`bgr8`），給操作介面顯示。需 `publish_debug_image:=true`，預設不發布 | best-effort；隨視覺處理頻率 |
+| `/vision/{env,arm1,arm2}/debug_image` | `sensor_msgs/msg/Image` | 視覺節點的標註影像（`bgr8`），給操作介面顯示。需 `publish_debug_image:=true`，vision_pkg 節點預設不發布；實機的 `env` 由 `env_scene_node` 發布，預設開 | best-effort；隨視覺處理頻率 |
 
 | `/dual_arm/status` | `std_msgs/msg/String`（JSON） | 狀態、持物、B 區擁有者、格位、token、`at_home`（每臂 true／false，關節狀態過期時為 null） | transient_local、depth 1；5 Hz |
 | `/dual_arm/permit` | `std_msgs/msg/Bool` | Coordinator 存活與是否允許；停止發布代表失效 | 10 Hz |

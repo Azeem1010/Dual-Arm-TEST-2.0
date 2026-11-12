@@ -2,7 +2,8 @@
 env_scene_node:
   ros__parameters:
     image_topic: /env_cam/image_raw
-    show_debug: true
+    show_debug: true           # OpenCV 框線視窗（實機 launch 預設關，用 show_debug:=true 開）
+    publish_debug_image: true  # 發布框線影像到 /vision/env/debug_image，操作介面顯示用
     process_hz: 10.0
     calib_dir: ''              # 空 = VISION_CALIB_DIR 或 ~/.ros/vision_calib（與 vision_pkg 共用 hsv.yaml）
     calib_frames: 5
