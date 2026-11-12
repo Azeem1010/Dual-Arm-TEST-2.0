@@ -47,16 +47,16 @@ bash scripts/start_sim.sh mock
 
 ### 從舊版更新（Orin 上已有 clone）
 
-2026-11-12 查核：Orin 推到 Azeem1010/Dual-Arm-TEST-2.0 的 `orin-source` 分支，內容與本專案 `3fd258c` 完全相同（tree 雜湊相同，submodule 指向也相同），沒有 Orin 本機的程式修改，所以可以直接 fast-forward 更新。2026-11-11 現場紀錄則寫已更新到 `8ad9d47`，兩者不一致，表示 `orin-source` 可能是較舊的一份副本；以 Orin 上 `git rev-parse HEAD` 的實際結果為準，兩種起點都能照下面步驟更新。
+2026-11-12 查核：Orin 推到 Azeem1010/Dual-Arm-TEST-2.0 的 `orin-source` 分支，內容與本專案 `3fd258c` 完全相同（tree 雜湊相同，submodule 指向也相同），沒有 Orin 本機的程式修改。但它是新建的根 commit（`c0bed71`，沒有上層），git 不認為它和本專案歷史有關，`git pull --ff-only` 會因「Diverging branches」失敗。2026-11-11 現場紀錄則寫 Orin 是從本專案 clone、已更新到 `8ad9d47`，那種情況可以直接 fast-forward。下面的步驟兩種情況都能處理。
 
-會卡住的地方：開發端已把現場 11-10、11-11 的紀錄匯入 `docs/evidence/hardware/`，Orin 上同路徑的檔案還是未追蹤檔，`git pull` 會因「untracked working tree files would be overwritten」停下。先把它們移到備份資料夾：
+另一個會卡住的地方：開發端已把現場 11-10、11-11 的紀錄匯入 `docs/evidence/hardware/`，Orin 上同路徑的檔案還是未追蹤檔，`git pull` 會因「untracked working tree files would be overwritten」停下。下面先把它們移到備份資料夾：
 
 ```bash
 cd ~/projects/dual_arm_system
 git status --short                                   # 有未提交的程式修改就先停下來問
 B=~/projects/backup_$(date +%Y%m%d_%H%M) && mkdir -p "$B"
 git status --short > "$B/git_status.txt"; git diff > "$B/local_changes.patch"
-cp -a dual_arm_ws/docs/evidence/hardware "$B/evidence_hardware"
+cp -a dual_arm_ws/docs/evidence "$B/evidence"
 git fetch origin
 # 移開「未追蹤、但更新後會出現」的檔案
 git ls-tree -r --name-only origin/main -- dual_arm_ws/docs/evidence | while read -r f; do
@@ -65,12 +65,22 @@ git ls-tree -r --name-only origin/main -- dual_arm_ws/docs/evidence | while read
   fi
 done
 git restore dual_arm_ws/docs/evidence                # 只還原 build.sh／測試覆寫的已追蹤證據檔
-git pull --recurse-submodules --ff-only
+if git merge-base --is-ancestor HEAD origin/main; then
+  git pull --recurse-submodules --ff-only
+elif git log --format=%T origin/main | grep -qx "$(git rev-parse 'HEAD^{tree}')"; then
+  # HEAD 不在專案歷史上（例如用檔案重建的 repo），但內容和某個專案版本完全相同：直接對齊
+  git reset --hard origin/main
+else
+  echo "HEAD 有專案沒有的修改，停下來，把 $B/local_changes.patch 交給開發端"
+fi
 git submodule update --init --recursive
-diff -r --strip-trailing-cr "$B/moved/dual_arm_ws/docs/evidence" dual_arm_ws/docs/evidence | head -40
+diff -r --strip-trailing-cr "$B/moved/dual_arm_ws/docs/evidence" dual_arm_ws/docs/evidence | grep -v "^Only in dual_arm_ws/" | head -40
 ```
 
-- 最後的 `diff` 應該只差 CRLF 或開發端加的說明。有本機才有的內容，把它加回去並寫進當天紀錄。
+這段步驟 2026-11-12 在 WSL 演練過兩種起點（從本專案 clone 的 `8ad9d47`、`orin-source` 的 `c0bed71`），各放入更新會帶來的現場紀錄未追蹤檔，並改動一個已追蹤證據檔：兩者都更新到最新的 main，視覺 submodule 變成 `64f28a0`，`git status` 乾淨。
+
+- 最後的 `diff` 沒有輸出代表移開的檔案和 repo 版本只差 CRLF。有輸出時，把本機才有的內容加回去並寫進當天紀錄。
+- 出現「HEAD 有專案沒有的修改」就停下來，不要 reset。
 - 三個檔名以 `.` 結尾的 CSV 在 repo 裡改名去掉了句點（Windows 不允許），Orin 上的原檔不會被覆寫，留著即可。
 - 系統套件與 11-11 相同，不必重跑 `install_jazzy.sh`；直接 `bash scripts/build.sh`，再跑 HANDOFF 第一步的離線測試。
 - Orin 另有獨立的 `~/vision_ws`（上游 4a40f30）。本專案的 `src/vision_pkg` 已是上游 `64f28a0`（三顆相機的 by-path、arm2 YUYV），並多了 `slot_one_corner: top_left`（實物格位編號）。兩邊不要同時跑，實機請用本專案的 `vision.launch.py`。
