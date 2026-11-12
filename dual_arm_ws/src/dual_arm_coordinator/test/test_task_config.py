@@ -28,6 +28,13 @@ def filled_hardware_doc():
     return doc
 
 
+def prototype_doc():
+    doc = sim_doc()
+    doc.update(mode='prototype', evidence_kind='prototype_estimate', home_source='calibration')
+    doc['gripper'].update(backend='esp32', auto_confirm=True)
+    return doc
+
+
 class ShippedFiles(unittest.TestCase):
     def test_simulation_file_loads(self):
         self.assertEqual(task_config.load(SIM)['mode'], 'simulation')
@@ -102,6 +109,24 @@ class Validation(unittest.TestCase):
         doc = filled_hardware_doc()
         doc['gripper']['auto_confirm'] = True
         self.assert_refused(doc, 'auto_confirm is simulation only')
+
+    def test_prototype_document_is_accepted(self):
+        self.assertEqual(task_config.validate(prototype_doc())['mode'], 'prototype')
+
+    def test_prototype_requires_prototype_evidence(self):
+        doc = prototype_doc()
+        doc['evidence_kind'] = 'physical'
+        self.assert_refused(doc, 'prototype requires evidence_kind=prototype_estimate')
+
+    def test_prototype_refuses_gazebo_gripper(self):
+        doc = prototype_doc()
+        doc['gripper']['backend'] = 'gazebo'
+        self.assert_refused(doc, 'prototype does not allow gripper backend gazebo')
+
+    def test_prototype_cannot_use_runtime_json_home(self):
+        doc = prototype_doc()
+        doc['home_source'] = 'runtime_json'
+        self.assert_refused(doc, 'prototype requires home_source=calibration')
 
     def test_unknown_mode(self):
         doc = sim_doc()

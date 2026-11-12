@@ -9,6 +9,7 @@ import threading
 import time
 
 from ..confirmation import TokenError
+from ..task_config import AUTO_CONFIRM_MODES
 from ..workflow.ports import TaskFault
 
 ARMS = ('arm1', 'arm2')
@@ -236,8 +237,8 @@ def _wire_gazebo(node, settings, guard, locator, callback_group):
 
 def create_gripper(node, config, guard, *, locator=None, gate=None, announce=None, callback_group=None):
     settings, mode = config['gripper'], config['mode']
-    if settings['auto_confirm'] and mode != 'simulation':
-        raise ValueError('Automatic suction confirmation is simulation only')
+    if settings['auto_confirm'] and mode not in AUTO_CONFIRM_MODES:
+        raise ValueError('Automatic suction confirmation is simulation only (or prototype)')
     backend = settings['backend']
     if backend == 'gazebo':
         if mode != 'simulation':

@@ -462,6 +462,14 @@ class Factory(unittest.TestCase):
     def test_esp32_refuses_auto_confirm(self):
         self.assert_refused(config('hardware', 'esp32', True), 'simulation only', gate=TokenGate(1.0), announce=print)
 
+    def test_prototype_allows_auto_confirm(self):
+        backend = create_gripper(None, config('prototype', 'manual_token', True), self.guard,
+                                 gate=TokenGate(1.0), announce=lambda *_: None)
+        self.assertTrue(backend._auto_confirm)
+
+    def test_prototype_refuses_gazebo(self):
+        self.assert_refused(config('prototype', 'gazebo'), 'simulation only', locator=lambda _: 'cap_1')
+
     def test_unknown_backend_is_not_available(self):
         self.assert_refused(config('hardware', 'pneumatic'), 'not available')
 

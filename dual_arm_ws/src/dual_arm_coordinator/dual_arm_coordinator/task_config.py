@@ -41,7 +41,12 @@ _RULES = {
     # derive HOME from the measured calibration.
     'hardware': {'evidence_kind': 'physical', 'home_source': 'calibration',
                  'backends': ('manual_token', 'esp32')},
+    # Prototype: real arms with estimated values (2026-11-13 user decision); never counts as calibration evidence.
+    'prototype': {'evidence_kind': 'prototype_estimate', 'home_source': 'calibration',
+                  'backends': ('manual_token', 'esp32')},
 }
+# Suction results may be confirmed automatically only where nobody claims real accuracy.
+AUTO_CONFIRM_MODES = ('simulation', 'prototype')
 
 
 class TaskConfigError(ValueError):
@@ -90,8 +95,8 @@ def _check_rules(doc):
         errors.append(f'{doc["mode"]} does not allow gripper backend {gripper["backend"]}')
     if not isinstance(gripper['auto_confirm'], bool):
         errors.append('gripper.auto_confirm must be true or false')
-    elif gripper['auto_confirm'] and doc['mode'] != 'simulation':
-        errors.append('gripper.auto_confirm is simulation only')
+    elif gripper['auto_confirm'] and doc['mode'] not in AUTO_CONFIRM_MODES:
+        errors.append('gripper.auto_confirm is simulation only (or prototype)')
     return errors
 
 
