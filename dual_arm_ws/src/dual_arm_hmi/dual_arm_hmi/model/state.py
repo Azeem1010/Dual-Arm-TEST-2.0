@@ -33,14 +33,25 @@ class Mode(Enum):
     MOCK_SERIAL = 'Mock Serial'
     HARDWARE_READ_ONLY = '實機唯讀'
     HARDWARE_MOTION = '實機動作'
+    # Real arms on estimated settings (2026-11-13); runs the task, never calibration evidence.
+    HARDWARE_PROTOTYPE = '實機 Prototype'
 
     @property
     def is_hardware(self):
-        return self in (Mode.HARDWARE_READ_ONLY, Mode.HARDWARE_MOTION)
+        return self in (Mode.HARDWARE_READ_ONLY, Mode.HARDWARE_MOTION, Mode.HARDWARE_PROTOTYPE)
 
     @property
     def has_torque_step(self):
-        return self in (Mode.MOCK_SERIAL, Mode.HARDWARE_READ_ONLY, Mode.HARDWARE_MOTION)
+        return self in (Mode.MOCK_SERIAL, Mode.HARDWARE_READ_ONLY, Mode.HARDWARE_MOTION, Mode.HARDWARE_PROTOTYPE)
+
+    @property
+    def allows_hardware_tasks(self):
+        return self is Mode.HARDWARE_PROTOTYPE
+
+    @property
+    def hardware_locked(self):
+        """Strict hardware: the task, HOME and recovery stay closed until H5/H6."""
+        return self.is_hardware and not self.allows_hardware_tasks
 
 
 class Phase(Enum):
@@ -313,7 +324,7 @@ def _refuse(reason, visible=True):
 
 
 def _start_task_state(s):
-    if s.mode.is_hardware and s.hardware_blocked_reason:
+    if s.mode.hardware_locked and s.hardware_blocked_reason:
         return _refuse(s.hardware_blocked_reason)
     if s.task is None:
         return _refuse('任務節點未啟動')
@@ -381,7 +392,7 @@ def _reset_simulation_state(s):
 
 
 def _go_home_state(s, tools_cleared):
-    if s.mode.is_hardware:
+    if s.mode.hardware_locked:
         return _refuse('實機需等 H5 通過')
     if s.task is None:
         return _refuse('任務節點未啟動')
@@ -549,8 +560,11 @@ def _attention_banner(s):
             if not camera.has_signal and camera.rotation not in ('off', 'switching')]
     if lost:
         return Banner(Level.WARN, '相機無訊號', '、'.join(lost), '檢查相機連線')
-    if s.mode.is_hardware and s.phase is Phase.READY and s.hardware_blocked_reason:
+    if s.mode.hardware_locked and s.phase is Phase.READY and s.hardware_blocked_reason:
         return Banner(Level.WARN, '實機 BLOCKED', s.hardware_blocked_reason, '需先完成 H6 前置條件')
+    if s.mode is Mode.HARDWARE_PROTOTYPE:
+        return Banner(Level.WARN, '實機 PROTOTYPE', '估計校正、沒有急停心跳、吸盤自動確認，結果不算校正證據',
+                      '一人手放在 CM-530 電源開關（唯一急停）')
     return None
 
 

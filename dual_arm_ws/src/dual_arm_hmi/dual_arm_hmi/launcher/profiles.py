@@ -87,6 +87,8 @@ def build_plan(mode, profiles, workspace, journal_path, cycles, environ=os.envir
                            f'calibration_file:={calibration}'))
     if mode in (Mode.HARDWARE_READ_ONLY, Mode.HARDWARE_MOTION):
         return _hardware_plan(mode, profiles, environ)
+    if mode is Mode.HARDWARE_PROTOTYPE:
+        return _prototype_plan(profiles, journal_path, cycles, environ)
     return LaunchPlan(problem='請先選擇模式')
 
 
@@ -116,6 +118,24 @@ def _hardware_plan(mode, profiles, environ):
               if missing else '')
     return LaunchPlan(_together(_launch(*words), _launch(*vision)),
                       environment=(('ROS_DOMAIN_ID', domain_for(mode, profiles, environ)),), notice=notice)
+
+
+def _prototype_plan(profiles, journal_path, cycles, environ):
+    """One launch: arms on the prototype settings, hardware vision and the coordinator."""
+    hardware = profiles.get('hardware') or {}
+    port = hardware.get('port') or ''
+    if not port:
+        return LaunchPlan(problem='設定檔未填控制板路徑 hardware.port')
+    problem = domain_problem(profiles, environ)
+    if problem:
+        return LaunchPlan(problem=problem)
+    words = ['ros2', 'launch', 'dual_arm_bringup', 'hardware_prototype.launch.py', f'port:={port}',
+             f'cycles:={int(cycles)}', f'journal_path:={journal_path}']
+    if hardware.get('vision_calib_dir'):
+        words.append(f'calib_dir:={hardware["vision_calib_dir"]}')
+    words += [f'{name}:={path}' for name in _CAMERA_DEVICES if (path := str(hardware.get(name) or '').strip())]
+    return LaunchPlan(tuple(words), environment=(('ROS_DOMAIN_ID', domain_for(Mode.HARDWARE_PROTOTYPE, profiles, environ)),),
+                      notice='PROTOTYPE：估計校正，CM-530 電源開關是唯一急停')
 
 
 def workspace_from_prefix(prefix):

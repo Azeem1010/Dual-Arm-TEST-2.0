@@ -215,7 +215,7 @@ class ControlPanel(Panel):
         choosable = snapshot.phase is Phase.STOPPED and is_wired(snapshot, Action.START_SYSTEM)
         self.mode.setEnabled(choosable)
         self.cycles.setEnabled(choosable)
-        self.cycles_row.setVisible(snapshot.mode is Mode.SIMULATION and is_wired(snapshot, Action.START_SYSTEM))
+        self.cycles_row.setVisible(snapshot.mode in (Mode.SIMULATION, Mode.HARDWARE_PROTOTYPE) and is_wired(snapshot, Action.START_SYSTEM))
         if self.cycles.value() != snapshot.cycles:
             self.cycles.blockSignals(True)
             self.cycles.setValue(snapshot.cycles)

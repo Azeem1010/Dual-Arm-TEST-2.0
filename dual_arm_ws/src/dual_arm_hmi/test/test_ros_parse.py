@@ -38,6 +38,10 @@ def test_safety_status():
     ('<plugin>cm530_hardware/CM530SystemInterface</plugin><param>/dev/serial/by-id/x</param>', {}, Mode.HARDWARE_READ_ONLY),
     ('<plugin>cm530_hardware/CM530SystemInterface</plugin><param>/dev/x</param>', {'arm1_controller': 'inactive'}, Mode.HARDWARE_MOTION),
     ('<plugin>cm530_hardware/CM530SystemInterface</plugin><param>/tmp/cm530_mock_serial</param>', {}, Mode.MOCK_SERIAL),
+    ('<plugin>cm530_hardware/CM530SystemInterface</plugin><param>/share/cm530_hardware/config/calibration_prototype.yaml</param>',
+     {}, Mode.HARDWARE_PROTOTYPE),
+    ('<plugin>cm530_hardware/CM530SystemInterface</plugin><param>/share/cm530_hardware/config/calibration_prototype.yaml</param>',
+     {'arm1_controller': 'inactive'}, Mode.HARDWARE_PROTOTYPE),
 ))
 def test_mode_comes_from_the_loaded_hardware_plugin(urdf, controllers, expected):
     assert mode_from_urdf(urdf, controllers) is expected

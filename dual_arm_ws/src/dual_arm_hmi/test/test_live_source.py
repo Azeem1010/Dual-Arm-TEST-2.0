@@ -422,6 +422,13 @@ def test_hardware_gets_only_the_stop(commanded):
     assert len(made[0].sent) == count and '階段 5' in source.snapshot().feedback.message
 
 
+def test_prototype_gets_the_task_actions(commanded):
+    source, ros, _, _ = commanded
+    ros.base = connected(mode=Mode.HARDWARE_PROTOTYPE, task=TaskStatus())
+    wired = source.snapshot().wired_actions
+    assert {Action.START_TASK, Action.SAFETY_RESET, Action.CANCEL_TASK, Action.STOP} <= wired
+
+
 def test_commands_follow_the_monitor_to_another_domain(monkeypatch):
     monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
     monkeypatch.setenv('ROS_DOMAIN_ID', '43')

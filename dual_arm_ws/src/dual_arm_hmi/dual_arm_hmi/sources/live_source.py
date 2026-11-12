@@ -123,7 +123,7 @@ class LiveSource(DataSource):
     def _wired(self, mode):
         if self._commander is None:
             return LAUNCH_ACTIONS
-        return LAUNCH_ACTIONS | (_HARDWARE_TASK_ACTIONS if mode.is_hardware else frozenset(TASK_ACTIONS))
+        return LAUNCH_ACTIONS | (_HARDWARE_TASK_ACTIONS if mode.hardware_locked else frozenset(TASK_ACTIONS))
 
     def invoke(self, action, cleared=False):
         """cleared: the operator ticked that the tools and zone B are clear (HOME and recovery)."""
@@ -149,7 +149,7 @@ class LiveSource(DataSource):
     def _send(self, action, cleared):
         mode = self._base.mode if self._base is not None else self._selected
         if action not in self._wired(mode):
-            reason = '實機操作在階段 5 開放' if self._commander is not None and mode.is_hardware else '這個操作尚未接通'
+            reason = '實機操作在階段 5 開放' if self._commander is not None and mode.hardware_locked else '這個操作尚未接通'
             self._feedback = CommandFeedback(action, '已拒絕', reason)
             self._note(Level.WARN, f'{action.value}：{reason}')
             return

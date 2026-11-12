@@ -63,6 +63,16 @@ def test_hardware_transfer_is_blocked_unless_a_source_clears_it(mode):
     assert not state.enabled and state.reason == HARDWARE_MOTION_BLOCKED
 
 
+def test_prototype_is_hardware_but_not_blocked():
+    assert Mode.HARDWARE_PROTOTYPE.is_hardware and Mode.HARDWARE_PROTOTYPE.has_torque_step
+    snapshot = ready(mode=Mode.HARDWARE_PROTOTYPE)
+    assert evaluate_actions(snapshot)[Action.START_TASK].enabled
+    assert evaluate_actions(replace(fault(arms_at_home=False), mode=Mode.HARDWARE_PROTOTYPE), True)[Action.GO_HOME].enabled
+    assert banner(snapshot).title == '實機 PROTOTYPE' and 'CM-530' in banner(snapshot).next_step
+    cell = status_cells(snapshot)[0]
+    assert cell.value == '實機 Prototype' and cell.level is Level.HARDWARE
+
+
 def test_go_home_needs_confirmation_and_is_refused_on_hardware():
     snapshot = fault(arms_at_home=False)
     assert evaluate_actions(snapshot, False)[Action.GO_HOME].reason == '請先勾選已清空'

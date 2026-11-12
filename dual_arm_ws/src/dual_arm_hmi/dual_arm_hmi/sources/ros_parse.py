@@ -64,6 +64,10 @@ def safety_from_json(text):
         return None
 
 
+# hardware_prototype.launch.py loads this calibration file; its name marks the prototype in the description.
+PROTOTYPE_CALIBRATION_MARK = 'calibration_prototype'
+
+
 def mode_from_urdf(urdf, controllers):
     """The running configuration, read from the hardware plugin in the loaded robot description."""
     if not urdf:
@@ -75,6 +79,8 @@ def mode_from_urdf(urdf, controllers):
     if 'cm530_hardware/CM530SystemInterface' in urdf:
         if _MOCK_SERIAL_PORT in urdf:
             return Mode.MOCK_SERIAL
+        if PROTOTYPE_CALIBRATION_MARK in urdf:
+            return Mode.HARDWARE_PROTOTYPE
         return Mode.HARDWARE_MOTION if any(name in controllers for name in ARM_CONTROLLERS) else Mode.HARDWARE_READ_ONLY
     return Mode.UNKNOWN
 

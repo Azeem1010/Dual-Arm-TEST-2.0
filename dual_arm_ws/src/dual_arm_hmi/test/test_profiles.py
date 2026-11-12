@@ -54,6 +54,18 @@ def test_hardware_motion_needs_measured_controllers(profiles):
     assert 'enable_motion:=true' in command and 'controllers_file:=/measured.yaml' in command
 
 
+def test_prototype_uses_its_own_launch(profiles):
+    assert 'hardware.port' in build_plan(Mode.HARDWARE_PROTOTYPE, profiles, WORKSPACE, '', 1).problem
+    plan = build_plan(Mode.HARDWARE_PROTOTYPE, hardware_profiles(profiles, env_cam_device='/dev/v4l/e',
+                                                                   vision_calib_dir='/c'), WORKSPACE, '/tmp/j.json', 2,
+                      environ={'ROS_DOMAIN_ID': '43'})
+    assert not plan.problem and plan.command[:4] == ('ros2', 'launch', 'dual_arm_bringup', 'hardware_prototype.launch.py')
+    assert 'port:=/dev/serial/by-id/x' in plan.command and 'env_cam_device:=/dev/v4l/e' in plan.command
+    assert 'calib_dir:=/c' in plan.command and 'cycles:=2' in plan.command and 'journal_path:=/tmp/j.json' in plan.command
+    assert not any('vision_hardware.launch.py' in word for word in plan.command)
+    assert dict(plan.environment)['ROS_DOMAIN_ID'] == domain_for(Mode.HARDWARE_READ_ONLY, profiles)
+
+
 def test_unknown_mode_is_refused(profiles):
     assert build_plan(Mode.UNKNOWN, profiles, WORKSPACE, '', 1).problem
 
