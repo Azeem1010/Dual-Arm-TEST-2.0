@@ -1,4 +1,9 @@
-"""一次啟動三個 usb_cam 與三個視覺節點。
+"""啟動環境相機與最多一顆手臂鏡頭（USB 頻寬限制，兩顆手臂鏡頭不可同時串流），以及對應的視覺節點。
+
+    arm_camera:=none|arm1|arm2（預設 none）：只啟動指定的那一顆手臂鏡頭；其他值一律視為 none 並提示。
+    env_camera:=false：不啟動環境相機。 vision_nodes:=false：只啟動相機，不啟動視覺節點。
+    手臂鏡頭輪流由 dual_arm_vision_adapter 的 arm_camera_switch 以
+    env_camera:=false vision_nodes:=false respawn:=false arm_camera:=armN 啟動。
 
     ros2 launch vision_pkg vision.launch.py \
         env_cam_device:=/dev/v4l/by-id/usb-XXXX-video-index0 \
@@ -68,7 +73,17 @@ def _launch_setup(context, *args, **kwargs):
 
     actions = [LogInfo(msg=f'[vision.launch] 校正檔目錄: {calib_dir}')]
     problems = []
+    arm_choice = arg('arm_camera').strip().lower() or 'none'
+    if arm_choice not in ('none', 'arm1', 'arm2'):
+        problems.append(f'arm_camera={arm_choice!r} 不合法（只能 none/arm1/arm2），兩顆手臂鏡頭都不啟動')
+        arm_choice = 'none'
+    selected = {'env_cam'} if _truthy(arg('env_camera')) else set()
+    if arm_choice != 'none':
+        selected.add(f'{arm_choice}_cam')
+    vision_nodes = _truthy(arg('vision_nodes'))
     for cam, dev_arg, vision_exe, vision_yaml in CAMERAS:
+        if cam not in selected:
+            continue
         device = arg(dev_arg).strip() or str((cam_cfg.get(cam) or {}).get('video_device', '')).strip()
         if not device:
             problems.append(f'{cam}: 未設定裝置路徑（launch 參數 {dev_arg}:= 或 config/cameras.yaml）')
@@ -95,6 +110,8 @@ def _launch_setup(context, *args, **kwargs):
                                     name='image_rotate', output='screen', parameters=[{'rotate_deg': rotate}],
                                     respawn=respawn, respawn_delay=2.0))
 
+        if not vision_nodes:
+            continue
         node_params = [str(cfg / vision_yaml),
                        {'show_debug': show_debug, 'publish_debug_image': _truthy(arg('publish_debug_image')),
                         'calib_dir': str(calib_dir)}]
@@ -129,5 +146,9 @@ def generate_launch_description():
         DeclareLaunchArgument('undistort', default_value='',
                               description='true/false 覆寫節點的去畸變設定；空字串 = 沿用 config'),
         DeclareLaunchArgument('respawn', default_value='true', description='節點/相機異常結束時是否自動重啟'),
+        DeclareLaunchArgument('arm_camera', default_value='none',
+                              description='none/arm1/arm2：最多啟動一顆手臂鏡頭（頻寬限制）'),
+        DeclareLaunchArgument('env_camera', default_value='true', description='是否啟動環境相機'),
+        DeclareLaunchArgument('vision_nodes', default_value='true', description='是否啟動視覺節點（false = 只開相機）'),
         OpaqueFunction(function=_launch_setup),
     ])

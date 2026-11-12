@@ -76,7 +76,8 @@ def _setup(tmp_path, **values):
         m = _load_launch_module(saved)
         _LC.values = {'env_cam_device': '', 'arm1_cam_device': '', 'arm2_cam_device': '', 'show_debug': 'true', 'publish_debug_image': '',
                       'calib_dir': str(tmp_path), 'undistort': '', 'respawn': 'true',
-                      'env_cam_rotate': '', 'arm1_cam_rotate': '', 'arm2_cam_rotate': ''}
+                      'env_cam_rotate': '', 'arm1_cam_rotate': '', 'arm2_cam_rotate': '',
+                      'arm_camera': 'none', 'env_camera': 'true', 'vision_nodes': 'true'}
         _LC.values.update(values)
         return m, m._launch_setup(None)
     finally:
@@ -94,10 +95,10 @@ def _nodes(actions):
 def test_no_devices_configured_skips_usb_cam_but_still_starts_vision_nodes(tmp_path):
     m, actions = _setup(tmp_path)
     nodes = _nodes(actions)
-    assert [n.executable for n in nodes] == ['env_vision_node', 'arm1_vision_node', 'arm2_vision_node']
+    assert [n.executable for n in nodes] == ['env_vision_node']
     msgs = [a.msg for a in actions if isinstance(a, _LogInfo)]
     err = '\n'.join(msgs)
-    assert 'ls /dev/v4l/by-id/' in err and 'env_cam' in err and 'arm2_cam' in err
+    assert 'ls /dev/v4l/by-id/' in err and 'env_cam:' in err and 'arm2_cam:' not in err
     assert all(n.respawn is True for n in nodes)
 
 
@@ -115,11 +116,11 @@ def test_existing_device_starts_usb_cam_in_its_namespace(tmp_path):
     assert cam.parameters[1]['frame_id'] == 'env_camera_optical_frame'
     assert 'camera_info_url' not in cam.parameters[1]            # 還沒標內參
     err = '\n'.join(a.msg for a in actions if isinstance(a, _LogInfo))
-    assert 'arm1_cam' in err and 'arm2_cam' in err and 'env_cam:' not in err
+    assert 'env_cam:' not in err
 
 
 def test_nonexistent_device_path_is_reported(tmp_path):
-    m, actions = _setup(tmp_path, arm1_cam_device='/dev/v4l/by-id/does-not-exist')
+    m, actions = _setup(tmp_path, arm_camera='arm1', arm1_cam_device='/dev/v4l/by-id/does-not-exist')
     assert not [n for n in _nodes(actions) if n.package == 'usb_cam']
     err = '\n'.join(a.msg for a in actions if isinstance(a, _LogInfo))
     assert '裝置不存在' in err and 'does-not-exist' in err
@@ -129,7 +130,7 @@ def test_intrinsics_file_is_passed_as_camera_info_url_when_present(tmp_path):
     dev = tmp_path / 'cam0'
     dev.write_text('', encoding='utf-8')
     calib_io.intrinsics_path('arm2_cam', tmp_path).write_text('image_width: 640\n', encoding='utf-8')
-    m, actions = _setup(tmp_path, arm2_cam_device=str(dev))
+    m, actions = _setup(tmp_path, arm_camera='arm2', arm2_cam_device=str(dev))
     cam = [n for n in _nodes(actions) if n.package == 'usb_cam'][0]
     assert cam.namespace == 'arm2_cam'
     assert cam.parameters[1]['camera_info_url'].startswith('file://')
@@ -150,7 +151,7 @@ def test_rotate_inserts_image_rotate_node_and_remaps_usb_cam(tmp_path):
     dev = tmp_path / 'cam1'
     dev.write_text('', encoding='utf-8')
     # cameras.yaml 的 arm1_cam.rotate = 180
-    m, actions = _setup(tmp_path, arm1_cam_device=str(dev))
+    m, actions = _setup(tmp_path, arm_camera='arm1', arm1_cam_device=str(dev))
     nodes = [n for n in _nodes(actions) if getattr(n, 'namespace', None) == 'arm1_cam']
     cam = [n for n in nodes if n.package == 'usb_cam'][0]
     rot = [n for n in nodes if n.executable == 'image_rotate_node']
@@ -158,7 +159,7 @@ def test_rotate_inserts_image_rotate_node_and_remaps_usb_cam(tmp_path):
     assert ('image_raw/compressed', 'image_raw_unrotated/compressed') in cam.remappings
     assert len(rot) == 1 and rot[0].parameters == [{'rotate_deg': 180}]
     # launch 參數優先：0 = 不旋轉、不加節點、不 remap
-    m, actions = _setup(tmp_path, arm1_cam_device=str(dev), arm1_cam_rotate='0')
+    m, actions = _setup(tmp_path, arm_camera='arm1', arm1_cam_device=str(dev), arm1_cam_rotate='0')
     nodes = [n for n in _nodes(actions) if getattr(n, 'namespace', None) == 'arm1_cam']
     assert not [n for n in nodes if n.executable == 'image_rotate_node']
     assert [n for n in nodes if n.package == 'usb_cam'][0].remappings == []
@@ -167,7 +168,49 @@ def test_rotate_inserts_image_rotate_node_and_remaps_usb_cam(tmp_path):
 def test_invalid_rotate_is_reported_and_ignored(tmp_path):
     dev = tmp_path / 'cam1'
     dev.write_text('', encoding='utf-8')
-    m, actions = _setup(tmp_path, arm1_cam_device=str(dev), arm1_cam_rotate='45')
+    m, actions = _setup(tmp_path, arm_camera='arm1', arm1_cam_device=str(dev), arm1_cam_rotate='45')
     assert not [n for n in _nodes(actions) if n.executable == 'image_rotate_node']
     err = '\n'.join(a.msg for a in actions if isinstance(a, _LogInfo))
     assert 'rotate' in err and '45' in err
+
+
+def _three_devices(tmp_path):
+    devices = {}
+    for cam in ('env_cam', 'arm1_cam', 'arm2_cam'):
+        dev = tmp_path / f'{cam}-video'
+        dev.write_text('', encoding='utf-8')
+        devices[f'{cam}_device'] = str(dev)
+    return devices
+
+
+def _usb_cams(actions):
+    return sorted(n.namespace for n in _nodes(actions) if n.package == 'usb_cam')
+
+
+def test_default_starts_only_env_camera(tmp_path):
+    m, actions = _setup(tmp_path, **_three_devices(tmp_path))
+    assert _usb_cams(actions) == ['env_cam']
+    assert [n.executable for n in _nodes(actions) if n.executable.endswith('_vision_node')] == ['env_vision_node']
+
+
+def test_vision_launch_never_starts_two_arm_cameras(tmp_path):
+    devices = _three_devices(tmp_path)
+    for choice, expected in (('none', []), ('arm1', ['arm1_cam']), ('arm2', ['arm2_cam'])):
+        m, actions = _setup(tmp_path, arm_camera=choice, **devices)
+        arm_cams = [ns for ns in _usb_cams(actions) if ns != 'env_cam']
+        assert arm_cams == expected, choice
+
+
+def test_invalid_arm_camera_starts_no_arm_camera(tmp_path):
+    m, actions = _setup(tmp_path, arm_camera='both', **_three_devices(tmp_path))
+    assert _usb_cams(actions) == ['env_cam']
+    err = '\n'.join(a.msg for a in actions if isinstance(a, _LogInfo))
+    assert 'arm_camera' in err and 'both' in err
+
+
+def test_camera_only_mode_for_the_switch(tmp_path):
+    m, actions = _setup(tmp_path, arm_camera='arm2', env_camera='false', vision_nodes='false', respawn='false',
+                        **_three_devices(tmp_path))
+    assert _usb_cams(actions) == ['arm2_cam']
+    assert not [n for n in _nodes(actions) if n.executable.endswith('_vision_node')]
+    assert all(n.respawn is False for n in _nodes(actions))
