@@ -86,6 +86,10 @@ class CoordinatorIO(TaskIO):
         self._motion.scene_add_slot_object(slot)
 
 
+# Strict hardware stays blocked; prototype runs the real arms on estimated values (2026-11-13).
+RUNNABLE_MODES = ('simulation', 'prototype')
+
+
 def _default_path(package, *parts):
     return str(Path(get_package_share_directory(package)).joinpath(*parts))
 
@@ -113,8 +117,11 @@ class CoordinatorNode(Node):
         self.config = load(config_path)
         if type(self.cycles) is not int or not 1 <= self.cycles <= 8:
             raise ValueError('cycles must be an integer in 1..8')
-        if self.config['mode'] != 'simulation':
+        if self.config['mode'] not in RUNNABLE_MODES:
             raise RuntimeError('Hardware mode is BLOCKED until the vision gateway and safety supervisor exist')
+        if self.config['mode'] == 'prototype':
+            self.get_logger().warning(
+                'PROTOTYPE mode: estimated calibration, no e-stop heartbeat, suction auto-confirmed')
         self.require_safety = require_safety
 
         self.group, self.lock = ReentrantCallbackGroup(), threading.RLock()

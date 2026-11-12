@@ -52,6 +52,21 @@ class Startup(unittest.TestCase):
         self.assertIn('BLOCKED', str(caught.exception))
         self.assertFalse(self.journal.exists())
 
+    def prototype(self):
+        doc = yaml.safe_load(SIM.read_text(encoding='utf-8'))
+        doc.update(mode='prototype', evidence_kind='prototype_estimate', home_source='calibration')
+        doc['gripper'].update(backend='esp32', auto_confirm=True)
+        path = Path(self.folder.name) / 'prototype.yaml'
+        path.write_text(yaml.safe_dump(doc), encoding='utf-8')
+        return path
+
+    def test_prototype_config_is_not_blocked(self):
+        # Gets past the hardware block and stops at the next requirement, the calibration HOME.
+        with self.assertRaises(ValueError) as caught:
+            self.start(self.prototype())
+        self.assertNotIn('BLOCKED', str(caught.exception))
+        self.assertIn('Calibration HOME needs the calibration file path', str(caught.exception))
+
     def test_cycles_must_be_in_range(self):
         for value in ('0', '9'):
             with self.subTest(value), self.assertRaises(ValueError):
