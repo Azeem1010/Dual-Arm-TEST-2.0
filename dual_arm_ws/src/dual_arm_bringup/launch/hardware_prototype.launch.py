@@ -39,9 +39,9 @@ def generate_launch_description():
         parameters=[{
             'config_path': PathJoinSubstitution([FindPackageShare('dual_arm_coordinator'), 'config', 'prototype',
                                                  'coordinator.yaml']),
-            'calibration_path': arg('calibration_file'),
+            'calibration_path': arg('home_calibration_file'),
             'observation_source': 'env_scene',
-            'require_safety': True,
+            'require_safety': False,   # no /safety/estop heartbeat in the prototype (D8 not built)
             'cycles': ParameterValue(arg('cycles'), value_type=int),
             'journal_path': ParameterValue(arg('journal_path'), value_type=str),
         }])
@@ -51,6 +51,8 @@ def generate_launch_description():
                               default_value=PathJoinSubstitution([FindPackageShare('cm530_hardware'), 'config',
                                                                   'calibration_prototype.yaml']),
                               description='馬達校正檔；預設是 prototype 估計值'),
+        DeclareLaunchArgument('home_calibration_file', default_value=arg('calibration_file'),
+                              description='coordinator 算 HOME 用的校正檔；預設同 calibration_file（Mock 測試才分開）'),
         DeclareLaunchArgument('use_mock_serial', default_value='false',
                               description='測試用 Mock Serial（要搭配 mock 校正檔）'),
         DeclareLaunchArgument('env_cam_device', default_value='', description='環境相機裝置；空 = cameras.yaml'),

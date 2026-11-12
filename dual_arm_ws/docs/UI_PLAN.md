@@ -206,6 +206,7 @@ src/dual_arm_hmi/
 | Mock Serial | `hardware.launch.py use_mock_serial:=true` | 否，用來測啟動步驟 |
 | 實機唯讀 | `hardware.launch.py` 加 `vision_hardware.launch.py`（環境相機決策、手臂鏡頭輪流監控，2026-11-12） | 否 |
 | 實機動作 | 同上加 `enable_motion:=true`，選實測的 controllers 檔 | `BLOCKED`（沒有 coordinator，介面只接通強制停止） |
+| 實機 Prototype | `hardware_prototype.launch.py`：估計校正、無急停心跳、環境相機、coordinator（2026-11-13）；介面依 URDF 中的 `calibration_prototype` 辨識，開放上扭力（`/controller_manager/set_hardware_component_state`）、解除鎖定、回 HOME、開始任務，頂部顯示 PROTOTYPE 提示 | 可以（不算校正證據） |
 
 - `safety_supervisor` 在模擬要設 `require_estop:=false`，否則沒有心跳會一直鎖定。
 - 各模式獨立於 UI 執行，UI 當掉時系統不跟著結束，重開可接回。

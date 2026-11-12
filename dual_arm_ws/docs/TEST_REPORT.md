@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-13 Hardware prototype mode
+
+Real arms on estimated settings, switchable from the operator UI (`mode: prototype`, `hardware_prototype.launch.py`). Details: evidence/prototype_mode_20261113/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Both launches parse; `require_estop` default true | PASS | *_show_args.log |
+| Mock Serial: prototype launch, torque on, controllers, go_home → at_home, start accepted and busy | PASS | steps.log, launch.log; no camera, so the task waits for env_scene |
+| Unit tests coordinator / HMI / vision adapter / cm530_hardware | PASS | 328 / 307 / 36 / 43 |
+| `scripts/test_cm530_mock.py` (strict path) | PASS | test_cm530_mock.log |
+| Real arms | NOT_RUN | a prototype run never counts as an H stage PASS |
+
 ## 2026-11-13 env_scene overlay for the operator UI
 
 `env_scene_node` publishes `/vision/env/debug_image`; `vision_hardware.launch.py` gains `show_debug` and `publish_debug_image` (`52a6518`). Details: evidence/env_debug_image_20261113/README.md.

@@ -111,6 +111,12 @@ def test_torque_needs_motion_mode_and_passing_calibration():
     assert not evaluate_actions(ready())[Action.TORQUE_ON].visible
 
 
+def test_prototype_torque_does_not_wait_for_a_calibration_result():
+    prototype = ready(mode=Mode.HARDWARE_PROTOTYPE, phase=Phase.READ_ONLY)
+    assert evaluate_actions(prototype)[Action.TORQUE_ON].enabled
+    assert evaluate_actions(replace(prototype, phase=Phase.READY))[Action.TORQUE_ON].reason == '需在唯讀就緒時操作'
+
+
 def test_shutdown_refused_while_working():
     assert evaluate_actions(ready(task=TaskStatus(busy=True)))[Action.SHUTDOWN].reason == '任務執行中，請先停止'
     assert evaluate_actions(ready())[Action.SHUTDOWN].enabled

@@ -2,7 +2,14 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: camera roles for the USB bandwidth limit
+## Latest result: hardware prototype mode
+
+- User decision (2026-11-13): run the whole flow on the real arms now (detect, plan, pick in A, hand over in B, place in C); accuracy and suction success are not required; the only e-stop is the CM-530 power switch and there is no time for more wiring, so D8 is not built. Design and plan: superpowers/specs/2026-11-13-hardware-prototype-mode-design.md, superpowers/plans/2026-11-13-hardware-prototype-mode.md.
+- New coordinator `mode: prototype` (`evidence_kind: prototype_estimate`, calibration HOME, suction may be auto-confirmed); strict `hardware` stays BLOCKED. Three estimated files headed `PROTOTYPE ESTIMATE`: `cm530_hardware/config/calibration_prototype.yaml` (runtime.json zeros and directions, URDF raw limits, `max_step_raw` 20), `dual_arm_controllers/config/controllers_prototype.yaml` (loose tolerances), `dual_arm_coordinator/config/prototype/coordinator.yaml` (simulation layout, speeds 0.3, esp32 suction auto-confirmed, modules guessed). AGENTS.md records the exception.
+- `hardware.launch.py` gains `require_estop` (default true). New `hardware_prototype.launch.py` (arms, vision, coordinator with `observation_source=env_scene`, `require_safety=false`). Operator UI mode 實機 Prototype, detected from the prototype calibration in the description, opens start, HOME and reset and shows a PROTOTYPE banner.
+- Checks and evidence: evidence/prototype_mode_20261113/. Real arms NOT_RUN; a prototype run never counts as an H stage PASS.
+
+## Earlier result: camera roles for the USB bandwidth limit
 
 - 2026-11-13 (`52a6518`, made on the Orin, from Azeem1010/Dual-Arm-TEST-2.0 `env-scene-debug-image`): `env_scene_node` publishes its OpenCV overlay on `/vision/env/debug_image` (`publish_debug_image`, default true, also when the field is not found), so the operator UI shows the annotated env view on hardware instead of the raw image. `vision_hardware.launch.py` gains `show_debug` (OpenCV window, default false) and `publish_debug_image`; the vision_pkg include is scoped so its `show_debug:=false` no longer overrides env_scene. This is a local change to the imported `src/env_scene`, not upstream yet. Orin: overlay ~7 fps; Windows WSL rebuild and the 10 env_scene tests PASS (evidence/env_debug_image_20261113/).
 - User decisions (2026-11-12): the environment camera decides zones A, B and C; the arm cameras only monitor and must never stream together, switching with the moving arm (process start/stop, design option A); no end-to-end hardware dry-run mode; caps go only inside the black-taped visible part of zone A (operating rule). Design and plan: superpowers/specs/2026-11-12-camera-roles-design.md, superpowers/plans/2026-11-12-camera-roles.md.

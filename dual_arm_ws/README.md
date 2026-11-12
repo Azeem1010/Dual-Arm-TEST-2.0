@@ -289,6 +289,14 @@ ros2 launch dual_arm_bringup hardware.launch.py port:=/dev/serial/by-id/<你的�
 ros2 launch dual_arm_bringup hardware.launch.py use_mock_serial:=true calibration_file:=$PWD/src/cm530_hardware/test/fixtures/calibration_mock.yaml
 ```
 
+### 實機 Prototype（估計值，先跑完整流程）
+
+2026-11-13 起可以用估計的校正讓實機跑完 A → B → C 整個流程，不要求精準，結果不算校正證據。CM-530 電源開關是唯一急停，要有人守著。步驟見 [實機測試手冊的 Prototype 模式](docs/HARDWARE_TEST_GUIDE.md#prototype-模式)：
+
+```bash
+ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-id/<你的控制板> cycles:=1
+```
+
 ### 允許馬達動作
 
 以下條件**全部**滿足才會放行：

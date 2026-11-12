@@ -1,0 +1,46 @@
+== nodes
+/arm1_controller
+/arm2_controller
+/arm_camera_switch
+/controller_manager
+/dualarmsystem
+/env_scene_bridge
+/env_scene_node
+/joint_state_broadcaster
+/move_group
+/move_group/moveit
+/move_group_private_99970389523696
+/moveit_2669015446
+/moveit_simple_controller_manager
+/robot_state_publisher
+/transform_listener_impl_5aec2bb09cd0
+== hardware active
+Successfully set DualArmSystem to state lifecycle_msgs.msg.State(id=3, label='active')
+== controllers
+Successfully switched controllers!
+Activated controllers: [ arm1_controller arm2_controller ]
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  active
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  active
+== status before
+data: '{"active_arm": "", "at_home": {"arm1": false, "arm2": false}, "b_owner": "", "busy": false, "completed": 0, "config_fingerprint"...'
+---
+== go_home
+waiting for service to become available...
+requester: making request: dual_arm_interfaces.srv.ConfirmStep_Request(token='', success=True, message='')
+
+response:
+dual_arm_interfaces.srv.ConfirmStep_Response(accepted=True, message='Accepted; HOME is reported as at_home on /dual_arm/status')
+
+== status after home
+data: '{"active_arm": "", "at_home": {"arm1": true, "arm2": true}, "b_owner": "", "busy": false, "completed": 0, "config_fingerprint": ...'
+---
+== start
+requester: making request: std_srvs.srv.Trigger_Request()
+
+response:
+std_srvs.srv.Trigger_Response(success=True, message='Accepted; the result is reported on /dual_arm/status')
+
+== status after start
+data: '{"active_arm": "arm2", "at_home": {"arm1": true, "arm2": true}, "b_owner": "", "busy": true, "completed": 0, "config_fingerprint...'
+---

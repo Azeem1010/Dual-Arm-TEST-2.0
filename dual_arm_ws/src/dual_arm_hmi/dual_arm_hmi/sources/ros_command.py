@@ -13,6 +13,8 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.context import Context
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
+from controller_manager_msgs.srv import SetHardwareComponentState
+from lifecycle_msgs.msg import State
 from std_srvs.srv import Trigger
 
 from dual_arm_interfaces.srv import ConfirmStep
@@ -25,7 +27,10 @@ SERVICES = {
     '/dual_arm/cancel': (Trigger, 3.0),
     '/dual_arm/go_home': (ConfirmStep, 5.0),
     '/dual_arm/recover': (ConfirmStep, 15.0),
+    # Torque on: the CM-530 component goes active (prototype only; strict hardware keeps the CLI step).
+    '/controller_manager/set_hardware_component_state': (SetHardwareComponentState, 10.0),
 }
+HARDWARE_COMPONENT = 'DualArmSystem'
 UNAVAILABLE = '服務不存在'
 TIMED_OUT = '沒有回覆'
 
@@ -41,11 +46,16 @@ def request_for(service, token='', confirmed=False):
     kind, _ = SERVICES[service]
     if kind is Trigger:
         return Trigger.Request()
+    if kind is SetHardwareComponentState:
+        return SetHardwareComponentState.Request(
+            name=HARDWARE_COMPONENT, target_state=State(id=State.PRIMARY_STATE_ACTIVE, label='active'))
     return ConfirmStep.Request(token=token, success=bool(confirmed), message='operator interface')
 
 
 def reply_from(service, response):
     """Trigger answers with success, ConfirmStep with accepted."""
+    if isinstance(response, SetHardwareComponentState.Response):
+        return Reply(service, bool(response.ok), f'DualArmSystem {response.state.label or "?"}')
     ok = response.success if isinstance(response, Trigger.Response) else response.accepted
     return Reply(service, bool(ok), response.message)
 

@@ -24,15 +24,18 @@ TASK_ACTIONS = {
     Action.RECOVER: ('/dual_arm/recover',),
 }
 # These services finish the work before they answer; the others report it on /dual_arm/status.
-_FINISHED_BY_REPLY = frozenset({Action.SAFETY_RESET, Action.RECOVER})
+_FINISHED_BY_REPLY = frozenset({Action.SAFETY_RESET, Action.RECOVER, Action.TORQUE_ON})
 # Hardware gets only the stop until the stepwise hardware start (stage 5) exists.
 _HARDWARE_TASK_ACTIONS = frozenset({Action.STOP})
+# The prototype also turns the torque on from the interface (2026-11-13).
+_TORQUE = {Action.TORQUE_ON: ('/controller_manager/set_hardware_component_state',)}
 _RESIDUAL_CHECK_S = 2.0
 EVENT_LIMIT = 200
 # How long a command may stay accepted without the task ever showing busy before it counts as settled.
 _SETTLE_S = 1.5
 _SERVICE_TEXT = {'/safety/trigger_stop': '安全監控', '/safety/reset': '安全監控', '/dual_arm/start': '任務',
-                 '/dual_arm/cancel': '任務', '/dual_arm/go_home': '任務', '/dual_arm/recover': '任務'}
+                 '/dual_arm/cancel': '任務', '/dual_arm/go_home': '任務', '/dual_arm/recover': '任務',
+                 '/controller_manager/set_hardware_component_state': '馬達扭力'}
 
 
 @dataclass
@@ -123,11 +126,13 @@ class LiveSource(DataSource):
     def _wired(self, mode):
         if self._commander is None:
             return LAUNCH_ACTIONS
-        return LAUNCH_ACTIONS | (_HARDWARE_TASK_ACTIONS if mode.hardware_locked else frozenset(TASK_ACTIONS))
+        if mode.hardware_locked:
+            return LAUNCH_ACTIONS | _HARDWARE_TASK_ACTIONS
+        return LAUNCH_ACTIONS | frozenset(TASK_ACTIONS) | (frozenset(_TORQUE) if mode.allows_hardware_tasks else frozenset())
 
     def invoke(self, action, cleared=False):
         """cleared: the operator ticked that the tools and zone B are clear (HOME and recovery)."""
-        if action in TASK_ACTIONS:
+        if action in TASK_ACTIONS or action in _TORQUE:
             self._send(action, cleared)
             return
         if action not in LAUNCH_ACTIONS:
@@ -156,7 +161,7 @@ class LiveSource(DataSource):
         from .ros_command import request_for
         task = self._base.task if self._base is not None else None
         token = task.recovery_token if action is Action.RECOVER and task is not None else ''
-        services = TASK_ACTIONS[action]
+        services = {**TASK_ACTIONS, **_TORQUE}[action]
         if action is Action.STOP:
             # Stop whatever exists; a missing coordinator or supervisor is no reason to stop nothing.
             services = tuple(name for name in services if self._commander.available(name))

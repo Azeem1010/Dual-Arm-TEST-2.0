@@ -363,7 +363,7 @@ def _torque_state(s):
         return _refuse('唯讀模式不能上扭力', visible)
     if s.phase is not Phase.READ_ONLY:
         return _refuse('需在唯讀就緒時操作', visible)
-    if not s.calibration_pass:
+    if not s.calibration_pass and not s.mode.allows_hardware_tasks:
         return _refuse('馬達校正尚未通過', visible)
     return ActionState(True, visible=visible)
 

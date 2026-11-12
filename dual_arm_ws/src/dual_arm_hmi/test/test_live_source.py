@@ -429,6 +429,16 @@ def test_prototype_gets_the_task_actions(commanded):
     assert {Action.START_TASK, Action.SAFETY_RESET, Action.CANCEL_TASK, Action.STOP} <= wired
 
 
+def test_torque_is_wired_only_for_the_prototype(commanded):
+    source, ros, made, _ = commanded
+    ros.base = connected(mode=Mode.HARDWARE_MOTION, task=TaskStatus())
+    assert Action.TORQUE_ON not in source.snapshot().wired_actions
+    ros.base = connected(mode=Mode.HARDWARE_PROTOTYPE, phase=Phase.READ_ONLY, task=TaskStatus())
+    assert Action.TORQUE_ON in source.snapshot().wired_actions
+    source.invoke(Action.TORQUE_ON)
+    assert made[0].sent[-1][1][0][0] == '/controller_manager/set_hardware_component_state'
+
+
 def test_commands_follow_the_monitor_to_another_domain(monkeypatch):
     monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
     monkeypatch.setenv('ROS_DOMAIN_ID', '43')

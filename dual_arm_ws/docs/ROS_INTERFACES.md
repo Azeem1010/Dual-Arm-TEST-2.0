@@ -164,6 +164,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group`；非 Mock 時加 `safety_supervisor`。`controllers_file` 的容差必須是實測值 | 相機、吸盤、相機 TF |
 | `vision.launch.py` | 環境相機與 `arm_camera:=arm1` 或 `arm2` 指定的最多一顆手臂鏡頭（預設 none）、對應的視覺節點（`vision_nodes:=false` 可省略），需要時加 `image_rotate_node` | 手臂與 MoveIt；兩顆手臂鏡頭同時 |
 | `vision_hardware.launch.py` | 環境相機、`env_scene_node`、`env_scene_bridge`、`arm_camera_switch`（手臂鏡頭輪流） | 手臂視覺節點、`calibration_status`、直接啟動的手臂鏡頭 |
+| `hardware_prototype.launch.py` | `hardware.launch.py`（prototype 校正與 controllers、`enable_motion:=true`、`require_estop:=false`）+ `vision_hardware.launch.py` + `coordinator_node`（`config/prototype`、`observation_source:=env_scene`、`require_safety:=false`） | 急停心跳；結果不算校正證據 |
 
 ## 已知缺口
 

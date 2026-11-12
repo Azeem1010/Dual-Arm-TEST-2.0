@@ -17,6 +17,7 @@ Orin 的安裝與 ESP32 agent 的建置見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.
 | [V0](#v0-相機檢查) | 三顆相機接線與畫面方向 | 否 | 可以 |
 | [V1](#v1-手臂鏡頭輪流與環境相機) | 手臂鏡頭輪流、頻寬、環境相機判斷 | 否 | 可以（env_scene 暫用 6b059eb） |
 | [E0](#e0-esp32-吸盤通電檢查) | 吸盤命令與時間 | 否，吸盤會作動 | 可以 |
+| [Prototype](#prototype-模式) | 用估計值跑完整流程（偵測、規劃、A 取、B 交接、C 放） | **會** | 可以（2026-11-13 使用者決定；不算任何階段 PASS） |
 | [H2](#h2-校正量測) | 量測校正值 | 由人手扳 | 要先訂門檻（D6） |
 | [H3](#h3-單軸微動) | 單軸 ±10 raw，確認方向與穩態誤差 | **會** | H1 完成後；和 H2 互相驗證 |
 | [H4](#h4-ros-關節空間小幅運動) | 透過 ROS 小幅動作 | **會** | 要先決定心跳來源（D8） |
@@ -347,6 +348,40 @@ ros2 topic pub -r 5 /dual_arm/status std_msgs/msg/String "{data: '{\"active_arm\
 | 4. 座標誤差 | A、B 區各放幾顆瓶蓋，用尺量中心位置，和 `get_scene` 的 `x_mm`、`y_mm` 比 | 誤差記入紀錄（門檻依 H5 的容差訂） |
 
 結果記在 `docs/evidence/` 的新子目錄，四項目前都是 `NOT_RUN`。
+
+## Prototype 模式
+
+**目的：** 不管精度，先讓實機跑完整個流程：環境相機偵測瓶蓋與 C 格占用 → MoveIt 規劃 → Arm 1 到 A 區吸取 → B 區交接 → Arm 2 放進 C 格。使用者 2026-11-13 決定，設計見 [prototype 設計](superpowers/specs/2026-11-13-hardware-prototype-mode-design.md)。**手臂會出力。**
+
+**和嚴格模式差在哪：** 馬達校正、controllers 容差、coordinator 設定都用估計值（檔頭標 `PROTOTYPE ESTIMATE`）；不要求急停心跳（D8 沒做）；吸盤結果自動確認。位置可能偏好幾公分、吸不起來都屬預期。**結果不算任何 H 階段 PASS，也不能當校正證據。**
+
+**前置：**
+
+- 一人只守 CM-530 電源開關，手放在開關上，這是唯一的急停。
+- 手臂先扶到 HOME 附近（照 [HOME 定位](#home-定位) 的出力前檢查）。Moving Speed 上電可能是 0（最高速），prototype 校正把每個控制週期的目標變化限制在 20 raw。
+- C 區八格清空、A 區瓶蓋放在黑框內（見 V1）。
+- ESP32 吸盤要用的話，先照 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節開 agent。吸錯手臂就對調 `src/dual_arm_coordinator/config/prototype/coordinator.yaml` 的 `esp32_modules`。
+
+**啟動：** 操作介面選「實機 Prototype」→ 啟動系統；或
+
+```bash
+ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-id/<控制板> cycles:=1
+```
+
+接著在介面依序按：**上扭力**（CM-530 開始出力，手臂保持原姿態）→ **解除鎖定**（啟動手臂控制器）→ **回 HOME**（勾選已清空）→ **開始任務**。用終端機的話：
+
+```bash
+ros2 control set_hardware_component_state DualArmSystem active      # 上扭力
+ros2 service call /safety/reset std_srvs/srv/Trigger '{}'           # 啟動控制器
+ros2 service call /dual_arm/go_home dual_arm_interfaces/srv/ConfirmStep '{success: true}'
+ros2 service call /dual_arm/start std_srvs/srv/Trigger '{}'
+```
+
+不要手動 `switch_controllers`（第 2 節）。
+
+**立即關 CM-530 電源：** 手臂往不該去的方向、撞到場地或另一支手臂、抖動或異音。
+
+結果記到 `docs/evidence/hardware/<日期>_PROTOTYPE/`：做了什麼、手臂實際到哪（拍照或錄影）、偏差多少、哪一步停下、日誌。
 
 ## E0 ESP32 吸盤通電檢查
 
