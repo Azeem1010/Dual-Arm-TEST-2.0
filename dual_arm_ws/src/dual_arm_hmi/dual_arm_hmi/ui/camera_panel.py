@@ -3,7 +3,7 @@ from PyQt5.QtCore import QRect, Qt, pyqtSignal
 from PyQt5.QtGui import QImage, QPainter
 from PyQt5.QtWidgets import QComboBox, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
-from ..model.state import GAZEBO_VIEWS, Level
+from ..model.state import GAZEBO_VIEWS, Level, calibration_label
 from . import theme
 from .widgets import Chip, HeaderBar, Panel, WhiteLabel
 
@@ -96,9 +96,9 @@ class CameraPanel(Panel):
         if self.annotated:
             # Say so when annotations are absent, rather than showing the raw image under an "annotated" label.
             self.toggle.setText('標註' if status is None or status.has_annotation or not status.has_signal else '無標註')
-        calibration = 'NOT_RUN' if status is None else status.calibration
+        calibration = 'NOT_RUN' if status is None or status.rotation else status.calibration
         color = {'PASS': theme.OK, 'FAIL': theme.DANGER}.get(calibration, theme.TEXT_MUTED)
-        self.calibration.set_chip(f'校正 {calibration}', '#FFFFFF', color)
+        self.calibration.set_chip(calibration_label(status), '#FFFFFF', color)
 
     def set_frame(self, frame, placeholder):
         self.view.set_image(None if frame is None else to_qimage(frame), placeholder)

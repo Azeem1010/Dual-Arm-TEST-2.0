@@ -36,6 +36,9 @@ _DEMO_RAW_SPAN = 200
 _READY_ZONES = ZoneView(a_has_object=True, b_has_object=False, b_arm_clear=True, c_count=2)
 _CAL_PASS = {name: CameraStatus(fps=15.0, age_s=0.04, calibration='PASS') for name in CAMERAS}
 _CAL_FAIL = {name: CameraStatus(fps=15.0, age_s=0.04, calibration='FAIL') for name in CAMERAS}
+# Hardware: the arm cameras take turns (USB bandwidth); arm 1 streams while arm 2 is off.
+_HW_CAMERAS = {'env': CameraStatus(fps=15.0, age_s=0.04, calibration='PASS'),
+               'arm1': CameraStatus(fps=15.0, age_s=0.04, rotation='on'), 'arm2': CameraStatus(rotation='off')}
 
 
 def _event(clock_text, level, message):
@@ -79,7 +82,7 @@ _SCENARIOS = {
         'task': TaskStatus(state='FULL', occupied=(True,) * 8, completed=6, recovery_token='demo'),
         'events': (_event('10:40:02', Level.WARN, 'C 區已滿'),) + _READY['events']}),
     'hw_read_only': ('實機唯讀', dict(
-        mode=Mode.HARDWARE_READ_ONLY, phase=Phase.READ_ONLY, ros_connected=True, cameras=_CAL_FAIL, joint_age_s=0.03,
+        mode=Mode.HARDWARE_READ_ONLY, phase=Phase.READ_ONLY, ros_connected=True, cameras=_HW_CAMERAS, joint_age_s=0.03,
         events=(_event('09:58:13', Level.NEUTRAL, '馬達未出力，唯讀模式'),))),
     'hw_blocked': ('實機 BLOCKED', dict(
         mode=Mode.HARDWARE_MOTION, phase=Phase.READY, ros_connected=True, safety=SafetyStatus(), controllers_active=True,

@@ -43,7 +43,7 @@ def test_hardware_needs_a_port(profiles):
 def test_hardware_read_only_never_enables_motion(profiles):
     profiles['hardware'] = {**profiles['hardware'], 'port': '/dev/serial/by-id/x', 'controllers_file': '/m.yaml'}
     command = build_plan(Mode.HARDWARE_READ_ONLY, profiles, WORKSPACE, '', 1).command
-    assert command[0] == 'bash' and 'enable_motion' not in command[2] and 'publish_debug_image:=true' in command[2]
+    assert command[0] == 'bash' and 'enable_motion' not in command[2] and 'vision_hardware.launch.py' in command[2]
 
 
 def test_hardware_motion_needs_measured_controllers(profiles):
@@ -111,7 +111,7 @@ def test_camera_devices_reach_the_vision_launch(profiles):
     plan = build_plan(Mode.HARDWARE_READ_ONLY,
                       hardware_profiles(profiles, env_cam_device='/dev/v4l/by-id/env', arm1_cam_device='/dev/v4l/by-id/a1',
                                         arm2_cam_device='/dev/v4l/by-id/a2'), WORKSPACE, '', 1)
-    vision = next(part for part in plan.command[2].split(' & ') if 'vision.launch.py' in part)
+    vision = next(part for part in plan.command[2].split(' & ') if 'vision_hardware.launch.py' in part)
     assert 'env_cam_device:=/dev/v4l/by-id/env' in vision and 'arm1_cam_device:=/dev/v4l/by-id/a1' in vision
     assert 'arm2_cam_device:=/dev/v4l/by-id/a2' in vision and not plan.notice
 
@@ -120,3 +120,10 @@ def test_missing_camera_devices_start_with_a_notice(profiles):
     plan = build_plan(Mode.HARDWARE_READ_ONLY, hardware_profiles(profiles, arm1_cam_device='/dev/v4l/by-id/a1'), WORKSPACE, '', 1)
     assert plan.command and 'env_cam_device' in plan.notice and 'arm2_cam_device' in plan.notice
     assert 'arm1_cam_device' not in plan.notice and 'env_cam_device:=' not in plan.command[2]
+
+
+def test_hardware_profile_uses_vision_hardware_launch(profiles):
+    plan = build_plan(Mode.HARDWARE_READ_ONLY, hardware_profiles(profiles), WORKSPACE, '', 1)
+    command = plan.command[2]
+    assert 'dual_arm_bringup vision_hardware.launch.py' in command
+    assert 'vision_pkg vision.launch.py' not in command and 'calibration.launch.py' not in command

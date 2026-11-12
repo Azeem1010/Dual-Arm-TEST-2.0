@@ -1,5 +1,6 @@
 """Read-only view of the running system. It subscribes and queries; it can never command."""
 from collections import deque
+from dataclasses import replace
 import threading
 import time
 
@@ -22,7 +23,7 @@ from ..model.joints import JOINT_NAMES, JointSample
 from ..model.state import (CAMERA_STALE_S, GAZEBO_VIEWS, CameraStatus, CommandFeedback, EventRecord, Level, Mode, Phase,
                            SafetyStatus, Snapshot, ZoneView)
 from .base import DataSource
-from .ros_parse import (FpsMeter, calibration_from_diagnostics, calibration_raw_limits, firmware_counts, infer_phase, limits_from_urdf,
+from .ros_parse import (FpsMeter, arm_camera_rotation, calibration_from_diagnostics, calibration_raw_limits, firmware_counts, infer_phase, limits_from_urdf,
                         mode_from_urdf, safety_from_json, task_from_json)
 
 CAMERAS = ('env', 'arm1', 'arm2')
@@ -79,6 +80,7 @@ class RosSource(DataSource):
         self._images.update({key: _Stream() for key, _ in GAZEBO_VIEWS})
         self._joints, self._task, self._safety = _Stamped(), _Stamped(), _Stamped()
         self._zones, self._grid, self._calibration, self._controllers = _Stamped(), _Stamped(), _Stamped(), _Stamped()
+        self._rotation = _Stamped()
         self._commands = {'arm1': _Stamped(), 'arm2': _Stamped()}
         self._counts = _Stamped()
         self._urdf, self._limits, self._raw_limits, self._observation = '', {}, {}, ''
@@ -120,6 +122,8 @@ class RosSource(DataSource):
         subscribe(ZoneState, '/vision/env/zone_state', self._on_zones, 10)
         subscribe(GridState, '/vision/arm2/grid_state', self._on_grid, 10)
         subscribe(DiagnosticArray, '/vision/calibration_status', self._on_calibration, 10)
+        subscribe(String, '/vision/arm_cameras/state',
+                  lambda message: self._store(self._rotation, arm_camera_rotation(message.data)), _LATCHED)
 
     def _store(self, slot, value):
         with self._lock:
@@ -310,6 +314,10 @@ class RosSource(DataSource):
             calibration = self._calibration.fresh(now, _STATUS_MAX_AGE_S * factor) or {}
             cameras = {name: self._camera_status(name, now, calibration) for name in CAMERAS
                        if self._images[f'raw/{name}'].received is not None} if connected or self._ever_connected else {}
+            rotation = self._rotation.fresh(now, _STATUS_MAX_AGE_S) if cameras or connected else None
+            for arm, state in (rotation or {}).items():
+                cameras[arm] = replace(cameras.get(arm) or CameraStatus(stale_after_s=CAMERA_STALE_S * factor),
+                                       rotation=state)
             views = {key: CameraStatus(fps=self._images[key].meter.rate(now), age_s=self._images[key].age(now))
                      for key, _ in GAZEBO_VIEWS if (self._images[key].age(now) or 1e9) <= _VIEW_MAX_AGE_S * factor}
             # The coordinator's own timers run on wall time, so these limits stay strict.

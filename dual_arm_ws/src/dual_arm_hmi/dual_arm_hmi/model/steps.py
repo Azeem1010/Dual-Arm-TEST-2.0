@@ -12,7 +12,7 @@ _ARM1_SEGMENTS = {
     'VERIFY_B': 3,
 }
 _ARM2_SEGMENTS = {
-    **dict.fromkeys(('CHECK_ZONES', 'RESERVE_SLOT', 'PREFLIGHT', 'RESERVE_B', 'APPROACH_B', 'DESCEND_B', 'GRASP_B',
+    **dict.fromkeys(('CHECK_ZONES', 'QUERY_B_TARGET', 'RESERVE_SLOT', 'PREFLIGHT', 'RESERVE_B', 'APPROACH_B', 'DESCEND_B', 'GRASP_B',
                      'ATTACH', 'LIFT_B', 'HOME_HOLDING'), 4),
     'VERIFY_B_EMPTY': 5,
     **dict.fromkeys(('APPROACH_C', 'DESCEND_C', 'RELEASE_C', 'DETACH', 'LIFT_C', 'HOME_EMPTY'), 6),
@@ -20,7 +20,7 @@ _ARM2_SEGMENTS = {
 }
 
 _STEP_TEXT = {
-    'INITIAL_HOME': '回到 HOME', 'CHECK_ZONES': '檢查區域狀態', 'QUERY_TARGET': '查詢取料點', 'RESERVE_SLOT': '預約 C 區格位',
+    'INITIAL_HOME': '回到 HOME', 'CHECK_ZONES': '檢查區域狀態', 'QUERY_TARGET': '查詢取料點', 'QUERY_B_TARGET': '查詢 B 區取料點', 'RESERVE_SLOT': '預約 C 區格位',
     'PREFLIGHT': '動作前檢查', 'APPROACH_A': '移到 A 區上方', 'DESCEND_A': '下降到 A 區', 'GRASP_A': '在 A 區吸取',
     'ATTACH': '確認吸附', 'LIFT_A': '從 A 區抬升', 'HOME_HOLDING': '持物回 HOME', 'RESERVE_B': '預約 B 區',
     'APPROACH_B': '移到 B 區上方', 'DESCEND_B': '下降到 B 區', 'RELEASE_B': '在 B 區釋放', 'GRASP_B': '在 B 區吸取',

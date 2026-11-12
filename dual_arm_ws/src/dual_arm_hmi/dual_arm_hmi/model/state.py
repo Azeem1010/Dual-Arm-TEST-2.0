@@ -128,6 +128,8 @@ class CameraStatus:
     calibration: str = 'NOT_RUN'
     has_annotation: bool = True
     stale_after_s: float = CAMERA_STALE_S
+    # Arm cameras take turns (USB bandwidth): '' = not rotated, else on / off / switching / error.
+    rotation: str = ''
 
     @property
     def has_signal(self):
@@ -282,7 +284,21 @@ def camera_placeholder(s, name):
         return '等待影像', Level.NEUTRAL
     if name not in s.cameras:
         return '此模式沒有相機', Level.NEUTRAL
+    rotation = s.cameras[name].rotation
+    if rotation == 'off':
+        return '輪流中，鏡頭關閉', Level.NEUTRAL
+    if rotation == 'switching':
+        return '切換中', Level.NEUTRAL
+    if rotation == 'error':
+        return '鏡頭切換失敗', Level.WARN
     return '無訊號', Level.WARN
+
+
+def calibration_label(status):
+    """Chip text: rotated arm cameras only monitor and are never calibrated."""
+    if status is not None and status.rotation:
+        return '僅監控'
+    return f'校正 {"NOT_RUN" if status is None else status.calibration}'
 
 
 def next_slot(task):
@@ -529,7 +545,8 @@ def _attention_banner(s):
         return None
     if s.joints_stale:
         return Banner(Level.WARN, '馬達資料過期', '數值不是即時資料', '檢查 /joint_states 與控制器')
-    lost = [name for name, camera in s.cameras.items() if not camera.has_signal]
+    lost = [name for name, camera in s.cameras.items()
+            if not camera.has_signal and camera.rotation not in ('off', 'switching')]
     if lost:
         return Banner(Level.WARN, '相機無訊號', '、'.join(lost), '檢查相機連線')
     if s.mode.is_hardware and s.phase is Phase.READY and s.hardware_blocked_reason:

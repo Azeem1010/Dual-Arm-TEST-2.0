@@ -105,17 +105,16 @@ def _hardware_plan(mode, profiles, environ):
         if not hardware.get('controllers_file'):
             return LaunchPlan(problem='實機動作需要實測容差的 hardware.controllers_file')
         words += ['enable_motion:=true', f'controllers_file:={hardware["controllers_file"]}']
-    vision = ['vision_pkg', 'vision.launch.py', 'show_debug:=false', 'publish_debug_image:=true']
-    calibration = ['dual_arm_bringup', 'calibration.launch.py', 'mode:=hardware', 'use_sim_time:=false']
+    # The environment camera decides; the arm cameras only monitor and take turns (USB bandwidth).
+    vision = ['dual_arm_bringup', 'vision_hardware.launch.py']
     if hardware.get('vision_calib_dir'):
         vision.append(f'calib_dir:={hardware["vision_calib_dir"]}')
-        calibration.append(f'calib_dir:={hardware["vision_calib_dir"]}')
     devices = {name: str(hardware.get(name) or '').strip() for name in _CAMERA_DEVICES}
     vision += [f'{name}:={path}' for name, path in devices.items() if path]
     missing = [name for name, path in devices.items() if not path]
     notice = (f'設定檔未填 {"、".join(missing)}，改用 vision_pkg 的 config/cameras.yaml；兩處都空的相機不會啟動'
               if missing else '')
-    return LaunchPlan(_together(_launch(*words), _launch(*vision), _launch(*calibration)),
+    return LaunchPlan(_together(_launch(*words), _launch(*vision)),
                       environment=(('ROS_DOMAIN_ID', domain_for(mode, profiles, environ)),), notice=notice)
 
 

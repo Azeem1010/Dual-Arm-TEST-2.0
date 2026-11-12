@@ -135,3 +135,12 @@ def test_latched_simulation_stays_ready_but_hardware_does_not():
     assert infer_phase(Mode.SIMULATION, stopped, True, latched=True) is Phase.READY
     assert infer_phase(Mode.SIMULATION, stopped, True, latched=False) is Phase.STARTING
     assert infer_phase(Mode.HARDWARE_MOTION, stopped, True, latched=True) is Phase.READ_ONLY
+
+
+def test_parse_arm_camera_state():
+    from dual_arm_hmi.sources.ros_parse import arm_camera_rotation
+    assert arm_camera_rotation('{"want": "arm1", "streaming": "arm1", "phase": "on", "message": ""}') ==         {'arm1': 'on', 'arm2': 'off'}
+    assert arm_camera_rotation('{"want": "arm2", "streaming": "", "phase": "switching", "message": ""}') ==         {'arm1': 'switching', 'arm2': 'switching'}
+    assert arm_camera_rotation('{"want": "arm2", "streaming": "arm1", "phase": "error", "message": "x"}') ==         {'arm1': 'on', 'arm2': 'error'}
+    assert arm_camera_rotation('nope') is None
+    assert arm_camera_rotation('{"phase": "dancing"}') is None

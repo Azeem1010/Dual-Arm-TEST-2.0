@@ -16,6 +16,21 @@ _FPS_WINDOW_S = 2.0
 _CAMERAS = ('env', 'arm1', 'arm2')
 
 
+def arm_camera_rotation(text):
+    """Per arm rotation state from /vision/arm_cameras/state, or None when it cannot be read."""
+    try:
+        data = json.loads(text)
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(data, dict) or data.get('phase') not in ('on', 'switching', 'error'):
+        return None
+    phase, streaming = data['phase'], data.get('streaming', '')
+    if phase == 'switching':
+        return {'arm1': 'switching', 'arm2': 'switching'}
+    idle = 'off' if phase == 'on' else 'error'
+    return {arm: 'on' if arm == streaming else idle for arm in ('arm1', 'arm2')}
+
+
 def task_from_json(text):
     """A TaskStatus from /dual_arm/status, or None when the message cannot be read."""
     try:

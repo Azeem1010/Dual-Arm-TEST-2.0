@@ -3,7 +3,7 @@ from dataclasses import replace
 import pytest
 
 from dual_arm_hmi.model.state import (HARDWARE_MOTION_BLOCKED, Action, CameraStatus, Level, Mode, Phase, SafetyStatus,
-                                      Snapshot, TaskStatus, ZoneView, b_interlock, banner, camera_placeholder,
+                                      Snapshot, TaskStatus, ZoneView, b_interlock, banner, calibration_label, camera_placeholder,
                                       evaluate_actions, next_slot, status_cells)
 from dual_arm_hmi.sources.fake_source import FakeSource
 
@@ -277,3 +277,25 @@ def test_simulated_fault_while_holding_points_to_reset_simulation():
     assert '重置模擬' in banner(held).next_step
     empty = replace(held, task=replace(task, holding=(('arm1', 'empty'), ('arm2', 'empty'))))
     assert '回 HOME' in banner(empty).next_step
+
+
+def test_placeholder_rotation():
+    for rotation, expected in (('off', ('輪流中，鏡頭關閉', Level.NEUTRAL)), ('switching', ('切換中', Level.NEUTRAL)),
+                               ('error', ('鏡頭切換失敗', Level.WARN))):
+        snapshot = ready(cameras={'arm2': CameraStatus(rotation=rotation)})
+        assert camera_placeholder(snapshot, 'arm2') == expected, rotation
+
+
+def test_rotated_off_camera_is_not_lost():
+    quiet = ready(cameras={'arm1': CameraStatus(age_s=0.1, rotation='on'), 'arm2': CameraStatus(rotation='off')})
+    assert banner(quiet).title != '相機無訊號'
+    switching = ready(cameras={'arm1': CameraStatus(rotation='switching'), 'arm2': CameraStatus(rotation='switching')})
+    assert banner(switching).title != '相機無訊號'
+    failed = ready(cameras={'arm2': CameraStatus(rotation='error')})
+    assert banner(failed).title == '相機無訊號'
+
+
+def test_monitor_only_calibration_label():
+    assert calibration_label(CameraStatus(rotation='off')) == '僅監控'
+    assert calibration_label(CameraStatus(calibration='PASS')) == '校正 PASS'
+    assert calibration_label(None) == '校正 NOT_RUN'
