@@ -16,6 +16,7 @@ from std_srvs.srv import Trigger
 from dual_arm_interfaces.srv import ConfirmStep
 
 from .confirmation import TokenError, TokenGate
+from .gateways.env_scene import wire_env_scene
 from .gateways.gripper import create_gripper
 from .gateways.motion import MotionGateway
 from .gateways.truth import TruthObserver, wire_truth
@@ -106,8 +107,8 @@ class CoordinatorNode(Node):
         token_ttl = declare('recovery_token_ttl_s', 3600.0)
         calibration_max_age = declare('calibration_status_max_age_s', 3.0)
         observation_source = declare('observation_source', 'truth')
-        if observation_source not in ('truth', 'vision_pick'):
-            raise ValueError('observation_source must be truth or vision_pick')
+        if observation_source not in ('truth', 'vision_pick', 'env_scene'):
+            raise ValueError('observation_source must be truth, vision_pick or env_scene')
 
         self.config = load(config_path)
         if type(self.cycles) is not int or not 1 <= self.cycles <= 8:
@@ -142,8 +143,12 @@ class CoordinatorNode(Node):
         if observation_source == 'vision_pick':
             observations = VisionPickObserver(self.observer, wire_vision(self, self.config, self.guard, self.group,
                                                                          calibration_max_age))
+        settings = WorkflowSettings.from_config(self.config)
+        if observation_source == 'env_scene':
+            # The truth observer stays: the simulated gripper still locates caps through it.
+            observations = wire_env_scene(self, self.config, settings, self.motion, self.guard, self.group)
         task_io = CoordinatorIO(self.motion, self.suction_backend, observations, self.guard)
-        self.transfer = Transfer(task_io, WorkflowSettings.from_config(self.config), self.journal, self.recovery_gate)
+        self.transfer = Transfer(task_io, settings, self.journal, self.recovery_gate)
 
         qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.status_publisher = self.create_publisher(String, '/dual_arm/status', qos)
