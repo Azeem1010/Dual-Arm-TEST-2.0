@@ -1,7 +1,7 @@
 from types import SimpleNamespace as Reply
 import unittest
 
-from dual_arm_vision_adapter.env_scene_bridge import at_home_from_status, env_calibration, to_zone_fields
+from dual_arm_vision_adapter.env_scene_bridge import ScenePoller, at_home_from_status, env_calibration, to_zone_fields
 
 BOTH_HOME = {'arm1': True, 'arm2': True}
 
@@ -51,6 +51,42 @@ class Calibration(unittest.TestCase):
                 self.assertTrue(any(word in reason for reason in reasons), reasons)
         passed, reasons = env_calibration(response(success=False, message='timeout'))
         self.assertEqual((passed, reasons), (False, ['timeout']))
+
+
+class Future:
+    def __init__(self):
+        self.value, self.finished = None, False
+
+    def done(self):
+        return self.finished
+
+    def result(self):
+        return self.value
+
+
+class Polling(unittest.TestCase):
+    def setUp(self):
+        self.now, self.futures = 0.0, []
+        self.poller = ScenePoller(self.call, lambda: self.now, timeout_s=2.0)
+
+    def call(self):
+        self.futures.append(Future())
+        return self.futures[-1]
+
+    def test_returns_each_finished_response_once(self):
+        self.assertIsNone(self.poller.tick())
+        self.futures[0].value, self.futures[0].finished = 'scene', True
+        self.assertEqual(self.poller.tick(), 'scene')
+        self.assertEqual(len(self.futures), 2)
+
+    def test_abandons_a_request_that_never_returns(self):
+        self.poller.tick()
+        self.now = 1.0
+        self.poller.tick()
+        self.assertEqual(len(self.futures), 1)
+        self.now = 2.5
+        self.poller.tick()
+        self.assertEqual(len(self.futures), 2)
 
 
 class StatusParsing(unittest.TestCase):

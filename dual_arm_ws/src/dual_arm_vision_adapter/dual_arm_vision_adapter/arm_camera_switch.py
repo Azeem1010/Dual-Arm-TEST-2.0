@@ -11,6 +11,10 @@ import time
 
 ARMS = ('arm1', 'arm2')
 IDLE_ARM = 'arm1'
+# A camera counts as on once its process has stayed up this long, and as healthy after RECOVERED_S.
+STABLE_S, RECOVERED_S = 0.5, 5.0
+# Restart delays after a camera exits by itself: 2, 4, 8 ... up to 30 s, so a missing camera costs no CPU.
+BACKOFF_FIRST_S, BACKOFF_MAX_S = 2.0, 30.0
 
 
 def active_arm_from_status(text):
@@ -35,6 +39,7 @@ class ArmCameraSwitch:
         self._stopping = None          # [arm, process, deadline, killed]
         self._phase, self._message = 'switching', ''
         self._last_want = IDLE_ARM
+        self._started_at, self._failures, self._next_start = 0.0, 0, 0.0
 
     def on_status(self, arm):
         self._status = (arm if arm in ARMS else '', self._clock())
@@ -72,16 +77,27 @@ class ArmCameraSwitch:
         if self._current is not None:
             arm, process = self._current
             if arm != want:
+                self._failures, self._next_start = 0, 0.0
                 process.terminate()
                 self._stopping = [arm, process, self._clock() + self._term_timeout, False]
                 self._current = None
                 self._advance_stop()
                 return
+            up = self._clock() - self._started_at
             if process.running():
-                self._set('on')
+                if up >= RECOVERED_S:
+                    self._failures = 0
+                self._set('on') if up >= STABLE_S else self._set('switching', f'{arm} camera is starting')
                 return
-            # The wanted camera exited by itself: start it again below.
+            # The wanted camera exited by itself: retry later, never in a tight loop.
             self._current = None
+            self._failures += 1
+            delay = min(BACKOFF_FIRST_S * 2 ** (self._failures - 1), BACKOFF_MAX_S)
+            self._next_start = self._clock() + delay
+            self._set('error', f'{arm} camera exited after {up:.1f} s; retrying in {delay:.0f} s')
+            return
+        if self._clock() < self._next_start:
+            return
         busy = [self._device_of(arm) for arm in ARMS if self._in_use(self._device_of(arm))]
         if busy:
             self._set('error', f'{", ".join(busy)} is open by another process; not starting {want} camera')
@@ -89,7 +105,8 @@ class ArmCameraSwitch:
         process = self._launcher(want)
         process.start()
         self._current = (want, process)
-        self._set('on')
+        self._started_at = self._clock()
+        self._set('switching', f'{want} camera is starting')
 
     def shutdown(self):
         """Stop every camera this switch started, waiting up to the term timeout before killing."""

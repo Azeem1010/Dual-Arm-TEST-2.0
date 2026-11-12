@@ -141,7 +141,7 @@ class Switching(Base):
     def test_crash_restarts_only_wanted(self):
         self.run_ticks()
         self.world.processes[0].exit()
-        self.run_ticks()
+        self.run_ticks(count=15)
         self.assertEqual(self.world.events, [('start', 'arm1'), ('start', 'arm1')])
         self.assertEqual(self.world.running(), ['arm1'])
 
@@ -156,6 +156,30 @@ class Switching(Base):
         self.run_ticks()
         self.switch.shutdown()
         self.assertEqual(self.world.running(), [])
+
+
+class CrashBackoff(Base):
+    def test_crashing_camera_backs_off(self):
+        class Crashing(FakeProcess):
+            def start(inner):
+                FakeProcess.start(inner)
+                inner.exit()
+        self.world.launcher = lambda arm: self.world.processes.append(Crashing(self.world, arm)) or self.world.processes[-1]
+        self.switch = ArmCameraSwitch(lambda arm: self.world.launcher(arm), DEVICES.get, self.world.busy.__contains__,
+                                      clock=lambda: self.world.now, term_timeout_s=3.0, status_max_age_s=2.0)
+        self.run_ticks(count=50, step=0.2)
+        starts = self.world.events.count(('start', 'arm1'))
+        self.assertLessEqual(starts, 4)
+        self.assertGreaterEqual(starts, 2)
+        state = self.switch.state()
+        self.assertEqual(state['phase'], 'error')
+        self.assertIn('exited', state['message'])
+
+    def test_reports_on_only_after_staying_up(self):
+        self.switch.tick()
+        self.assertNotEqual(self.switch.state()['phase'], 'on')
+        self.run_ticks(count=4)
+        self.assertEqual(self.switch.state()['phase'], 'on')
 
 
 class StatusParsing(unittest.TestCase):

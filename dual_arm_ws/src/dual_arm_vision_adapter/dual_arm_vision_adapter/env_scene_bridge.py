@@ -52,6 +52,31 @@ def env_calibration(response):
     return (not problems, problems)
 
 
+class ScenePoller:
+    """One get_scene request at a time; a request that never returns (env_scene restarted) is dropped."""
+
+    def __init__(self, call, clock, timeout_s=2.0):
+        self._call, self._clock, self._timeout = call, clock, timeout_s
+        self._pending, self._sent = None, 0.0
+
+    def _send(self):
+        self._pending = self._call()
+        self._sent = self._clock()
+
+    def tick(self):
+        """The response that finished since the last tick, or None."""
+        if self._pending is None:
+            self._send()
+            return None
+        if self._pending.done():
+            result = self._pending.result()
+            self._send()
+            return result
+        if self._clock() - self._sent > self._timeout:
+            self._send()
+        return None
+
+
 def main():
     from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
     from env_scene_interfaces.srv import GetEnvScene
@@ -65,7 +90,7 @@ def main():
     client = node.create_client(GetEnvScene, '/vision/env_scene/get_scene')
     zone_publisher = node.create_publisher(ZoneState, '/vision/env/zone_state', 10)
     calibration_publisher = node.create_publisher(DiagnosticArray, '/vision/calibration_status', 10)
-    state = {'at_home': None, 'pending': None}
+    state = {'at_home': None}
 
     def on_status(message):
         at_home = at_home_from_status(message.data)
@@ -85,17 +110,15 @@ def main():
         out.header.stamp = stamp
         calibration_publisher.publish(out)
 
+    def call():
+        return client.call_async(GetEnvScene.Request()) if client.service_is_ready() else None
+
+    poller = ScenePoller(call, lambda: node.get_clock().now().nanoseconds / 1e9)
+
     def on_timer():
-        pending = state['pending']
-        if pending is not None and not pending.done():
-            return
-        if pending is not None:
-            state['pending'] = None
-            result = pending.result()
-            if result is not None:
-                publish(result)
-        if client.service_is_ready():
-            state['pending'] = client.call_async(GetEnvScene.Request())
+        result = poller.tick()
+        if result is not None:
+            publish(result)
 
     node.create_subscription(String, '/dual_arm/status', on_status, 10)
     node.create_timer(0.5, on_timer)
