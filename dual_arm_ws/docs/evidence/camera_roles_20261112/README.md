@@ -14,7 +14,7 @@
 
 未完成：
 
-- **BLOCKED**：匯入上游 env_camera_vision。GitHub 只有 `6b059eb`，現場版本（A 區座標以黑框左緣為原點）尚未推送。`src/env_scene` 不存在，`env_scene_node` 與 coordinator 的 `env_scene` 來源都還不能實際執行。
+- 匯入：使用者同意先用 `6b059eb`（GitHub 唯一版本）匯入，submodule `third_party/env_camera_vision` 鎖在該版，複製到 `src/env_scene`、`src/env_scene_interfaces`；建置與上游 10 項測試 PASS（`env_scene_import.log`）。現場版本推送後要換版。
 - **NOT_RUN**：Orin 現場四項（HARDWARE_TEST_GUIDE V1）。
 - 審查留下的小問題（未修）：`device_in_use` 讀不到其他使用者的 `/proc/<pid>/fd` 時當成沒占用，所以所有相機程序要用同一個使用者執行；SIGKILL 後仍不退出的程序群組會一直顯示 `switching`；`env_scene` 的格位陣列沒檢查長度；橋接節點的 `at_home` 不會過期；`scene_call` 等服務時不檢查取消。
-- 待 env_scene 匯入後再確認：`GetEnvScene` 的結果是否保證來自手臂停妥後的影像（是否有時間戳可用）。
+- 匯入後確認：`GetEnvScene` 回傳 1 秒內最新的結果，`header.stamp` 是回應時間而非影像時間；C 格佔用要連續 3 次相同（10 Hz）才切換。coordinator 因此在手臂停妥後再等 `SCENE_LAG_S` = 0.5 s 之後的影像才查詢（測試 `test_scene_needs_images_past_its_processing_lag`，coordinator 313 PASS）。

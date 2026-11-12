@@ -12,6 +12,10 @@ import time
 from ..workflow.ports import GridView, PickView, PlaceView, TaskFault, ZoneView
 
 ACCEPTED_SOURCES = ('standard', 'measured')
+# env_scene answers with its latest result (up to its image_timeout_s old) and switches a C slot only
+# after occupied_frames (3) equal results at process_hz (10): 0.4 s. A query therefore waits for an
+# env image that arrived this long after the arms settled.
+SCENE_LAG_S = 0.5
 _POLL_S = 0.01
 
 
@@ -29,7 +33,7 @@ class EnvSceneObserver:
         self._guard, self._settle, self._timeout, self._clock, self._sleep = guard, settle_s, image_timeout_s, clock, sleep
 
     def _wait_for_image(self):
-        after = self._clock() + self._settle
+        after = self._clock() + self._settle + SCENE_LAG_S
         deadline = after + self._timeout
         while True:
             self._guard()

@@ -4,7 +4,7 @@ import unittest
 
 import yaml
 
-from dual_arm_coordinator.gateways.env_scene import EnvSceneObserver, require_world_frame
+from dual_arm_coordinator.gateways.env_scene import SCENE_LAG_S, EnvSceneObserver, require_world_frame
 from dual_arm_coordinator.gateways.vision import ImageMonitor
 from dual_arm_coordinator.workflow.ports import TaskCancelled, TaskFault, WorkflowSettings
 
@@ -35,6 +35,7 @@ class Base(unittest.TestCase):
         self.home = {'arm1': True, 'arm2': True}
         self.unreachable = set()
         self.deliver_images = True
+        self.deliver_until = float('inf')
         self.guard_error = None
         self.observer = EnvSceneObserver(self.scene_call, self.images, self.home.get, self.can_reach,
                                          lambda _arm: HOME_A, SETTINGS, self.guard, 0.2, 5.0,
@@ -57,7 +58,7 @@ class Base(unittest.TestCase):
 
     def sleep(self, seconds):
         self.now += seconds
-        if self.deliver_images:
+        if self.deliver_images and self.now <= self.deliver_until:
             self.images.on_image('env')
 
 
@@ -152,6 +153,17 @@ class ImageGate(Base):
         self.assertFalse(view.success)
         self.assertEqual(view.message, 'No new image from env after the arm settled')
         self.assertEqual(self.calls, 0)
+
+    def test_scene_needs_images_past_its_processing_lag(self):
+        # env_scene answers with its latest result and debounces C slots over several frames, so an
+        # image right after the arms settle is not enough: the scene must have had time to change.
+        self.deliver_until = self.now + 0.2 + SCENE_LAG_S / 2
+        view = self.observer.grid()
+        self.assertFalse(view.success)
+        self.assertEqual(self.calls, 0)
+
+    def test_scene_lag_covers_the_slot_debounce(self):
+        self.assertGreaterEqual(SCENE_LAG_S, 0.4)
 
     def test_cancel_while_waiting(self):
         self.deliver_images = False

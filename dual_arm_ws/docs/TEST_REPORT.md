@@ -12,7 +12,8 @@ The environment camera decides zones A, B and C (`env_scene` source); the arm ca
 | t2: `smoke_runtime_sim` | FAIL | planning and controllers PASS; known intermittent Gazebo shutdown timeout |
 | Regression `faults` | PASS | 22 checks, faults_with_sim/. Two earlier runs FAIL because the simulation was not started (command error, kept) |
 | `vision_hardware.launch.py` parses; build of changed packages | PASS | t6_*.log |
-| Import of env_camera_vision | BLOCKED | field version not pushed upstream (GitHub has 6b059eb only) |
+| Import of env_camera_vision at 6b059eb (provisional, user approved); upstream tests | PASS | 10 tests; env_scene_import.log. Field version still to replace it |
+| Coordinator after the scene-lag gate | PASS | 313 |
 | Orin: bandwidth, 50 switches, env_scene calibration, coordinate error (HARDWARE_TEST_GUIDE V1) | NOT_RUN | |
 
 ## 2026-11-12 Slot 8 with a tilted cup; system audit

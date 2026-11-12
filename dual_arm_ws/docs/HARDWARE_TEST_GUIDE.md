@@ -15,7 +15,7 @@ Orin 的安裝與 ESP32 agent 的建置見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.
 | [H1](#h1-扭力關閉手動確認方向) | 手扳確認方向，解決配置矛盾 | 由人手扳 | 可以 |
 | [HOME 定位](#home-定位) | 讓手臂回 HOME，例如調整相機或 OpenCV | **會** | P0、H0 當天通過後隨時可以 |
 | [V0](#v0-相機檢查) | 三顆相機接線與畫面方向 | 否 | 可以 |
-| [V1](#v1-手臂鏡頭輪流與環境相機) | 手臂鏡頭輪流、頻寬、環境相機判斷 | 否 | 等 env_scene 匯入（上游現場版推送後） |
+| [V1](#v1-手臂鏡頭輪流與環境相機) | 手臂鏡頭輪流、頻寬、環境相機判斷 | 否 | 可以（env_scene 暫用 6b059eb） |
 | [E0](#e0-esp32-吸盤通電檢查) | 吸盤命令與時間 | 否，吸盤會作動 | 可以 |
 | [H2](#h2-校正量測) | 量測校正值 | 由人手扳 | 要先訂門檻（D6） |
 | [H3](#h3-單軸微動) | 單軸 ±10 raw，確認方向與穩態誤差 | **會** | H1 完成後；和 H2 互相驗證 |
@@ -319,7 +319,7 @@ ros2 launch vision_pkg vision.launch.py arm_camera:=arm2   # 先停掉上一個�
 
 ## V1 手臂鏡頭輪流與環境相機
 
-**目的：** 確認兩顆手臂鏡頭輪流時不會撞頻寬，以及環境相機（`env_scene`）的 A/B/C 判斷可用。設計見 [camera-roles 設計](superpowers/specs/2026-11-12-camera-roles-design.md)。**前提：** 上游 env_camera_vision 的現場版本已匯入 `src/env_scene`（目前 GitHub 只有 `6b059eb`，尚未匯入）。
+**目的：** 確認兩顆手臂鏡頭輪流時不會撞頻寬，以及環境相機（`env_scene`）的 A/B/C 判斷可用。設計見 [camera-roles 設計](superpowers/specs/2026-11-12-camera-roles-design.md)。**注意：** env_camera_vision 暫用 `6b059eb` 匯入（使用者 2026-11-12 同意）；現場版本（A 區座標以黑框左緣為原點）推送後要換版並重新核對座標。
 
 **A 區放置規則：** 環境相機看不到 A 區最左端約 25%。A 區用黑色膠帶框出可見範圍，瓶蓋**只能放在黑框內**；框外的瓶蓋相機看不到，任務會以為 A 區已空。
 
