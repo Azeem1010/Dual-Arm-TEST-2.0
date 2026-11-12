@@ -2,7 +2,15 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: slot 8 with a tilted cup; system audit; Orin update steps
+## Latest result: camera roles for the USB bandwidth limit
+
+- User decisions (2026-11-12): the environment camera decides zones A, B and C; the arm cameras only monitor and must never stream together, switching with the moving arm (process start/stop, design option A); no end-to-end hardware dry-run mode; caps go only inside the black-taped visible part of zone A (operating rule). Design and plan: superpowers/specs/2026-11-12-camera-roles-design.md, superpowers/plans/2026-11-12-camera-roles.md.
+- Coordinator: arm 2 picks zone B at an observed position (`TaskIO.b_pick_target`, refused beyond `zones.b_pick_tolerance_m`, simulation 0.02 m, hardware null); new `observation_source=env_scene` (`gateways/env_scene.py`) maps the env_scene world coordinates and refuses `estimated` coordinates and invalid flags per use; zone B arm clearance from joint feedback. Simulation still uses truth / vision_pick and picks B at `b_place`.
+- `vision.launch.py` starts at most one arm camera (`arm_camera:=none|arm1|arm2`, default none). New `arm_camera_switch` and `env_scene_bridge` in `dual_arm_vision_adapter`, new `dual_arm_bringup/vision_hardware.launch.py`; the operator UI's hardware mode uses it and shows the rotation (「輪流中，鏡頭關閉」, 「僅監控」).
+- BLOCKED: importing env_camera_vision. GitHub still has only `6b059eb`; the field version (zone A coordinates from the black frame) is not pushed. `src/env_scene` does not exist yet, so `env_scene_node` and the `env_scene` source cannot run.
+- NOT_RUN: everything on the Orin (HARDWARE_TEST_GUIDE V1). Tests and tier runs: TEST_REPORT and evidence/camera_roles_20261112/.
+
+## Earlier result: slot 8 with a tilted cup; system audit; Orin update steps
 
 - User decisions (2026-11-12): relax "cup straight down" so the simulation fills all 8 slots; raise tilted contact targets; move the simulated cap_8; axis offset 5 mm; leave the simulated cameras (D7).
 - IK tries straight down first; otherwise it allows a tilt up to `motion.max_tool_tilt_deg` (simulation 9°, the real slot-8 teach was about 8.7°) and takes the solution nearest the current joints. The smallest-tilt solution leans the shoulder into the base in MoveIt; the chosen branch is the one the real arm used. The motion gateway raises tilted contact targets by the cup rim (empty) or the held cap rim plus the pick lift (holding). The Gazebo suction plugin accepts 10° and 2 mm vertical. New hardware fields `heights.cup_radius_m` and `motion.max_tool_tilt_deg` are null until measured.
@@ -23,7 +31,7 @@ Current status by work package is in MODIFICATION_PLAN.md section 6. Each sectio
 
 - Submodule `three-camera-vision-ros2` fast-forwarded 4a40f30 → 64f28a0; the same diff applied to `src/vision_pkg` with `git apply --ignore-whitespace --directory=dual_arm_ws/src`. sources.lock.json updated.
 - Upstream only changes config: `cameras.yaml` now holds the three `/dev/v4l/by-path/` paths measured in V0 on 2026-11-11 (env USB port 4.3 AONI 310P, arm1 4.4.3 Alcor, arm2 4.4.1 Alcor), and `usb_cam.yaml` sets arm2 to `yuyv2rgb` because the Alcor camera only supports YUYV. This settles the open by-path question: the paths are tied to the physical USB ports, so cables must not be swapped.
-- Upstream known issue: with all three cameras on one USB 2.0 hub the third stream fails to start (not enough bandwidth); one Alcor camera must move to another root port. Not checked here.
+- Upstream known issue: with all three cameras on one USB 2.0 hub the third stream fails to start (not enough bandwidth); one Alcor camera must move to another root port. Not checked here. (Superseded on 2026-11-12: the arm cameras now take turns, see the latest result.)
 - PASS in WSL Jazzy: `colcon build --packages-select vision_pkg`; vision_pkg 100 tests; HMI profile tests 20. NOT_RUN: real cameras on the Orin.
 
 ## Earlier result: hardware handoff no longer needs owner authorisation

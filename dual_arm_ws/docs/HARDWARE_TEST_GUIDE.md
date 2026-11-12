@@ -15,6 +15,7 @@ Orin 的安裝與 ESP32 agent 的建置見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.
 | [H1](#h1-扭力關閉手動確認方向) | 手扳確認方向，解決配置矛盾 | 由人手扳 | 可以 |
 | [HOME 定位](#home-定位) | 讓手臂回 HOME，例如調整相機或 OpenCV | **會** | P0、H0 當天通過後隨時可以 |
 | [V0](#v0-相機檢查) | 三顆相機接線與畫面方向 | 否 | 可以 |
+| [V1](#v1-手臂鏡頭輪流與環境相機) | 手臂鏡頭輪流、頻寬、環境相機判斷 | 否 | 等 env_scene 匯入（上游現場版推送後） |
 | [E0](#e0-esp32-吸盤通電檢查) | 吸盤命令與時間 | 否，吸盤會作動 | 可以 |
 | [H2](#h2-校正量測) | 量測校正值 | 由人手扳 | 要先訂門檻（D6） |
 | [H3](#h3-單軸微動) | 單軸 ±10 raw，確認方向與穩態誤差 | **會** | H1 完成後；和 H2 互相驗證 |
@@ -298,20 +299,53 @@ python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板> --baud 
 
 ```bash
 ls -l /dev/v4l/by-path/
-ros2 launch vision_pkg vision.launch.py
+ros2 launch vision_pkg vision.launch.py arm_camera:=arm1   # 環境相機 + 手臂 1
+ros2 launch vision_pkg vision.launch.py arm_camera:=arm2   # 先停掉上一個，再看環境相機 + 手臂 2
 ```
 
-`src/vision_pkg/config/cameras.yaml` 已填入 2026-11-11 實測的 by-path（環境 USB 埠 4.3、手臂1 4.4.3、手臂2 4.4.1）。兩顆手臂相機同型號沒有序號，不能用 by-id；by-path 綁定實體插孔，線不可互換。插孔改了就重查 `ls -l /dev/v4l/by-path/` 並改 cameras.yaml，或在 launch 加 `env_cam_device:=...` 等參數。三顆接同一個 USB 2.0 hub 時第三顆會無法啟動串流，要把一顆手臂相機改接其他 root port。用操作介面啟動實機時，也可以填在 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.env_cam_device` 等欄位（優先於 cameras.yaml）。
+兩顆手臂鏡頭只支援未壓縮 YUYV，又接在同一個 USB 2.0 hub，**不能同時開**。`vision.launch.py` 預設只開環境相機，`arm_camera:=arm1|arm2` 最多加開一顆手臂鏡頭。正式執行時由 `vision_hardware.launch.py` 的 `arm_camera_switch` 跟著動作中的手臂自動輪流（見 V1）。
+
+`src/vision_pkg/config/cameras.yaml` 已填入 2026-11-11 實測的 by-path（環境 USB 埠 4.3、手臂1 4.4.3、手臂2 4.4.1）。兩顆手臂相機同型號沒有序號，不能用 by-id；by-path 綁定實體插孔，線不可互換。插孔改了就重查 `ls -l /dev/v4l/by-path/` 並改 cameras.yaml，或在 launch 加 `env_cam_device:=...` 等參數。用操作介面啟動實機時，也可以填在 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.env_cam_device` 等欄位（優先於 cameras.yaml）。
 
 | 看什麼 | 應該是 |
 |---|---|
-| 三個畫面都有影像 | 名稱和實際相機對得上 |
+| 環境相機和開著的那顆手臂鏡頭都有影像 | 名稱和實際相機對得上 |
 | 畫面方向 | 上下左右正確。手臂相機 1 的 `rotate: 180` 來自 2026-11-06，要重新確認 |
 | 物件偵測 | 只是參考，偵測到不代表已校正 |
 
-**通過：** 三顆都正確，存截圖。改過 `rotate` 的話，該相機的校正都要重做。
+**通過：** 三顆都正確，存截圖。
 
-實體相機的內參與平面校正，在相機固定好之後依 [VISION_CALIBRATION.md](VISION_CALIBRATION.md) 進行，**校正工具 `calibrate_caps` 的預設邊界值和實際配置不符**，先看 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md)。
+2026-11-12 起任務判斷只用環境相機（`env_scene`，見 V1），手臂鏡頭只做監控，不再做 homography 校正；[VISION_CALIBRATION.md](VISION_CALIBRATION.md) 的手臂相機部分已不適用。
+
+## V1 手臂鏡頭輪流與環境相機
+
+**目的：** 確認兩顆手臂鏡頭輪流時不會撞頻寬，以及環境相機（`env_scene`）的 A/B/C 判斷可用。設計見 [camera-roles 設計](superpowers/specs/2026-11-12-camera-roles-design.md)。**前提：** 上游 env_camera_vision 的現場版本已匯入 `src/env_scene`（目前 GitHub 只有 `6b059eb`，尚未匯入）。
+
+**A 區放置規則：** 環境相機看不到 A 區最左端約 25%。A 區用黑色膠帶框出可見範圍，瓶蓋**只能放在黑框內**；框外的瓶蓋相機看不到，任務會以為 A 區已空。
+
+```bash
+ros2 launch dual_arm_bringup vision_hardware.launch.py
+ros2 topic echo /vision/arm_cameras/state          # 目前開哪顆、phase
+ros2 service call /vision/env_scene/calibrate std_srvs/srv/Trigger     # C 格旁不可有瓶蓋
+ros2 service call /vision/env_scene/get_scene env_scene_interfaces/srv/GetEnvScene
+```
+
+`vision_hardware.launch.py` 執行時，**不要**再另外用 `vision.launch.py` 或其他方式開手臂鏡頭：切換節點只在開鏡頭前檢查裝置，手動開的會和它撞頻寬。
+
+手動切換鏡頭（模擬 coordinator 的 `active_arm`）：
+
+```bash
+ros2 topic pub -r 5 /dual_arm/status std_msgs/msg/String "{data: '{\"active_arm\": \"arm2\"}'}"
+```
+
+| 項目 | 怎麼做 | 通過 |
+|---|---|---|
+| 1. 頻寬持續 | 環境相機 + 一顆手臂鏡頭串流 10 分鐘，用 `ros2 topic hz` 看兩個 image_raw | 兩者都不中斷 |
+| 2. 切換 50 次 | `active_arm` 在 arm1、arm2 間來回改 50 次 | 沒有一次 STREAMON 失敗（`No space left on device`）；`phase` 每次回到 `on` |
+| 3. 標定與遮擋 | 兩臂在 HOME，呼叫 `calibrate` 再 `get_scene` | `valid`、`arm1_valid`、`arm2_valid`、`c_slots_valid` 都是 true，`coords_source` 是 `standard` 或 `measured`，`calib_check_mm` ≤ 10 |
+| 4. 座標誤差 | A、B 區各放幾顆瓶蓋，用尺量中心位置，和 `get_scene` 的 `x_mm`、`y_mm` 比 | 誤差記入紀錄（門檻依 H5 的容差訂） |
+
+結果記在 `docs/evidence/` 的新子目錄，四項目前都是 `NOT_RUN`。
 
 ## E0 ESP32 吸盤通電檢查
 

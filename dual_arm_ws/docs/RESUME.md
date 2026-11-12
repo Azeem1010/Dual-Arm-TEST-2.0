@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-12：鏡頭分工調整（USB 頻寬）。使用者決定：環境相機負責 A/B/C 判斷，手臂鏡頭只監控、跟著動作的手臂輪流開（開關 usb_cam 程序），不做端到端試跑模式，瓶蓋只放 A 區黑框內。已完成：Arm 2 用觀測到的 B 區座標吸取（容許 `b_pick_tolerance_m`）、coordinator 新來源 `env_scene`、`vision.launch.py` 最多一顆手臂鏡頭、`arm_camera_switch`、`env_scene_bridge`、`vision_hardware.launch.py`、操作介面輪流顯示。**卡住：** 上游 env_camera_vision 現場版（黑框座標）還沒推到 GitHub（只有 `6b059eb`），所以 `src/env_scene` 尚未匯入（計畫任務 1）。現場驗證見 HARDWARE_TEST_GUIDE V1，全部 NOT_RUN。設計與計畫：`docs/superpowers/`。
 - 2026-11-12：格位 8 改用傾斜吸盤，模擬八物體放滿 8 格（evidence/tilt_slot8_20261112/README.md）。使用者決定：放寬吸盤朝下（模擬上限 9°）、傾斜目標調高接觸高度、移動模擬 cap_8 到 (-0.24, 0.05)、軸心到板緣用 5 mm、模擬相機先不處理。IK 取「離目前關節最近」的傾斜解（傾斜最小的解會撞底座）；接觸高度依吸盤或持物瓶蓋的傾斜補償。實機設定新增 `cup_radius_m`、`max_tool_tilt_deg`，要現場量。手臂軸心、格位、瓶蓋起點集中到 `scripts/field_layout.py`。整體檢查（evidence/system_audit_20261112/）：live graph 無型別、QoS、缺伺服器問題；`run_checks.sh` 改為擋下並判定殘留的 coordinator 等節點。Orin 的 `orin-source` 分支與 `3fd258c` 相同，更新步驟在 ORIN_DEPLOYMENT「從舊版更新」。
 
 - 2026-11-12：階段 C 完成（evidence/phase_c_20261111/README.md）。模擬改成 11-11 實測場地：板 600×240 mm、兩臂軸心 world (±0.10, 0.125)、C 格位依實物編號（1、2 靠手臂，單號欄靠 B，x 0.135／0.170），A 區瓶蓋起點是格位鏡像，B 放置點 (0, 0)，`prefilled_slots` 改 0，介面格位圖 1 號在左上，`vision_pkg` 新增 `slot_one_corner`（實機 `top_left`）。模擬手臂相機移到 x ±0.15，arm1 校正誤差 1.15 → 0.70 mm（預算 1 mm）；順便修正 `sim.launch.py` 相機 TF 仍是舊左右。幾個測試寫死舊座標，已改（舊 pipeline 改讀 coordinator.yaml、先拿離 HOME 最近的瓶蓋）。最終 t1、t2：只有已知的 IK 16/18（cap_8、格位 8 吸盤朝下不可達）與冒煙測試的 Gazebo 關閉逾時 `FAIL`，其餘 `PASS`；八物體從空 C 區放完 7 件、格位 8 FAULT。發現：arm1 拿最靠近底座的 cap_1 時偏 28 mm（推測撞相鄰瓶蓋）。仍未解決：碰撞模型（WP11）、格位 8（C30）、模擬相機遮擋（C31、D7）、軸心偏移 5 或 15 mm。

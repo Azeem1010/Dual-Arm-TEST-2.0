@@ -1,0 +1,15 @@
+manual_run_accepted {'status': 'PASS', 'detail': None}
+Timed out waiting for grasp confirmation request; last status {'active_arm': 'arm1', 'at_home': {'arm1': None, 'arm2': None}, 'b_owner': '', 'busy': False, 'completed': 0, 'config_fingerprint': 'fbc41b77985ef0da3cc02c6361e6d9693620b5b3119d6143f8b62adc219bcdf7', 'cycle_id': '25364973f91a46e3ade64ba4f0a52ea8', 'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'message': 'arm1 home action server is unavailable', 'occupied': [False, False, False, False, False, False, False, False], 'recovery_token': '841501b7da7a4fca97d852f7861e0c02', 'slot': 0, 'state': 'FAULT', 'suction_step': '', 'suction_token': ''}
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py", line 208, in main
+    {'two': harness.two_objects, 'batch': harness.batch, 'faults': harness.faults}[group]()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py", line 197, in faults
+    self.release_failure()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py", line 114, in release_failure
+    status = self.wait_status(lambda s: s['suction_step'] == 'arm1:grasp', 300, 'grasp confirmation request')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py", line 117, in wait_status
+    raise RuntimeError(f'Timed out waiting for {label}; last status {self.latest()}')
+RuntimeError: Timed out waiting for grasp confirmation request; last status {'active_arm': 'arm1', 'at_home': {'arm1': None, 'arm2': None}, 'b_owner': '', 'busy': False, 'completed': 0, 'config_fingerprint': 'fbc41b77985ef0da3cc02c6361e6d9693620b5b3119d6143f8b62adc219bcdf7', 'cycle_id': '25364973f91a46e3ade64ba4f0a52ea8', 'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'message': 'arm1 home action server is unavailable', 'occupied': [False, False, False, False, False, False, False, False], 'recovery_token': '841501b7da7a4fca97d852f7861e0c02', 'slot': 0, 'state': 'FAULT', 'suction_step': '', 'suction_token': ''}
+
+FAIL

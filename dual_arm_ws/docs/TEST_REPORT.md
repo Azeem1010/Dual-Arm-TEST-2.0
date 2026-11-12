@@ -1,5 +1,20 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-12 Camera roles for the USB bandwidth limit
+
+The environment camera decides zones A, B and C (`env_scene` source); the arm cameras only monitor and stream one at a time (`arm_camera_switch`). Details: evidence/camera_roles_20261112/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| t1 (model, build, IK 18/18, reach, HOME collision) | PASS | camera_roles_20261112/t1/ |
+| Unit tests coordinator / HMI / vision / vision adapter | PASS | 311 / 298 / 104 / 33 |
+| t2: regression `two`, legacy pipeline, motion gateway, operator tools, safety, vision pick, README capture | PASS | camera_roles_20261112/t2/ |
+| t2: `smoke_runtime_sim` | FAIL | planning and controllers PASS; known intermittent Gazebo shutdown timeout |
+| Regression `faults` | PASS | 22 checks, faults_with_sim/. Two earlier runs FAIL because the simulation was not started (command error, kept) |
+| `vision_hardware.launch.py` parses; build of changed packages | PASS | t6_*.log |
+| Import of env_camera_vision | BLOCKED | field version not pushed upstream (GitHub has 6b059eb only) |
+| Orin: bandwidth, 50 switches, env_scene calibration, coordinate error (HARDWARE_TEST_GUIDE V1) | NOT_RUN | |
+
 ## 2026-11-12 Slot 8 with a tilted cup; system audit
 
 Where straight down has no solution, the cup may tilt up to `motion.max_tool_tilt_deg` (simulation 9°), choosing the solution nearest the current joints; tilted contact targets are raised for the cup or held cap rim. Simulated cap_8 starts at (-0.24, 0.05). Details and every attempt: evidence/tilt_slot8_20261112/README.md.
