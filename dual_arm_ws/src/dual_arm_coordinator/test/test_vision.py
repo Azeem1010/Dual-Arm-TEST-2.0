@@ -163,11 +163,13 @@ class ImageFreshness(Base):
 
 class Composite(unittest.TestCase):
     def test_only_pick_comes_from_vision(self):
-        truth = Reply(zone=lambda: 'truth zone', grid=lambda: 'truth grid', verify_place=lambda slot: f'truth {slot}')
+        truth = Reply(zone=lambda: 'truth zone', grid=lambda: 'truth grid', verify_place=lambda slot: f'truth {slot}',
+                      b_pick_target=lambda: 'truth b')
         vision = Reply(pick_target=lambda: 'vision pick')
         observer = VisionPickObserver(truth, vision)
-        self.assertEqual((observer.zone(), observer.grid(), observer.verify_place(2), observer.pick_target()),
-                         ('truth zone', 'truth grid', 'truth 2', 'vision pick'))
+        self.assertEqual((observer.zone(), observer.grid(), observer.verify_place(2), observer.pick_target(),
+                          observer.b_pick_target()),
+                         ('truth zone', 'truth grid', 'truth 2', 'vision pick', 'truth b'))
 
 
 if __name__ == '__main__':

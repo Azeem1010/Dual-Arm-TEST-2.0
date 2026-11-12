@@ -1,4 +1,6 @@
 """Arm 2 moves the object in zone B into the next slot of zone C."""
+import math
+
 from .ports import TaskFault
 
 ARM = 'arm2'
@@ -7,6 +9,21 @@ ARM = 'arm2'
 class Arm2Workflow:
     def __init__(self, context):
         self.ctx = context
+
+    def _validated_b_target(self, target):
+        """The observed object in B, which must lie near where arm 1 put it down."""
+        settings = self.ctx.settings
+        if not target.success:
+            raise TaskFault(f'B pick target invalid: {target.message}')
+        values = (target.x, target.y, target.z)
+        if not all(math.isfinite(value) for value in values):
+            raise TaskFault('B pick target is not finite')
+        offset = math.hypot(target.x - settings.b_place[0], target.y - settings.b_place[1])
+        if offset > settings.b_pick_tolerance:
+            raise TaskFault(f'B pick target {values} is {offset:.3f} m from the B place point')
+        if abs(target.z - settings.cap_top_z) > settings.pick_z_tolerance:
+            raise TaskFault(f'B pick target height {target.z} differs from the object top')
+        return (target.x, target.y)
 
     def run(self):
         ctx, io, settings = self.ctx, self.ctx.io, self.ctx.settings
@@ -17,12 +34,15 @@ class Arm2Workflow:
         ctx.require_consistent_c(view)
         occupied = ctx.occupied()
 
+        ctx.step(ARM, 'QUERY_B_TARGET')
+        b_xy = self._validated_b_target(io.b_pick_target())
+
         ctx.step(ARM, 'RESERVE_SLOT')
         slot = ctx.slots.reserve(occupied)
         ctx.journal.update(slot=slot)
         slot_xy = settings.c_slots[slot - 1]
-        above_b = ctx.point(settings.b_place, settings.approach_z)
-        at_b = ctx.point(settings.b_place, settings.contact_z)
+        above_b = ctx.point(b_xy, settings.approach_z)
+        at_b = ctx.point(b_xy, settings.contact_z)
         above_c = ctx.point(slot_xy, settings.approach_z)
         at_c = ctx.point(slot_xy, settings.release_z)
 

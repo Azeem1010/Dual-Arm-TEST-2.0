@@ -39,6 +39,14 @@ class Base(unittest.TestCase):
         self.observer.on_pose(name, (x, y, z))
 
 
+class BPick(Base):
+    def test_b_pick_is_the_configured_place_at_object_top(self):
+        view = self.observer.b_pick_target()
+        top = CONFIG['heights']['surface_z_m'] + CONFIG['heights']['cap_height_m']
+        self.assertTrue(view.success)
+        self.assertEqual((view.x, view.y, view.z), (*CONFIG['zones']['b_place_xy_m'], top))
+
+
 class Zones(Base):
     def test_empty_field(self):
         view = self.observer.zone()

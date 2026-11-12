@@ -26,7 +26,7 @@ _SHAPE = {
     'speeds': dict.fromkeys(('transport_scale', 'contact_scale', 'acceleration_scale')),
     'heights': dict.fromkeys(('surface_z_m', 'cap_height_m', 'cap_radius_m', 'cup_radius_m', 'contact_z_m', 'release_z_m',
                               'approach_z_m', 'pick_z_tolerance_m')),
-    'zones': dict.fromkeys(('a_min_xy_m', 'a_max_xy_m', 'b_place_xy_m', 'c_slots_xy_m')),
+    'zones': dict.fromkeys(('a_min_xy_m', 'a_max_xy_m', 'b_place_xy_m', 'b_pick_tolerance_m', 'c_slots_xy_m')),
     'motion': dict.fromkeys(('planning_s', 'planning_attempts', 'goal_submit_s', 'motion_s',
                              'settle_s', 'tcp_error_limit_m', 'arrival_samples', 'arrival_timeout_s',
                              'joint_state_max_age_s', 'waypoint_step_m', 'waypoint_joint_jump_rad',
@@ -137,6 +137,8 @@ def _check_zones(doc):
               if not _is_xy(zones[key])]
     if not errors and not all(low < high for low, high in zip(zones['a_min_xy_m'], zones['a_max_xy_m'])):
         errors.append('zones.a_min_xy_m must be below zones.a_max_xy_m')
+    if not _is_number(zones['b_pick_tolerance_m']) or zones['b_pick_tolerance_m'] <= 0:
+        errors.append('zones.b_pick_tolerance_m must be positive')
     slots = zones['c_slots_xy_m']
     if not isinstance(slots, list) or len(slots) != SLOT_COUNT or not all(_is_xy(slot) for slot in slots):
         errors.append(f'zones.c_slots_xy_m must list {SLOT_COUNT} [x, y] pairs')

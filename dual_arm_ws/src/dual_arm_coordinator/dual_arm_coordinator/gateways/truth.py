@@ -29,6 +29,7 @@ class TruthObserver:
         self._b_half_width = min(abs(zones['a_min_xy_m'][0]), abs(zones['a_max_xy_m'][0]))
         self._c_side = -1.0 if zones['a_min_xy_m'][0] + zones['a_max_xy_m'][0] > 0 else 1.0
         self._slots = zones['c_slots_xy_m']
+        self._b_place = tuple(zones['b_place_xy_m'])
         self._tcp_of, self._can_reach, self._home_tcp = tcp_of, can_reach, home_tcp
         self._prefilled, self._clock = prefilled, clock
         self._lock = threading.Lock()
@@ -88,6 +89,10 @@ class TruthObserver:
                 continue
             return PickView(True, '', xyz[0], xyz[1], xyz[2] + self._half_height)
         return PickView(False, 'No reachable object in zone A')
+
+    def b_pick_target(self):
+        """Simulation keeps picking B where arm 1 put the object down."""
+        return PickView(True, '', self._b_place[0], self._b_place[1], self._top_z)
 
     def grid(self):
         resting = self._resting()

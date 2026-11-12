@@ -133,6 +133,14 @@ class Validation(unittest.TestCase):
         doc['zones']['c_slots_xy_m'][1] = copy.copy(doc['zones']['c_slots_xy_m'][0])
         self.assert_refused(doc, 'must be distinct')
 
+    def test_b_pick_tolerance_must_be_positive(self):
+        doc = sim_doc()
+        doc['zones']['b_pick_tolerance_m'] = 0.0
+        self.assert_refused(doc, 'zones.b_pick_tolerance_m must be positive')
+        doc = sim_doc()
+        del doc['zones']['b_pick_tolerance_m']
+        self.assert_refused(doc, 'b_pick_tolerance_m')
+
     def test_tool_tilt_range(self):
         doc = sim_doc()
         doc['motion']['max_tool_tilt_deg'] = 0

@@ -130,6 +130,9 @@ class VisionPickObserver:
     def pick_target(self):
         return self._vision.pick_target()
 
+    def b_pick_target(self):
+        return self._truth.b_pick_target()
+
     def grid(self):
         return self._truth.grid()
 

@@ -42,6 +42,9 @@ class CoordinatorIO(TaskIO):
     def pick_target(self):
         return self._observer.pick_target()
 
+    def b_pick_target(self):
+        return self._observer.b_pick_target()
+
     def grid(self):
         return self._observer.grid()
 

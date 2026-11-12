@@ -55,6 +55,7 @@ class WorkflowSettings:
     a_min: tuple
     a_max: tuple
     b_place: tuple
+    b_pick_tolerance: float
     c_slots: tuple
 
     @classmethod
@@ -64,7 +65,7 @@ class WorkflowSettings:
                    contact_z=heights['contact_z_m'], release_z=heights['release_z_m'],
                    approach_z=heights['approach_z_m'], pick_z_tolerance=heights['pick_z_tolerance_m'],
                    a_min=tuple(zones['a_min_xy_m']), a_max=tuple(zones['a_max_xy_m']),
-                   b_place=tuple(zones['b_place_xy_m']),
+                   b_place=tuple(zones['b_place_xy_m']), b_pick_tolerance=zones['b_pick_tolerance_m'],
                    c_slots=tuple(tuple(slot) for slot in zones['c_slots_xy_m']))
 
 
@@ -83,6 +84,10 @@ class TaskIO:
         raise NotImplementedError
 
     def pick_target(self):
+        raise NotImplementedError
+
+    def b_pick_target(self):
+        """Where arm 2 picks the object resting in zone B, as a PickView."""
         raise NotImplementedError
 
     def grid(self):

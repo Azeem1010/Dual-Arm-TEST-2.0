@@ -1,5 +1,6 @@
 from dataclasses import replace
 import json
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -32,6 +33,7 @@ class World(TaskIO):
         self.fail, self.cancel_after = {}, None
         self.cancelled = False
         self.zone_patch, self.grid_patch, self.pick_patch, self.place_patch = None, None, None, None
+        self.b_offset, self.b_patch = (0.0, 0.0), None
         self.unreachable = set()
 
     def _call(self, name, *args):
@@ -50,8 +52,12 @@ class World(TaskIO):
         if self.cancelled:
             raise TaskCancelled('canceled')
 
+    @staticmethod
+    def _at_b(xy):
+        return xy is not None and math.hypot(xy[0] - SETTINGS.b_place[0], xy[1] - SETTINGS.b_place[1]) < 0.05
+
     def _arm_in_b(self):
-        return any(xy == SETTINGS.b_place for xy in self.position.values())
+        return any(self._at_b(xy) for xy in self.position.values())
 
     def zone(self):
         self._call('zone')
@@ -62,6 +68,12 @@ class World(TaskIO):
         self._call('pick_target')
         view = PickView(True, '', -0.14, -0.03, SETTINGS.cap_top_z)
         return self.pick_patch(view) if self.pick_patch else view
+
+    def b_pick_target(self):
+        self._call('b_pick_target')
+        view = PickView(True, '', SETTINGS.b_place[0] + self.b_offset[0], SETTINGS.b_place[1] + self.b_offset[1],
+                        SETTINGS.cap_top_z)
+        return self.b_patch(view) if self.b_patch else view
 
     def grid(self):
         self._call('grid')
@@ -95,11 +107,11 @@ class World(TaskIO):
         self._call('suction', arm, operation)
         location = self.position[arm]
         if operation == 'grasp':
-            if location == SETTINGS.b_place:
+            if self._at_b(location):
                 self.b_object = False
             else:
                 self.a_objects -= 1
-        elif location == SETTINGS.b_place:
+        elif self._at_b(location):
             self.b_object = True
         else:
             self.c[SETTINGS.c_slots.index(location)] = True
@@ -702,3 +714,38 @@ class GoHome(Base):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ObservedB(Base):
+    def arm_moves(self, arm):
+        return [call[2] for call in self.calls_named('move_to') if call[1] == arm]
+
+    def test_arm2_picks_at_observed_b_position(self):
+        self.world.b_offset = (0.01, 0.0)
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        observed = (SETTINGS.b_place[0] + 0.01, SETTINGS.b_place[1], SETTINGS.contact_z)
+        self.assertIn(observed, self.arm_moves('arm2'))
+        self.assertIn((SETTINGS.b_place[0], SETTINGS.b_place[1], SETTINGS.contact_z), self.arm_moves('arm1'))
+        self.assertNotIn((SETTINGS.b_place[0], SETTINGS.b_place[1], SETTINGS.contact_z), self.arm_moves('arm2'))
+
+    def test_arm2_refuses_b_target_beyond_tolerance(self):
+        self.world.b_offset = (SETTINGS.b_pick_tolerance + 0.001, 0.0)
+        self.assert_faulted('B pick target')
+        self.assertEqual(self.arm_moves('arm2'), [])
+
+    def test_arm2_refuses_invalid_b_target(self):
+        self.world.b_patch = lambda view: PickView(False, 'two caps in B')
+        self.assert_faulted('two caps in B')
+        self.assertEqual(self.arm_moves('arm2'), [])
+
+    def test_arm2_refuses_b_target_at_wrong_height(self):
+        self.world.b_patch = lambda view: replace(view, z=view.z + SETTINGS.pick_z_tolerance + 0.001)
+        self.assert_faulted('B pick target')
+
+    def test_arm2_preflight_uses_observed_b(self):
+        self.world.b_offset = (0.0, -0.01)
+        self.transfer.run(1)
+        xy = (SETTINGS.b_place[0], SETTINGS.b_place[1] - 0.01)
+        checked = [call[2] for call in self.calls_named('check_reachable') if call[1] == 'arm2']
+        self.assertIn((*xy, SETTINGS.approach_z), checked)
+        self.assertIn((*xy, SETTINGS.contact_z), checked)
