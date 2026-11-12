@@ -22,10 +22,16 @@ inline std::optional<Command> parse(std::string_view text) {
   return Command{sequence,true,std::string(rest.substr(7))};
 }
 // Simulation contact envelope: cap radius 10 mm minus cup radius 9 mm.
-// Vertical tolerance is the explicit 1 mm simulation contact envelope, not a
-// physical camera calibration threshold. Reject nonfinite and inverted cups.
+// Vertical tolerance is the explicit simulation contact envelope, not a physical
+// camera calibration threshold: 2 mm, because a cup tilted 9 deg is held about
+// 1.4 mm higher (9 mm * sin 9 deg) so its rim does not stop on the cap; straight
+// down it stays 0.3 mm above. Reject nonfinite and inverted cups.
+// The cup may tilt up to 10 deg (cos 10 deg = 0.98481): a four-axis arm cannot reach
+// slot 8 straight down. The simulation coordinator.yaml plans at most 9 deg
+// (max_tool_tilt_deg), so 1 deg is left for tracking error.
+constexpr double kMinDownwardAlignment = 0.98481;
 inline bool contact_ok(double lateral_m,double vertical_m,double downward_alignment) {
   return std::isfinite(lateral_m) && std::isfinite(vertical_m) && std::isfinite(downward_alignment)
-    && lateral_m>=0. && lateral_m<=.001 && std::abs(vertical_m)<=.001 && downward_alignment>=.995 && downward_alignment<=1.000001;
+    && lateral_m>=0. && lateral_m<=.001 && std::abs(vertical_m)<=.002 && downward_alignment>=kMinDownwardAlignment && downward_alignment<=1.000001;
 }
 }

@@ -1,5 +1,6 @@
 #include "dual_arm_gripper/policy.hpp"
 #include <cassert>
+#include <cmath>
 #include <limits>
 int main() {
   using namespace dual_arm_gripper;
@@ -9,6 +10,10 @@ int main() {
   assert(contact_ok(0.,0.,1.));
   assert(!contact_ok(.002,0.,1.));
   assert(!contact_ok(0.,.02,1.));
+  assert(contact_ok(0.,.0019,1.));
+  assert(!contact_ok(0.,.0021,1.));
   assert(!contact_ok(0.,0.,0.));
+  assert(contact_ok(0.,0.,std::cos(9.9*M_PI/180.)));
+  assert(!contact_ok(0.,0.,std::cos(10.1*M_PI/180.)));
   assert(!contact_ok(std::numeric_limits<double>::quiet_NaN(),0.,1.));
 }

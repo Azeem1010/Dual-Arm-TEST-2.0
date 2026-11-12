@@ -61,6 +61,57 @@ class JointPaths(unittest.TestCase):
             self.model.solve([1.0, 1.0, 0.05])
 
 
+class TiltedSuction(unittest.TestCase):
+    """Slot 8 (0.17, -0.055) has no straight-down solution; about 5 deg at contact."""
+    SLOT_8 = [0.17, -0.055, 0.0243]
+
+    @classmethod
+    def setUpClass(cls):
+        urdf = URDF.read_text(encoding='utf-8')
+        cls.down = CadKinematics(urdf, 'arm2')
+        cls.tilted = CadKinematics(urdf, 'arm2', 9.0)
+        cls.tight = CadKinematics(urdf, 'arm2', 4.0)
+
+    def test_straight_down_only_refuses_slot_8(self):
+        with self.assertRaisesRegex(ValueError, 'downward suction axis'):
+            self.down.solve(self.SLOT_8)
+
+    def test_smallest_tilt_reaches_slot_8(self):
+        q = self.tilted.solve(self.SLOT_8)
+        self.assertLess(tcp_error(self.tilted, q, self.SLOT_8), 1e-5)
+        self.assertGreater(tool_tilt_deg(self.tilted, q), 4.5)
+        self.assertLess(tool_tilt_deg(self.tilted, q), 5.5)
+
+    def test_tilt_above_the_limit_is_refused(self):
+        with self.assertRaisesRegex(ValueError, 'within 4 deg'):
+            self.tight.solve(self.SLOT_8)
+
+    def test_reachable_targets_stay_straight_down(self):
+        q = self.tilted.solve([0.135, 0.05, 0.0243])
+        self.assertLess(tool_tilt_deg(self.tilted, q), 0.3)
+
+    def test_seeded_solution_keeps_the_shoulder_low(self):
+        # From HOME the solution nearest the seed is used; the smallest-tilt one
+        # (shoulder near 0.96 rad) collides with the base in MoveIt.
+        home = [0.399, -0.329, 0.064, 1.602]
+        q = self.tilted.solve([0.17, -0.055, 0.054], home)
+        self.assertLess(tcp_error(self.tilted, q, [0.17, -0.055, 0.054]), 1e-5)
+        self.assertLessEqual(tool_tilt_deg(self.tilted, q), 9.0 + 1e-6)
+        self.assertLess(q[1], 0.8)
+
+    def test_tilted_descent_has_no_branch_jump(self):
+        start = self.tilted.solve([0.17, -0.055, 0.054], [0.399, -0.329, 0.064, 1.602])
+        path = solve_line(self.tilted, start, line_points([0.17, -0.055, 0.054], self.SLOT_8, 0.002), 0.15)
+        self.assertLess(tcp_error(self.tilted, path[-1], self.SLOT_8), 1e-5)
+        self.assertLessEqual(max(tool_tilt_deg(self.tilted, q) for q in path), 9.0 + 1e-6)
+        self.assertLess(max(q[1] for q in path), 0.8)
+
+    def test_limit_must_be_in_range(self):
+        for value in (-1.0, 90.0):
+            with self.assertRaises(ValueError):
+                CadKinematics(URDF.read_text(encoding='utf-8'), 'arm2', value)
+
+
 class Timing(unittest.TestCase):
     def peak_speed(self, path, times):
         speeds = [max(abs(a - b) for a, b in zip(p, q)) / (t2 - t1)

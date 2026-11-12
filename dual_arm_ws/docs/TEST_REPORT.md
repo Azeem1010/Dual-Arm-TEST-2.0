@@ -1,5 +1,19 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-12 Slot 8 with a tilted cup; system audit
+
+Where straight down has no solution, the cup may tilt up to `motion.max_tool_tilt_deg` (simulation 9°), choosing the solution nearest the current joints; tilted contact targets are raised for the cup or held cap rim. Simulated cap_8 starts at (-0.24, 0.05). Details and every attempt: evidence/tilt_slot8_20261112/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| t1 generation, `test_cad_pose`, build, IK, reach | PASS | IK 18/18; slot 8 needs about 5° (final2_t1/) |
+| Unit tests coordinator / HMI / vision; gripper gtest | PASS | 293 / 293 / 100; plugin accepts up to 10° and 2 mm vertical |
+| Regression `batch` (8 objects from empty C) | PASS | all 8 slots filled, run ends `FULL` (final2_sim/) |
+| Regression `faults`, `two`; motion gateway; operator tools | PASS | final_sim/, final_t2/ |
+| Vision calibration, probe, vision pick | PASS | arm1 error 0.70 mm (final2_t2/); with cap_8 at (-0.205, 0.015) it was 2.21 mm, hidden by the arm |
+| Earlier attempts | FAIL | smallest tilt hit the base in MoveIt; rim contact 1.00 mm short; held cap 2.63 / 1.36 mm short; a cap picked tilted shifted ~1 mm at B; one run invalid because a stale coordinator answered |
+| Live ROS graph on `hmi_sim` with the operator UI nodes | PASS after review | no type, QoS or missing-server problem; 10 subscriptions without publisher are optional by design (scripts/audit_expect_sim.json); evidence/system_audit_20261112/ |
+
 ## 2026-11-12 Phase C: measured field geometry and slot numbering
 
 Board 600 × 240 mm, j1 axes at world (±0.10, 0.125), C slots numbered as on the real board, caps at the mirrored slots, B at (0, 0), arm cameras at x ±0.15. Final runs on the finished code; earlier partial runs and their fixes are listed in evidence/phase_c_20261111/README.md.

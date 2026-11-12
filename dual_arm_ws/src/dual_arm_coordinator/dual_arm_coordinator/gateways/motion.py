@@ -4,6 +4,7 @@ The planning group uses position-only KDL, which does not hold the suction axis,
 so targets are solved here with CadKinematics and sent as joint values. All
 targets are in the URDF world frame; other frames are converted by the caller.
 """
+import math
 import threading
 import time
 
@@ -26,6 +27,8 @@ from ..workflow.ports import TaskFault
 ARMS = ('arm1', 'arm2')
 _GOAL_JOINT_TOLERANCE = 1e-5
 _B_OBJECT = 'cap_in_b'
+# CadKinematics accepts straight-down solutions within about 0.26 deg.
+_STRAIGHT_DOWN_DEG = 0.5
 
 
 def _duration(seconds):
@@ -41,10 +44,14 @@ class MotionGateway:
         self._cfg, self._heights, self._zones = config['motion'], config['heights'], config['zones']
         self._speeds, self._arms = config['speeds'], config['arms']
         self._homes = homes
-        self._models = {arm: CadKinematics(urdf_text, arm) for arm in ARMS}
+        self._models = {arm: CadKinematics(urdf_text, arm, self._cfg['max_tool_tilt_deg']) for arm in ARMS}
         self._lock = threading.Lock()
         self._joints, self._sequence, self._received = {}, 0, 0.0
         self._attached = dict.fromkeys(ARMS, False)
+        # Tool orientation when each arm attached its cap (the cap was lying flat then).
+        self._held_tool = dict.fromkeys(ARMS)
+        # Extra height of the last empty contact move, and of the pick that holds the cap.
+        self._contact_lift, self._held_gap = dict.fromkeys(ARMS, 0.0), dict.fromkeys(ARMS, 0.0)
         self._b_object_present = False
         group = callback_group
         node.create_subscription(JointState, '/joint_states', self._on_joint_state, 10, callback_group=group)
@@ -211,6 +218,7 @@ class MotionGateway:
     def move_to(self, arm, xyz, contact=False):
         label = f'{arm} to {tuple(xyz)}'
         if contact:
+            xyz = self._contact_target(arm, xyz)
             self._move_straight(arm, xyz, label)
         else:
             q = self._solve(arm, xyz, self.current(arm))
@@ -218,8 +226,41 @@ class MotionGateway:
             self._plan_and_move(arm, q, label)
         self._confirm_arrival(arm, xyz, label)
 
+    def _contact_target(self, arm, xyz):
+        """Raise a tilted contact target so the lowest rim just meets what is below.
+
+        Empty, the rim is the cup's: a cup tilted by t is cup_radius * sin(t) lower
+        at its rim than at its centre. Holding, it is the cap's: the cap was flat when
+        attached, so it tilts by however much the tool has turned since, and its rim
+        drops cap_radius * sin(that). Otherwise the rim stops on the cap or the board
+        before the centre arrives (Gazebo, slot 8 and cap 8, 2026-11-12). A cap picked
+        from a raised cup also hangs that much further from the cup, so the pick lift
+        is added again when it is put down. Straight-down moves with a flat cap that
+        was picked straight down are unchanged.
+        """
+        x, y, z = (float(value) for value in xyz)
+        held = self._held_tool[arm] is not None
+        gap = self._held_gap[arm] if held else 0.0
+        lift = gap
+        for _ in range(3):  # the tilt changes slightly with height; three passes settle it
+            tilt, radius = self._rim_tilt(arm, self._solve(arm, (x, y, z + lift), self.current(arm)))
+            lift = gap + (radius * math.sin(math.radians(tilt)) if tilt > _STRAIGHT_DOWN_DEG else 0.0)
+        if not held:
+            self._contact_lift[arm] = lift
+        return (x, y, z + lift)
+
+    def _rim_tilt(self, arm, q):
+        """Tilt in degrees of the lowest part (cup or held cap) at q, and its radius."""
+        model, held = self._models[arm], self._held_tool[arm]
+        if held is None:
+            return tool_tilt_deg(model, q), self._heights['cup_radius_m']
+        cap_axis = model.forward(q)[:3, :3] @ held.T @ [0.0, 0.0, 1.0]
+        tilt = math.degrees(math.acos(max(-1.0, min(1.0, float(cap_axis[2])))))
+        return tilt, self._heights['cap_radius_m']
+
     def _move_straight(self, arm, xyz, label):
-        """Contact moves stay on a sampled vertical line so the tool remains downward."""
+        """Contact moves stay on a sampled vertical line; the tool stays downward, or within
+        max_tool_tilt_deg where straight down has no solution."""
         model, start = self._models[arm], self.current(arm)
         points = line_points(tcp_position(model, start), xyz, self._cfg['waypoint_step_m'])
         try:
@@ -271,6 +312,8 @@ class MotionGateway:
             link_name=tcp, object=obj, touch_links=[tcp, f'{arm}_cad_link_4'])]
         self._apply(scene, f'{arm} attach')
         self._attached[arm] = True
+        self._held_tool[arm] = self._models[arm].forward(self.current(arm))[:3, :3]
+        self._held_gap[arm] = self._contact_lift[arm]
 
     def detach(self, arm):
         if not self._attached[arm]:
@@ -286,6 +329,8 @@ class MotionGateway:
         world.world.collision_objects = [CollisionObject(id=object_id, operation=CollisionObject.REMOVE)]
         self._apply(world, f'{arm} detach cleanup')
         self._attached[arm] = False
+        self._held_tool[arm] = None
+        self._held_gap[arm] = 0.0
 
     def scene_reset(self):
         """Clear objects by asking MoveIt, since a restarted process has no record of them."""
@@ -306,6 +351,8 @@ class MotionGateway:
             self._apply_world([CollisionObject(id=name, operation=CollisionObject.REMOVE) for name in sorted(names)],
                               'scene reset')
         self._attached = dict.fromkeys(ARMS, False)
+        self._held_tool = dict.fromkeys(ARMS)
+        self._contact_lift, self._held_gap = dict.fromkeys(ARMS, 0.0), dict.fromkeys(ARMS, 0.0)
         self._b_object_present = False
 
     def _apply_world(self, objects, label):

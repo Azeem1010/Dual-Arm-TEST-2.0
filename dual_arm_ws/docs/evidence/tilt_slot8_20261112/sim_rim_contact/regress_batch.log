@@ -1,0 +1,6 @@
+$ timeout 5400 python3 scripts/test_transfer_regression.py batch /tmp/regress_batch docs/evidence/tilt_slot8_20261112/sim/regress_batch.json
+from_empty_start_accepted {'status': 'PASS', 'detail': None}
+observation eight_objects_from_empty_c {'status': 'FAIL', 'state': 'FAULT', 'message': 'arm1 to (-0.17, -0.055, 0.0243): arm1 did not settle within 0.0005 m, last error 0.00100 m', 'completed': 6, 'ground_truth_slots': [True, True, True, True, True, True, False, False]}
+eight_objects_fill_c {'status': 'FAIL', 'detail': 'arm1 to (-0.17, -0.055, 0.0243): arm1 did not settle within 0.0005 m, last error 0.00100 m'}
+ground_truth_has_caps_in_all_slots {'status': 'FAIL', 'detail': [True, True, True, True, True, True, False, False]}
+FAIL

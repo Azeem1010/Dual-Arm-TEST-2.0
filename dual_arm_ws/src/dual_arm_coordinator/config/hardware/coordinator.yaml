@@ -28,6 +28,7 @@ heights:
   surface_z_m: null
   cap_height_m: null
   cap_radius_m: null
+  cup_radius_m: null
   contact_z_m: null
   release_z_m: null
   approach_z_m: null
@@ -51,6 +52,8 @@ motion:
   waypoint_joint_jump_rad: null
   max_velocity_rad_s: null
   max_acceleration_rad_s2: null
+  # Largest suction tilt that still seals on a cap, measured on site; 0 = straight down only.
+  max_tool_tilt_deg: null
 gripper:
   # The ESP32 only echoes commands, so an operator still confirms each result.
   backend: esp32

@@ -43,7 +43,7 @@
    mkdir -p ~/projects && cd ~/projects
    git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
    cd dual_arm_system/dual_arm_ws
-   已經有 clone 的話先 git status，有未提交修改就停下來問，不要丟棄。乾淨才 git pull --recurse-submodules。
+   已經有 clone 的話先 git status，有未提交的程式修改就停下來問，不要丟棄。更新照 docs/ORIN_DEPLOYMENT.md「從舊版更新」：現場的 evidence/hardware 紀錄已匯入 repo，Orin 上同路徑的未追蹤檔會擋住 git pull，要先備份並移開，pull 後再比對。Orin 另有的 ~/vision_ws 不要和本專案的視覺節點同時跑。
    上次在 Orin 已改過 APT 來源（停用重複的 ros2.list、新增 noble-updates），處理方式見 docs/ORIN_DEPLOYMENT.md 第 3 節；安裝再失敗時照那張表查。
 3. 確認 docs/HARDWARE_TEST_GUIDE.md 與 docs/HANDOFF_PROMPT_HARDWARE_TESTER.md 存在。不存在代表開發端的修改還沒推上來，停下來。
 4. 安裝與建置（install 需要 sudo，先告訴測試人員會安裝什麼再執行）：
@@ -56,8 +56,9 @@
    source /opt/ros/jazzy/setup.bash
    source install/setup.bash
 6. 離線基準測試，全部不需要硬體。結果要記錄：
-   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 285 passed
+   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 293 passed
    (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)           # 預期 293 passed（需 QT_QPA_PLATFORM=offscreen 或桌面）
+   (cd src/vision_pkg && python3 -m pytest -q -p no:cacheprovider tests)           # 預期 100 passed
    colcon test --packages-select cm530_hardware && colcon test-result --verbose     # 預期 42 項全過
    python3 scripts/test_cm530_mock.py                                               # 預期 7 個階段 PASS
    注意：build.sh 和 test_cm530_mock.py 會覆寫 docs/evidence/ 的既有紀錄。跑完先把新結果複製到本次的證據資料夾，再用 git restore docs/evidence/ 把舊檔還原，git status 要確認只剩新增的證據資料夾。

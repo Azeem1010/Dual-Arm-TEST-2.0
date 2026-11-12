@@ -74,9 +74,13 @@ stop_group() {
   kill -KILL -- "-$1" 2>/dev/null; sleep 3
 }
 
+# Everything a simulation run starts. A coordinator or vision node left from an earlier
+# run answers on the same domain and corrupts the next one (2026-11-12), so they count.
+SYSTEM_PROCS='gz sim|move_group|ros2_control_node|coordinator_node|safety_supervisor|_vision_node|calibration_status|static_transform_publisher'
+
 no_sim_running() {
-  if pgrep -af 'gz sim|move_group|ros2_control_node' > "$OUT/already_running.txt"; then
-    note "$1" "BLOCKED: simulation processes already running, see already_running.txt"
+  if pgrep -af "$SYSTEM_PROCS" > "$OUT/already_running.txt"; then
+    note "$1" "BLOCKED: system processes already running, see already_running.txt"
     FAILED=1
     return 1
   fi
@@ -219,8 +223,13 @@ if [ "$TIER" = t2 ]; then
     stop_group "$demo"
     pkill -KILL -f 'gz sim' 2>/dev/null
   fi
-  pgrep -af 'gz sim|move_group|ros2_control_node|coordinator_node|static_transform' > "$OUT/leftover_processes.txt"
-  note leftover_processes "$(wc -l < "$OUT/leftover_processes.txt") lines"
+  pgrep -af "$SYSTEM_PROCS" > "$OUT/leftover_processes.txt"
+  if [ -s "$OUT/leftover_processes.txt" ]; then
+    note leftover_processes "FAIL: $(wc -l < "$OUT/leftover_processes.txt") process(es) left, see leftover_processes.txt"
+    FAILED=1
+  else
+    note leftover_processes "0 lines"
+  fi
 fi
 
 settle_evidence

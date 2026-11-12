@@ -1,0 +1,13 @@
+$ python3 scripts/audit_ros_graph.py docs/evidence/system_audit_20261112/graph_hmi_sim.json --with-hmi --seconds 20
+PROBLEM /arm1_controller/joint_trajectory: 1 subscriber(s) ['/arm1_controller'] but no publisher
+PROBLEM /arm1_controller/speed_scaling_input: 1 subscriber(s) ['/arm1_controller'] but no publisher
+PROBLEM /arm2_controller/joint_trajectory: 1 subscriber(s) ['/arm2_controller'] but no publisher
+PROBLEM /arm2_controller/speed_scaling_input: 1 subscriber(s) ['/arm2_controller'] but no publisher
+PROBLEM /attached_collision_object: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher
+PROBLEM /collision_object: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher
+PROBLEM /planning_scene: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher
+PROBLEM /planning_scene_world: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher
+PROBLEM /safety/estop: 2 subscriber(s) ['/dual_arm_coordinator', '/safety_supervisor'] but no publisher
+PROBLEM /trajectory_execution_event: 1 subscriber(s) ['/move_group'] but no publisher
+FAIL: 28 nodes, 69 topics, 10 problem(s), 23 unread publisher(s)
+audit exit 1

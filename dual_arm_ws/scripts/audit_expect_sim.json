@@ -1,0 +1,21 @@
+{
+  "_comment": "Subscriptions that have no publisher in hmi_sim by design (audit_ros_graph.py --expect). Reviewed 2026-11-12, docs/evidence/system_audit_20261112/.",
+  "optional_subscriptions": [
+    "/arm1_controller/joint_trajectory",
+    "/arm2_controller/joint_trajectory",
+    "/arm1_controller/speed_scaling_input",
+    "/arm2_controller/speed_scaling_input",
+    "/attached_collision_object",
+    "/collision_object",
+    "/planning_scene",
+    "/planning_scene_world",
+    "/trajectory_execution_event",
+    "/safety/estop"
+  ],
+  "_reasons": {
+    "joint_trajectory, speed_scaling_input": "JointTrajectoryController inputs; the system commands the arms only through the follow_joint_trajectory action",
+    "attached_collision_object, collision_object, planning_scene, planning_scene_world, trajectory_execution_event": "optional move_group inputs; the coordinator edits the scene through /apply_planning_scene",
+    "/safety/estop": "no hardware e-stop node yet (D8); hmi_sim runs safety_supervisor with require_estop false"
+  },
+  "optional_services": []
+}

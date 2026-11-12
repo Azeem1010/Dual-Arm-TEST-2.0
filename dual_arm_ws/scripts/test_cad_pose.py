@@ -5,6 +5,8 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 import json
 
+from field_layout import ARM_AXIS_Y_M
+
 root = Path(__file__).resolve().parents[1]
 robot = ET.parse(root/'src/dual_arm_description/urdf/dual_arm_cad.urdf.xacro').getroot()
 transforms = {'world':np.eye(4)}
@@ -32,7 +34,7 @@ installed[:3,:3] = Rotation.from_euler('z',np.pi).as_matrix()
 # Measured 2026-11-11: each arm is mounted at world y = +0.125 instead of the CAD 0.08725,
 # so the arm visuals are the installed source moved by the same offset along world Y.
 arm_offset = np.eye(4)
-arm_offset[1,3] = 0.125-0.08725
+arm_offset[1,3] = ARM_AXIS_Y_M-0.08725
 def expected_for(link_name):
     assert link_name.startswith('arm'), f'unexpected visual on {link_name}'
     return arm_offset@installed@source

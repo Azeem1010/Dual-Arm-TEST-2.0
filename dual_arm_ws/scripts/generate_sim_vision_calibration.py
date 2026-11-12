@@ -15,11 +15,13 @@ from dual_arm_vision_adapter.validity import position_budget
 import numpy as np
 import yaml
 
+from field_layout import ARM_BASES_XY_M
+
 IMAGE_SIZE = (640, 480)
 # Camera position (x, height) and horizontal field of view from generate_world.py.
 CAMERAS = {'arm1': (-0.15, 0.5, 0.7), 'arm2': (0.15, 0.5, 0.7)}
 # Arm base origins in the world frame; see docs/COORDINATE_FRAMES.md.
-BASES = {'arm1': (-0.10, 0.125), 'arm2': (0.10, 0.125)}  # measured axis line, 2026-11-11
+BASES = ARM_BASES_XY_M
 # Heights of the planes the detections lie on: cap tops for arm1, slot pads for arm2.
 PLANE_Z = {'arm1': 0.024, 'arm2': 0.014}
 

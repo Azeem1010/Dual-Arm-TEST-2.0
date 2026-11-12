@@ -1,0 +1,1031 @@
+{
+  "topics": {
+    "/arm1_cam/camera_info": {
+      "types": [
+        "sensor_msgs/msg/CameraInfo"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": []
+    },
+    "/arm1_cam/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/arm1_vision_node",
+        "/calibration_status",
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/arm1_controller/controller_state": {
+      "types": [
+        "control_msgs/msg/JointTrajectoryControllerState"
+      ],
+      "publishers": [
+        "/arm1_controller"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/arm1_controller/joint_trajectory": {
+      "types": [
+        "trajectory_msgs/msg/JointTrajectory"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/arm1_controller"
+      ]
+    },
+    "/arm1_controller/speed_scaling_input": {
+      "types": [
+        "control_msgs/msg/SpeedScalingFactor"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/arm1_controller"
+      ]
+    },
+    "/arm1_controller/transition_event": {
+      "types": [
+        "lifecycle_msgs/msg/TransitionEvent"
+      ],
+      "publishers": [
+        "/arm1_controller"
+      ],
+      "subscribers": []
+    },
+    "/arm2_cam/camera_info": {
+      "types": [
+        "sensor_msgs/msg/CameraInfo"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": []
+    },
+    "/arm2_cam/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/arm2_vision_node",
+        "/calibration_status",
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/arm2_controller/controller_state": {
+      "types": [
+        "control_msgs/msg/JointTrajectoryControllerState"
+      ],
+      "publishers": [
+        "/arm2_controller"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/arm2_controller/joint_trajectory": {
+      "types": [
+        "trajectory_msgs/msg/JointTrajectory"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/arm2_controller"
+      ]
+    },
+    "/arm2_controller/speed_scaling_input": {
+      "types": [
+        "control_msgs/msg/SpeedScalingFactor"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/arm2_controller"
+      ]
+    },
+    "/arm2_controller/transition_event": {
+      "types": [
+        "lifecycle_msgs/msg/TransitionEvent"
+      ],
+      "publishers": [
+        "/arm2_controller"
+      ],
+      "subscribers": []
+    },
+    "/attached_collision_object": {
+      "types": [
+        "moveit_msgs/msg/AttachedCollisionObject"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/move_group_private_109236939333856"
+      ]
+    },
+    "/clock": {
+      "types": [
+        "rosgraph_msgs/msg/Clock"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/arm1_controller",
+        "/arm1_vision_node",
+        "/arm2_controller",
+        "/arm2_vision_node",
+        "/calibration_status",
+        "/controller_manager",
+        "/env_vision_node",
+        "/joint_state_broadcaster",
+        "/move_group",
+        "/move_group/moveit",
+        "/move_group_private_109236939333856",
+        "/moveit_847043371",
+        "/moveit_simple_controller_manager",
+        "/robot_state_publisher",
+        "/transform_listener_impl_6359b51ac5f0"
+      ]
+    },
+    "/collision_object": {
+      "types": [
+        "moveit_msgs/msg/CollisionObject"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/move_group_private_109236939333856"
+      ]
+    },
+    "/controller_manager/activity": {
+      "types": [
+        "controller_manager_msgs/msg/ControllerManagerActivity"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/controller_manager/introspection_data/full": {
+      "types": [
+        "pal_statistics_msgs/msg/Statistics"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/controller_manager/introspection_data/names": {
+      "types": [
+        "pal_statistics_msgs/msg/StatisticsNames"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/controller_manager/introspection_data/values": {
+      "types": [
+        "pal_statistics_msgs/msg/StatisticsValues"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/controller_manager/statistics/full": {
+      "types": [
+        "pal_statistics_msgs/msg/Statistics"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/controller_manager/statistics/names": {
+      "types": [
+        "pal_statistics_msgs/msg/StatisticsNames"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/controller_manager/statistics/values": {
+      "types": [
+        "pal_statistics_msgs/msg/StatisticsValues"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/diagnostics": {
+      "types": [
+        "diagnostic_msgs/msg/DiagnosticArray"
+      ],
+      "publishers": [
+        "/controller_manager"
+      ],
+      "subscribers": []
+    },
+    "/display_contacts": {
+      "types": [
+        "visualization_msgs/msg/MarkerArray"
+      ],
+      "publishers": [
+        "/move_group"
+      ],
+      "subscribers": []
+    },
+    "/display_planned_path": {
+      "types": [
+        "moveit_msgs/msg/DisplayTrajectory"
+      ],
+      "publishers": [
+        "/move_group"
+      ],
+      "subscribers": []
+    },
+    "/dual_arm/permit": {
+      "types": [
+        "std_msgs/msg/Bool"
+      ],
+      "publishers": [
+        "/dual_arm_coordinator"
+      ],
+      "subscribers": [
+        "/safety_supervisor"
+      ]
+    },
+    "/dual_arm/status": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/dual_arm_coordinator"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/dynamic_joint_states": {
+      "types": [
+        "control_msgs/msg/DynamicJointState"
+      ],
+      "publishers": [
+        "/joint_state_broadcaster"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/env_cam/camera_info": {
+      "types": [
+        "sensor_msgs/msg/CameraInfo"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": []
+    },
+    "/env_cam/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/calibration_status",
+        "/dual_arm_hmi_monitor",
+        "/env_vision_node"
+      ]
+    },
+    "/gazebo/ground_truth": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": []
+    },
+    "/gripper/arm1/command": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/dual_arm_coordinator"
+      ],
+      "subscribers": [
+        "/ros_gz_bridge"
+      ]
+    },
+    "/gripper/arm1/state": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/gripper/arm2/command": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/dual_arm_coordinator"
+      ],
+      "subscribers": [
+        "/ros_gz_bridge"
+      ]
+    },
+    "/gripper/arm2/state": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_1": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_2": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_3": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_4": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_5": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_6": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_7": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/ground_truth/cap_8": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator"
+      ]
+    },
+    "/handoff/b_state": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/dual_arm_coordinator"
+      ],
+      "subscribers": []
+    },
+    "/joint_state_broadcaster/transition_event": {
+      "types": [
+        "lifecycle_msgs/msg/TransitionEvent"
+      ],
+      "publishers": [
+        "/joint_state_broadcaster"
+      ],
+      "subscribers": []
+    },
+    "/joint_states": {
+      "types": [
+        "sensor_msgs/msg/JointState"
+      ],
+      "publishers": [
+        "/joint_state_broadcaster"
+      ],
+      "subscribers": [
+        "/dual_arm_coordinator",
+        "/dual_arm_hmi_monitor",
+        "/move_group_private_109236939333856",
+        "/robot_state_publisher"
+      ]
+    },
+    "/monitored_planning_scene": {
+      "types": [
+        "moveit_msgs/msg/PlanningScene"
+      ],
+      "publishers": [
+        "/move_group_private_109236939333856"
+      ],
+      "subscribers": []
+    },
+    "/pipeline_state": {
+      "types": [
+        "moveit_msgs/msg/PipelineState"
+      ],
+      "publishers": [
+        "/move_group"
+      ],
+      "subscribers": []
+    },
+    "/planning_scene": {
+      "types": [
+        "moveit_msgs/msg/PlanningScene"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/move_group_private_109236939333856"
+      ]
+    },
+    "/planning_scene_world": {
+      "types": [
+        "moveit_msgs/msg/PlanningSceneWorld"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/move_group_private_109236939333856"
+      ]
+    },
+    "/robot_description": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/robot_state_publisher"
+      ],
+      "subscribers": [
+        "/controller_manager",
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/safety/estop": {
+      "types": [
+        "std_msgs/msg/Bool"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/dual_arm_coordinator",
+        "/safety_supervisor"
+      ]
+    },
+    "/safety/status": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [
+        "/safety_supervisor"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/tf": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/robot_state_publisher"
+      ],
+      "subscribers": [
+        "/transform_listener_impl_6359b51ac5f0"
+      ]
+    },
+    "/tf_static": {
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ],
+      "publishers": [
+        "/robot_state_publisher",
+        "/static_transform_publisher_AjmSU1SJrrmW4Y9q",
+        "/static_transform_publisher_F3eOaXx7jmnFIE0C",
+        "/static_transform_publisher_Iorm3r8jp5mAAS9V",
+        "/static_transform_publisher_JFYJgsJK33TyuMJo",
+        "/static_transform_publisher_mlAgtByCSabkoVhn"
+      ],
+      "subscribers": [
+        "/transform_listener_impl_6359b51ac5f0"
+      ]
+    },
+    "/trajectory_execution_event": {
+      "types": [
+        "std_msgs/msg/String"
+      ],
+      "publishers": [],
+      "subscribers": [
+        "/move_group"
+      ]
+    },
+    "/view_front/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/view_isometric/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/view_side/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/view_top/image_raw": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/ros_gz_bridge"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/vision/arm1/debug_image": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/arm1_vision_node"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/vision/arm1/detections": {
+      "types": [
+        "vision_interfaces/msg/PickDetections"
+      ],
+      "publishers": [
+        "/arm1_vision_node"
+      ],
+      "subscribers": []
+    },
+    "/vision/arm1/pick_target": {
+      "types": [
+        "vision_interfaces/msg/PickTarget"
+      ],
+      "publishers": [
+        "/arm1_vision_node"
+      ],
+      "subscribers": []
+    },
+    "/vision/arm2/debug_image": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/arm2_vision_node"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/vision/arm2/grid_state": {
+      "types": [
+        "vision_interfaces/msg/GridState"
+      ],
+      "publishers": [
+        "/arm2_vision_node"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/vision/calibration_status": {
+      "types": [
+        "diagnostic_msgs/msg/DiagnosticArray"
+      ],
+      "publishers": [
+        "/calibration_status"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/vision/env/debug_image": {
+      "types": [
+        "sensor_msgs/msg/Image"
+      ],
+      "publishers": [
+        "/env_vision_node"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    },
+    "/vision/env/ranking": {
+      "types": [
+        "vision_interfaces/msg/RankingSnapshot"
+      ],
+      "publishers": [
+        "/env_vision_node"
+      ],
+      "subscribers": []
+    },
+    "/vision/env/zone_state": {
+      "types": [
+        "vision_interfaces/msg/ZoneState"
+      ],
+      "publishers": [
+        "/env_vision_node"
+      ],
+      "subscribers": [
+        "/dual_arm_hmi_monitor"
+      ]
+    }
+  },
+  "problems": [
+    "/arm1_controller/joint_trajectory: 1 subscriber(s) ['/arm1_controller'] but no publisher",
+    "/arm1_controller/speed_scaling_input: 1 subscriber(s) ['/arm1_controller'] but no publisher",
+    "/arm2_controller/joint_trajectory: 1 subscriber(s) ['/arm2_controller'] but no publisher",
+    "/arm2_controller/speed_scaling_input: 1 subscriber(s) ['/arm2_controller'] but no publisher",
+    "/attached_collision_object: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher",
+    "/collision_object: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher",
+    "/planning_scene: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher",
+    "/planning_scene_world: 1 subscriber(s) ['/move_group_private_109236939333856'] but no publisher",
+    "/safety/estop: 2 subscriber(s) ['/dual_arm_coordinator', '/safety_supervisor'] but no publisher",
+    "/trajectory_execution_event: 1 subscriber(s) ['/move_group'] but no publisher"
+  ],
+  "unread_publishers": [
+    "/arm1_cam/camera_info",
+    "/arm1_controller/transition_event",
+    "/arm2_cam/camera_info",
+    "/arm2_controller/transition_event",
+    "/controller_manager/activity",
+    "/controller_manager/introspection_data/full",
+    "/controller_manager/introspection_data/names",
+    "/controller_manager/introspection_data/values",
+    "/controller_manager/statistics/full",
+    "/controller_manager/statistics/names",
+    "/controller_manager/statistics/values",
+    "/diagnostics",
+    "/display_contacts",
+    "/display_planned_path",
+    "/env_cam/camera_info",
+    "/gazebo/ground_truth",
+    "/handoff/b_state",
+    "/joint_state_broadcaster/transition_event",
+    "/monitored_planning_scene",
+    "/pipeline_state",
+    "/vision/arm1/detections",
+    "/vision/arm1/pick_target",
+    "/vision/env/ranking"
+  ],
+  "services": {
+    "/apply_planning_scene": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/srv/ApplyPlanningScene"
+      ]
+    },
+    "/arm1_controller/follow_joint_trajectory/_action/cancel_goal": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true,
+      "types": [
+        "action_msgs/srv/CancelGoal"
+      ]
+    },
+    "/arm1_controller/follow_joint_trajectory/_action/get_result": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true,
+      "types": [
+        "control_msgs/action/FollowJointTrajectory_GetResult"
+      ]
+    },
+    "/arm1_controller/follow_joint_trajectory/_action/send_goal": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true,
+      "types": [
+        "control_msgs/action/FollowJointTrajectory_SendGoal"
+      ]
+    },
+    "/arm2_controller/follow_joint_trajectory/_action/cancel_goal": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true,
+      "types": [
+        "action_msgs/srv/CancelGoal"
+      ]
+    },
+    "/arm2_controller/follow_joint_trajectory/_action/get_result": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true,
+      "types": [
+        "control_msgs/action/FollowJointTrajectory_GetResult"
+      ]
+    },
+    "/arm2_controller/follow_joint_trajectory/_action/send_goal": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true,
+      "types": [
+        "control_msgs/action/FollowJointTrajectory_SendGoal"
+      ]
+    },
+    "/check_state_validity": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/srv/GetStateValidity"
+      ]
+    },
+    "/controller_manager/list_controllers": {
+      "clients": [
+        "/dual_arm_hmi_monitor",
+        "/safety_supervisor"
+      ],
+      "server": true,
+      "types": [
+        "controller_manager_msgs/srv/ListControllers"
+      ]
+    },
+    "/controller_manager/switch_controller": {
+      "clients": [
+        "/safety_supervisor"
+      ],
+      "server": true,
+      "types": [
+        "controller_manager_msgs/srv/SwitchController"
+      ]
+    },
+    "/dual_arm/cancel": {
+      "clients": [
+        "/dual_arm_hmi_command"
+      ],
+      "server": true,
+      "types": [
+        "std_srvs/srv/Trigger"
+      ]
+    },
+    "/dual_arm/go_home": {
+      "clients": [
+        "/dual_arm_hmi_command"
+      ],
+      "server": true,
+      "types": [
+        "dual_arm_interfaces/srv/ConfirmStep"
+      ]
+    },
+    "/dual_arm/recover": {
+      "clients": [
+        "/dual_arm_hmi_command"
+      ],
+      "server": true,
+      "types": [
+        "dual_arm_interfaces/srv/ConfirmStep"
+      ]
+    },
+    "/dual_arm/start": {
+      "clients": [
+        "/dual_arm_hmi_command"
+      ],
+      "server": true,
+      "types": [
+        "std_srvs/srv/Trigger"
+      ]
+    },
+    "/execute_trajectory/_action/cancel_goal": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "action_msgs/srv/CancelGoal"
+      ]
+    },
+    "/execute_trajectory/_action/get_result": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/action/ExecuteTrajectory_GetResult"
+      ]
+    },
+    "/execute_trajectory/_action/send_goal": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/action/ExecuteTrajectory_SendGoal"
+      ]
+    },
+    "/get_planning_scene": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/srv/GetPlanningScene"
+      ]
+    },
+    "/move_action/_action/cancel_goal": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "action_msgs/srv/CancelGoal"
+      ]
+    },
+    "/move_action/_action/get_result": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/action/MoveGroup_GetResult"
+      ]
+    },
+    "/move_action/_action/send_goal": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true,
+      "types": [
+        "moveit_msgs/action/MoveGroup_SendGoal"
+      ]
+    },
+    "/safety/reset": {
+      "clients": [
+        "/dual_arm_hmi_command"
+      ],
+      "server": true,
+      "types": [
+        "std_srvs/srv/Trigger"
+      ]
+    },
+    "/safety/trigger_stop": {
+      "clients": [
+        "/dual_arm_hmi_command"
+      ],
+      "server": true,
+      "types": [
+        "std_srvs/srv/Trigger"
+      ]
+    }
+  },
+  "actions": {
+    "/arm1_controller/follow_joint_trajectory": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true
+    },
+    "/arm2_controller/follow_joint_trajectory": {
+      "clients": [
+        "/moveit_simple_controller_manager"
+      ],
+      "server": true
+    },
+    "/execute_trajectory": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true
+    },
+    "/move_action": {
+      "clients": [
+        "/dual_arm_coordinator"
+      ],
+      "server": true
+    }
+  },
+  "nodes": [
+    "/_ros2cli_daemon_47_f1e5dcb425ef4078bd05c6630b254c93",
+    "/arm1_controller",
+    "/arm1_vision_node",
+    "/arm2_controller",
+    "/arm2_vision_node",
+    "/calibration_status",
+    "/controller_manager",
+    "/dual_arm_coordinator",
+    "/dual_arm_hmi_command",
+    "/dual_arm_hmi_monitor",
+    "/env_vision_node",
+    "/graph_audit",
+    "/gz_ros_control",
+    "/joint_state_broadcaster",
+    "/move_group",
+    "/move_group/moveit",
+    "/move_group_private_109236939333856",
+    "/moveit_847043371",
+    "/moveit_simple_controller_manager",
+    "/robot_state_publisher",
+    "/ros_gz_bridge",
+    "/safety_supervisor",
+    "/static_transform_publisher_AjmSU1SJrrmW4Y9q",
+    "/static_transform_publisher_F3eOaXx7jmnFIE0C",
+    "/static_transform_publisher_Iorm3r8jp5mAAS9V",
+    "/static_transform_publisher_JFYJgsJK33TyuMJo",
+    "/static_transform_publisher_mlAgtByCSabkoVhn",
+    "/transform_listener_impl_6359b51ac5f0"
+  ],
+  "status": "FAIL"
+}

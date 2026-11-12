@@ -94,13 +94,13 @@ class Regression(Harness):
         self.observe('eight_objects_from_empty_c', {'status': 'FAIL' if status['state'] != 'FULL' else 'PASS',
                                                     'state': status['state'], 'message': status['message'],
                                                     'completed': status['completed'], 'ground_truth_slots': slots})
-        # 2026-11-11 layout: slot 8 and cap 8 are outside the model's downward-suction reach
-        # (docs/evidence/phase_c_20261111/), so seven objects move and the eighth cycle stops
-        # at the reach check before any arm moves.
-        self.check('seven_objects_then_slot_8_stops_the_run',
-                   status['state'] == 'FAULT' and 'cannot reach' in status['message'] and status['completed'] == 7 and
-                   status['b_owner'] == '' and set(status['holding'].values()) == {'empty'}, status['message'])
-        self.check('ground_truth_has_caps_in_slots_1_to_7', slots == [True] * 7 + [False], slots)
+        # Slot 8 and cap 8 have no straight-down solution; since 2026-11-12 they are
+        # reached with the cup tilted within max_tool_tilt_deg, so all eight move and
+        # the run ends FULL (C is full and waits for recovery).
+        self.check('eight_objects_fill_c',
+                   status['state'] == 'FULL' and status['completed'] == 8 and status['b_owner'] == '' and
+                   set(status['holding'].values()) == {'empty'}, status['message'])
+        self.check('ground_truth_has_caps_in_all_slots', slots == [True] * 8, slots)
 
     # --- fault scenarios ---
 

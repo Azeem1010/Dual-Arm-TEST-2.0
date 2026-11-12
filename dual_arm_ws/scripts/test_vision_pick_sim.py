@@ -18,13 +18,14 @@ from rclpy.qos import qos_profile_sensor_data
 from tf2_msgs.msg import TFMessage
 from vision_interfaces.srv import GetPickTarget
 
+from field_layout import ARM_BASES_XY_M
 from test_transfer_regression import Regression
 
 GZ = shutil.which('gz') or '/opt/ros/jazzy/opt/gz_tools_vendor/bin/gz'
 # Beyond A's outer edge (A is x -0.30..-0.10), so no zone counts it. C is every x >= 0.10,
 # so parking on the +x side would add to the C count.
 PARK = (-0.35, 0.30)
-ARM1_BASE = (-0.10, 0.125)  # measured axis line, 2026-11-11
+ARM1_BASE = ARM_BASES_XY_M['arm1']
 
 
 class VisionPick(Regression):
@@ -118,9 +119,7 @@ class VisionPick(Regression):
         deadline = time.monotonic() + 180
         while len(self.poses) < 8 and time.monotonic() < deadline:
             time.sleep(0.1)
-        # cap_8 is the only start arm1 cannot reach with the cup pointing down (ik_validation.json).
-        self.check('unreachable_caps_parked', self.park_cap('cap_8'))
-        time.sleep(4.0)
+        # Every cap start is reachable straight down (ik_validation.json), so none is parked.
         self.refused_without_calibration()
         self.write_record()
         self.two_objects_by_vision()

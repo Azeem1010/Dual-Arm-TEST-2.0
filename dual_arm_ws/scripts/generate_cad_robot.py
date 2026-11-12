@@ -23,13 +23,14 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import numpy as np
 
+from field_layout import ARM_AXIS_Y_M
+
 root = Path(__file__).resolve().parents[1]
 items = json.loads((root/'docs/evidence/cad_inventory.json').read_text())
 by_id = {int(x['file'][10:13]):x for x in items}
 rotation = np.array([[1,0,0],[0,0,-1],[0,1,0]])
 shift = np.array([0,.03,0])
 # Measured axis line in world (2026-11-11): board half-width 0.120 m plus 5 mm.
-ARM_AXIS_Y_M = 0.125
 def world(point):
     return rotation @ np.array(point)/1000+shift
 def xyz(v):

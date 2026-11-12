@@ -147,10 +147,17 @@ class Harness:
 
     def refusals(self):
         gw, heights, zones = self.gateway, self.config['heights'], self.config['zones']
-        # Slot 8, farthest from the arms, has no downward-suction solution (ik_validation.json).
+        # Slot 8 has no straight-down solution; it is reached with the cup tilted within
+        # max_tool_tilt_deg, on the branch that does not hit the base.
         slot_8 = zones['c_slots_xy_m'][7]
-        self.expect_refused('known_unreachable_slot_8_refused',
-                            lambda: gw.check_reachable('arm2', (*slot_8, heights['contact_z_m'] + 0.03)))
+        try:
+            gw.check_reachable('arm2', (*slot_8, heights['approach_z_m']))
+            self.check('tilted_slot_8_accepted', True)
+        except TaskFault as error:
+            self.check('tilted_slot_8_accepted', False, str(error))
+        # 20 mm beyond slot 8 needs about 22 deg of tilt, above the limit.
+        self.expect_refused('target_needing_more_tilt_refused',
+                            lambda: gw.check_reachable('arm2', (slot_8[0], slot_8[1] - 0.02, heights['contact_z_m'] + 0.03)))
         self.expect_refused('far_target_refused', lambda: gw.check_reachable('arm1', (0.6, 0.0, 0.05)))
         approach, contact = (*A_XY, heights['approach_z_m']), (*A_XY, heights['contact_z_m'])
         self.set_blocker([0.08, 0.08, 0.12], 0.07)

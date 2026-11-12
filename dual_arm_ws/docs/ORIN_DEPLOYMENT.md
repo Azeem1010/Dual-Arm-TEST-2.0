@@ -45,6 +45,37 @@ sudo usermod -aG dialout $USER
 bash scripts/start_sim.sh mock
 ```
 
+### 從舊版更新（Orin 上已有 clone）
+
+2026-11-12 查核：Orin 推到 Azeem1010/Dual-Arm-TEST-2.0 的 `orin-source` 分支，內容與本專案 `3fd258c` 完全相同（tree 雜湊相同，submodule 指向也相同），沒有 Orin 本機的程式修改，所以可以直接 fast-forward 更新。2026-11-11 現場紀錄則寫已更新到 `8ad9d47`，兩者不一致，表示 `orin-source` 可能是較舊的一份副本；以 Orin 上 `git rev-parse HEAD` 的實際結果為準，兩種起點都能照下面步驟更新。
+
+會卡住的地方：開發端已把現場 11-10、11-11 的紀錄匯入 `docs/evidence/hardware/`，Orin 上同路徑的檔案還是未追蹤檔，`git pull` 會因「untracked working tree files would be overwritten」停下。先把它們移到備份資料夾：
+
+```bash
+cd ~/projects/dual_arm_system
+git status --short                                   # 有未提交的程式修改就先停下來問
+B=~/projects/backup_$(date +%Y%m%d_%H%M) && mkdir -p "$B"
+git status --short > "$B/git_status.txt"; git diff > "$B/local_changes.patch"
+cp -a dual_arm_ws/docs/evidence/hardware "$B/evidence_hardware"
+git fetch origin
+# 移開「未追蹤、但更新後會出現」的檔案
+git ls-tree -r --name-only origin/main -- dual_arm_ws/docs/evidence | while read -r f; do
+  if [ -e "$f" ] && ! git ls-files --error-unmatch "$f" > /dev/null 2>&1; then
+    mkdir -p "$B/moved/$(dirname "$f")" && mv "$f" "$B/moved/$f"
+  fi
+done
+git restore dual_arm_ws/docs/evidence                # 只還原 build.sh／測試覆寫的已追蹤證據檔
+git pull --recurse-submodules --ff-only
+git submodule update --init --recursive
+diff -r --strip-trailing-cr "$B/moved/dual_arm_ws/docs/evidence" dual_arm_ws/docs/evidence | head -40
+```
+
+- 最後的 `diff` 應該只差 CRLF 或開發端加的說明。有本機才有的內容，把它加回去並寫進當天紀錄。
+- 三個檔名以 `.` 結尾的 CSV 在 repo 裡改名去掉了句點（Windows 不允許），Orin 上的原檔不會被覆寫，留著即可。
+- 系統套件與 11-11 相同，不必重跑 `install_jazzy.sh`；直接 `bash scripts/build.sh`，再跑 HANDOFF 第一步的離線測試。
+- Orin 另有獨立的 `~/vision_ws`（上游 4a40f30）。本專案的 `src/vision_pkg` 已是上游 `64f28a0`（三顆相機的 by-path、arm2 YUYV），並多了 `slot_one_corner: top_left`（實物格位編號）。兩邊不要同時跑，實機請用本專案的 `vision.launch.py`。
+- 更新後的變化：模擬場地改為實測尺寸與格位編號（階段 C）、格位 8 改用傾斜吸盤（模擬最多 9°）。實機 `config/hardware/coordinator.yaml` 多了 `heights.cup_radius_m` 與 `motion.max_tool_tilt_deg` 兩個空白欄位，要現場量測後才能填，不可抄模擬值。
+
 ### 安裝失敗時（2026-11-10 Orin 實際遇到）
 
 證據見 `docs/evidence/hardware/20261110_SETUP/`、`20261110_SETUP_retry/`。

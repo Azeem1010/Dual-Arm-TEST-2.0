@@ -1,0 +1,20 @@
+$ bash -c \"\$\(ros2\ pkg\ prefix\ tf2_ros\)/lib/tf2_ros/static_transform_publisher\"\ --z\ 0.014\ --yaw\ 1.57079632679\ --frame-id\ arm1_base_link\ --child-frame-id\ arm1_base\ \>\ /dev/null\ 2\>\&1\ \&\ tf=\$\!\;\ sleep\ 3\;\ \"\$@\"\;\ rc=\$\?\;\ kill\ \$tf\;\ wait\ \$tf\;\ exit\ \$rc _ timeout 900 python3 scripts/test_operator_tools.py /tmp/dual_arm_checks_38651/operator_tools docs/evidence/tilt_slot8_20261112/t2/operator_tools.json
+probe_reads_the_board {'status': 'PASS', 'detail': None}
+probe_reports_firmware_home {'status': 'PASS', 'detail': {'arm1': [90, 567, 712, 825], 'arm2': [590, 567, 712, 825]}}
+probe_sent_only_read_only_commands {'status': 'PASS', 'detail': ['GET_HOME,arm1', 'GET_HOME,arm2', 'PING', 'READ,arm1', 'READ,arm2', 'VERSION']}
+probe_reports_a_missing_port {'status': 'PASS', 'detail': "Cannot open /tmp/dual_arm_checks_38651/operator_tools/absent exclusively: [Errno 2] No such file or directory: '/tmp/dual_arm_checks_38651/operator_tools/absent'"}
+shipped_worksheet_template_is_refused {'status': 'PASS', 'detail': 'acceptance.max_fit_ticks must be a measured finite number'}
+manual_plan_converts_base_frame {'status': 'PASS', 'detail': {'arm': 'arm1', 'target_world_m': [-0.14000000000075896, -0.029999999999804128, 0.054], 'reachable': True, 'executed': False, 'status': 'PASS'}}
+plan_only_leaves_the_arm_still {'status': 'PASS', 'detail': {'max_joint_motion_rad': 0.0}}
+execute_reaches_the_target {'status': 'PASS', 'detail': [-0.14000006702345583, -0.02999918119271353, 0.05399821513825723]}
+unreachable_target_is_refused {'status': 'PASS', 'detail': 'arm1 cannot reach (0.6, 0.0, 0.054): No four-DOF solution satisfies XYZ with the suction axis within 9 deg of downward within model limits'}
+hardware_template_is_refused {'status': 'PASS', 'detail': 'evidence_kind is not measured; target_frame is not measured; speeds.transport_scale is not measured; speeds.contact_scale is not measured; speeds.acceleration_s'}
+status_reports_a_missing_coordinator {'status': 'PASS', 'detail': {'error': 'No status from the coordinator'}}
+status_shows_the_coordinator {'status': 'PASS', 'detail': 'IDLE'}
+confirm_without_a_step_is_refused {'status': 'PASS', 'detail': {'error': 'No suction step is waiting for confirmation'}}
+recover_requires_the_cleared_flag {'status': 'PASS', 'detail': None}
+recover_without_a_fault_is_refused {'status': 'PASS', 'detail': {'error': 'The coordinator is not waiting for recovery'}}
+start_is_accepted {'status': 'PASS', 'detail': {'accepted': True, 'message': 'Accepted; the result is reported on /dual_arm/status'}}
+run_stops_without_observations {'status': 'PASS', 'detail': 'Zone observation invalid: Ground truth pose missing or stale'}
+recover_is_refused_without_a_valid_scene {'status': 'PASS', 'detail': {'accepted': False, 'message': 'Zone observation invalid: Ground truth pose missing or stale'}}
+PASS

@@ -3,6 +3,8 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 import xml.etree.ElementTree as ET
 
+from field_layout import CAPS_XY_M, SLOT_COLUMNS_X_M, SLOT_ROWS_Y_M, SLOTS_XY_M
+
 ROOT = Path(__file__).resolve().parents[1]
 parts = ['''<?xml version="1.0"?><sdf version="1.9"><world name="dual_arm_workspace">
 <physics name="physics" type="ignored"><max_step_size>0.001</max_step_size><real_time_factor>1</real_time_factor></physics>
@@ -23,19 +25,10 @@ box('table', '0 0 -0.025', '0.8 0.7 0.05', '0.3 0.3 0.3 1')
 # Board A|B|C as the user sees it: x left-to-right, y away from the user; the arm
 # bases are on the +Y edge (generate_cad_robot.py). Field geometry measured 2026-11-11
 # (docs/evidence/hardware/20261111_H1/): board 600 x 240 mm centred on the world
-# origin, j1 axes at (+-0.10, +0.125), about 5 mm outside the arm-side edge.
+# origin, j1 axes at (+-0.10, +0.125), about 5 mm outside the arm-side edge. Arm
+# axes, C slots and cap starts come from field_layout.py.
 BOARD_X_M, BOARD_Y_M = 0.6, 0.24
-ARM_AXIS_Y_M = 0.125
 PAD_M = 0.025
-# C slots, numbered as on the real board: 1 and 2 nearest the arms, odd slots in the
-# column next to B. Measured from the arm axes: rows 75/110/145/180 mm toward the
-# user, columns 235/270 mm from arm1's axis toward C (arm1 axis at x = -0.10).
-SLOT_COLUMNS_X_M = (round(-0.10 + 0.235, 4), round(-0.10 + 0.270, 4))
-SLOT_ROWS_Y_M = tuple(round(ARM_AXIS_Y_M - f, 4) for f in (0.075, 0.110, 0.145, 0.180))
-SLOTS_XY_M = [(SLOT_COLUMNS_X_M[col], SLOT_ROWS_Y_M[row]) for row in range(4) for col in range(2)]
-# Cap starts in A: a simulation choice, the C slot grid mirrored about x = 0 so arm1
-# reaches its caps the way arm2 reaches its slots. Real caps may lie anywhere in A.
-CAPS_XY_M = [(-x, y) for x, y in SLOTS_XY_M]
 # 10 mm base under the whole board, then a 4 mm foam layer whose top (z = 0.014) is
 # the working surface. In C the foam has 25 mm openings filled flush by white pads.
 box('board_base', '0 0 0.005', f'{BOARD_X_M} {BOARD_Y_M} 0.01', '1 0.15 0.55 1')

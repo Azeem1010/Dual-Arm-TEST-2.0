@@ -123,7 +123,7 @@ y_world = y_base_origin - x_vision
 | 模擬 static TF | `PASS` | `tf2_echo` 讀到平移 (0, 0, 0.014)、yaw 90° |
 | 模擬兩物體搬運 | `PASS` | 2026-11-10 新配置重跑：舊 pipeline 兩物體與 coordinator 一輪都通過（evidence/a_right_layout_20261110/），回歸 `two` 也通過（evidence/checks_20261110/t2/）；Gazebo 真值，不是視覺驅動 |
 | 實機 A 區方向 | `PASS` | 2026-11-10 俯視照片與 H1（arm1）：A 區在手臂右方，模型已改成一致；2026-11-11 arm2 也是 +1、右方為 A/B 側 |
-| 底座到板緣距離 | `PASS` | 2026-11-11 實測軸心在手臂側長邊外約 5 mm（另一次 15 mm，直尺 0.5 cm），模型已改成 5 mm（階段 C） |
+| 底座到板緣距離 | `PASS` | 2026-11-11 實測軸心在手臂側長邊外約 5 mm（另一次 15 mm，直尺 0.5 cm），模型已改成 5 mm（階段 C）；2026-11-12 使用者決定採用 5 mm |
 | j1 正對場地讀值（模擬對應） | `PASS` | 2026-11-11 H1 近似值 arm1 約 193、arm2 約 519（±5°），與模擬 192.3、512 相符；不是校正值 |
 | C 區格位位置與編號 | `PASS` | 2026-11-11 實測：1、2 最靠手臂、單號欄靠 B；模擬、coordinator 設定、介面格位圖、`vision_pkg`（`slot_one_corner: top_left`）已改成一致（階段 C） |
 | A/B 分界與旋轉軸是否對齊 | `PASS` | 實測 arm1 在 A/B、arm2 在 B/C 分界，相距 200 mm，與模型 x = ±0.10 一致；直尺 1 mm，口頭回報 |

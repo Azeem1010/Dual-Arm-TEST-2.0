@@ -1,0 +1,6 @@
+$ timeout 5400 python3 scripts/test_transfer_regression.py batch /tmp/regress_batch docs/evidence/tilt_slot8_20261112/sim_pick_gap/regress_batch.json
+from_empty_start_accepted {'status': 'PASS', 'detail': None}
+observation eight_objects_from_empty_c {'status': 'FAIL', 'state': 'FAULT', 'message': 'arm2: suction grasp failed: 1794430124884772,fault:no_contact', 'completed': 6, 'ground_truth_slots': [True, True, True, True, True, True, False, False]}
+eight_objects_fill_c {'status': 'FAIL', 'detail': 'arm2: suction grasp failed: 1794430124884772,fault:no_contact'}
+ground_truth_has_caps_in_all_slots {'status': 'FAIL', 'detail': [True, True, True, True, True, True, False, False]}
+FAIL

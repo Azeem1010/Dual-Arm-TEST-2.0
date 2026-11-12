@@ -1,0 +1,203 @@
+{
+  "status": "PASS",
+  "scope": "Operator tools on mock serial and MoveIt mock; no hardware",
+  "checks": {
+    "probe_reads_the_board": {
+      "status": "PASS",
+      "detail": null
+    },
+    "probe_reports_firmware_home": {
+      "status": "PASS",
+      "detail": {
+        "arm1": [
+          90,
+          567,
+          712,
+          825
+        ],
+        "arm2": [
+          590,
+          567,
+          712,
+          825
+        ]
+      }
+    },
+    "probe_sent_only_read_only_commands": {
+      "status": "PASS",
+      "detail": [
+        "GET_HOME,arm1",
+        "GET_HOME,arm2",
+        "PING",
+        "READ,arm1",
+        "READ,arm2",
+        "VERSION"
+      ]
+    },
+    "probe_reports_a_missing_port": {
+      "status": "PASS",
+      "detail": "Cannot open /tmp/dual_arm_checks_3262/operator_tools/absent exclusively: [Errno 2] No such file or directory: '/tmp/dual_arm_checks_3262/operator_tools/absent'"
+    },
+    "shipped_worksheet_template_is_refused": {
+      "status": "PASS",
+      "detail": "acceptance.max_fit_ticks must be a measured finite number"
+    },
+    "manual_plan_converts_base_frame": {
+      "status": "PASS",
+      "detail": {
+        "arm": "arm1",
+        "target_world_m": [
+          -0.14000000000075896,
+          -0.029999999999804128,
+          0.054
+        ],
+        "reachable": true,
+        "executed": false,
+        "status": "PASS"
+      }
+    },
+    "plan_only_leaves_the_arm_still": {
+      "status": "PASS",
+      "detail": {
+        "max_joint_motion_rad": 0.0
+      }
+    },
+    "execute_reaches_the_target": {
+      "status": "PASS",
+      "detail": [
+        -0.1399990845778044,
+        -0.030001197204599345,
+        0.05399968829714824
+      ]
+    },
+    "unreachable_target_is_refused": {
+      "status": "PASS",
+      "detail": "arm1 cannot reach (0.6, 0.0, 0.054): No four-DOF solution satisfies XYZ with the suction axis within 9 deg of downward within model limits"
+    },
+    "hardware_template_is_refused": {
+      "status": "PASS",
+      "detail": "evidence_kind is not measured; target_frame is not measured; speeds.transport_scale is not measured; speeds.contact_scale is not measured; speeds.acceleration_s"
+    },
+    "status_reports_a_missing_coordinator": {
+      "status": "PASS",
+      "detail": {
+        "error": "No status from the coordinator"
+      }
+    },
+    "status_shows_the_coordinator": {
+      "status": "PASS",
+      "detail": "IDLE"
+    },
+    "confirm_without_a_step_is_refused": {
+      "status": "PASS",
+      "detail": {
+        "error": "No suction step is waiting for confirmation"
+      }
+    },
+    "recover_requires_the_cleared_flag": {
+      "status": "PASS",
+      "detail": null
+    },
+    "recover_without_a_fault_is_refused": {
+      "status": "PASS",
+      "detail": {
+        "error": "The coordinator is not waiting for recovery"
+      }
+    },
+    "start_is_accepted": {
+      "status": "PASS",
+      "detail": {
+        "accepted": true,
+        "message": "Accepted; the result is reported on /dual_arm/status"
+      }
+    },
+    "run_stops_without_observations": {
+      "status": "PASS",
+      "detail": "Zone observation invalid: Ground truth pose missing or stale"
+    },
+    "recover_is_refused_without_a_valid_scene": {
+      "status": "PASS",
+      "detail": {
+        "accepted": false,
+        "message": "Zone observation invalid: Ground truth pose missing or stale"
+      }
+    }
+  },
+  "outputs": {
+    "probe": {
+      "exit": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"exchanges\": [\n    {\n      \"tx\": \"VERSION\",\n      \"rx\": \"VERSION,5\"\n    },\n    {\n      \"tx\": \"PING\",\n      \"rx\": \"PONG\"\n    },\n    {\n      \"tx\": \"GET_HOME,arm1\",\n      \"rx\": \"HOME,arm1,90,567,712,825\"\n    },\n    {\n      \"tx\": \"READ,arm1\",\n      \"rx\": \"POS,arm1,512,512,512,512\"\n    },\n    {\n      \"tx\": \"GET_HOME,arm2\",\n      \"rx\": \"HOME,arm2,590,567,712,825\"\n    },\n    {\n      \"tx\": \"READ,arm2\",\n      \"rx\": \"POS,arm2,512,512,512,512\"\n    }\n  ],\n  \"home\": {\n    \"arm1\": [\n      90,\n      567,\n      712,\n      825\n    ],\n    \"arm2\": [\n      590,\n      567,\n      712,\n      825\n    ]\n  },\n  \"position\": {\n    \"arm1\": [\n      512,\n      512,\n      512,\n      512\n    ],\n    \"arm2\": [\n      512,\n      512,\n      512,\n      512\n    ]\n  }\n}\n",
+      "stderr": ""
+    },
+    "probe_missing_port": {
+      "exit": 1,
+      "stdout": "{\"status\": \"FAIL\", \"error\": \"Cannot open /tmp/dual_arm_checks_3262/operator_tools/absent exclusively: [Errno 2] No such file or directory: '/tmp/dual_arm_checks_3262/operator_tools/absent'\"}\n",
+      "stderr": ""
+    },
+    "sheet_template": {
+      "exit": 1,
+      "stdout": "{\"status\": \"FAIL\", \"written_to_calibration\": false, \"error\": \"acceptance.max_fit_ticks must be a measured finite number\"}\n",
+      "stderr": ""
+    },
+    "manual_plan": {
+      "exit": 0,
+      "stdout": "{\n  \"arm\": \"arm1\",\n  \"target_world_m\": [\n    -0.14000000000075896,\n    -0.029999999999804128,\n    0.054\n  ],\n  \"reachable\": true,\n  \"executed\": false,\n  \"status\": \"PASS\"\n}\n",
+      "stderr": ""
+    },
+    "manual_execute": {
+      "exit": 0,
+      "stdout": "{\n  \"arm\": \"arm1\",\n  \"target_world_m\": [\n    -0.14000000000075896,\n    -0.029999999999804128,\n    0.054\n  ],\n  \"reachable\": true,\n  \"executed\": true,\n  \"tcp_after\": {\n    \"tcp_m\": [\n      -0.1399990845778044,\n      -0.030001197204599345,\n      0.05399968829714824\n    ],\n    \"tool_tilt_deg\": 0.0005469384863402224\n  },\n  \"status\": \"PASS\"\n}\n",
+      "stderr": ""
+    },
+    "manual_unreachable": {
+      "exit": 1,
+      "stdout": "{\n  \"status\": \"FAIL\",\n  \"error\": \"arm1 cannot reach (0.6, 0.0, 0.054): No four-DOF solution satisfies XYZ with the suction axis within 9 deg of downward within model limits\"\n}\n",
+      "stderr": "/usr/lib/python3/dist-packages/scipy/optimize/_optimize.py:404: RuntimeWarning: Values in x were outside bounds during a minimize step, clipping to bounds\n  warnings.warn(\"Values in x were outside bounds during a \"\n"
+    },
+    "manual_hardware_template": {
+      "exit": 1,
+      "stdout": "{\"status\": \"FAIL\", \"error\": \"evidence_kind is not measured; target_frame is not measured; speeds.transport_scale is not measured; speeds.contact_scale is not measured; speeds.acceleration_scale is not measured; heights.surface_z_m is not measured; heights.cap_height_m is not measured; heights.cap_radius_m is not measured; heights.cup_radius_m is not measured; heights.contact_z_m is not measured; heights.release_z_m is not measured; heights.approach_z_m is not measured; heights.pick_z_tolerance_m is not measured; zones.a_min_xy_m is not measured; zones.a_max_xy_m is not measured; zones.b_place_xy_m is not measured; zones.c_slots_xy_m is not measured; motion.planning_s is not measured; motion.planning_attempts is not measured; motion.goal_submit_s is not measured; motion.motion_s is not measured; motion.settle_s is not measured; motion.tcp_error_limit_m is not measured; motion.arrival_samples is not measured; motion.arrival_timeout_s is not measured; motion.joint_state_max_age_s is not measured; motion.waypoint_step_m is not measured; motion.waypoint_joint_jump_rad is not measured; motion.max_velocity_rad_s is not measured; motion.max_acceleration_rad_s2 is not measured; motion.max_tool_tilt_deg is not measured; gripper.reply_timeout_s is not measured; gripper.esp32_echo_timeout_s is not measured; gripper.vacuum_settle_s is not measured; gripper.esp32_modules.arm1 is not measured; gripper.esp32_modules.arm2 is not measured\"}\n",
+      "stderr": ""
+    },
+    "console_no_coordinator": {
+      "exit": 1,
+      "stdout": "{\n  \"error\": \"No status from the coordinator\"\n}\n",
+      "stderr": ""
+    },
+    "console_status": {
+      "exit": 0,
+      "stdout": "{\n  \"active_arm\": \"\",\n  \"at_home\": {\n    \"arm1\": false,\n    \"arm2\": false\n  },\n  \"b_owner\": \"\",\n  \"busy\": false,\n  \"completed\": 0,\n  \"config_fingerprint\": \"7d0fb9d948b4ec4a0351c5db239df2693fd5a4ad8d42fc77c37a399d9e6259e0\",\n  \"cycle_id\": \"\",\n  \"holding\": {\n    \"arm1\": \"empty\",\n    \"arm2\": \"empty\"\n  },\n  \"message\": \"\",\n  \"occupied\": [\n    false,\n    false,\n    false,\n    false,\n    false,\n    false,\n    false,\n    false\n  ],\n  \"recovery_token\": \"\",\n  \"slot\": 0,\n  \"state\": \"IDLE\",\n  \"suction_step\": \"\",\n  \"suction_token\": \"\"\n}\n",
+      "stderr": ""
+    },
+    "console_confirm_nothing": {
+      "exit": 1,
+      "stdout": "{\n  \"error\": \"No suction step is waiting for confirmation\"\n}\n",
+      "stderr": ""
+    },
+    "console_recover_no_flag": {
+      "exit": 2,
+      "stdout": "",
+      "stderr": "usage: operator_console recover [-h] --cleared\noperator_console recover: error: the following arguments are required: --cleared\n"
+    },
+    "console_recover_nothing": {
+      "exit": 1,
+      "stdout": "{\n  \"error\": \"The coordinator is not waiting for recovery\"\n}\n",
+      "stderr": ""
+    },
+    "console_start": {
+      "exit": 0,
+      "stdout": "{\n  \"accepted\": true,\n  \"message\": \"Accepted; the result is reported on /dual_arm/status\"\n}\n",
+      "stderr": ""
+    },
+    "console_status_after_start": {
+      "exit": 0,
+      "stdout": "{\n  \"active_arm\": \"arm2\",\n  \"at_home\": {\n    \"arm1\": true,\n    \"arm2\": true\n  },\n  \"b_owner\": \"\",\n  \"busy\": false,\n  \"completed\": 0,\n  \"config_fingerprint\": \"7d0fb9d948b4ec4a0351c5db239df2693fd5a4ad8d42fc77c37a399d9e6259e0\",\n  \"cycle_id\": \"803d04092dce482a9cd9ff1c0b73be5c\",\n  \"holding\": {\n    \"arm1\": \"empty\",\n    \"arm2\": \"empty\"\n  },\n  \"message\": \"Zone observation invalid: Ground truth pose missing or stale\",\n  \"occupied\": [\n    false,\n    false,\n    false,\n    false,\n    false,\n    false,\n    false,\n    false\n  ],\n  \"recovery_token\": \"2e99373c5d7849aaa4ca3172852ce935\",\n  \"slot\": 0,\n  \"state\": \"FAULT\",\n  \"suction_step\": \"\",\n  \"suction_token\": \"\"\n}\n",
+      "stderr": ""
+    },
+    "console_recover": {
+      "exit": 1,
+      "stdout": "{\n  \"accepted\": false,\n  \"message\": \"Zone observation invalid: Ground truth pose missing or stale\"\n}\n",
+      "stderr": ""
+    }
+  }
+}

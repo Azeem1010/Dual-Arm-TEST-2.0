@@ -24,13 +24,13 @@ _SHAPE = {
     'journal_path': None,
     'arms': {arm: dict.fromkeys(_ARM_KEYS) for arm in ARMS},
     'speeds': dict.fromkeys(('transport_scale', 'contact_scale', 'acceleration_scale')),
-    'heights': dict.fromkeys(('surface_z_m', 'cap_height_m', 'cap_radius_m', 'contact_z_m', 'release_z_m',
+    'heights': dict.fromkeys(('surface_z_m', 'cap_height_m', 'cap_radius_m', 'cup_radius_m', 'contact_z_m', 'release_z_m',
                               'approach_z_m', 'pick_z_tolerance_m')),
     'zones': dict.fromkeys(('a_min_xy_m', 'a_max_xy_m', 'b_place_xy_m', 'c_slots_xy_m')),
     'motion': dict.fromkeys(('planning_s', 'planning_attempts', 'goal_submit_s', 'motion_s',
                              'settle_s', 'tcp_error_limit_m', 'arrival_samples', 'arrival_timeout_s',
                              'joint_state_max_age_s', 'waypoint_step_m', 'waypoint_joint_jump_rad',
-                             'max_velocity_rad_s', 'max_acceleration_rad_s2')),
+                             'max_velocity_rad_s', 'max_acceleration_rad_s2', 'max_tool_tilt_deg')),
     'gripper': {**dict.fromkeys(('backend', 'auto_confirm', 'reply_timeout_s', 'esp32_echo_timeout_s', 'vacuum_settle_s')),
                 'esp32_modules': dict.fromkeys(ARMS)},
 }
@@ -104,7 +104,7 @@ def _check_numbers(doc):
     if not all(_is_number(value) for value in heights.values()):
         errors.append('heights must all be numbers')
     else:
-        for key in ('cap_height_m', 'cap_radius_m', 'pick_z_tolerance_m'):
+        for key in ('cap_height_m', 'cap_radius_m', 'cup_radius_m', 'pick_z_tolerance_m'):
             if heights[key] <= 0:
                 errors.append(f'heights.{key} must be positive')
         top = heights['surface_z_m'] + heights['cap_height_m']
@@ -112,7 +112,10 @@ def _check_numbers(doc):
             errors.append('heights must satisfy cap top <= contact < release < approach')
     motion = doc['motion']
     for key, value in motion.items():
-        if not _is_number(value) or value <= 0:
+        if key == 'max_tool_tilt_deg':
+            if not _is_number(value) or not 0 <= value < 90:
+                errors.append('motion.max_tool_tilt_deg must be within [0, 90)')
+        elif not _is_number(value) or value <= 0:
             errors.append(f'motion.{key} must be positive')
     for key in ('planning_attempts', 'arrival_samples'):
         if not isinstance(motion[key], int) or isinstance(motion[key], bool):

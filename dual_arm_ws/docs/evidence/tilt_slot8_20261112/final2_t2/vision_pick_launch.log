@@ -1,0 +1,1243 @@
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-12-11-55-40-858484-DESKTOP-HBTEAAO-7257
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [7296]
+[INFO] [robot_state_publisher-2]: process started with pid [7297]
+[INFO] [create-3]: process started with pid [7298]
+[INFO] [parameter_bridge-4]: process started with pid [7299]
+[INFO] [move_group_lifetime-5]: process started with pid [7300]
+[INFO] [spawner-6]: process started with pid [7301]
+[INFO] [spawner-7]: process started with pid [7302]
+[INFO] [spawner-8]: process started with pid [7303]
+[INFO] [static_transform_publisher-9]: process started with pid [7304]
+[INFO] [static_transform_publisher-10]: process started with pid [7305]
+[INFO] [static_transform_publisher-11]: process started with pid [7306]
+[INFO] [static_transform_publisher-12]: process started with pid [7307]
+[INFO] [static_transform_publisher-13]: process started with pid [7308]
+[INFO] [env_vision_node-14]: process started with pid [7309]
+[INFO] [arm1_vision_node-15]: process started with pid [7310]
+[INFO] [arm2_vision_node-16]: process started with pid [7311]
+[static_transform_publisher-12] [INFO] [1794455750.683383473] [static_transform_publisher_cNqBxx5WGNvsilQ4]: Spinning until stopped - publishing transform
+[static_transform_publisher-12] translation: ('0.000000', '0.000000', '0.014000')
+[static_transform_publisher-12] rotation: ('0.000000', '0.000000', '0.707107', '0.707107')
+[static_transform_publisher-12] from 'arm1_base_link' to 'arm1_base'
+[static_transform_publisher-13] [INFO] [1794455750.699248181] [static_transform_publisher_pnedNgdUpUlCMxAP]: Spinning until stopped - publishing transform
+[static_transform_publisher-13] translation: ('0.000000', '0.000000', '0.014000')
+[static_transform_publisher-13] rotation: ('0.000000', '0.000000', '0.707107', '0.707107')
+[static_transform_publisher-13] from 'arm2_base_link' to 'arm2_base'
+[static_transform_publisher-9] [INFO] [1794455750.707462390] [static_transform_publisher_ciRVw3MIZe0IiaAB]: Spinning until stopped - publishing transform
+[static_transform_publisher-9] translation: ('0.000000', '0.000000', '0.800000')
+[static_transform_publisher-9] rotation: ('1.000000', '0.000000', '-0.000000', '-0.000000')
+[static_transform_publisher-9] from 'world' to 'env_camera_optical_frame'
+[create-3] [INFO] [1794455750.711883793] [ros_gz_sim]: Requesting list of world names.
+[static_transform_publisher-11] [INFO] [1794455750.724125642] [static_transform_publisher_yMqcXLOhm8Bvbpfo]: Spinning until stopped - publishing transform
+[static_transform_publisher-11] translation: ('0.150000', '0.000000', '0.500000')
+[static_transform_publisher-11] rotation: ('1.000000', '0.000000', '-0.000000', '-0.000000')
+[static_transform_publisher-11] from 'world' to 'arm2_camera_optical_frame'
+[static_transform_publisher-10] [INFO] [1794455750.729829992] [static_transform_publisher_JXMwN4rv4WGDGTIQ]: Spinning until stopped - publishing transform
+[static_transform_publisher-10] translation: ('-0.150000', '0.000000', '0.500000')
+[static_transform_publisher-10] rotation: ('1.000000', '0.000000', '-0.000000', '-0.000000')
+[static_transform_publisher-10] from 'world' to 'arm1_camera_optical_frame'
+[robot_state_publisher-2] [INFO] [1794455750.922529646] [robot_state_publisher]: Robot initialized
+[gazebo-1] [1;33mWarning [Utils.cc:132][0m [/sdf/world[@name="dual_arm_workspace"]/model[@name="env_camera"]/link[@name="link"]/sensor[@name="camera"]/gz_frame_id:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_gazebo/share/dual_arm_gazebo/worlds/dual_arm_workspace.sdf:L67]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] [1;33mWarning [Utils.cc:132][0m [/sdf/world[@name="dual_arm_workspace"]/model[@name="arm1_camera"]/link[@name="link"]/sensor[@name="camera"]/gz_frame_id:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_gazebo/share/dual_arm_gazebo/worlds/dual_arm_workspace.sdf:L68]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gazebo-1] [1;33mWarning [Utils.cc:132][0m [/sdf/world[@name="dual_arm_workspace"]/model[@name="arm2_camera"]/link[@name="link"]/sensor[@name="camera"]/gz_frame_id:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_gazebo/share/dual_arm_gazebo/worlds/dual_arm_workspace.sdf:L69]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[move_group_lifetime-5] [INFO] [1794455751.886604418] [move_group.moveit.moveit.ros.rdf_loader]: Loaded robot model in 0 seconds
+[move_group_lifetime-5] [INFO] [1794455751.886785626] [move_group.moveit.moveit.core.robot_model]: Loading robot model 'dual_arm'...
+[move_group_lifetime-5] [INFO] [1794455751.886810970] [move_group.moveit.moveit.core.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint
+[parameter_bridge-4] [INFO] [1794455751.904464937] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/env_cam/image_raw (gz.msgs.Image) -> /env_cam/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.943547396] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/env_cam/camera_info (gz.msgs.CameraInfo) -> /env_cam/camera_info (sensor_msgs/msg/CameraInfo)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.944668771] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/arm1_cam/image_raw (gz.msgs.Image) -> /arm1_cam/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.945193328] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/arm1_cam/camera_info (gz.msgs.CameraInfo) -> /arm1_cam/camera_info (sensor_msgs/msg/CameraInfo)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.946151017] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/arm2_cam/image_raw (gz.msgs.Image) -> /arm2_cam/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.946860198] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/arm2_cam/camera_info (gz.msgs.CameraInfo) -> /arm2_cam/camera_info (sensor_msgs/msg/CameraInfo)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.948183719] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.962392180] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/world/dual_arm_workspace/pose/info (gz.msgs.Pose_V) -> /gazebo/ground_truth (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.991010601] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/gripper/arm1/command (std_msgs/msg/String) -> /gripper/arm1/command (gz.msgs.StringMsg)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.993216191] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/gripper/arm1/state (gz.msgs.StringMsg) -> /gripper/arm1/state (std_msgs/msg/String)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.995208654] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/gripper/arm2/command (std_msgs/msg/String) -> /gripper/arm2/command (gz.msgs.StringMsg)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.996341582] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/gripper/arm2/state (gz.msgs.StringMsg) -> /gripper/arm2/state (std_msgs/msg/String)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.997083601] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/view_isometric/image_raw (gz.msgs.Image) -> /view_isometric/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455751.998925512] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/view_top/image_raw (gz.msgs.Image) -> /view_top/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.003077281] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/view_front/image_raw (gz.msgs.Image) -> /view_front/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.005750422] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/view_side/image_raw (gz.msgs.Image) -> /view_side/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.006652862] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_1/pose (gz.msgs.Pose_V) -> /ground_truth/cap_1 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.008842967] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_2/pose (gz.msgs.Pose_V) -> /ground_truth/cap_2 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.010701770] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_3/pose (gz.msgs.Pose_V) -> /ground_truth/cap_3 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.013917972] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_4/pose (gz.msgs.Pose_V) -> /ground_truth/cap_4 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[move_group_lifetime-5] [INFO] [1794455752.072580925] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm1': 1 1 1 1
+[move_group_lifetime-5] [INFO] [1794455752.073458319] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm2': 1 1 1 1
+[parameter_bridge-4] [INFO] [1794455752.116919448] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_5/pose (gz.msgs.Pose_V) -> /ground_truth/cap_5 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.119123098] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_6/pose (gz.msgs.Pose_V) -> /ground_truth/cap_6 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.120862316] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_7/pose (gz.msgs.Pose_V) -> /ground_truth/cap_7 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794455752.122995434] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/cap_8/pose (gz.msgs.Pose_V) -> /ground_truth/cap_8 (tf2_msgs/msg/TFMessage)] (Lazy 0)
+[move_group_lifetime-5] [INFO] [1794455752.291938637] [move_group.moveit.moveit.ros.moveit_cpp]: Listening to 'joint_states' for joint states
+[move_group_lifetime-5] [INFO] [1794455752.303493075] [move_group.moveit.moveit.ros.current_state_monitor]: Listening to joint states on topic 'joint_states'
+[move_group_lifetime-5] [INFO] [1794455752.364889440] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/attached_collision_object' for attached collision objects
+[move_group_lifetime-5] [INFO] [1794455752.368067123] [move_group.moveit.moveit.ros.planning_scene_monitor]: Publishing maintained planning scene on 'monitored_planning_scene'
+[move_group_lifetime-5] [INFO] [1794455752.368286702] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting planning scene monitor
+[move_group_lifetime-5] [INFO] [1794455752.369182572] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/planning_scene'
+[move_group_lifetime-5] [INFO] [1794455752.369198299] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting world geometry update monitor for collision objects, attached objects, octomap updates.
+[move_group_lifetime-5] [INFO] [1794455752.370170860] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'collision_object'
+[move_group_lifetime-5] [INFO] [1794455752.371040363] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'planning_scene_world' for planning scene world geometry
+[move_group_lifetime-5] [WARN] [1794455752.425749132] [move_group.moveit.moveit.ros.occupancy_map_monitor]: Resolution not specified for Octomap. Assuming resolution = 0.1 instead
+[move_group_lifetime-5] [ERROR] [1794455752.425828703] [move_group.moveit.moveit.ros.occupancy_map_monitor]: No 3D sensor plugin(s) defined for octomap updates
+[move_group_lifetime-5] [INFO] [1794455752.638055818] [move_group.moveit.moveit.ros.planning_pipeline]: Successfully loaded planner 'OMPL'
+[create-3] [INFO] [1794455752.666923352] [ros_gz_sim]: Waiting messages on topic [/robot_description].
+[create-3] [INFO] [1794455752.680011889] [ros_gz_sim]: Entity creation successful.
+[move_group_lifetime-5] [INFO] [1794455752.776515286] [move_group]: Try loading adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455752.786519454] [move_group]: Loaded adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455752.786573865] [move_group]: Try loading adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-5] [INFO] [1794455752.787157548] [move_group]: Loaded adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-5] [INFO] [1794455752.787177436] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455752.787204472] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455752.787212147] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455752.787223605] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[INFO] [create-3]: process has finished cleanly [pid 7298]
+[move_group_lifetime-5] [INFO] [1794455752.955461768] [move_group]: Try loading adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455752.991263968] [move_group]: Loaded adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455752.991310505] [move_group]: Try loading adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455753.002551815] [move_group]: Loaded adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455753.002594771] [move_group]: Try loading adapter 'default_planning_response_adapters/DisplayMotionPath'
+[move_group_lifetime-5] [INFO] [1794455753.003732763] [move_group]: Loaded adapter 'default_planning_response_adapters/DisplayMotionPath'
+[spawner-7] [INFO] [1794455753.180048331] [spawner_arm1_controller]: waiting for service /controller_manager/list_controllers to become available...
+[move_group_lifetime-5] [INFO] [1794455753.203133751] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm1_controller
+[move_group_lifetime-5] [INFO] [1794455753.210292865] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm2_controller
+[move_group_lifetime-5] [INFO] [1794455753.210515487] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455753.210543056] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455753.211761502] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Trajectory execution is not managing controllers
+[move_group_lifetime-5] [INFO] [1794455753.211801153] [move_group]: MoveGroup debug mode is ON
+[move_group_lifetime-5] [INFO] [1794455753.343675386] [move_group.moveit.moveit.ros.move_group.executable]: 
+[move_group_lifetime-5] 
+[move_group_lifetime-5] ********************************************************
+[move_group_lifetime-5] * MoveGroup using: 
+[move_group_lifetime-5] *     - apply_planning_scene_service
+[move_group_lifetime-5] *     - clear_octomap_service
+[move_group_lifetime-5] *     - get_group_urdf
+[move_group_lifetime-5] *     - load_geometry_from_file
+[move_group_lifetime-5] *     - CartesianPathService
+[move_group_lifetime-5] *     - execute_trajectory_action
+[move_group_lifetime-5] *     - get_planning_scene_service
+[move_group_lifetime-5] *     - kinematics_service
+[move_group_lifetime-5] *     - move_action
+[move_group_lifetime-5] *     - motion_plan_service
+[move_group_lifetime-5] *     - query_planners_service
+[move_group_lifetime-5] *     - state_validation_service
+[move_group_lifetime-5] *     - save_geometry_to_file
+[move_group_lifetime-5] ********************************************************
+[move_group_lifetime-5] 
+[move_group_lifetime-5] [INFO] [1794455753.343785761] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context using pipeline ompl
+[move_group_lifetime-5] [INFO] [1794455753.343795007] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context initialization complete
+[move_group_lifetime-5] [96mLoading 'move_group/ApplyPlanningSceneService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/ClearOctomapService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/GetUrdfService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/LoadGeometryFromFileService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupCartesianPathService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupExecuteTrajectoryAction'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupGetPlanningSceneService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupKinematicsService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupMoveAction'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupPlanService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupQueryPlannersService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/MoveGroupStateValidationService'...[0m
+[move_group_lifetime-5] [96mLoading 'move_group/SaveGeometryToFileService'...[0m
+[move_group_lifetime-5] 
+[move_group_lifetime-5] [92mYou can start planning now![0m
+[move_group_lifetime-5] 
+[gazebo-1] [INFO] [1794455753.786336076] [gz_ros_control]: [gz_ros2_control] Fixed joint ['arm1_mount'] (Entity='551') is skipped.
+[gazebo-1] [INFO] [1794455753.786476767] [gz_ros_control]: [gz_ros2_control] Fixed joint ['arm2_mount'] (Entity='556') is skipped.
+[gazebo-1] [INFO] [1794455753.786493109] [gz_ros_control]: [gz_ros2_control] Fixed joint ['field_platform_fixed'] (Entity='561') is skipped.
+[gazebo-1] [INFO] [1794455754.172256128] [gz_ros_control]: Loading controller_manager
+[gazebo-1] [INFO] [1794455754.792038468] [controller_manager]: Using ROS clock for triggering controller manager cycles.
+[gazebo-1] [WARN] [1794455754.792093093] [controller_manager]: The resource manager is not yet initialized, will wait for the robot description to initialize it..
+[gazebo-1] [INFO] [1794455754.835545614] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[gazebo-1] [WARN] [1794455754.835645747] [gz_ros_control]: Waiting RM to load and initialize hardware...
+[gazebo-1] [INFO] [1794455754.846102788] [controller_manager]: Received robot description from topic.
+[gazebo-1] [INFO] [1794455754.846511786] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[gazebo-1] [INFO] [1794455754.958492946] [gz_ros_control]: The position_proportional_gain has been set to: 0.1
+[gazebo-1] [INFO] [1794455754.958578867] [gz_ros_control]: Loading joint: arm1_arm_shoulder_pan_joint
+[gazebo-1] [INFO] [1794455754.958588831] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958595114] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958613724] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958623060] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958630949] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958635068] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958648801] [gz_ros_control]: Loading joint: arm1_arm_shoulder_lift_joint
+[gazebo-1] [INFO] [1794455754.958653319] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958656760] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958661158] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958664898] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958668718] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958672329] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958680956] [gz_ros_control]: Loading joint: arm1_arm_elbow_flex_joint
+[gazebo-1] [INFO] [1794455754.958685344] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958688964] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958693103] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958696953] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958700524] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958704393] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958713609] [gz_ros_control]: Loading joint: arm1_arm_wrist_flex_joint
+[gazebo-1] [INFO] [1794455754.958717259] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958720720] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958724490] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958728360] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958731831] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958735291] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958744607] [gz_ros_control]: Loading joint: arm2_arm_shoulder_pan_joint
+[gazebo-1] [INFO] [1794455754.958748347] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958751758] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958756315] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958799650] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958808337] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958812217] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958826180] [gz_ros_control]: Loading joint: arm2_arm_shoulder_lift_joint
+[gazebo-1] [INFO] [1794455754.958830967] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958834478] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958838447] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958843065] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958846655] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958850156] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958859860] [gz_ros_control]: Loading joint: arm2_arm_elbow_flex_joint
+[gazebo-1] [INFO] [1794455754.958891666] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958895864] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958899445] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958903195] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958907154] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958910894] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958919432] [gz_ros_control]: Loading joint: arm2_arm_wrist_flex_joint
+[gazebo-1] [INFO] [1794455754.958923351] [gz_ros_control]: 	State:
+[gazebo-1] [INFO] [1794455754.958927231] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.958930821] [gz_ros_control]: 			 found initial value: 0.000000
+[gazebo-1] [INFO] [1794455754.958934821] [gz_ros_control]: 		 velocity
+[gazebo-1] [INFO] [1794455754.958938302] [gz_ros_control]: 	Command:
+[gazebo-1] [INFO] [1794455754.958941683] [gz_ros_control]: 		 position
+[gazebo-1] [INFO] [1794455754.959270439] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[gazebo-1] [WARN] [1794455754.959302094] [controller_manager.hardware_component.system.DualArmSystem]: Executor is not available during hardware component initialization for 'DualArmSystem'. Skipping node creation!
+[gazebo-1] [INFO] [1794455754.959379808] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[gazebo-1] [INFO] [1794455754.959518559] [controller_manager]: Activating component 'DualArmSystem'.
+[gazebo-1] [INFO] [1794455754.959530577] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[gazebo-1] [INFO] [1794455754.959536342] [gz_ros_control]: System Successfully configured!
+[gazebo-1] [INFO] [1794455754.959542216] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[gazebo-1] [INFO] [1794455754.959550275] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[gazebo-1] [INFO] [1794455754.959566861] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
+[gazebo-1] [WARN] [1794455754.959625963] [controller_manager]: Component 'DualArmSystem' does not have read or write statistics initialized, skipping registration.
+[gazebo-1] [INFO] [1794455754.959631329] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[spawner-7] [INFO] [1794455755.193892956] [spawner_arm1_controller]: Setting controller param "params_file" to "['/tmp/launch_params_1lg_j98v']" for arm1_controller
+[gazebo-1] [INFO] [1794455755.196611005] [controller_manager]: Loading controller : 'arm1_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[gazebo-1] [INFO] [1794455755.196672963] [controller_manager]: Loading controller 'arm1_controller'
+[gazebo-1] [INFO] [1794455755.264800501] [controller_manager]: Controller 'arm1_controller' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml -p use_sim_time:=true --params-file /tmp/launch_params_1lg_j98v --param use_sim_time:=true 
+[env_vision_node-14] [INFO] [1794455755.291061827] [env_vision_node]: 校正檔目錄: /tmp/dual_arm_checks_6647/calib
+[arm1_vision_node-15] [INFO] [1794455755.322239210] [arm1_vision_node]: 校正檔目錄: /tmp/dual_arm_checks_6647/calib
+[spawner-7] [INFO] [1794455755.410643808] [spawner_arm1_controller]: Loaded arm1_controller
+[gazebo-1] [INFO] [1794455755.413105191] [controller_manager]: Configuring controller: 'arm1_controller'
+[gazebo-1] [INFO] [1794455755.413428082] [arm1_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[gazebo-1] [INFO] [1794455755.413483376] [arm1_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[gazebo-1] [INFO] [1794455755.413514170] [arm1_controller]: Using 'splines' interpolation method.
+[gazebo-1] [INFO] [1794455755.465540306] [arm1_controller]: Action status changes will be monitored at 20.00 Hz.
+[gazebo-1] [INFO] [1794455755.485259267] [arm1_controller]: Setting initial scaling factor to 1.000000
+[gazebo-1] [INFO] [1794455755.485292739] [arm1_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[gazebo-1] [INFO] [1794455755.488615714] [controller_manager]: Activating controllers: [ arm1_controller ]
+[env_vision_node-14] [INFO] [1794455755.499885668] [env_vision_node]: env_vision_node 就緒，訂閱 /env_cam/image_raw，等待影像與場地定位…
+[arm1_vision_node-15] [INFO] [1794455755.585409248] [arm1_vision_node]: arm1_vision_node 就緒，訂閱 /arm1_cam/image_raw
+[arm2_vision_node-16] [INFO] [1794455755.662918214] [arm2_vision_node]: 校正檔目錄: /tmp/dual_arm_checks_6647/calib
+[arm2_vision_node-16] [INFO] [1794455755.885982298] [arm2_vision_node]: arm2_vision_node 就緒，訂閱 /arm2_cam/image_raw
+[gazebo-1] [WARN] [1794455756.929437281] [gz_ros_control]:  Desired controller update period (0.01 s) is slower than the gazebo simulation period (0.001 s).
+[spawner-7] [WARN] [1794455765.489087180] [spawner_arm1_controller]: Failed getting a result from calling /controller_manager/switch_controller in 10.0. (Attempt 1 of 3.)
+[gazebo-1] [INFO] [1794455766.518233467] [controller_manager]: Successfully switched controllers!
+[gazebo-1] [INFO] [1794455766.533131616] [controller_manager]: Activating controllers: [ arm1_controller ]
+[gazebo-1] [WARN] [1794455766.533173323] [controller_manager]: Controller with name 'arm1_controller' is already active.
+[gazebo-1] [WARN] [1794455766.533180498] [controller_manager]: Controller with name 'arm1_controller' is already active.
+[gazebo-1] [WARN] [1794455766.533184767] [controller_manager]: Could not activate controller with name 'arm1_controller'. Check above warnings for more details. Check the state of the controllers and their required interfaces using `ros2 control list_controllers -v` CLI to get more information.
+[gazebo-1] [ERROR] [1794455766.533192466] [controller_manager]: Aborting, no controller is switched! (::STRICT switch)
+[spawner-7] [ERROR] [1794455766.534259069] [spawner_arm1_controller]: Failed to activate controller : arm1_controller
+[env_vision_node-14] [WARN] [1794455766.694002292] [env_vision_node]: 等不到足夠影像（10s），改用上次存檔的場地（3 區）
+[ERROR] [spawner-7]: process has died [pid 7302, exit code 1, cmd '/opt/ros/jazzy/lib/controller_manager/spawner arm1_controller --controller-manager-timeout 120 --switch-timeout 120 --ros-args --params-file /tmp/launch_params_1lg_j98v'].
+[spawner-8] [INFO] [1794455767.387307207] [spawner_arm2_controller]: waiting for service /controller_manager/list_controllers to become available...
+[env_vision_node-14] [INFO] [1794455769.099975375] [env_vision_node]: B 區手臂已離開（連續確認 clear）
+[spawner-8] [INFO] [1794455770.156504888] [spawner_arm2_controller]: Setting controller param "params_file" to "['/tmp/launch_params_ba_swwxi']" for arm2_controller
+[gazebo-1] [INFO] [1794455770.158805527] [controller_manager]: Loading controller : 'arm2_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[gazebo-1] [INFO] [1794455770.158850863] [controller_manager]: Loading controller 'arm2_controller'
+[gazebo-1] [INFO] [1794455770.159392211] [controller_manager]: Controller 'arm2_controller' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml -p use_sim_time:=true --params-file /tmp/launch_params_ba_swwxi --param use_sim_time:=true 
+[spawner-8] [INFO] [1794455770.321625186] [spawner_arm2_controller]: Loaded arm2_controller
+[gazebo-1] [INFO] [1794455770.415079692] [controller_manager]: Configuring controller: 'arm2_controller'
+[gazebo-1] [INFO] [1794455770.415273705] [arm2_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[gazebo-1] [INFO] [1794455770.415313322] [arm2_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[gazebo-1] [INFO] [1794455770.415329367] [arm2_controller]: Using 'splines' interpolation method.
+[gazebo-1] [INFO] [1794455770.418380953] [arm2_controller]: Action status changes will be monitored at 20.00 Hz.
+[gazebo-1] [INFO] [1794455770.427217522] [arm2_controller]: Setting initial scaling factor to 1.000000
+[gazebo-1] [INFO] [1794455770.427248662] [arm2_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[gazebo-1] [INFO] [1794455770.500537613] [controller_manager]: Activating controllers: [ arm2_controller ]
+[gazebo-1] [INFO] [1794455770.728248868] [controller_manager]: Successfully switched controllers!
+[spawner-8] [INFO] [1794455770.739745186] [spawner_arm2_controller]: Configured and activated arm2_controller
+[INFO] [spawner-8]: process has finished cleanly [pid 7303]
+[spawner-6] [INFO] [1794455771.234230482] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
+[spawner-6] [INFO] [1794455772.494901698] [spawner_joint_state_broadcaster]: Setting controller param "params_file" to "['/tmp/launch_params_ny7nrhfd']" for joint_state_broadcaster
+[gazebo-1] [INFO] [1794455772.496613391] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[gazebo-1] [INFO] [1794455772.496655621] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[gazebo-1] [INFO] [1794455772.585742405] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml -p use_sim_time:=true --params-file /tmp/launch_params_ny7nrhfd --param use_sim_time:=true 
+[spawner-6] [INFO] [1794455772.682977204] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[gazebo-1] [INFO] [1794455772.684705064] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[gazebo-1] [INFO] [1794455772.684847888] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[gazebo-1] [INFO] [1794455772.824093702] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[gazebo-1] [INFO] [1794455772.935750563] [controller_manager]: Successfully switched controllers!
+[spawner-6] [INFO] [1794455773.346830072] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[INFO] [spawner-6]: process has finished cleanly [pid 7301]
+[move_group_lifetime-5] [INFO] [1794455800.363152115] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455800.365731462] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455800.545880864] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455800.545974772] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455800.545998706] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455800.546338368] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455800.546407140] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455800.546417926] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455800.546432134] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455800.546459260] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455800.547333357] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455800.547574303] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455800.554002335] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455800.556804162] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455800.557376731] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455800.557452724] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455800.557630392] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455800.557664687] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455800.557739125] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455800.574409996] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455800.574504904] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455800.574531908] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455800.574699881] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455800.575209595] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455800.575288194] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455800.575499641] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455800.575522625] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455818.241917082] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455818.276559663] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794455818.377864564] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.001000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455818.452065845] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455818.454653879] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455818.515436388] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455818.515687787] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455818.520905175] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455818.520960703] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455818.520974488] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455818.521232011] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455818.521266313] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455818.521271639] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455818.521286083] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455818.521303029] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455818.521820339] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455818.521903766] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455818.537884598] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455818.540847735] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455818.541396733] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455818.541899490] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455818.542070573] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455818.542096567] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455818.542166100] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455818.702391026] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455818.702477086] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455818.702519867] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455818.702651640] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794455818.705945391] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455818.705958219] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455818.705757078] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455818.705804447] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455835.788651647] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455835.806232547] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455835.830265366] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455835.832552749] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455849.958043793] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455849.961651049] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [WARN] [1794455850.061842804] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455850.395046457] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455850.395122422] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455850.395141376] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455850.395314171] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455850.395339406] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455850.395345519] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455850.395393670] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455850.395415431] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455850.395885993] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455850.395957797] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455850.407120201] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455850.407207713] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455850.407255705] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455850.407274251] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455850.407398138] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.407422099] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.407477886] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455850.408824732] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455850.408862700] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.408889259] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.409071073] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455850.409443759] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455850.409490308] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455850.409738894] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455850.409751736] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455850.429735892] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455850.461713011] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455850.470232906] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455850.479740244] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455850.665543880] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455850.665872488] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455850.681898534] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455850.681968008] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455850.681979456] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455850.682130699] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455850.682153695] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455850.682157488] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455850.682167552] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455850.682177009] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455850.682420124] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455850.682499962] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455850.696399784] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455850.696480070] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455850.696529455] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455850.696550241] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455850.696701006] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.696725465] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.696783660] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455850.696891187] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455850.696924814] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.696942434] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455850.697095389] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794455850.697951749] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455850.697961524] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455850.697324075] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455850.697366841] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455850.713349321] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455850.747911567] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455850.871960047] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455850.876996243] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455851.471309131] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455851.471568873] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455851.474335730] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455851.474383342] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455851.474402145] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455851.474536363] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455851.474559526] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455851.474564883] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455851.474577521] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455851.474589641] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455851.474813298] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455851.474884871] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455851.488344700] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455851.489044632] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455851.489277247] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455851.489304220] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455851.489426567] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455851.489448942] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455851.489503597] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [WARN] [1794455851.593248661] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455851.607085699] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455851.607177981] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455851.607209842] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455851.607350115] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[move_group_lifetime-5] [INFO] [1794455851.608112099] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455851.608125555] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455851.607694972] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455851.607725965] [arm1_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455858.173423796] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455858.208363659] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794455858.308562721] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455858.329706587] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455858.337276641] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455862.723103290] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455862.723174383] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455862.723197784] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455862.723316930] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455862.740140625] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455862.740232557] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455862.740256201] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455862.740385757] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455862.740986132] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455862.741016605] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455862.741301858] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455862.741314547] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455868.363361963] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455868.391758598] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794455868.492047018] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455868.533079678] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455868.533437468] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[parameter_bridge-4] [INFO] [1794455868.894090157] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/String to Gazebo gz.msgs.StringMsg (showing msg only once per type)
+[move_group_lifetime-5] [INFO] [1794455869.261666512] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455869.261723728] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455869.261748278] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455869.261861791] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455869.266639749] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455869.266702968] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455869.266727993] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455869.266856929] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455869.267411200] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455869.267440147] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455869.267625885] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455869.267637983] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455874.919053044] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455874.967995422] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794455875.068195523] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455875.105023272] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455875.105180422] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455875.409936066] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455875.410516057] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455875.580838810] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455875.580924708] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455875.580938158] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455875.581082220] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455875.581108189] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455875.581113542] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455875.581126497] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455875.581140238] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455875.581452499] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455875.581507395] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455875.595921758] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455875.596552679] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455875.596814552] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455875.596891383] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455875.597021995] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455875.597049235] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455875.597081972] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455875.598700390] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455875.598764159] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455875.598800398] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455875.598934132] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[move_group_lifetime-5] [INFO] [1794455875.600187897] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455875.600200048] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455875.599188452] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455875.599219706] [arm1_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455882.392679469] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455882.399699049] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455882.419276682] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455882.428966746] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455882.945837103] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455882.946094600] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455882.946765645] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455882.946802782] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455882.946822848] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455882.946967492] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455882.946999622] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455882.947007396] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455882.947021729] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455882.947037615] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455882.947364593] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455882.947420959] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455882.961267718] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455882.962540722] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455882.962855690] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455882.962885521] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455882.963026493] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455882.963048151] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455882.963109007] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [WARN] [1794455883.065671171] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455883.080501509] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455883.080594219] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455883.080628331] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455883.080770404] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[move_group_lifetime-5] [INFO] [1794455883.081274870] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455883.081287159] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455883.081085270] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455883.081114614] [arm1_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455896.813165161] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455896.831728685] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794455896.931895637] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455896.976959259] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455896.980728095] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455897.687938273] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455897.688018408] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455897.688036312] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455897.688212326] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455897.688349478] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455897.688401734] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455897.688428675] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455897.688556210] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455897.688816217] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455897.688848086] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455897.689058159] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455897.689073528] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455903.360917787] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455903.389399830] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455903.395565028] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455903.395797913] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455904.184688967] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455904.184751283] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455904.184770960] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455904.184908661] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455904.189831031] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455904.189915076] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455904.189943640] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455904.190077403] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455904.190290990] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455904.190319120] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455904.190551913] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455904.190564562] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455909.967033468] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455909.990882021] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455910.004773693] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455910.005280310] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455910.516708528] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455910.517015881] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [WARN] [1794455910.619966551] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455910.915294594] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455910.915363196] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455910.915379244] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455910.915618316] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455910.915671675] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455910.915679237] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455910.915690772] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455910.915704854] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455910.916069475] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455910.916152768] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455910.920358123] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455910.921854340] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455910.922271464] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455910.922316808] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455910.922427331] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455910.922453224] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455910.922482047] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455910.934518339] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455910.934595791] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455910.934633809] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455910.934763695] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794455910.935327584] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455910.935356928] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455910.935547731] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794455910.935561223] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455924.214827240] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455924.242114454] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455924.259721732] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455924.264672908] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455925.167325297] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455925.167668567] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455925.177832545] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455925.177889790] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455925.177903491] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455925.178118958] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455925.178167986] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455925.178176293] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455925.178190932] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455925.178214816] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455925.178531565] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455925.178585260] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455925.194976936] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455925.196522198] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455925.196937739] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455925.196980556] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455925.197130784] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455925.197152268] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455925.197200530] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455925.206043325] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455925.206090185] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455925.206115843] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455925.206234364] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794455925.206441091] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455925.206506497] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455925.207341373] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455925.207352745] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455938.057111445] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455938.061087660] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794455938.161241062] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455938.221033424] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455938.226197408] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455938.976327794] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455938.976403152] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455938.976422088] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455938.976579100] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455939.011760352] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455939.011873935] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455939.011908035] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455939.012031455] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794455939.012563279] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455939.012574969] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455939.012314209] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455939.012344321] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455944.455263526] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455944.462849576] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455944.466799431] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455944.468956640] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455945.419724029] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455945.419794903] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455945.419814091] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455945.419924464] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455945.427601290] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455945.427672522] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455945.427704393] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455945.427821083] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794455945.428033833] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455945.428061354] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455945.428251913] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455945.428263195] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455950.609060179] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455950.628640285] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455950.656580121] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455950.656747115] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455951.396402825] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455951.396891864] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [WARN] [1794455951.497051553] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794455951.570765892] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455951.570834022] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455951.570857846] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455951.571026501] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455951.571076939] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455951.571084395] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455951.571095665] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455951.571106784] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455951.571418283] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455951.571479098] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455951.576583765] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455951.578250595] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455951.578824610] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455951.578908566] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455951.579085390] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455951.579108431] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455951.579358644] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455951.583033457] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455951.583107358] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455951.583134604] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455951.583260950] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794455951.585853298] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455951.585896641] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455951.589789509] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455951.589810623] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455964.189807661] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455964.236579429] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455964.246769286] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455964.253311044] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455964.711052961] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455964.711379037] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455964.711539503] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455964.711571077] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455964.711583215] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455964.711713886] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455964.711760529] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455964.711768190] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455964.711780884] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455964.711794811] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455964.712082037] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455964.712137917] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455964.729790355] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455964.732533546] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455964.733629427] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455964.733711202] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455964.734048426] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455964.734096463] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455964.734179006] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455964.743339107] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455964.743422195] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455964.743447897] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455964.743575081] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794455964.743860916] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455964.743889194] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455964.744053086] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455964.744066033] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455977.727394928] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455977.744336929] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455977.785248176] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455977.793510474] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794455982.770752066] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455982.770828631] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455982.770851677] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455982.770966399] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455982.772623712] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455982.772683405] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455982.772717890] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455982.772845471] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794455982.773671430] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455982.773683589] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455982.773397510] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455982.773424899] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794455991.013745067] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455991.024248109] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455991.035659631] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455991.035972676] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455991.562585477] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794455991.562644804] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455991.562663413] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455991.562705342] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455991.568288956] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455991.568366428] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455991.568393116] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455991.568514292] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794455991.568829737] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455991.569606384] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794455991.569960788] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455991.569973950] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455999.155889363] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794455999.170195635] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794455999.181815675] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794455999.182328957] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794455999.457793539] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794455999.457992461] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794455999.481691250] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794455999.481763434] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794455999.481783014] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794455999.481970645] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794455999.482022612] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794455999.482030820] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794455999.482053210] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794455999.482100204] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794455999.482409611] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794455999.482467521] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794455999.495415452] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794455999.497038621] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794455999.497502564] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794455999.497572817] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794455999.497734803] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455999.497760246] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455999.497788418] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794455999.497862851] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794455999.497906873] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455999.497936733] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794455999.498063916] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794455999.498523104] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794455999.498537447] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794455999.498319046] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794455999.498349391] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794456012.051464387] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456012.101657476] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456012.109466733] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456012.118068931] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456012.850425798] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456012.850713338] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456012.850945806] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456012.850982162] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456012.851001063] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456012.851275636] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456012.851335291] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456012.851343829] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456012.851356975] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456012.851369083] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456012.851641677] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456012.851732272] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456012.864935379] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456012.865652431] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456012.865888040] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456012.865909226] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456012.866043847] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456012.866070637] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456012.866126991] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456012.866248736] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456012.866287665] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456012.866312720] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456012.866441108] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456012.866706674] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456012.866758420] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456012.866971513] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456012.866983004] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456020.588037308] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456020.617855707] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456020.630520595] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456020.636360705] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456024.280997179] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456024.281116380] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456024.281145108] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456024.281284248] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456024.285208540] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456024.285303493] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456024.285339184] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456024.285478122] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456024.285719203] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456024.285746509] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456024.286012361] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456024.286023734] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456029.763328671] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456029.786991811] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456029.790325520] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456029.790475369] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456030.551676624] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456030.551735831] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456030.551752366] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456030.551811026] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456030.552092702] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456030.552132826] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456030.552156709] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456030.552283410] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456030.557814325] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456030.557854520] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456030.558056618] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456030.558071081] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456035.471852780] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456035.508312112] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794456035.608481295] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456035.627544411] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456035.627702798] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456036.160934477] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456036.161194106] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456036.529560376] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456036.529664743] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456036.529688497] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456036.529867813] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456036.529895971] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456036.529901035] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456036.529915778] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456036.529932510] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456036.530359165] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456036.530442940] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456036.544863537] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456036.546509293] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456036.546746933] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456036.546813937] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456036.547023128] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456036.547058551] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456036.547086515] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456036.561794881] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456036.561870479] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456036.561897977] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456036.562027079] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456036.562341966] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456036.562371055] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456036.562492828] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456036.562502935] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456043.824636113] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456043.862807069] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794456043.963111811] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456044.030500620] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456044.031950664] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456044.391947779] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456044.392254240] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456044.475680008] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456044.475739672] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456044.475751971] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456044.475890191] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456044.475914691] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456044.475920118] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456044.475934024] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456044.476011584] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456044.476324823] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456044.476378441] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456044.491073485] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456044.492683424] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456044.493133318] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456044.493201111] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456044.493415573] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456044.493437749] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456044.493512794] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456044.498959945] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456044.499035100] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456044.499069046] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456044.499204324] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456044.500677136] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456044.500706324] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456044.500849776] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456044.500860699] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456057.823235511] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456057.851067249] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456057.862823238] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456057.869205243] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456058.577689399] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456058.577778963] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456058.577807451] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456058.577995708] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [WARN] [1794456058.678110566] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456059.024287782] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456059.024391290] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456059.024458939] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456059.024609277] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[move_group_lifetime-5] [INFO] [1794456059.025047795] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456059.025058351] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456059.024812596] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456059.024843889] [arm1_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794456064.097560508] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456064.125500136] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794456064.225820956] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456064.263141966] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456064.263623796] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456065.065484329] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456065.065540083] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456065.065555907] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456065.065641975] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456065.079565027] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456065.079656524] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456065.079688011] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456065.079812582] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456065.080229542] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456065.080284027] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456065.080458053] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456065.080468417] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456070.178801010] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456070.181745080] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456070.190354870] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456070.193640132] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456071.125735047] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456071.126086329] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456071.126767826] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456071.126811997] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456071.126823817] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456071.126976438] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456071.127017817] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456071.127024444] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456071.127035074] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456071.127044976] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456071.127287965] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456071.127340858] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456071.147060518] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456071.148869100] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456071.149884562] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456071.149961773] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456071.150090726] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456071.150135068] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456071.150592073] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456071.157623977] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456071.157699388] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456071.157723116] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456071.157841055] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[gazebo-1] [INFO] [1794456071.158185213] [arm1_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456071.158211576] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456071.158525998] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-5] [INFO] [1794456071.158537365] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456085.787836381] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456085.808826238] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456085.808932385] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456085.816343514] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456086.897499731] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456086.897834618] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456086.953093383] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456086.953186899] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456086.953207538] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456086.953438661] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456086.953473537] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456086.953479374] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456086.953493762] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456086.953509461] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456086.953891984] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456086.953962673] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456086.969136201] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456086.970604990] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456086.971051538] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456086.971124848] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456086.971262788] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456086.971292128] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456086.971352886] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456086.979043680] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456086.979117595] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456086.979155788] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456086.979329491] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794456086.981480629] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456086.981536094] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456086.981694802] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456086.981708716] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456098.941884902] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456098.986744152] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456098.989185025] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456098.993821870] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456099.731547999] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456099.731638361] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456099.731655523] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456099.731810933] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [WARN] [1794456099.831962231] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456100.112298775] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456100.112400608] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456100.112434636] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456100.112581165] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794456100.113134757] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456100.113146418] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456100.112920866] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456100.112949276] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794456105.020518197] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456105.063546704] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794456105.163701266] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456105.186669040] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456105.186842352] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456105.974673285] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456105.974744858] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456105.974763774] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456105.974822168] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456105.982046057] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456105.982133259] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456105.982160940] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456105.982280345] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794456105.982544618] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456105.982575509] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456105.982777524] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456105.982789074] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456111.820550682] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456111.834275703] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794456111.938263854] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456112.044981253] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456112.045126140] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456112.929296309] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456112.930462565] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456112.961723406] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456112.961786254] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456112.961798513] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456112.961997671] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456112.962022419] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456112.962027150] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456112.962041143] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456112.962055808] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456112.963517634] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456112.963584482] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456112.979673199] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456112.981191268] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456112.981680859] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456112.981786517] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456112.982037802] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456112.982062400] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456112.982083871] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [WARN] [1794456113.082200765] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456113.144601101] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456113.144682822] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456113.144712568] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456113.144835104] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794456113.145140180] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456113.145167497] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456113.145379096] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456113.145425240] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456125.322382184] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456125.345708961] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456125.348534268] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456125.355161487] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456125.867745496] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456125.867977355] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456125.877094636] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456125.877171816] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456125.877191561] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456125.877500676] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456125.877530839] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456125.877536214] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456125.877549643] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456125.877565963] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456125.877916022] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456125.878030813] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456125.885010349] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456125.886212285] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456125.886640030] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456125.886767340] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456125.886869621] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456125.886893640] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456125.886946841] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [WARN] [1794456125.987043920] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456126.019906318] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456126.020007063] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456126.020041467] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456126.020203188] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794456126.020616328] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456126.020646012] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456126.020899599] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456126.020913365] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456136.341699909] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456136.371120174] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456136.373006898] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456136.380056650] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-5] [INFO] [1794456136.854073253] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456136.854142374] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456136.854161503] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456136.854293528] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456136.859654291] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456136.859719163] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456136.859745786] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456136.859861210] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[move_group_lifetime-5] [INFO] [1794456136.860301678] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456136.860314886] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456136.860048813] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456136.860074836] [arm2_controller]: Accepted new action goal
+[gazebo-1] [INFO] [1794456143.717450838] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456143.760516767] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [WARN] [1794456143.860688879] [move_group.moveit.moveit.ros.current_state_monitor]: No state update received within 100ms of system clock. Have been waiting for 0.000000s, timeout is 1.000000s
+[move_group_lifetime-5] [INFO] [1794456143.958951665] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456143.961712748] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456144.407966694] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution request received
+[move_group_lifetime-5] [INFO] [1794456144.408088732] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456144.408118047] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456144.408249405] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456144.408389990] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456144.408440100] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456144.408476761] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456144.408609392] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794456144.408844589] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456144.408880899] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456144.409048698] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456144.409062037] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456150.958198046] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456150.959520035] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456151.003629278] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456151.003793586] [move_group.moveit.moveit.ros.move_group.clear_octomap_service]: Execution completed: SUCCEEDED
+[move_group_lifetime-5] [INFO] [1794456151.838881661] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-5] [INFO] [1794456151.839199208] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-5] [INFO] [1794456151.842373193] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-5] [WARN] [1794456151.842454984] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-5] [INFO] [1794456151.842472437] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-5] [INFO] [1794456151.842635089] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-5] [INFO] [1794456151.842668866] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-5] [WARN] [1794456151.842675501] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-5] [INFO] [1794456151.842697219] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-5] [INFO] [1794456151.842712524] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-5] [INFO] [1794456151.842992559] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-5] [INFO] [1794456151.843050947] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-5] [INFO] [1794456151.857709226] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-5] [INFO] [1794456151.859272586] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-5] [INFO] [1794456151.859720668] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-5] [WARN] [1794456151.859783614] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-5] [INFO] [1794456151.859933644] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456151.859959153] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456151.859988181] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-5] [INFO] [1794456151.862004893] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-5] [INFO] [1794456151.862077099] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456151.862109001] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-5] [INFO] [1794456151.862274779] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[gazebo-1] [INFO] [1794456151.862555374] [arm2_controller]: Received new action goal
+[gazebo-1] [INFO] [1794456151.862673885] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-5] [INFO] [1794456151.862839951] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-5] [INFO] [1794456151.862851667] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[gazebo-1] [INFO] [1794456162.291831907] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-5] [INFO] [1794456162.313445246] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-5] [INFO] [1794456162.313562411] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-5] [INFO] [1794456162.313727538] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[static_transform_publisher-11] [INFO] [1794456163.573877505] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-12] [INFO] [1794456163.574202687] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-10] [INFO] [1794456163.574241684] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-2] [INFO] [1794456163.574290287] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[parameter_bridge-4] [INFO] [1794456163.574293159] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-9] [INFO] [1794456163.574503964] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-13] [INFO] [1794456163.575668788] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[move_group_lifetime-5] [INFO] [1794456163.577644632] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[arm1_vision_node-15] Traceback (most recent call last):
+[arm2_vision_node-16] Traceback (most recent call last):
+[arm1_vision_node-15]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/python3.12/site-packages/vision_pkg/arm1_vision_node.py", line 402, in main
+[arm1_vision_node-15]     spin_node(rclpy, node, executor, node.show_debug, 'arm1_vision')
+[arm2_vision_node-16]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/python3.12/site-packages/vision_pkg/arm2_vision_node.py", line 370, in main
+[arm2_vision_node-16]     spin_node(rclpy, node, executor, node.show_debug, 'arm2_vision')
+[arm2_vision_node-16]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/python3.12/site-packages/vision_pkg/node_common.py", line 303, in spin_node
+[arm2_vision_node-16]     executor.spin()
+[arm2_vision_node-16]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 359, in spin
+[arm2_vision_node-16]     self._spin_once_impl()
+[arm2_vision_node-16]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 991, in _spin_once_impl
+[arm2_vision_node-16]     handler, entity, node = self.wait_for_ready_callbacks(
+[arm2_vision_node-16]                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[arm2_vision_node-16]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 877, in wait_for_ready_callbacks
+[arm2_vision_node-16]     return next(self._cb_iter)
+[arm2_vision_node-16]            ^^^^^^^^^^^^^^^^^^^
+[arm2_vision_node-16]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 757, in _wait_for_ready_callbacks
+[arm2_vision_node-16]     wait_set = _rclpy.WaitSet(
+[arm2_vision_node-16]                ^^^^^^^^^^^^^^^
+[arm2_vision_node-16] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:130
+[arm1_vision_node-15]   File "/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/python3.12/site-packages/vision_pkg/node_common.py", line 303, in spin_node
+[arm1_vision_node-15]     executor.spin()
+[arm1_vision_node-15]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 359, in spin
+[arm1_vision_node-15]     self._spin_once_impl()
+[arm1_vision_node-15]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 991, in _spin_once_impl
+[arm1_vision_node-15]     handler, entity, node = self.wait_for_ready_callbacks(
+[arm1_vision_node-15]                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[arm1_vision_node-15]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 877, in wait_for_ready_callbacks
+[arm1_vision_node-15]     return next(self._cb_iter)
+[arm1_vision_node-15]            ^^^^^^^^^^^^^^^^^^^
+[arm1_vision_node-15]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 757, in _wait_for_ready_callbacks
+[arm1_vision_node-15]     wait_set = _rclpy.WaitSet(
+[arm1_vision_node-15]                ^^^^^^^^^^^^^^^
+[arm1_vision_node-15] rclpy._rclpy_pybind11.RCLError: failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:130
+[move_group_lifetime-5] [INFO] [1794456163.632688834] [move_group.moveit.moveit.ros.moveit_cpp]: Deleting MoveItCpp
+[move_group_lifetime-5] [INFO] [1794456163.646293763] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopped publishing maintained planning scene.
+[move_group_lifetime-5] [INFO] [1794456163.647293210] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping world geometry monitor
+[move_group_lifetime-5] [INFO] [1794456163.647753701] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping planning scene monitor
+[INFO] [static_transform_publisher-11]: process has finished cleanly [pid 7306]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 7297]
+[INFO] [static_transform_publisher-12]: process has finished cleanly [pid 7307]
+[INFO] [static_transform_publisher-10]: process has finished cleanly [pid 7305]
+[INFO] [static_transform_publisher-9]: process has finished cleanly [pid 7304]
+[INFO] [static_transform_publisher-13]: process has finished cleanly [pid 7308]
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 7299]
+[INFO] [move_group_lifetime-5]: process has finished cleanly [pid 7300]
+[INFO] [env_vision_node-14]: process has finished cleanly [pid 7309]
+[ERROR] [arm1_vision_node-15]: process has died [pid 7310, exit code 1, cmd '/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/vision_pkg/arm1_vision_node --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/share/vision_pkg/config/arm1_vision.yaml --params-file /tmp/launch_params_ov05218l'].
+[ERROR] [arm2_vision_node-16]: process has died [pid 7311, exit code 1, cmd '/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/vision_pkg/arm2_vision_node --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/share/vision_pkg/config/arm2_vision.yaml --params-file /tmp/launch_params_ene2kefw'].
+[gazebo-1] [INFO] [1794456164.057317216] [controller_manager.pal_statistics]: Async messages lost 0
+[gazebo-1] [INFO] [1794456164.057396100] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[gazebo-1] [INFO] [1794456164.059219857] [controller_manager.pal_statistics]: Async messages lost 0
+[gazebo-1] [INFO] [1794456164.059256853] [controller_manager.pal_statistics]: publish_async_failures_ 2
+[INFO] [gazebo-1]: process has finished cleanly [pid 7296]

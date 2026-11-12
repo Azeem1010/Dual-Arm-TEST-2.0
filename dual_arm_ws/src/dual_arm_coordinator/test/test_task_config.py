@@ -133,6 +133,15 @@ class Validation(unittest.TestCase):
         doc['zones']['c_slots_xy_m'][1] = copy.copy(doc['zones']['c_slots_xy_m'][0])
         self.assert_refused(doc, 'must be distinct')
 
+    def test_tool_tilt_range(self):
+        doc = sim_doc()
+        doc['motion']['max_tool_tilt_deg'] = 0
+        self.assertEqual(task_config.validate(doc)['motion']['max_tool_tilt_deg'], 0)
+        for value in (-1, 90, True):
+            doc = sim_doc()
+            doc['motion']['max_tool_tilt_deg'] = value
+            self.assert_refused(doc, 'max_tool_tilt_deg must be within')
+
     def test_planning_attempts_must_be_integer(self):
         doc = sim_doc()
         doc['motion']['planning_attempts'] = 1.5

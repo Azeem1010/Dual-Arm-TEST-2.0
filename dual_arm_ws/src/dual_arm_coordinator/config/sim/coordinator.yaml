@@ -29,6 +29,9 @@ heights:
   surface_z_m: 0.014
   cap_height_m: 0.01
   cap_radius_m: 0.01
+  # Suction cup radius (dual_arm_gripper/policy.hpp). A tilted cup's rim is this times
+  # sin(tilt) below its centre, so tilted contact targets are raised by that much.
+  cup_radius_m: 0.009
   contact_z_m: 0.0243
   release_z_m: 0.0253
   approach_z_m: 0.054
@@ -69,6 +72,11 @@ motion:
   # URDF joint velocity limit and joint_limits.yaml acceleration limit.
   max_velocity_rad_s: 0.5
   max_acceleration_rad_s2: 1.0
+  # Suction axis may tilt up to this angle only where straight down has no solution
+  # (slot 8 and cap 8). The real arm reached slot 8 tilted about 9 deg (2026-11-11).
+  # The Gazebo suction plugin accepts 10 deg (dual_arm_gripper/policy.hpp), leaving
+  # 1 deg for tracking error.
+  max_tool_tilt_deg: 9.0
 gripper:
   backend: gazebo
   auto_confirm: true

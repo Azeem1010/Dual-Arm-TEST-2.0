@@ -1,0 +1,23 @@
+$ timeout 5400 python3 scripts/test_transfer_regression.py faults /tmp/regress_faults docs/evidence/tilt_slot8_20261112/sim/regress_faults.json
+manual_run_accepted {'status': 'PASS', 'detail': None}
+confirm_with_wrong_token_refused {'status': 'PASS', 'detail': None}
+grasp_confirmed {'status': 'PASS', 'detail': None}
+used_token_refused {'status': 'PASS', 'detail': None}
+release_reported_failed {'status': 'PASS', 'detail': None}
+release_failure_keeps_tool_unknown_and_b_owner {'status': 'PASS', 'detail': {'message': 'Operator reported suction release failed on arm1: cap stuck', 'holding': {'arm1': 'unknown', 'arm2': 'empty'}, 'b_owner': 'arm1'}}
+fault_leaves_attached_object_in_scene {'status': 'PASS', 'detail': {'world': [], 'attached': ['arm1_carried_cap']}}
+recovery_refused_with_arm_in_b {'status': 'PASS', 'detail': 'arm1 is not at HOME'}
+recovery_accepted_after_home {'status': 'PASS', 'detail': 'Recovered; send a new start'}
+recovery_clears_tool_and_b_owner {'status': 'PASS', 'detail': {'holding': {'arm1': 'empty', 'arm2': 'empty'}, 'b_owner': ''}}
+recovery_clears_attached_object {'status': 'PASS', 'detail': {'world': [], 'attached': []}}
+start_accepted_with_heartbeat {'status': 'PASS', 'detail': None}
+heartbeat_loss_stops_the_task {'status': 'PASS', 'detail': 'Emergency-stop heartbeat is missing or stale'}
+arm_stays_stopped_after_heartbeat_loss {'status': 'PASS', 'detail': {'max_joint_drift_rad': 2.1897212931776266e-08}}
+start_refused_after_heartbeat_loss {'status': 'PASS', 'detail': 'Busy, faulted or full; see /dual_arm/status'}
+recovery_after_heartbeat_returns {'status': 'PASS', 'detail': 'Recovered; send a new start'}
+asserted_estop_latches_and_refuses_start {'status': 'PASS', 'detail': 'Emergency-stop input is latched'}
+holding_run_accepted {'status': 'PASS', 'detail': None}
+cancel_while_holding_accepted {'status': 'PASS', 'detail': None}
+cancel_keeps_holding_state {'status': 'PASS', 'detail': {'arm1': 'held', 'arm2': 'empty'}}
+arm_stays_stopped_while_holding {'status': 'PASS', 'detail': {'max_joint_drift_rad': 1.2115108916077588e-08}}
+PASS

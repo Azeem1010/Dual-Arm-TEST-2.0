@@ -1,0 +1,264 @@
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-12-11-42-45-393387-DESKTOP-HBTEAAO-4248
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [robot_state_publisher-1]: process started with pid [4286]
+[INFO] [ros2_control_node-2]: process started with pid [4287]
+[INFO] [move_group_lifetime-3]: process started with pid [4288]
+[INFO] [spawner-4]: process started with pid [4289]
+[INFO] [spawner-5]: process started with pid [4290]
+[INFO] [spawner-6]: process started with pid [4291]
+[robot_state_publisher-1] [INFO] [1794454967.700694757] [robot_state_publisher]: Robot initialized
+[ros2_control_node-2] [INFO] [1794454968.153832998] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[move_group_lifetime-3] [INFO] [1794454968.409465754] [move_group.moveit.moveit.ros.rdf_loader]: Loaded robot model in 0.108259 seconds
+[move_group_lifetime-3] [INFO] [1794454968.409614640] [move_group.moveit.moveit.core.robot_model]: Loading robot model 'dual_arm'...
+[move_group_lifetime-3] [INFO] [1794454968.409638747] [move_group.moveit.moveit.core.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint
+[ros2_control_node-2] [INFO] [1794454968.497824879] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-2] [INFO] [1794454968.497901464] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-2] [INFO] [1794454968.497907745] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-2] [INFO] [1794454968.497911533] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-2] [WARN] [1794454968.498018158] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-2] [INFO] [1794454968.508565575] [controller_manager]: Received robot description from topic.
+[ros2_control_node-2] [INFO] [1794454968.508809689] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[move_group_lifetime-3] [INFO] [1794454968.533771120] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm1': 1 1 1 1
+[move_group_lifetime-3] [INFO] [1794454968.534292131] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm2': 1 1 1 1
+[ros2_control_node-2] [INFO] [1794454968.629402448] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794454968.637959814] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'mock_components/GenericSystem'
+[ros2_control_node-2] [INFO] [1794454968.638053204] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794454968.647671979] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794454968.647835207] [controller_manager]: Activating component 'DualArmSystem'.
+[ros2_control_node-2] [INFO] [1794454968.647849649] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794454968.647858941] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794454968.647865111] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794454968.647871979] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794454968.647923698] [controller_manager]: Registering statistics for : DualArmSystem
+[ros2_control_node-2] [INFO] [1794454968.647974065] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[move_group_lifetime-3] [INFO] [1794454968.709165662] [move_group.moveit.moveit.ros.moveit_cpp]: Listening to 'joint_states' for joint states
+[move_group_lifetime-3] [INFO] [1794454968.719792642] [move_group.moveit.moveit.ros.current_state_monitor]: Listening to joint states on topic 'joint_states'
+[move_group_lifetime-3] [INFO] [1794454968.769069003] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/attached_collision_object' for attached collision objects
+[move_group_lifetime-3] [INFO] [1794454968.770767551] [move_group.moveit.moveit.ros.planning_scene_monitor]: Publishing maintained planning scene on 'monitored_planning_scene'
+[move_group_lifetime-3] [INFO] [1794454968.770961198] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting planning scene monitor
+[move_group_lifetime-3] [INFO] [1794454968.771530465] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/planning_scene'
+[move_group_lifetime-3] [INFO] [1794454968.771564702] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting world geometry update monitor for collision objects, attached objects, octomap updates.
+[move_group_lifetime-3] [INFO] [1794454968.772115618] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'collision_object'
+[move_group_lifetime-3] [INFO] [1794454968.772678926] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'planning_scene_world' for planning scene world geometry
+[move_group_lifetime-3] [WARN] [1794454968.820581923] [move_group.moveit.moveit.ros.occupancy_map_monitor]: Resolution not specified for Octomap. Assuming resolution = 0.1 instead
+[move_group_lifetime-3] [ERROR] [1794454968.820656780] [move_group.moveit.moveit.ros.occupancy_map_monitor]: No 3D sensor plugin(s) defined for octomap updates
+[move_group_lifetime-3] [INFO] [1794454968.976677893] [move_group.moveit.moveit.ros.planning_pipeline]: Successfully loaded planner 'OMPL'
+[move_group_lifetime-3] [INFO] [1794454969.085202523] [move_group]: Try loading adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794454969.093953935] [move_group]: Loaded adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794454969.093986692] [move_group]: Try loading adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-3] [INFO] [1794454969.094247642] [move_group]: Loaded adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-3] [INFO] [1794454969.094262096] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794454969.094281974] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794454969.094285347] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794454969.094291771] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794454969.205170742] [move_group]: Try loading adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794454969.231652398] [move_group]: Loaded adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794454969.231692306] [move_group]: Try loading adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794454969.243185290] [move_group]: Loaded adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794454969.243222783] [move_group]: Try loading adapter 'default_planning_response_adapters/DisplayMotionPath'
+[move_group_lifetime-3] [INFO] [1794454969.243944763] [move_group]: Loaded adapter 'default_planning_response_adapters/DisplayMotionPath'
+[ros2_control_node-2] [INFO] [1794454969.268789317] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[ros2_control_node-2] [INFO] [1794454969.268855193] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794454969.379860208] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml 
+[move_group_lifetime-3] [INFO] [1794454969.402067279] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm1_controller
+[move_group_lifetime-3] [INFO] [1794454969.405669108] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm2_controller
+[move_group_lifetime-3] [INFO] [1794454969.405819122] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794454969.405842374] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794454969.406403373] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Trajectory execution is not managing controllers
+[move_group_lifetime-3] [INFO] [1794454969.406426686] [move_group]: MoveGroup debug mode is ON
+[spawner-4] [INFO] [1794454969.420446213] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[ros2_control_node-2] [INFO] [1794454969.421858646] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794454969.421964652] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ros2_control_node-2] [INFO] [1794454969.500390070] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[ros2_control_node-2] [INFO] [1794454969.508595576] [controller_manager]: Successfully switched controllers!
+[move_group_lifetime-3] [INFO] [1794454969.514816218] [move_group.moveit.moveit.ros.move_group.executable]: 
+[move_group_lifetime-3] 
+[move_group_lifetime-3] ********************************************************
+[move_group_lifetime-3] * MoveGroup using: 
+[move_group_lifetime-3] *     - apply_planning_scene_service
+[move_group_lifetime-3] *     - clear_octomap_service
+[move_group_lifetime-3] *     - get_group_urdf
+[move_group_lifetime-3] *     - load_geometry_from_file
+[move_group_lifetime-3] *     - CartesianPathService
+[move_group_lifetime-3] *     - execute_trajectory_action
+[move_group_lifetime-3] *     - get_planning_scene_service
+[move_group_lifetime-3] *     - kinematics_service
+[move_group_lifetime-3] *     - move_action
+[move_group_lifetime-3] *     - motion_plan_service
+[move_group_lifetime-3] *     - query_planners_service
+[move_group_lifetime-3] *     - state_validation_service
+[move_group_lifetime-3] *     - save_geometry_to_file
+[move_group_lifetime-3] ********************************************************
+[move_group_lifetime-3] 
+[move_group_lifetime-3] [INFO] [1794454969.514911073] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context using pipeline ompl
+[move_group_lifetime-3] [INFO] [1794454969.514919244] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context initialization complete
+[move_group_lifetime-3] [96mLoading 'move_group/ApplyPlanningSceneService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/ClearOctomapService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/GetUrdfService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/LoadGeometryFromFileService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupCartesianPathService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupExecuteTrajectoryAction'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupGetPlanningSceneService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupKinematicsService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupMoveAction'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupPlanService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupQueryPlannersService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/MoveGroupStateValidationService'...[0m
+[move_group_lifetime-3] [96mLoading 'move_group/SaveGeometryToFileService'...[0m
+[move_group_lifetime-3] 
+[move_group_lifetime-3] [92mYou can start planning now![0m
+[move_group_lifetime-3] 
+[spawner-4] [INFO] [1794454969.519386798] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[INFO] [spawner-4]: process has finished cleanly [pid 4289]
+[ros2_control_node-2] [INFO] [1794454969.912061025] [controller_manager]: Loading controller : 'arm2_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-2] [INFO] [1794454969.912125437] [controller_manager]: Loading controller 'arm2_controller'
+[ros2_control_node-2] [INFO] [1794454969.936857798] [controller_manager]: Controller 'arm2_controller' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml 
+[spawner-6] [INFO] [1794454970.053273303] [spawner_arm2_controller]: Loaded arm2_controller
+[ros2_control_node-2] [INFO] [1794454970.054694426] [controller_manager]: Configuring controller: 'arm2_controller'
+[ros2_control_node-2] [INFO] [1794454970.054841910] [arm2_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-2] [INFO] [1794454970.054880741] [arm2_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-2] [INFO] [1794454970.054906419] [arm2_controller]: Using 'splines' interpolation method.
+[ros2_control_node-2] [INFO] [1794454970.057154920] [arm2_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-2] [INFO] [1794454970.074148292] [arm2_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-2] [INFO] [1794454970.074189335] [arm2_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[ros2_control_node-2] [INFO] [1794454970.080321887] [controller_manager]: Activating controllers: [ arm2_controller ]
+[ros2_control_node-2] [INFO] [1794454970.088850539] [controller_manager]: Successfully switched controllers!
+[spawner-6] [INFO] [1794454970.099834983] [spawner_arm2_controller]: Configured and activated arm2_controller
+[INFO] [spawner-6]: process has finished cleanly [pid 4291]
+[ros2_control_node-2] [INFO] [1794454970.488351972] [controller_manager]: Loading controller : 'arm1_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-2] [INFO] [1794454970.488407854] [controller_manager]: Loading controller 'arm1_controller'
+[ros2_control_node-2] [INFO] [1794454970.488734603] [controller_manager]: Controller 'arm1_controller' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml 
+[spawner-5] [INFO] [1794454970.600792016] [spawner_arm1_controller]: Loaded arm1_controller
+[ros2_control_node-2] [INFO] [1794454970.601947506] [controller_manager]: Configuring controller: 'arm1_controller'
+[ros2_control_node-2] [INFO] [1794454970.602087545] [arm1_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-2] [INFO] [1794454970.602129548] [arm1_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-2] [INFO] [1794454970.602143852] [arm1_controller]: Using 'splines' interpolation method.
+[ros2_control_node-2] [INFO] [1794454970.603700736] [arm1_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-2] [INFO] [1794454970.608942190] [arm1_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-2] [INFO] [1794454970.608970778] [arm1_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[ros2_control_node-2] [INFO] [1794454970.619930927] [controller_manager]: Activating controllers: [ arm1_controller ]
+[ros2_control_node-2] [INFO] [1794454970.628674937] [controller_manager]: Successfully switched controllers!
+[spawner-5] [INFO] [1794454970.639395703] [spawner_arm1_controller]: Configured and activated arm1_controller
+[INFO] [spawner-5]: process has finished cleanly [pid 4290]
+[move_group_lifetime-3] [INFO] [1794455015.268391621] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-3] [INFO] [1794455015.268806886] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-3] [INFO] [1794455015.278817365] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-3] [WARN] [1794455015.278871820] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-3] [INFO] [1794455015.278892543] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-3] [INFO] [1794455015.279109530] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794455015.279171189] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-3] [WARN] [1794455015.279180078] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-3] [INFO] [1794455015.279194488] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794455015.279223890] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794455015.279902267] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-3] [INFO] [1794455015.280079069] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-3] [INFO] [1794455015.294069358] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794455015.295511141] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794455015.295770266] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-3] [WARN] [1794455015.295805620] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-3] [INFO] [1794455015.295891822] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455015.295909349] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455015.295955836] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-3] [INFO] [1794455015.298755872] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-3] [INFO] [1794455015.298810778] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455015.298832053] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455015.298930049] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[ros2_control_node-2] [INFO] [1794455015.299285557] [arm1_controller]: Received new action goal
+[ros2_control_node-2] [INFO] [1794455015.299338618] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-3] [INFO] [1794455015.299523272] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-3] [INFO] [1794455015.299541009] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[ros2_control_node-2] [INFO] [1794455018.278471811] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-3] [INFO] [1794455018.299920996] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-3] [INFO] [1794455018.328745493] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-3] [INFO] [1794455018.328897108] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-3] [INFO] [1794455076.630791962] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-3] [INFO] [1794455076.631061159] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-3] [INFO] [1794455076.638734437] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-3] [WARN] [1794455076.638785573] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-3] [INFO] [1794455076.638798506] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-3] [INFO] [1794455076.638894280] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794455076.638939357] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-3] [WARN] [1794455076.638947565] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-3] [INFO] [1794455076.638970456] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794455076.638980594] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794455076.639230839] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm1' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-3] [INFO] [1794455076.639274503] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-3] [INFO] [1794455076.652627612] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794455076.653130201] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794455076.653286025] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-3] [WARN] [1794455076.653313303] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-3] [INFO] [1794455076.653413465] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455076.653431780] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455076.653483453] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-3] [INFO] [1794455076.658894185] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-3] [INFO] [1794455076.658954682] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455076.658980021] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455076.659068791] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm1_controller
+[ros2_control_node-2] [INFO] [1794455076.659331989] [arm1_controller]: Received new action goal
+[ros2_control_node-2] [INFO] [1794455076.659395739] [arm1_controller]: Accepted new action goal
+[move_group_lifetime-3] [INFO] [1794455076.659637065] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm1_controller started execution
+[move_group_lifetime-3] [INFO] [1794455076.659648775] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[ros2_control_node-2] [INFO] [1794455078.348456332] [arm1_controller]: Goal reached, success!
+[move_group_lifetime-3] [INFO] [1794455078.360015289] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm1_controller' successfully finished
+[move_group_lifetime-3] [INFO] [1794455078.388715919] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-3] [INFO] [1794455078.389006234] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-3] [INFO] [1794455078.535518792] [move_group.moveit.moveit.ros.move_group.move_action]: MoveGroupMoveAction: Received request
+[move_group_lifetime-3] [INFO] [1794455078.535767866] [move_group.moveit.moveit.ros.move_group.move_action]: executing..
+[move_group_lifetime-3] [INFO] [1794455078.538741358] [move_group.moveit.moveit.ros.move_group.move_action]: Combined planning and execution request received for MoveGroup action. Forwarding to planning and execution pipeline.
+[move_group_lifetime-3] [WARN] [1794455078.538787474] [move_group.moveit.moveit.ros.move_group.capability]: Execution of motions should always start at the robot's current state. Ignoring the state supplied as difference in the planning scene diff
+[move_group_lifetime-3] [INFO] [1794455078.538798579] [move_group.moveit.moveit.ros.plan_execution]: Planning attempt 1 of at most 1
+[move_group_lifetime-3] [INFO] [1794455078.538919233] [move_group]: Calling PlanningRequestAdapter 'ResolveConstraintFrames'
+[move_group_lifetime-3] [INFO] [1794455078.538938447] [move_group]: Calling PlanningRequestAdapter 'ValidateWorkspaceBounds'
+[move_group_lifetime-3] [WARN] [1794455078.538941942] [move_group.moveit.moveit.ros.validate_workspace_bounds]: It looks like the planning volume was not specified. Using default values.
+[move_group_lifetime-3] [INFO] [1794455078.538951109] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateBounds'
+[move_group_lifetime-3] [INFO] [1794455078.538960596] [move_group]: Calling PlanningRequestAdapter 'CheckStartStateCollision'
+[move_group_lifetime-3] [INFO] [1794455078.539164056] [move_group.moveit.moveit.planners.ompl.model_based_planning_context]: Planner configuration 'arm2' will use planner 'geometric::RRTConnect'. Additional configuration parameters will be set when the planner is constructed.
+[move_group_lifetime-3] [INFO] [1794455078.539286424] [move_group]: Calling Planner 'OMPL'
+[move_group_lifetime-3] [INFO] [1794455078.543602115] [move_group]: Calling PlanningResponseAdapter 'AddTimeOptimalParameterization'
+[move_group_lifetime-3] [INFO] [1794455078.546051725] [move_group]: Calling PlanningResponseAdapter 'ValidateSolution'
+[move_group_lifetime-3] [INFO] [1794455078.546594768] [move_group]: Calling PlanningResponseAdapter 'DisplayMotionPath'
+[move_group_lifetime-3] [WARN] [1794455078.546668456] [move_group.moveit.moveit.ros.planning_pipeline]: The planner plugin did not fill out the 'planner_id' field of the MotionPlanResponse. Setting it to the planner ID name of the MotionPlanRequest assuming that the planner plugin does warn you if it does not use the requested planner.
+[move_group_lifetime-3] [INFO] [1794455078.546779544] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455078.546801663] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455078.546855659] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Validating trajectory with allowed_start_tolerance 0.01
+[move_group_lifetime-3] [INFO] [1794455078.548839914] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Starting trajectory execution ...
+[move_group_lifetime-3] [INFO] [1794455078.548915800] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455078.548944930] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-3] [INFO] [1794455078.549039020] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: sending trajectory to arm2_controller
+[ros2_control_node-2] [INFO] [1794455078.549443299] [arm2_controller]: Received new action goal
+[ros2_control_node-2] [INFO] [1794455078.549487708] [arm2_controller]: Accepted new action goal
+[move_group_lifetime-3] [INFO] [1794455078.549791860] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: arm2_controller started execution
+[move_group_lifetime-3] [INFO] [1794455078.549803654] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Goal request accepted!
+[ros2_control_node-2] [INFO] [1794455082.258439655] [arm2_controller]: Goal reached, success!
+[move_group_lifetime-3] [INFO] [1794455082.299977537] [moveit.simple_controller_manager.follow_joint_trajectory_controller_handle]: Controller 'arm2_controller' successfully finished
+[move_group_lifetime-3] [INFO] [1794455082.328730810] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Completed trajectory execution with status SUCCEEDED ...
+[move_group_lifetime-3] [INFO] [1794455082.328985821] [move_group.moveit.moveit.ros.move_group.move_action]: Solution was found and executed.
+[move_group_lifetime-3] [INFO] [1794455089.574140792] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-2] [INFO] [1794455089.574165361] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-2] [INFO] [1794455089.574234378] [controller_manager]: Shutdown request received....
+[robot_state_publisher-1] [INFO] [1794455089.574163138] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-2] [INFO] [1794455089.574295331] [controller_manager]: Shutting down all controllers in the controller manager.
+[ros2_control_node-2] [INFO] [1794455089.574323483] [controller_manager]: Deactivating controller 'arm2_controller'
+[ros2_control_node-2] [INFO] [1794455089.574361266] [controller_manager]: Shutting down controller 'arm2_controller'
+[ros2_control_node-2] [INFO] [1794455089.574449260] [controller_manager]: Deactivating controller 'arm1_controller'
+[ros2_control_node-2] [INFO] [1794455089.574468752] [controller_manager]: Shutting down controller 'arm1_controller'
+[ros2_control_node-2] [INFO] [1794455089.574495894] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794455089.574511435] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ros2_control_node-2] [INFO] [1794455089.574534990] [resource_manager]: 'deactivate' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794455089.574554098] [resource_manager]: Successful 'deactivate' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794455089.574557989] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
+[ros2_control_node-2] [INFO] [1794455089.574561253] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
+[ros2_control_node-2] [INFO] [1794455089.574594265] [controller_manager]: Shutting down the controller manager.
+[ros2_control_node-2] [ERROR] [1794455089.574696901] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-2] [ERROR] [1794455089.574696816] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-2] [INFO] [1794455089.578714706] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-2] [INFO] [1794455089.578728509] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[ros2_control_node-2] [INFO] [1794455089.580671133] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-2] [INFO] [1794455089.580677964] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[move_group_lifetime-3] [INFO] [1794455089.594596100] [move_group.moveit.moveit.ros.moveit_cpp]: Deleting MoveItCpp
+[move_group_lifetime-3] [INFO] [1794455089.609372221] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopped publishing maintained planning scene.
+[move_group_lifetime-3] [INFO] [1794455089.610313601] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping world geometry monitor
+[move_group_lifetime-3] [INFO] [1794455089.610722765] [move_group.moveit.moveit.ros.planning_scene_monitor]: Stopping planning scene monitor
+[INFO] [robot_state_publisher-1]: process has finished cleanly [pid 4286]
+[INFO] [ros2_control_node-2]: process has finished cleanly [pid 4287]
+[INFO] [move_group_lifetime-3]: process has finished cleanly [pid 4288]

@@ -1,0 +1,6 @@
+$ timeout 5400 python3 scripts/test_transfer_regression.py batch /tmp/regress_batch docs/evidence/tilt_slot8_20261112/sim/regress_batch.json
+from_empty_start_accepted {'status': 'PASS', 'detail': None}
+observation eight_objects_from_empty_c {'status': 'FAIL', 'state': 'FAULT', 'message': "arm2 target (0.17, -0.055, 0.0253): state is invalid ['arm2_cad_link_2/arm2_base_link']", 'completed': 7, 'ground_truth_slots': [True, True, True, True, True, True, True, False]}
+seven_objects_then_slot_8_stops_the_run {'status': 'FAIL', 'detail': "arm2 target (0.17, -0.055, 0.0253): state is invalid ['arm2_cad_link_2/arm2_base_link']"}
+ground_truth_has_caps_in_slots_1_to_7 {'status': 'PASS', 'detail': [True, True, True, True, True, True, True, False]}
+FAIL

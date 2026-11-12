@@ -63,7 +63,8 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 | 介面指令的送出、接受與結果 | `test_live_source`、介面任務控制 | `PASS`（模擬）；實機只接通強制停止 |
 | 序列逾時不重送 | `test_link`、`test_scheduler` | `PASS` |
 | 兩物體搬運 | 回歸 `two` | `PASS` |
-| 八物體搬運 | 回歸 `batch` | `FAIL`（放完 7 件，格位 8 吸盤朝下不可達，C30）；測試本身預期這個結果並判 `PASS` |
+| 八物體搬運 | 回歸 `batch` | `PASS`（模擬；格位 8 用傾斜吸盤，C30） |
+| 節點對接 | `scripts/audit_ros_graph.py --with-hmi --expect scripts/audit_expect_sim.json`，在 `hmi_sim` 上執行 | `PASS`（evidence/system_audit_20261112/）；mock 與實機模式 `NOT_RUN` |
 | 視覺判斷區域與格位 | — | `BLOCKED`（模擬相機遮擋，C31、D7） |
 | 搬運時間減少 50% | WP6S | `FAIL`（−48.6%） |
 | 完整工作站碰撞 | — | `BLOCKED`（WP11） |
@@ -95,7 +96,7 @@ Gazebo 只有約 0.2 倍實時，逾時以真實時間計算的設定要考慮�
 | `t1` | 產生模型與場景、`test_cad_pose.py`、`build.sh`（含 `validate_model.py`）、HOME、IK、可達性、coordinator／HMI／vision 單元測試、HOME 碰撞 | 約 5 分鐘 |
 | `t2` | 冒煙測試、模擬影像與座標驗證、回歸 `two`、舊 pipeline 兩物體、運動 gateway／操作工具／安全監控（mock）、視覺取料一次、README 截圖 | 約 40 分鐘 |
 
-`t2` **不含**回歸 `faults`、`batch`、視覺取料連續 3 次與 CM-530 的 gtest／Mock Serial／sanitizer；上表要求這些時要另外跑。所有層都會跑完每一步，再以退出碼 1 表示有失敗；已知失敗也算失敗，由紀錄說明原因。修正後只重跑失敗的步驟時，用環境變數 `STEPS` 列出步驟名稱（`vision_pick` 要連同 `generate_sim_vision_calibration`、`probe_sim_vision`），結果放到新的 `OUT_DIR`，原來那次的紀錄保留不動。
+`t2` **不含**回歸 `faults`、`batch`、視覺取料連續 3 次與 CM-530 的 gtest／Mock Serial／sanitizer；上表要求這些時要另外跑。所有層都會跑完每一步，再以退出碼 1 表示有失敗；已知失敗也算失敗，由紀錄說明原因。修正後只重跑失敗的步驟時，用環境變數 `STEPS` 列出步驟名稱（`vision_pick` 要連同 `generate_sim_vision_calibration`、`probe_sim_vision`），結果放到新的 `OUT_DIR`，原來那次的紀錄保留不動。`t2` 開始前若已有 Gazebo、MoveIt、coordinator、安全監控、視覺節點或 static TF 在執行，步驟記為 `BLOCKED`；結束時還有殘留也判 `FAIL`。手動中止測試後，要連 coordinator 等節點一起結束。
 
 ## 5. 可靠度的計法
 

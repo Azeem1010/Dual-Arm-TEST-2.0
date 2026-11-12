@@ -172,4 +172,6 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | 7 | 相機 static TF 只在 `sim.launch.py` 發布 | 實機沒有相機 TF |
 | 8 | `demo_pick_place.launch.py` 不含視覺節點；`calibration.launch.py` 只有狀態監看 | 含視覺的流程目前由測試腳本分開啟動 |
 | 9 | `calibration.launch.py` 的 `use_sim_time` 預設 `true`，實機模式需明確設為 `false` | 否則節點等不到 `/clock` |
+| 11 | 2026-11-12：coordinator 剛重啟時，測試在看到第一筆 `/dual_arm/status` 後立刻呼叫 `/dual_arm/recover`，coordinator 有處理，但日誌出現 `failed to send response (timeout)`，回覆沒送到（DDS 尚未配對回覆通道；evidence/phase_c_20261111/extra/）。重跑通過 | 新啟動的節點，第一次服務呼叫可能收不到回覆。操作介面是人按按鈕，通常隔了數秒，影響小；測試腳本尚未加等待，偶發失敗時要看 coordinator 日誌再判斷 |
+| 12 | 2026-11-12：停止測試時留下的 coordinator 仍在同一 domain 回應服務，下一輪測試拿到舊狀態 | `run_checks.sh` 啟動前會把 coordinator、安全監控、視覺節點都列入「已在執行」檢查，結束時有殘留就判 `FAIL`；手動停止時要連這些節點一起結束 |
 | 10 | 2026-11-09 擷取時 `arm1_controller` spawner 的第一次 switch 呼叫 10 秒逾時，重試時 controller 已切換，spawner 以 exit 1 結束，controller 實際為 active | launch log 出現 `process has died`，可能誤判；啟動後要以 `list_controllers` 為準 |

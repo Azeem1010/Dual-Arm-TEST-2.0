@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "scope": "Coordinator node in Gazebo with ground truth; no cameras, no hardware",
+  "checks": {
+    "manual_run_accepted": {
+      "status": "FAIL",
+      "detail": null
+    }
+  },
+  "observations": {},
+  "group": "faults",
+  "error": "Timed out waiting for grasp confirmation request; last status {'active_arm': 'arm2', 'at_home': {'arm1': False, 'arm2': False}, 'b_owner': 'arm2', 'busy': False, 'completed': 0, 'config_fingerprint': '5ca8ca8b6f0f4cc6b8574833f14189d9db9d65e279b626fadf923858db978b8d', 'cycle_id': '63b21e47ce624495ad0215f6711d0ea7', 'holding': {'arm1': 'empty', 'arm2': 'held'}, 'message': 'arm2 to (0.0, 0.0, 0.054) timed out', 'occupied': [False, False, False, False, False, False, False, False], 'recovery_token': '11c61e943cee4527b9cbe8c8c0daa032', 'slot': 1, 'state': 'FAULT', 'suction_step': '', 'suction_token': ''}\nTraceback (most recent call last):\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 208, in main\n    {'two': harness.two_objects, 'batch': harness.batch, 'faults': harness.faults}[group]()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 197, in faults\n    self.release_failure()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_transfer_regression.py\", line 114, in release_failure\n    status = self.wait_status(lambda s: s['suction_step'] == 'arm1:grasp', 300, 'grasp confirmation request')\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_coordinator_sim.py\", line 117, in wait_status\n    raise RuntimeError(f'Timed out waiting for {label}; last status {self.latest()}')\nRuntimeError: Timed out waiting for grasp confirmation request; last status {'active_arm': 'arm2', 'at_home': {'arm1': False, 'arm2': False}, 'b_owner': 'arm2', 'busy': False, 'completed': 0, 'config_fingerprint': '5ca8ca8b6f0f4cc6b8574833f14189d9db9d65e279b626fadf923858db978b8d', 'cycle_id': '63b21e47ce624495ad0215f6711d0ea7', 'holding': {'arm1': 'empty', 'arm2': 'held'}, 'message': 'arm2 to (0.0, 0.0, 0.054) timed out', 'occupied': [False, False, False, False, False, False, False, False], 'recovery_token': '11c61e943cee4527b9cbe8c8c0daa032', 'slot': 1, 'state': 'FAULT', 'suction_step': '', 'suction_token': ''}\n"
+}

@@ -1,0 +1,20 @@
+$ env PYTHONPATH=/mnt/e/dual_arm_system/dual_arm_ws/scripts:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_vision_adapter/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_hmi/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/vision_pkg/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_coordinator/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/vision_interfaces/lib/python3.12/site-packages:/mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_interfaces/lib/python3.12/site-packages:/opt/ros/jazzy/opt/gz_sim_vendor/lib/python:/opt/ros/jazzy/opt/sdformat_vendor/lib/python:/opt/ros/jazzy/opt/gz_transport_vendor/lib/python:/opt/ros/jazzy/opt/gz_msgs_vendor/lib/python:/opt/ros/jazzy/opt/gz_math_vendor/lib/python:/opt/ros/jazzy/lib/python3.12/site-packages timeout 2400 python3 scripts/test_vision_pick_sim.py /tmp/dual_arm_checks_3262/pick docs/evidence/tilt_slot8_20261112/final_t2/vision_pick.json /tmp/dual_arm_checks_3262/calib docs/evidence/tilt_slot8_20261112/final_t2/probe_sim_vision.json sim-fixed-overhead-camera
+observation calibration_status_without_record ['["[Errno 2] No such file or directory: \'/tmp/dual_arm_checks_3262/calib/arm1_camera.yaml\'"]']
+start_accepted {'status': 'PASS', 'detail': None}
+missing_calibration_stops_before_touching_an_object {'status': 'PASS', 'detail': 'Pick target invalid: Calibration for arm1 is not valid: ["[Errno 2] No such file or directory: \'/tmp/dual_arm_checks_3262/calib/arm1_camera.yaml\'"]'}
+no_object_moved {'status': 'PASS', 'detail': None}
+observation calibration_record arm1: measured 0.00221 m, budget 0.00100 m, status FAIL
+arm1 calibration did not become True: (False, ['["Calibration not validated", "workspace_error_m outside validated allowance", "reprojection_error_px outside validated allowance"]'])
+Traceback (most recent call last):
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_vision_pick_sim.py", line 132, in main
+    harness.run_all()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_vision_pick_sim.py", line 124, in run_all
+    self.write_record()
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_vision_pick_sim.py", line 90, in write_record
+    state = self.wait_calibration(True, 60)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_vision_pick_sim.py", line 70, in wait_calibration
+    raise RuntimeError(f'arm1 calibration did not become {passed}: {self.calibration.get("arm1")}')
+RuntimeError: arm1 calibration did not become True: (False, ['["Calibration not validated", "workspace_error_m outside validated allowance", "reprojection_error_px outside validated allowance"]'])
+
+FAIL

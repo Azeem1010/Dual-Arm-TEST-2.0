@@ -1,8 +1,17 @@
-# Development status — 2026-11-11
+# Development status — 2026-11-12
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: phase C, measured field geometry and slot numbering
+## Latest result: slot 8 with a tilted cup; system audit; Orin update steps
+
+- User decisions (2026-11-12): relax "cup straight down" so the simulation fills all 8 slots; raise tilted contact targets; move the simulated cap_8; axis offset 5 mm; leave the simulated cameras (D7).
+- IK tries straight down first; otherwise it allows a tilt up to `motion.max_tool_tilt_deg` (simulation 9°, the real slot-8 teach was about 8.7°) and takes the solution nearest the current joints. The smallest-tilt solution leans the shoulder into the base in MoveIt; the chosen branch is the one the real arm used. The motion gateway raises tilted contact targets by the cup rim (empty) or the held cap rim plus the pick lift (holding). The Gazebo suction plugin accepts 10° and 2 mm vertical. New hardware fields `heights.cup_radius_m` and `motion.max_tool_tilt_deg` are null until measured.
+- Simulated cap_8 starts at (-0.24, 0.05): its slot-mirror position needs a tilted pick, and a cap picked tilted shifted about 1 mm when put down at B. Arm axes, C slots and cap starts now come from `scripts/field_layout.py` (was six copies).
+- PASS: t1 (IK 18/18), coordinator 293, HMI 293, vision 100, gripper gtest, batch fills all 8 slots, faults, two, motion gateway, operator tools, vision pick (0.70 mm). evidence/tilt_slot8_20261112/.
+- System audit (evidence/system_audit_20261112/): live graph of `hmi_sim` with the operator UI nodes has no type, QoS or missing-server problem; 10 subscriptions without a publisher are optional by design. `run_checks.sh` now blocks on and fails for leftover coordinator, safety, vision and TF processes; a stale coordinator had invalidated one run. Known: a service reply right after a coordinator restart can be lost (ROS_INTERFACES gap 11).
+- Orin: the `orin-source` branch of Azeem1010/Dual-Arm-TEST-2.0 has the same tree as `3fd258c` (no local code changes). ORIN_DEPLOYMENT "從舊版更新" gives the pull steps; the imported field records exist on the Orin as untracked files and must be moved aside first.
+
+## Earlier result: phase C, measured field geometry and slot numbering
 
 - Simulation now follows the 2026-11-11 measurements: board 600 × 240 mm, j1 axes at world (±0.10, 0.125) about 5 mm outside the arm-side edge, C slots numbered as on the real board (1 and 2 nearest the arms, odd column next to B at x 0.135, even at 0.170; rows y 0.050 / 0.015 / -0.020 / -0.055), cap starts at the mirrored slots, B place point (0, 0). `prefilled_slots` defaults to 0; the HMI slot grid puts slot 1 top-left; `vision_pkg` gained `slot_one_corner` (`top_left` in the hardware arm2 config). Details and run history: evidence/phase_c_20261111/README.md.
 - Simulated arm cameras moved from x ±0.20 to ±0.15, over the cap and slot groups: arm1 calibration error 1.15 mm → 0.70 mm (budget 1 mm, not widened). The camera static TF in `sim.launch.py` still had the old left/right order and was corrected.
@@ -31,7 +40,7 @@ Current status by work package is in MODIFICATION_PLAN.md section 6. Each sectio
 - Facts that match the simulation: arm2 j1 is +1 like arm1; j1 facing the field is about 193 (arm1) and 519 (arm2), against simulation 192.3 and 512; both arms' j2 rises when leaning toward the user (+1). An offline FK check of the arm2 C-slot teach READs with the simulation mapping agrees with the tape-measured slot radii within about 3 mm (evidence/hardware/20261111_fk_crosscheck/). No simulation numbers were changed; these are H1 approximations, not calibration.
 - Facts that do not match and go to phase C (WP11): board short side 240 mm (model 300), axes about 5 mm outside the arm-side edge (model 63 mm inside), C slots 1 and 2 nearest the arms with the odd column next to B (model: rotated 180°, columns swapped).
 - Docs updated: MODIFICATION_PLAN D0, D1, D3 and WP11; COORDINATE_FRAMES; HOME_POSES (the "+Y at raw 512" question is resolved: it is `arm1_base` +Y); `runtime.json` note text only.
-- Open for the owner: D6 thresholds, H3 authorisation, by-path for the two arm cameras that have no serial number (adopted upstream in 64f28a0), axis offset 5 or 15 mm.
+- Open for the owner: D6 thresholds, H3 authorisation, by-path for the two arm cameras that have no serial number (adopted upstream in 64f28a0), axis offset 5 or 15 mm (5 mm chosen 2026-11-12).
 
 ## Earlier result: operator UI screenshots in the READMEs; stale saved zones found
 
