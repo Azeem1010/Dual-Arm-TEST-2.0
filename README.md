@@ -88,7 +88,8 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    CAM[三相機 OpenCV] -.模擬只接取料點，實機未校正.-> TASK[dual_arm_coordinator]
+    CAM[環境相機 env_scene] -.實機決策 A/B/C；模擬只接取料點.-> TASK[dual_arm_coordinator]
+    ARMCAM[手臂鏡頭 ×2] -.只監控，輪流開.-> HMI[操作介面]
     TASK --> MOVEIT[MoveIt 2 雙臂規劃]
     MOVEIT --> RC[ros2_control]
     TASK --> GRIP[吸盤]

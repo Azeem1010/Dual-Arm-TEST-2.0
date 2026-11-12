@@ -204,7 +204,7 @@ src/dual_arm_hmi/
 | Mock | `mock.launch.py rviz:=false` | 否，沒有任務節點 |
 | 模擬 | `hmi_sim.launch.py`：模擬、視覺、校正狀態、coordinator、`safety_supervisor` | 可以 |
 | Mock Serial | `hardware.launch.py use_mock_serial:=true` | 否，用來測啟動步驟 |
-| 實機唯讀 | `hardware.launch.py` 加 `vision.launch.py`、`calibration.launch.py mode:=hardware` | 否 |
+| 實機唯讀 | `hardware.launch.py` 加 `vision_hardware.launch.py`（環境相機決策、手臂鏡頭輪流監控，2026-11-12） | 否 |
 | 實機動作 | 同上加 `enable_motion:=true`，選實測的 controllers 檔 | `BLOCKED`（沒有 coordinator，介面只接通強制停止） |
 
 - `safety_supervisor` 在模擬要設 `require_estop:=false`，否則沒有心跳會一直鎖定。

@@ -83,7 +83,7 @@ diff -r --strip-trailing-cr "$B/moved/dual_arm_ws/docs/evidence" dual_arm_ws/doc
 - 出現「HEAD 有專案沒有的修改」就停下來，不要 reset。
 - 三個檔名以 `.` 結尾的 CSV 在 repo 裡改名去掉了句點（Windows 不允許），Orin 上的原檔不會被覆寫，留著即可。
 - 系統套件與 11-11 相同，不必重跑 `install_jazzy.sh`；直接 `bash scripts/build.sh`，再跑 HANDOFF 第一步的離線測試。
-- Orin 另有獨立的 `~/vision_ws`（上游 4a40f30）。本專案的 `src/vision_pkg` 已是上游 `64f28a0`（三顆相機的 by-path、arm2 YUYV），並多了 `slot_one_corner: top_left`（實物格位編號）。兩邊不要同時跑，實機請用本專案的 `vision.launch.py`。
+- Orin 另有獨立的 `~/vision_ws`（上游 4a40f30）。本專案的 `src/vision_pkg` 已是上游 `64f28a0`（三顆相機的 by-path、arm2 YUYV），並多了 `slot_one_corner: top_left`（實物格位編號）。兩邊不要同時跑，實機請用本專案的 `vision_hardware.launch.py`（2026-11-12 起手臂鏡頭輪流，見 HARDWARE_TEST_GUIDE V1）。
 - 更新後的變化：模擬場地改為實測尺寸與格位編號（階段 C）、格位 8 改用傾斜吸盤（模擬最多 9°）。實機 `config/hardware/coordinator.yaml` 多了 `heights.cup_radius_m` 與 `motion.max_tool_tilt_deg` 兩個空白欄位，要現場量測後才能填，不可抄模擬值。
 
 ### 安裝失敗時（2026-11-10 Orin 實際遇到）

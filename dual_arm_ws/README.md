@@ -348,8 +348,9 @@ dual_arm_system/
 | `dual_arm_coordinator` | 搬運任務節點、工作流程、安全監控、操作工具 |
 | `dual_arm_interfaces` | 操作用的服務定義 |
 | `dual_arm_gripper` | Gazebo 吸盤（ESP32 後端在 coordinator 的 gripper gateway） |
-| `vision_pkg`、`vision_interfaces` | 三相機視覺 |
-| `dual_arm_vision_adapter` | 校正有效性狀態發布 |
+| `vision_pkg`、`vision_interfaces` | 三相機視覺（模擬；實機手臂鏡頭只監控） |
+| `env_scene`、`env_scene_interfaces` | 環境相機 A/B/C 判斷（上游 env_camera_vision，暫用 6b059eb） |
+| `dual_arm_vision_adapter` | 校正有效性狀態、手臂鏡頭輪流切換、env_scene 顯示橋接 |
 | `cm530_hardware` | CM-530 實機驅動 |
 | `dual_arm_hmi` | 操作介面（PyQt5） |
 

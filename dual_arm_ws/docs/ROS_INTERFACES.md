@@ -27,6 +27,9 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `arm1_vision_node` | `vision_pkg` | `/vision/arm1/pick_target`、`/vision/arm1/detections` | `/arm1_cam/image_raw` | `/vision/arm1/get_pick_target` |
 | `arm2_vision_node` | `vision_pkg` | `/vision/arm2/grid_state` | `/arm2_cam/image_raw` | `/vision/arm2/get_grid_state`、`/vision/arm2/verify_place` |
 | `calibration_status` | `dual_arm_vision_adapter` | `/vision/calibration_status` | 三支相機 `image_raw` | 無 |
+| `env_scene_node` | `env_scene`（上游 env_camera_vision，實機） | 無（結果只走 service） | `/env_cam/image_raw` | `/vision/env_scene/get_scene`、`/vision/env_scene/calibrate` |
+| `env_scene_bridge` | `dual_arm_vision_adapter`（實機，顯示用） | `/vision/env/zone_state`、`/vision/calibration_status`（只有 `env`） | `/dual_arm/status` | Client：`/vision/env_scene/get_scene` |
+| `arm_camera_switch` | `dual_arm_vision_adapter`（實機） | `/vision/arm_cameras/state`（JSON 字串，transient_local） | `/dual_arm/status` | 無；以子程序啟動／結束手臂鏡頭的 `vision.launch.py`，同時最多一顆 |
 | `ros_gz_bridge` | `ros_gz_bridge` + [bridge.yaml](../src/dual_arm_gazebo/config/bridge.yaml) | 相機影像與 `camera_info`、`/clock`、`/gripper/armN/state`、`/ground_truth/*`、`/gazebo/ground_truth` | `/gripper/armN/command` | 無 |
 | `robot_state_publisher` | ROS | `/robot_description`、`/tf`、`/tf_static` | `/joint_states` | 無 |
 | `static_transform_publisher` × 3 | `sim.launch.py` | `/tf_static`：`world` → `{env,arm1,arm2}_camera_optical_frame` | 無 | 無 |
@@ -93,6 +96,8 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `/vision/env/capture_ranking` | `vision_interfaces/srv/CaptureRanking` | 無 | `success, message, count, low_confidence`（固定 false） |
 | `/vision/env/get_rank` | `vision_interfaces/srv/GetRank` | `x_mm, y_mm, peek_only` | `success, message, rank, distance_mm`（固定 0） |
 | `/vision/env/clear_taken` | `std_srvs/srv/Trigger` | 無 | `success, message` |
+| `/vision/env_scene/get_scene` | `env_scene_interfaces/srv/GetEnvScene` | 無 | `success, message, scene`（A/B 瓶蓋 world mm 與手臂座標、C 區 8 格佔用、標定有效旗標） |
+| `/vision/env_scene/calibrate` | `std_srvs/srv/Trigger` | 無（C 格旁不可有瓶蓋） | `success, message` |
 
 這些 response 都沒有影像時間戳，單憑回應不足以授權動作（見 [ARCHITECTURE.md](ARCHITECTURE.md)）。
 
@@ -157,7 +162,8 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `hmi_sim.launch.py` | `demo_pick_place.launch.py` + 三個視覺節點（發布標註影像）+ `calibration_status` + `safety_supervisor`（`require_estop:=false`） | 急停心跳 |
 | `hardware.launch.py`（預設） | RSP、`ros2_control_node`、`joint_state_broadcaster`，唯讀 | arm controller、`move_group`、相機、吸盤 |
 | `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group`；非 Mock 時加 `safety_supervisor`。`controllers_file` 的容差必須是實測值 | 相機、吸盤、相機 TF |
-| `vision.launch.py` | `usb_cam` × 3、視覺節點 × 3，需要時加 `image_rotate_node` | 手臂與 MoveIt |
+| `vision.launch.py` | 環境相機與 `arm_camera:=arm1` 或 `arm2` 指定的最多一顆手臂鏡頭（預設 none）、對應的視覺節點（`vision_nodes:=false` 可省略），需要時加 `image_rotate_node` | 手臂與 MoveIt；兩顆手臂鏡頭同時 |
+| `vision_hardware.launch.py` | 環境相機、`env_scene_node`、`env_scene_bridge`、`arm_camera_switch`（手臂鏡頭輪流） | 手臂視覺節點、`calibration_status`、直接啟動的手臂鏡頭 |
 
 ## 已知缺口
 

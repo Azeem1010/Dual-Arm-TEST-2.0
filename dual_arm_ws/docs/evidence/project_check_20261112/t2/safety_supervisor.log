@@ -1,0 +1,38 @@
+$ timeout 900 python3 scripts/test_safety_supervisor.py /tmp/dual_arm_checks_11585/safety_supervisor docs/evidence/project_check_20261112/t2/safety_supervisor.json
+observation status_at_startup {'latched': True, 'reason': 'Emergency-stop heartbeat has not been received', 'controllers_stopped': False}
+startup_reset_after_inputs_arrive {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+controllers_active_when_healthy {'status': 'PASS', 'detail': {'arm2_controller': 'active', 'arm1_controller': 'active'}}
+motion_allowed_when_healthy {'status': 'PASS', 'detail': None}
+heartbeat_loss_latches {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Emergency-stop heartbeat is stale', 'controllers_stopped': True}}
+observation heartbeat_seconds_until_controllers_stopped 2.0611615649995656
+observation heartbeat_seconds_until_arm_stopped 2.0673607099997753
+heartbeat_controllers_inactive {'status': 'PASS', 'detail': {'arm2_controller': 'inactive', 'arm1_controller': 'inactive'}}
+heartbeat_move_reported_failure {'status': 'PASS', 'detail': 'arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4'}
+heartbeat_interrupted_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16302126957585522, -0.005899997596663936, 0.11927356818603073], 'tool_tilt_deg': 9.71979735499688}}
+motion_refused_while_latched {'status': 'PASS', 'detail': 'arm1 home failed: status 6, MoveIt code -4'}
+reset_refused_without_heartbeat {'status': 'PASS', 'detail': 'Emergency-stop heartbeat is stale'}
+still_latched_after_refused_reset {'status': 'PASS', 'detail': None}
+latch_survives_heartbeat_return {'status': 'PASS', 'detail': None}
+controllers_stay_inactive_until_reset {'status': 'PASS', 'detail': None}
+manual_activation_is_accepted_by_controller_manager {'status': 'PASS', 'detail': None}
+observation manual_activation_seconds_until_stopped 0.3727303719988413
+manual_activation_is_stopped_again {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Emergency-stop heartbeat is stale', 'controllers_stopped': True}}
+controllers_still_inactive_after_manual_activation {'status': 'PASS', 'detail': {'arm2_controller': 'inactive', 'arm1_controller': 'inactive'}}
+reset_accepted_2_15 {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+coordinator_death_latches {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Coordinator stopped responding', 'controllers_stopped': True}}
+observation coordinator_seconds_until_arm_stopped 1.1955549100002827
+coordinator_controllers_inactive {'status': 'PASS', 'detail': {'arm2_controller': 'inactive', 'arm1_controller': 'inactive'}}
+coordinator_move_reported_failure {'status': 'PASS', 'detail': 'arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4'}
+coordinator_interrupted_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16491388629209777, 0.0007050906494080415, 0.12895587957368013], 'tool_tilt_deg': 11.335894563091717}}
+arm_stops_soon_after_coordinator_death {'status': 'PASS', 'detail': {'seconds': 1.1955549100002827, 'before_wp9_seconds': 22.2}}
+reset_refused_while_coordinator_is_dead {'status': 'PASS', 'detail': 'Coordinator stopped responding'}
+reset_accepted_3_22 {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+asserted_estop_latches {'status': 'PASS', 'detail': {'latched': True, 'reason': 'Emergency stop is asserted', 'controllers_stopped': True}}
+observation estop_seconds_until_arm_stopped 0.21594504100175982
+estop_controllers_inactive {'status': 'PASS', 'detail': {'arm2_controller': 'inactive', 'arm1_controller': 'inactive'}}
+estop_move_reported_failure {'status': 'PASS', 'detail': 'arm1 to (-0.14, -0.03, 0.054) failed: status 6, MoveIt code -4'}
+estop_interrupted_before_target {'status': 'PASS', 'detail': {'tcp_m': [-0.16617439749944543, 0.008335478464364417, 0.1387322530168419], 'tool_tilt_deg': 13.053077045392733}}
+reset_refused_while_estop_is_asserted {'status': 'PASS', 'detail': 'Emergency stop is asserted'}
+reset_accepted_3_28 {'status': 'PASS', 'detail': 'Latch cleared and arm controllers activated'}
+motion_works_after_final_reset {'status': 'PASS', 'detail': {'tcp_m': [-0.1399997387100759, -0.02999927410371823, 0.05399895400695731], 'tool_tilt_deg': 0.0008346976901390588}}
+PASS

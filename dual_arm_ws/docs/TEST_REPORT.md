@@ -14,6 +14,7 @@ The environment camera decides zones A, B and C (`env_scene` source); the arm ca
 | `vision_hardware.launch.py` parses; build of changed packages | PASS | t6_*.log |
 | Import of env_camera_vision at 6b059eb (provisional, user approved); upstream tests | PASS | 10 tests; env_scene_import.log. Field version still to replace it |
 | Coordinator after the scene-lag gate | PASS | 313 |
+| Whole-project check after the review fixes (t0, t1, t2, packages, cm530 mock, faults/batch/coordinator_node) | PASS except known smoke shutdown timeout; operator_tools FAIL once (no joint state within 20 s under load), PASS on rerun | project_check_20261112/; coordinator 316, adapter 36 |
 | Orin: bandwidth, 50 switches, env_scene calibration, coordinate error (HARDWARE_TEST_GUIDE V1) | NOT_RUN | |
 
 ## 2026-11-12 Slot 8 with a tilted cup; system audit

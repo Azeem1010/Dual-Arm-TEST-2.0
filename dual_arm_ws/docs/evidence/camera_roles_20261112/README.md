@@ -16,5 +16,5 @@
 
 - 匯入：使用者同意先用 `6b059eb`（GitHub 唯一版本）匯入，submodule `third_party/env_camera_vision` 鎖在該版，複製到 `src/env_scene`、`src/env_scene_interfaces`；建置與上游 10 項測試 PASS（`env_scene_import.log`）。現場版本推送後要換版。
 - **NOT_RUN**：Orin 現場四項（HARDWARE_TEST_GUIDE V1）。
-- 審查留下的小問題（未修）：`device_in_use` 讀不到其他使用者的 `/proc/<pid>/fd` 時當成沒占用，所以所有相機程序要用同一個使用者執行；SIGKILL 後仍不退出的程序群組會一直顯示 `switching`；`env_scene` 的格位陣列沒檢查長度；橋接節點的 `at_home` 不會過期；`scene_call` 等服務時不檢查取消。
+- 審查留下的小問題：`b78065e` 已修 SIGKILL 後不退出改報錯、群組消失後不再送訊號、格位陣列長度檢查、`at_home` 2 s 過期、等服務時檢查取消（adapter 36、coordinator 316 PASS）。仍保留：`device_in_use` 讀不到其他使用者的 `/proc/<pid>/fd` 時當成沒占用，所以所有相機程序要用同一個使用者執行。
 - 匯入後確認：`GetEnvScene` 回傳 1 秒內最新的結果，`header.stamp` 是回應時間而非影像時間；C 格佔用要連續 3 次相同（10 Hz）才切換。coordinator 因此在手臂停妥後再等 `SCENE_LAG_S` = 0.5 s 之後的影像才查詢（測試 `test_scene_needs_images_past_its_processing_lag`，coordinator 313 PASS）。
