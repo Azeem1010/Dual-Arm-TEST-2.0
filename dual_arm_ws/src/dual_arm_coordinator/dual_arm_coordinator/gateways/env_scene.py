@@ -12,11 +12,31 @@ import time
 from ..workflow.ports import GridView, PickView, PlaceView, TaskFault, ZoneView
 
 ACCEPTED_SOURCES = ('standard', 'measured')
+SLOT_COUNT = 8
 # env_scene answers with its latest result (up to its image_timeout_s old) and switches a C slot only
 # after occupied_frames (3) equal results at process_hz (10): 0.4 s. A query therefore waits for an
 # env image that arrived this long after the arms settled.
 SCENE_LAG_S = 0.5
 _POLL_S = 0.01
+
+
+def call_service(client, request, guard, timeout_s, clock=time.monotonic, sleep=time.sleep,
+                 wait=lambda client, seconds: client.wait_for_service(timeout_sec=seconds)):
+    """Call a ROS service, checking guard() throughout so a cancel never waits for the timeout."""
+    deadline = clock() + timeout_s
+    while True:
+        guard()
+        if wait(client, 0.1):
+            break
+        if clock() >= deadline:
+            raise TaskFault(f'{client.srv_name} is unavailable')
+    future = client.call_async(request)
+    while not future.done():
+        guard()
+        if clock() >= deadline:
+            raise TaskFault(f'{client.srv_name} timed out')
+        sleep(_POLL_S)
+    return future.result()
 
 
 def require_world_frame(config):
@@ -60,6 +80,8 @@ class EnvSceneObserver:
         for flag in required:
             if not getattr(scene, flag):
                 return None, f'Env scene {flag} is false'
+        if 'c_slots_valid' in required and len(scene.c_occupied) != SLOT_COUNT:
+            return None, f'Env scene has {len(scene.c_occupied)} C slots, expected {SLOT_COUNT}'
         return scene, None
 
     def _xy(self, item):
@@ -128,16 +150,7 @@ def wire_env_scene(node, config, settings, motion, guard, callback_group=None):
     timeout = config['motion']['goal_submit_s']
 
     def scene_call():
-        if not client.wait_for_service(timeout_sec=timeout):
-            raise TaskFault(f'{client.srv_name} is unavailable')
-        future = client.call_async(GetEnvScene.Request())
-        deadline = time.monotonic() + timeout
-        while not future.done():
-            guard()
-            if time.monotonic() >= deadline:
-                raise TaskFault(f'{client.srv_name} timed out')
-            time.sleep(_POLL_S)
-        return future.result()
+        return call_service(client, GetEnvScene.Request(), guard, timeout)
 
     return EnvSceneObserver(scene_call, images, motion.home_state, motion.check_reachable, motion.home_tcp, settings,
                             guard, config['motion']['settle_s'], config['motion']['arrival_timeout_s'])

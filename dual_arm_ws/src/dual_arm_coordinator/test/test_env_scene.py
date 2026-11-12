@@ -174,3 +174,45 @@ class ImageGate(Base):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class SlotArray(Base):
+    def test_short_slot_array_is_refused(self):
+        self.set_scene(c_occupied=[True] * 7, c_occupied_count=7)
+        for view in (self.observer.grid(), self.observer.verify_place(8), self.observer.zone()):
+            self.assertFalse(view.success)
+            self.assertIn('7', view.message)
+
+
+class ServiceCall(unittest.TestCase):
+    def test_waiting_for_the_service_honours_cancel(self):
+        from dual_arm_coordinator.gateways.env_scene import call_service
+        clock = [0.0]
+        client = Reply(srv_name='/vision/env_scene/get_scene', wait_for_service=lambda timeout_sec: False)
+        checks = []
+
+        def guard():
+            checks.append(clock[0])
+            if clock[0] >= 0.3:
+                raise TaskCancelled('stop')
+
+        def sleep(seconds):
+            clock[0] += seconds
+
+        with self.assertRaises(TaskCancelled):
+            call_service(client, object(), guard, 5.0, clock=lambda: clock[0], sleep=sleep,
+                         wait=lambda c, t: (sleep(t), False)[1])
+        self.assertLess(clock[0], 1.0)
+
+    def test_unavailable_service_is_a_fault(self):
+        from dual_arm_coordinator.gateways.env_scene import call_service
+        clock = [0.0]
+        client = Reply(srv_name='/x')
+
+        def wait(_client, seconds):
+            clock[0] += seconds
+            return False
+
+        with self.assertRaises(TaskFault) as caught:
+            call_service(client, object(), lambda: None, 1.0, clock=lambda: clock[0], sleep=lambda s: None, wait=wait)
+        self.assertIn('/x is unavailable', str(caught.exception))

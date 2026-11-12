@@ -57,9 +57,13 @@ class ArmCameraSwitch:
         """True once the camera being stopped has fully released its device."""
         arm, process, deadline, killed = self._stopping
         if process.running():
-            if self._clock() >= deadline and not killed:
+            if self._clock() >= deadline:
+                if killed:
+                    # Still alive after SIGKILL (a process stuck in the kernel): never start the other camera.
+                    self._set('error', f'{arm} camera does not exit after SIGKILL')
+                    return False
                 process.kill()
-                self._stopping[3] = True
+                self._stopping[2:] = [self._clock() + self._term_timeout, True]
             self._set('switching', f'{arm} camera is stopping')
             return False
         device = self._device_of(arm)

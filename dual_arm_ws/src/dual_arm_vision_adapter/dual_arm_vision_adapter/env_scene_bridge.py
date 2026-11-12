@@ -23,6 +23,22 @@ def at_home_from_status(text):
     return data['at_home']
 
 
+class AtHomeCache:
+    """The coordinator's at_home report, forgotten when /dual_arm/status stops (coordinator gone)."""
+
+    def __init__(self, max_age_s=2.0):
+        self._max_age, self._value, self._received = max_age_s, None, None
+
+    def on_status(self, text, now):
+        value = at_home_from_status(text)
+        self._value, self._received = value, (now if value is not None else None)
+
+    def value(self, now):
+        if self._received is None or now - self._received > self._max_age:
+            return None
+        return self._value
+
+
 def _problems(response, flags):
     if not response.success:
         return [response.message]
@@ -90,16 +106,15 @@ def main():
     client = node.create_client(GetEnvScene, '/vision/env_scene/get_scene')
     zone_publisher = node.create_publisher(ZoneState, '/vision/env/zone_state', 10)
     calibration_publisher = node.create_publisher(DiagnosticArray, '/vision/calibration_status', 10)
-    state = {'at_home': None}
+    at_home = AtHomeCache()
+    seconds = lambda: node.get_clock().now().nanoseconds / 1e9  # noqa: E731
 
     def on_status(message):
-        at_home = at_home_from_status(message.data)
-        if at_home is not None:
-            state['at_home'] = at_home
+        at_home.on_status(message.data, seconds())
 
     def publish(response):
         stamp = node.get_clock().now().to_msg()
-        zone = ZoneState(**to_zone_fields(response, state['at_home']))
+        zone = ZoneState(**to_zone_fields(response, at_home.value(seconds())))
         zone.header.stamp, zone.header.frame_id = stamp, 'env_camera_optical_frame'
         zone_publisher.publish(zone)
         passed, reasons = env_calibration(response)
@@ -113,7 +128,7 @@ def main():
     def call():
         return client.call_async(GetEnvScene.Request()) if client.service_is_ready() else None
 
-    poller = ScenePoller(call, lambda: node.get_clock().now().nanoseconds / 1e9)
+    poller = ScenePoller(call, seconds)
 
     def on_timer():
         result = poller.tick()

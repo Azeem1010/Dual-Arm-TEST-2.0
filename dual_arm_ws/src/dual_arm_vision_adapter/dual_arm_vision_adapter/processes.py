@@ -18,25 +18,28 @@ class GroupProcess:
 
     def __init__(self, argv):
         self._argv, self._popen = list(argv), None
+        # Once the group is gone its id may be reused by an unrelated group, so it is never signalled again.
+        self._gone = False
 
     def start(self):
         self._popen = subprocess.Popen(self._argv, start_new_session=True, preexec_fn=_die_with_parent)
 
     def running(self):
         """True while any process of the group is left, not only the direct child."""
-        if self._popen is None:
+        if self._popen is None or self._gone:
             return False
         self._popen.poll()
         try:
             os.killpg(self._popen.pid, 0)
         except ProcessLookupError:
+            self._gone = True
             return False
         except PermissionError:
             return True
         return True
 
     def _signal(self, number):
-        if self._popen is None:
+        if self._popen is None or not self.running():
             return
         try:
             os.killpg(self._popen.pid, number)

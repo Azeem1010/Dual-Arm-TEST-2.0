@@ -98,3 +98,15 @@ class StatusParsing(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class AtHomeExpiry(unittest.TestCase):
+    def test_at_home_expires_without_status(self):
+        from dual_arm_vision_adapter.env_scene_bridge import AtHomeCache
+        cache = AtHomeCache(max_age_s=2.0)
+        self.assertIsNone(cache.value(0.0))
+        cache.on_status('{"at_home": {"arm1": true, "arm2": true}}', 1.0)
+        self.assertEqual(cache.value(2.5), {'arm1': True, 'arm2': True})
+        self.assertIsNone(cache.value(3.5))
+        cache.on_status('garbage', 4.0)
+        self.assertIsNone(cache.value(4.0))

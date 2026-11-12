@@ -205,3 +205,36 @@ class DeviceInUse(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class StuckProcess(Base):
+    def test_group_that_survives_sigkill_is_an_error(self):
+        self.run_ticks()
+        stuck = self.world.processes[0]
+        stuck.terminate = lambda: self.world.events.append(('term', 'arm1'))
+        stuck.kill = lambda: self.world.events.append(('kill', 'arm1'))
+        self.status('arm2')
+        self.run_ticks(count=40, step=0.2)
+        state = self.switch.state()
+        self.assertEqual(state['phase'], 'error')
+        self.assertIn('does not exit', state['message'])
+        self.assertNotIn(('start', 'arm2'), self.world.events)
+
+
+@unittest.skipUnless(sys.platform.startswith('linux'), 'runs a child process')
+class GroupProcessSignals(unittest.TestCase):
+    def test_no_signal_after_the_group_is_gone(self):
+        import time as real_time
+        from unittest import mock
+        from dual_arm_vision_adapter.processes import GroupProcess
+        process = GroupProcess(['true'])
+        process.start()
+        deadline = real_time.monotonic() + 5.0
+        while process.running() and real_time.monotonic() < deadline:
+            real_time.sleep(0.05)
+        self.assertFalse(process.running())
+        with mock.patch('dual_arm_vision_adapter.processes.os.killpg') as killpg:
+            process.terminate()
+            process.kill()
+            self.assertFalse(process.running())
+        killpg.assert_not_called()
