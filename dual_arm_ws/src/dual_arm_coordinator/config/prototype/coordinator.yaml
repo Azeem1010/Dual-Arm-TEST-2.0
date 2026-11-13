@@ -70,7 +70,7 @@ gripper:
   auto_confirm: true           # nobody confirms suction in the prototype
   reply_timeout_s: 20.0
   esp32_echo_timeout_s: 2.0
-  vacuum_settle_s: 1.0
-  esp32_modules:               # guess: E0 not run; swap if the wrong cup acts
+  vacuum_settle_s: 2.0         # E0 2026-11-13: ~1 s measured, 1.0 had no margin
+  esp32_modules:               # confirmed by E0 on 2026-11-13
     arm1: 1
     arm2: 2
