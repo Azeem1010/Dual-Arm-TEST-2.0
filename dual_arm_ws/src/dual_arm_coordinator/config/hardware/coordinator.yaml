@@ -59,8 +59,9 @@ gripper:
   # The ESP32 only echoes commands, so an operator still confirms each result.
   backend: esp32
   auto_confirm: false
-  reply_timeout_s: null
-  esp32_echo_timeout_s: null
+  # Time the operator has to confirm each suction step; the suction token lives twice as long.
+  reply_timeout_s: 60.0
+  esp32_echo_timeout_s: 2.0     # E0 2026-11-13: longest echo 563 ms (release)
   vacuum_settle_s: 2.0          # E0 2026-11-13: arm1 cap held ~1 s after grasp (on-site estimate), x2 margin
   # E0 2026-11-13 (docs/evidence/hardware/20261113_E0): commands 1/2 act on arm1, 3/4 on arm2.
   esp32_modules:

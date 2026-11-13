@@ -2,7 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: hardware prototype mode
+## Latest result: E0 ESP32 suction check on the Orin
+
+- 2026-11-13, physical (evidence/hardware/20261113_E0/). The ESP32 had an older single-cup firmware (`esp32_suction_node`, `/suction_cmd` Bool); reflashed from ray000518/micro-ros `0c28c7f` with a local pin change for the new wiring (pump/valve 12/13 and 25/26; upstream is still 4/5/18/19). ORIN_DEPLOYMENT 6.1 gives the reflash steps.
+- PASS: echoes for 1–4; commands 1/2 act on arm1 and 3/4 on arm2; both cups hold a cap in about 1 s (on-site estimate) and drop it on release; no pump or valve movement on two boots (GPIO12 is a strapping pin). FAIL: after a power loss the ESP32 does not reconnect until the agent is restarted (firmware tries once).
+- hardware/coordinator.yaml gripper is now complete: `esp32_modules` arm1 1 / arm2 2, `vacuum_settle_s` 2.0, `esp32_echo_timeout_s` 2.0, `reply_timeout_s` 60.0 (operator confirm time, chosen by the developer at the user's request). Prototype `vacuum_settle_s` 1.0 → 2.0.
+
+## Earlier result: hardware prototype mode
 
 - User decision (2026-11-13): run the whole flow on the real arms now (detect, plan, pick in A, hand over in B, place in C); accuracy and suction success are not required; the only e-stop is the CM-530 power switch and there is no time for more wiring, so D8 is not built. Design and plan: superpowers/specs/2026-11-13-hardware-prototype-mode-design.md, superpowers/plans/2026-11-13-hardware-prototype-mode.md.
 - New coordinator `mode: prototype` (`evidence_kind: prototype_estimate`, calibration HOME, suction may be auto-confirmed); strict `hardware` stays BLOCKED. Three estimated files headed `PROTOTYPE ESTIMATE`: `cm530_hardware/config/calibration_prototype.yaml` (runtime.json zeros and directions, URDF raw limits, `max_step_raw` 20), `dual_arm_controllers/config/controllers_prototype.yaml` (loose tolerances), `dual_arm_coordinator/config/prototype/coordinator.yaml` (simulation layout, speeds 0.3, esp32 suction auto-confirmed, modules guessed). AGENTS.md records the exception.

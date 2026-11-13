@@ -387,7 +387,7 @@ ros2 service call /dual_arm/start std_srvs/srv/Trigger '{}'
 
 **目的：** 確認吸盤命令對應哪支手臂、吸取要等多久。手臂不要靠近工件，不要啟動 Coordinator。
 
-依 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節：先開 agent，再按 ESP32 的 EN 鍵，然後逐一作動。
+依 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節：接好 ESP32 後開 agent（開序列埠會重置 ESP32），確認連上後逐一作動。2026-11-13 已完成一次，見 `docs/evidence/hardware/20261113_E0/`。
 
 | 要記錄 | 填到 |
 |---|---|

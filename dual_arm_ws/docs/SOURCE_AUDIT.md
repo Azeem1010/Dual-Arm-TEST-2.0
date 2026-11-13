@@ -14,7 +14,7 @@ Additional references, read but not pinned in sources.lock.json and not copied i
 | Source | Commit | Use |
 |---|---|---|
 | [Azeem1010/Dual-Arm-TEST](https://github.com/Azeem1010/Dual-Arm-TEST) | `26d187f` | Node structure and real-arm records, used as a reference only. No license file was found, so no code was copied (decision D4) |
-| [ray000518/micro-ros](https://github.com/ray000518/micro-ros) | `0c28c7f` | ESP32 suction firmware. Only its topics are used: `/suction_command` and `/suction_status`, the latter being a command echo with no vacuum sensing |
+| [ray000518/micro-ros](https://github.com/ray000518/micro-ros) | `0c28c7f` | ESP32 suction firmware. Only its topics are used: `/suction_command` and `/suction_status`, the latter being a command echo with no vacuum sensing. The board runs it with a local pin change (12/13/25/26, 2026-11-13, evidence/hardware/20261113_E0/firmware_pin_change.diff) |
 
 Actual services: /vision/arm1/get_pick_target (GetPickTarget), /vision/arm2/get_grid_state (GetGridState), /vision/arm2/verify_place (VerifyPlace), /vision/env/get_zone_state (GetZoneState). Definitions are preserved in src/vision_interfaces/srv.
 

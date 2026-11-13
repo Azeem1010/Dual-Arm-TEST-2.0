@@ -201,7 +201,18 @@ ros2 run dual_arm_coordinator manual_xy --arm arm1 --x <X> --y <Y> --config /絕
 
 ## 6.1 ESP32 吸盤
 
-韌體來源是 [ray000518/micro-ros](https://github.com/ray000518/micro-ros)（commit `0c28c7f`），由那個專案維護與燒錄。本專案只透過 topic 使用它。
+韌體來源是 [ray000518/micro-ros](https://github.com/ray000518/micro-ros)（commit `0c28c7f`，PlatformIO 專案 `mircorostest/`）。本專案只透過 topic 使用它。
+
+**目前燒在 ESP32 上的版本有本地修改（2026-11-13）：** 現場改了接線，腳位從上游的 4/5/18/19 改成泵 1 = 12、閥 1 = 13、泵 2 = 25、閥 2 = 26，其他程式不變，diff 在 `docs/evidence/hardware/20261113_E0/firmware_pin_change.diff`。上游還沒同步，**直接用上游重燒會用到舊腳位**。重燒步驟：
+
+```bash
+git clone https://github.com/ray000518/micro-ros.git && cd micro-ros && git checkout 0c28c7f
+git apply <本專案>/dual_arm_ws/docs/evidence/hardware/20261113_E0/firmware_pin_change.diff
+cd mircorostest
+~/.platformio/penv/bin/pio run -e esp32dev -t upload --upload-port /dev/serial/by-id/<ESP32>
+```
+
+燒錄前要先停 agent，它會佔住序列埠。`~/.platformio/microros_suction/` 裡的 `firmware.bin` 是更早的單吸盤版（`/suction_cmd`），不要用。
 
 **韌體沒有真空感測。** `/suction_status` 只是命令回音，所以吸住或放開與否，每一步都要操作員確認：
 
@@ -212,7 +223,7 @@ ros2 run dual_arm_coordinator operator_console confirm --failed --message "瓶�
 
 ### 建置 agent
 
-`micro_ros_agent` 要從原始碼建置，以下是 micro-ROS 官方流程，尚未在 Orin 上執行過：
+`micro_ros_agent` 要從原始碼建置。Orin 上已經建好在 `~/microros_ws`（2026-11-13 E0 使用）。以下是 micro-ROS 官方流程：
 
 ```bash
 mkdir -p ~/microros_ws/src
@@ -230,11 +241,16 @@ source install/local_setup.bash
 
 ### 啟動順序
 
-韌體不會檢查連線結果，也沒有重連機制，所以**一定要先開 agent，再按 ESP32 的 EN 鍵**。agent 或連線中斷後，也要重新按 EN。
+韌體開機時只試連一次，沒有重連機制。agent 打開序列埠時會重置 ESP32（CP2102 的 DTR/RTS），所以**先接好 ESP32 再開 agent** 就會連上，不用按 EN。
 
 ```bash
-ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/serial/by-id/<ESP32>
+source ~/microros_ws/install/local_setup.bash
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/serial/by-id/<ESP32> -b 115200
 ```
+
+確認連上：`ros2 topic info -v /suction_status` 要看到 `suction_controller_node` 是 publisher。
+
+**ESP32 斷電、USB 拔插或線材脫落後，不會自己連回來**（E0 實測，2026-11-13），要重開 agent，或在 agent 開著時按 EN。Coordinator 這時會報 `the suction controller is not connected`。ESP32 的 USB 線要固定好。
 
 ### 第一次通電前要確認
 
@@ -243,10 +259,12 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/serial/by-id/<ESP32>
 | 項目 | 確認方式 | 填入 |
 |---|---|---|
 | 繼電器觸發電位 | 韌體假設高電位觸發。ESP32 上電時泵和閥不應作動；若會作動，先修正接線或韌體 | — |
-| GPIO5 開機訊號 | 觀察開機瞬間閥 1 是否誤動作 | — |
+| GPIO12 開機訊號 | GPIO12（泵 1）是 strapping 腳，開機時高電位會讓 ESP32 開不了機。觀察開機瞬間泵 1 是否誤動作、ESP32 是否連得上 | — |
 | 模組與手臂的對應 | 用下方指令逐一作動，看是哪支手臂的吸盤 | `gripper.esp32_modules` |
 | 真空建立時間 | 實測吸取後要等多久才吸得穩 | `gripper.vacuum_settle_s` |
 | 回音時間 | 釋放約 0.55 秒，逾時要留餘裕 | `gripper.esp32_echo_timeout_s` |
+
+2026-11-13 E0 全部確認過（`docs/evidence/hardware/20261113_E0/`）：沒有誤動作；1、2 是 arm1，3、4 是 arm2；約 1 秒吸穩，填 2.0；回音吸取約 60 ms、釋放約 560 ms，填 2.0。接線或韌體改了要重做。
 
 ```bash
 ros2 topic echo /suction_status
