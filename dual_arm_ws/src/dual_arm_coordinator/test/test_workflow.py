@@ -19,7 +19,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 CONFIG = yaml.safe_load((PACKAGE / 'config' / 'sim' / 'coordinator.yaml').read_text(encoding='utf-8'))
 SETTINGS = WorkflowSettings.from_config(CONFIG)
 FINGERPRINT = 'fingerprint-a'
-MOTIONS = ('move_home', 'move_to', 'move_slot')
+MOTIONS = ('move_home', 'move_to', 'move_slot', 'move_b')
 
 
 class World(TaskIO):
@@ -98,6 +98,16 @@ class World(TaskIO):
     def move_slot(self, arm, slot, pose, contact=False):
         self._call('move_slot', arm, slot, pose, contact)
         self.position[arm] = SETTINGS.c_slots[slot - 1]
+        self._after_motion()
+
+    def check_b(self, arm):
+        self._call('check_b', arm)
+        if (arm, 'B') in self.unreachable:
+            raise TaskFault(f'{arm} cannot reach taught B')
+
+    def move_b(self, arm, pose, contact=False):
+        self._call('move_b', arm, pose, contact)
+        self.position[arm] = SETTINGS.b_place
         self._after_motion()
 
     def move_home(self, arm):
@@ -212,6 +222,46 @@ class TaughtSlots(Base):
         self.assert_faulted('cannot reach taught slot 1')
         self.assertEqual(self.world.a_objects, 8)
         self.assertEqual(self.calls_named('move_to'), [])
+
+
+class TaughtB(Base):
+    """Prototype: both arms hand over at taught joint poses in B; A and C are unchanged."""
+    settings = replace(SETTINGS, b_joints=True)
+    B_MOVES = [('above', False), ('contact', True), ('above', True)]
+
+    def test_b_moves_use_the_taught_poses_of_both_arms(self):
+        self.assertEqual(self.transfer.run(2), 'SUCCEEDED')
+        self.assertEqual(self.world.c, [True, True] + [False] * 6)
+        moves = [call[1:] for call in self.calls_named('move_b')]
+        self.assertEqual(moves, [(arm, pose, contact) for _ in range(2) for arm in ('arm1', 'arm2')
+                                 for pose, contact in self.B_MOVES])
+        self.assertFalse([call for call in self.calls_named('move_to') if self.world._at_b(call[2][:2])])
+        self.assertFalse([call for call in self.calls_named('check_reachable') if self.world._at_b(call[2][:2])])
+
+    def test_b_is_still_observed_before_arm2_picks(self):
+        self.transfer.run(1)
+        self.assertEqual(len(self.calls_named('b_pick_target')), 1)
+
+    def test_arm2_b_is_checked_before_taking_an_object(self):
+        self.world.unreachable.add(('arm2', 'B'))
+        self.assert_faulted('arm2 cannot reach taught B')
+        self.assertEqual(self.world.a_objects, 8)
+        self.assertFalse(self.world.b_object)
+        self.assertEqual(self.calls_named('suction'), [])
+
+    def test_arm1_b_is_checked_before_taking_an_object(self):
+        self.world.unreachable.add(('arm1', 'B'))
+        self.assert_faulted('arm1 cannot reach taught B')
+        self.assertEqual(self.world.a_objects, 8)
+        self.assertEqual(self.calls_named('suction'), [])
+
+    def test_taught_b_and_taught_slots_together(self):
+        self.settings = replace(SETTINGS, b_joints=True, c_slot_joints=True)
+        self.make()
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assertEqual(self.world.c[0], True)
+        self.assertEqual(len(self.calls_named('move_b')), 6)
+        self.assertEqual(len(self.calls_named('move_slot')), 3)
 
 
 class HappyPath(Base):

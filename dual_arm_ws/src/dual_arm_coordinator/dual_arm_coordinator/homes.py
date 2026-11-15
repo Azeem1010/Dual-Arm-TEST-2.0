@@ -41,16 +41,31 @@ def load_slot_joints(config, calibration_path=None):
         raise ValueError('Taught slot joints need the calibration file the driver uses')
     data = _read_calibration(calibration_path)
     arm = teach['arm']
-    joints = [data['joints'][f'{arm}_{suffix}'] for suffix in JOINT_SUFFIXES]
-    poses = []
-    for slot, raw in enumerate(teach['raw'], start=1):
-        for count, joint, suffix in zip(raw, joints, JOINT_SUFFIXES):
-            if not joint['min_raw'] <= count <= joint['max_raw']:
-                raise ValueError(f'Slot {slot} {suffix} count {count} is outside '
-                                 f'{joint["min_raw"]}..{joint["max_raw"]} of the calibration')
-        poses.append(convert_home(raw, [joint['zero_raw'] for joint in joints],
-                                  [joint['direction'] for joint in joints]))
+    poses = [_taught_joints(data, arm, raw, f'Slot {slot}') for slot, raw in enumerate(teach['raw'], start=1)]
     return {'arm': arm, 'release': poses}
+
+
+def load_b_joints(config, calibration_path=None):
+    """Taught B hand-over joints in radians per arm, or None when the config has no b_teach.
+
+    Same conversion as load_slot_joints, so the motors receive exactly the taught counts.
+    """
+    teach = config.get('b_teach')
+    if teach is None:
+        return None
+    if calibration_path is None:
+        raise ValueError('Taught B joints need the calibration file the driver uses')
+    data = _read_calibration(calibration_path)
+    return {arm: _taught_joints(data, arm, teach['raw'][arm], f'B {arm}') for arm in ARMS}
+
+
+def _taught_joints(data, arm, raw, label):
+    joints = [data['joints'][f'{arm}_{suffix}'] for suffix in JOINT_SUFFIXES]
+    for count, joint, suffix in zip(raw, joints, JOINT_SUFFIXES):
+        if not joint['min_raw'] <= count <= joint['max_raw']:
+            raise ValueError(f'{label} {suffix} count {count} is outside '
+                             f'{joint["min_raw"]}..{joint["max_raw"]} of the calibration')
+    return convert_home(raw, [joint['zero_raw'] for joint in joints], [joint['direction'] for joint in joints])
 
 
 def _from_calibration(path):

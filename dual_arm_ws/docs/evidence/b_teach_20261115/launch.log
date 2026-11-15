@@ -1,0 +1,202 @@
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-15-16-21-35-525267-DESKTOP-HBTEAAO-746
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [launch.user]: PROTOTYPE：估計校正、沒有急停心跳、吸盤自動確認；CM-530 電源開關是唯一急停
+[vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+  - env_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+  查詢可用裝置: ls /dev/v4l/by-id/
+  範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[INFO] [launch.user]: [vision.launch] 校正檔目錄: /home/user/.ros/vision_calib
+[INFO] [launch.user]: [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+  - env_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+  查詢可用裝置: ls /dev/v4l/by-id/
+  範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[INFO] [cm530_mock_serial-1]: process started with pid [762]
+[INFO] [env_scene_node-2]: process started with pid [763]
+[INFO] [env_scene_bridge-3]: process started with pid [764]
+[INFO] [arm_camera_switch-4]: process started with pid [765]
+[INFO] [coordinator_node-5]: process started with pid [766]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/2
+[INFO] [robot_state_publisher-6]: process started with pid [807]
+[INFO] [ros2_control_node-7]: process started with pid [808]
+[INFO] [spawner-8]: process started with pid [809]
+[INFO] [spawner-9]: process started with pid [810]
+[INFO] [spawner-10]: process started with pid [811]
+[INFO] [move_group_lifetime-11]: process started with pid [812]
+[robot_state_publisher-6] [INFO] [1794730904.275464270] [robot_state_publisher]: Robot initialized
+[move_group_lifetime-11] [INFO] [1794730904.528838730] [move_group.moveit.moveit.ros.rdf_loader]: Loaded robot model in 0.268831 seconds
+[move_group_lifetime-11] [INFO] [1794730904.529189362] [move_group.moveit.moveit.core.robot_model]: Loading robot model 'dual_arm'...
+[move_group_lifetime-11] [INFO] [1794730904.529216736] [move_group.moveit.moveit.core.robot_model]: No root/virtual joint specified in SRDF. Assuming fixed joint
+[move_group_lifetime-11] [INFO] [1794730905.016470426] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm1': 1 1 1 1
+[move_group_lifetime-11] [INFO] [1794730905.016996336] [move_group.moveit.moveit.kinematics.kdl_kinematics_plugin]: Joint weights for group 'arm2': 1 1 1 1
+[coordinator_node-5] [WARN] [1794730905.338485149] [dual_arm_coordinator]: PROTOTYPE mode: estimated calibration, no e-stop heartbeat, suction auto-confirmed
+[coordinator_node-5] [WARN] [1794730905.393918754] [dual_arm_coordinator]: C slots use taught arm2 joints (docs/evidence/hardware/20261111_H1/teach_arm2_C_1..8.csv (last READ))
+[coordinator_node-5] [WARN] [1794730905.423239309] [dual_arm_coordinator]: B hand-over uses taught joints of both arms (docs/evidence/hardware/20261111_H1/teach_arm1_B_2.csv, teach_arm2_B.csv (last READ))
+[move_group_lifetime-11] [INFO] [1794730905.548867235] [move_group.moveit.moveit.ros.moveit_cpp]: Listening to 'joint_states' for joint states
+[move_group_lifetime-11] [INFO] [1794730905.557678251] [move_group.moveit.moveit.ros.current_state_monitor]: Listening to joint states on topic 'joint_states'
+[move_group_lifetime-11] [INFO] [1794730905.606606360] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/attached_collision_object' for attached collision objects
+[move_group_lifetime-11] [INFO] [1794730905.609153453] [move_group.moveit.moveit.ros.planning_scene_monitor]: Publishing maintained planning scene on 'monitored_planning_scene'
+[move_group_lifetime-11] [INFO] [1794730905.609343749] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting planning scene monitor
+[move_group_lifetime-11] [INFO] [1794730905.610120898] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to '/planning_scene'
+[move_group_lifetime-11] [INFO] [1794730905.610138286] [move_group.moveit.moveit.ros.planning_scene_monitor]: Starting world geometry update monitor for collision objects, attached objects, octomap updates.
+[move_group_lifetime-11] [INFO] [1794730905.610843413] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'collision_object'
+[move_group_lifetime-11] [INFO] [1794730905.611491979] [move_group.moveit.moveit.ros.planning_scene_monitor]: Listening to 'planning_scene_world' for planning scene world geometry
+[move_group_lifetime-11] [WARN] [1794730905.712377532] [move_group.moveit.moveit.ros.occupancy_map_monitor]: Resolution not specified for Octomap. Assuming resolution = 0.1 instead
+[move_group_lifetime-11] [ERROR] [1794730905.712459562] [move_group.moveit.moveit.ros.occupancy_map_monitor]: No 3D sensor plugin(s) defined for octomap updates
+[env_scene_node-2] [INFO] [1794730905.724872232] [env_scene_node]: env_scene_node 就緒；layout 檔 /home/user/.ros/vision_calib/env_scene_layout.yaml
+[arm_camera_switch-4] [INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-15-16-21-45-952182-DESKTOP-HBTEAAO-806
+[arm_camera_switch-4] [INFO] [launch]: Default logging verbosity is set to INFO
+[spawner-8] [INFO] [1794730906.094618931] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
+[move_group_lifetime-11] [INFO] [1794730906.126379745] [move_group.moveit.moveit.ros.planning_pipeline]: Successfully loaded planner 'OMPL'
+[ros2_control_node-7] [INFO] [1794730906.369162751] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[move_group_lifetime-11] [INFO] [1794730906.481654262] [move_group]: Try loading adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-11] [INFO] [1794730906.529878395] [move_group]: Loaded adapter 'default_planning_request_adapters/ResolveConstraintFrames'
+[move_group_lifetime-11] [INFO] [1794730906.529927757] [move_group]: Try loading adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-11] [INFO] [1794730906.530500157] [move_group]: Loaded adapter 'default_planning_request_adapters/ValidateWorkspaceBounds'
+[move_group_lifetime-11] [INFO] [1794730906.530515106] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-11] [INFO] [1794730906.530538807] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateBounds'
+[move_group_lifetime-11] [INFO] [1794730906.530542352] [move_group]: Try loading adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[move_group_lifetime-11] [INFO] [1794730906.530549153] [move_group]: Loaded adapter 'default_planning_request_adapters/CheckStartStateCollision'
+[ros2_control_node-7] [INFO] [1794730906.911793407] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-7] [INFO] [1794730906.911877143] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-7] [INFO] [1794730906.911882826] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-7] [INFO] [1794730906.911886271] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-7] [WARN] [1794730906.912012960] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[move_group_lifetime-11] [INFO] [1794730906.916226413] [move_group]: Try loading adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[ros2_control_node-7] [INFO] [1794730906.922587892] [controller_manager]: Received robot description from topic.
+[ros2_control_node-7] [INFO] [1794730906.922947131] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[move_group_lifetime-11] [INFO] [1794730906.975826553] [move_group]: Loaded adapter 'default_planning_response_adapters/AddTimeOptimalParameterization'
+[move_group_lifetime-11] [INFO] [1794730906.975873153] [move_group]: Try loading adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-11] [INFO] [1794730906.983517073] [move_group]: Loaded adapter 'default_planning_response_adapters/ValidateSolution'
+[move_group_lifetime-11] [INFO] [1794730906.983571613] [move_group]: Try loading adapter 'default_planning_response_adapters/DisplayMotionPath'
+[move_group_lifetime-11] [INFO] [1794730906.984502004] [move_group]: Loaded adapter 'default_planning_response_adapters/DisplayMotionPath'
+[ros2_control_node-7] [INFO] [1794730907.232367616] [controller_manager]: Loading hardware 'DualArmSystem' 
+[arm_camera_switch-4] [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 校正檔目錄: /home/user/.ros/vision_calib
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[ros2_control_node-7] [INFO] [1794730907.317260726] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-7] [INFO] [1794730907.317403328] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-7] [INFO] [1794730907.332468217] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-7] [INFO] [1794730907.332686629] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[ros2_control_node-7] [INFO] [1794730907.332703588] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[move_group_lifetime-11] [INFO] [1794730907.516248342] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm1_controller
+[move_group_lifetime-11] [INFO] [1794730907.520801098] [move_group.moveit.moveit.plugins.simple_controller_manager]: Added FollowJointTrajectory controller for arm2_controller
+[move_group_lifetime-11] [INFO] [1794730907.521311914] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-11] [INFO] [1794730907.521341344] [move_group.moveit.moveit.plugins.simple_controller_manager]: Returned 2 controllers in list
+[move_group_lifetime-11] [INFO] [1794730907.522482745] [move_group.moveit.moveit.ros.trajectory_execution_manager]: Trajectory execution is not managing controllers
+[move_group_lifetime-11] [INFO] [1794730907.522517537] [move_group]: MoveGroup debug mode is ON
+[ros2_control_node-7] [INFO] [1794730907.545247213] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 connected on /tmp/cm530_mock_serial (motion authorized)
+[ros2_control_node-7] [INFO] [1794730907.545305011] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[ros2_control_node-7] [INFO] [1794730907.545375111] [controller_manager]: Registering statistics for : DualArmSystem
+[ros2_control_node-7] [INFO] [1794730907.545416654] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[ros2_control_node-7] [INFO] [1794730907.597261019] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[ros2_control_node-7] [INFO] [1794730907.597323712] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[move_group_lifetime-11] [INFO] [1794730907.785330126] [move_group.moveit.moveit.ros.move_group.executable]: 
+[move_group_lifetime-11] 
+[move_group_lifetime-11] ********************************************************
+[move_group_lifetime-11] * MoveGroup using: 
+[move_group_lifetime-11] *     - apply_planning_scene_service
+[move_group_lifetime-11] *     - clear_octomap_service
+[move_group_lifetime-11] *     - get_group_urdf
+[move_group_lifetime-11] *     - load_geometry_from_file
+[move_group_lifetime-11] *     - CartesianPathService
+[move_group_lifetime-11] *     - execute_trajectory_action
+[move_group_lifetime-11] *     - get_planning_scene_service
+[move_group_lifetime-11] *     - kinematics_service
+[move_group_lifetime-11] *     - move_action
+[move_group_lifetime-11] *     - motion_plan_service
+[move_group_lifetime-11] *     - query_planners_service
+[move_group_lifetime-11] *     - state_validation_service
+[move_group_lifetime-11] *     - save_geometry_to_file
+[move_group_lifetime-11] ********************************************************
+[move_group_lifetime-11] 
+[move_group_lifetime-11] [INFO] [1794730907.785438215] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context using pipeline ompl
+[move_group_lifetime-11] [INFO] [1794730907.785447578] [move_group.moveit.moveit.ros.move_group.context]: MoveGroup context initialization complete
+[move_group_lifetime-11] [96mLoading 'move_group/ApplyPlanningSceneService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/ClearOctomapService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/GetUrdfService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/LoadGeometryFromFileService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupCartesianPathService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupExecuteTrajectoryAction'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupGetPlanningSceneService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupKinematicsService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupMoveAction'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupPlanService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupQueryPlannersService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/MoveGroupStateValidationService'...[0m
+[move_group_lifetime-11] [96mLoading 'move_group/SaveGeometryToFileService'...[0m
+[move_group_lifetime-11] 
+[move_group_lifetime-11] [92mYou can start planning now![0m
+[move_group_lifetime-11] 
+[ros2_control_node-7] [INFO] [1794730907.834029246] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers_prototype.yaml --params-file /tmp/launch_params_1g1m9zoe 
+[spawner-8] [INFO] [1794730907.863306980] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[ros2_control_node-7] [INFO] [1794730907.864751356] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[ros2_control_node-7] [INFO] [1794730907.864867071] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ros2_control_node-7] [INFO] [1794730907.994806812] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[ros2_control_node-7] [INFO] [1794730908.002472980] [controller_manager]: Successfully switched controllers!
+[spawner-8] [INFO] [1794730908.013387515] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[INFO] [spawner-8]: process has finished cleanly [pid 809]
+[spawner-10] [INFO] [1794730908.392266876] [spawner_arm2_controller]: waiting for service /controller_manager/load_controller to become available...
+[ros2_control_node-7] [INFO] [1794730909.143264796] [controller_manager]: Loading controller : 'arm2_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-7] [INFO] [1794730909.143325056] [controller_manager]: Loading controller 'arm2_controller'
+[ros2_control_node-7] [INFO] [1794730909.207756816] [controller_manager]: Controller 'arm2_controller' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers_prototype.yaml --params-file /tmp/launch_params_1g1m9zoe 
+[spawner-10] [INFO] [1794730909.513856781] [spawner_arm2_controller]: Loaded arm2_controller
+[ros2_control_node-7] [INFO] [1794730909.515663996] [controller_manager]: Configuring controller: 'arm2_controller'
+[ros2_control_node-7] [INFO] [1794730909.515862113] [arm2_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-7] [INFO] [1794730909.515925954] [arm2_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-7] [INFO] [1794730909.516178604] [arm2_controller]: Using 'splines' interpolation method.
+[ros2_control_node-7] [INFO] [1794730909.524728517] [arm2_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-7] [INFO] [1794730909.538207044] [arm2_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-7] [INFO] [1794730909.538256778] [arm2_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [spawner-10]: process has finished cleanly [pid 811]
+[spawner-9] [INFO] [1794730909.960287278] [spawner_arm1_controller]: waiting for service /controller_manager/list_controllers to become available...
+[ros2_control_node-7] [INFO] [1794730910.712921975] [controller_manager]: Loading controller : 'arm1_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-7] [INFO] [1794730910.712972146] [controller_manager]: Loading controller 'arm1_controller'
+[ros2_control_node-7] [INFO] [1794730910.713306945] [controller_manager]: Controller 'arm1_controller' node arguments: --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers_prototype.yaml --params-file /tmp/launch_params_1g1m9zoe 
+[spawner-9] [INFO] [1794730911.013462184] [spawner_arm1_controller]: Loaded arm1_controller
+[ros2_control_node-7] [INFO] [1794730911.015051676] [controller_manager]: Configuring controller: 'arm1_controller'
+[ros2_control_node-7] [INFO] [1794730911.015185852] [arm1_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-7] [INFO] [1794730911.015220427] [arm1_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-7] [INFO] [1794730911.015232252] [arm1_controller]: Using 'splines' interpolation method.
+[ros2_control_node-7] [INFO] [1794730911.017103018] [arm1_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-7] [INFO] [1794730911.024641781] [arm1_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-7] [INFO] [1794730911.024684988] [arm1_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [spawner-9]: process has finished cleanly [pid 810]
+[arm_camera_switch-4] [INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-15-16-21-52-054087-DESKTOP-HBTEAAO-970
+[arm_camera_switch-4] [INFO] [launch]: Default logging verbosity is set to INFO
+[arm_camera_switch-4] [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 校正檔目錄: /home/user/.ros/vision_calib
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[arm_camera_switch-4] [INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-15-16-21-59-922029-DESKTOP-HBTEAAO-976
+[arm_camera_switch-4] [INFO] [launch]: Default logging verbosity is set to INFO
+[arm_camera_switch-4] [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 校正檔目錄: /home/user/.ros/vision_calib
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[arm_camera_switch-4] [INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-15-16-22-11-829455-DESKTOP-HBTEAAO-1031
+[arm_camera_switch-4] [INFO] [launch]: Default logging verbosity is set to INFO
+[arm_camera_switch-4] [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 校正檔目錄: /home/user/.ros/vision_calib
+[arm_camera_switch-4] [INFO] [launch.user]: [vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+[arm_camera_switch-4]   - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+[arm_camera_switch-4]   查詢可用裝置: ls /dev/v4l/by-id/
+[arm_camera_switch-4]   範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...

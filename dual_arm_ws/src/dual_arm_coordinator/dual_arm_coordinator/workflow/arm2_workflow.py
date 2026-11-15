@@ -46,10 +46,13 @@ class Arm2Workflow:
         above_c = ctx.point(slot_xy, settings.approach_z)
         at_c = ctx.point(slot_xy, settings.release_z)
 
-        taught = settings.c_slot_joints
+        taught, taught_b = settings.c_slot_joints, settings.b_joints
         ctx.step(ARM, 'PREFLIGHT')
-        for point in (above_b, at_b) if taught else (above_b, at_b, above_c, at_c):
+        points = (() if taught_b else (above_b, at_b)) + (() if taught else (above_c, at_c))
+        for point in points:
             io.check_reachable(ARM, point)
+        if taught_b:
+            io.check_b(ARM)
         if taught:
             io.check_slot(ARM, slot)
 
@@ -57,10 +60,18 @@ class Arm2Workflow:
         ctx.acquire_b(ARM, view)
         # The object must leave the world scene before the tool may touch it.
         io.scene_remove_b_object()
+        # With a taught B the observed object only confirms that B holds one near the place point;
+        # arm 2 goes to its taught pose, which meets arm 1's taught pose.
         ctx.step(ARM, 'APPROACH_B')
-        io.move_to(ARM, above_b)
+        if taught_b:
+            io.move_b(ARM, 'above')
+        else:
+            io.move_to(ARM, above_b)
         ctx.step(ARM, 'DESCEND_B')
-        io.move_to(ARM, at_b, contact=True)
+        if taught_b:
+            io.move_b(ARM, 'contact', contact=True)
+        else:
+            io.move_to(ARM, at_b, contact=True)
         ctx.set_holding(ARM, 'unknown')
         ctx.step(ARM, 'GRASP_B')
         io.suction(ARM, 'grasp')
@@ -68,7 +79,10 @@ class Arm2Workflow:
         ctx.step(ARM, 'ATTACH')
         io.attach(ARM)
         ctx.step(ARM, 'LIFT_B')
-        io.move_to(ARM, above_b, contact=True)
+        if taught_b:
+            io.move_b(ARM, 'above', contact=True)
+        else:
+            io.move_to(ARM, above_b, contact=True)
         ctx.step(ARM, 'HOME_HOLDING')
         io.move_home(ARM)
 

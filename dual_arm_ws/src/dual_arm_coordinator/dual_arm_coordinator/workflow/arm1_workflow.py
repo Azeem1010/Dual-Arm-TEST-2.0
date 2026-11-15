@@ -39,9 +39,12 @@ class Arm1Workflow:
         above_b = ctx.point(settings.b_place, settings.approach_z)
         at_b = ctx.point(settings.b_place, settings.contact_z)
 
+        taught = settings.b_joints
         ctx.step(ARM, 'PREFLIGHT')
-        for point in (above_a, at_a, above_b, at_b):
+        for point in (above_a, at_a) if taught else (above_a, at_a, above_b, at_b):
             io.check_reachable(ARM, point)
+        if taught:
+            io.check_b(ARM)
 
         ctx.step(ARM, 'APPROACH_A')
         io.move_to(ARM, above_a)
@@ -66,9 +69,15 @@ class Arm1Workflow:
         ctx.acquire_b(ARM, view)
 
         ctx.step(ARM, 'APPROACH_B')
-        io.move_to(ARM, above_b)
+        if taught:
+            io.move_b(ARM, 'above')
+        else:
+            io.move_to(ARM, above_b)
         ctx.step(ARM, 'DESCEND_B')
-        io.move_to(ARM, at_b, contact=True)
+        if taught:
+            io.move_b(ARM, 'contact', contact=True)
+        else:
+            io.move_to(ARM, at_b, contact=True)
         ctx.set_holding(ARM, 'unknown')
         ctx.step(ARM, 'RELEASE_B')
         io.suction(ARM, 'release')
@@ -77,7 +86,10 @@ class Arm1Workflow:
         io.detach(ARM)
         io.scene_add_b_object()
         ctx.step(ARM, 'LIFT_B')
-        io.move_to(ARM, above_b, contact=True)
+        if taught:
+            io.move_b(ARM, 'above', contact=True)
+        else:
+            io.move_to(ARM, above_b, contact=True)
         ctx.step(ARM, 'HOME_EMPTY')
         io.move_home(ARM)
 

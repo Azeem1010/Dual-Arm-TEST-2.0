@@ -7,7 +7,7 @@ import unittest
 import yaml
 
 from dual_arm_coordinator import task_config
-from dual_arm_coordinator.homes import JOINT_SUFFIXES, load_homes, load_slot_joints
+from dual_arm_coordinator.homes import JOINT_SUFFIXES, load_b_joints, load_homes, load_slot_joints
 from dual_arm_coordinator.task_config import TaskConfigError
 
 SRC = Path(__file__).resolve().parents[2]
@@ -76,6 +76,30 @@ class PrototypeFiles(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'need the calibration file'):
             load_slot_joints(task_config.load(PROTOTYPE_CONFIG))
         self.assertIsNone(load_slot_joints({}, calibration_path=str(PROTOTYPE_CALIBRATION)))
+
+    def test_taught_b_round_trips_to_the_taught_counts(self):
+        config = task_config.load(PROTOTYPE_CONFIG)
+        joints = load_b_joints(config, calibration_path=str(PROTOTYPE_CALIBRATION))
+        data = calibration()
+        for arm in ARMS:
+            counts = []
+            for value, suffix in zip(joints[arm], JOINT_SUFFIXES):
+                joint = data['joints'][f'{arm}_{suffix}']
+                counts.append(round(joint['zero_raw'] + joint['direction'] * value * 1023 / math.radians(300)))
+            self.assertEqual(counts, config['b_teach']['raw'][arm], arm)
+
+    def test_taught_b_uses_the_accepted_arm1_redo(self):
+        self.assertEqual(task_config.load(PROTOTYPE_CONFIG)['b_teach']['raw']['arm1'], [350, 731, 702, 697])
+
+    def test_taught_b_must_be_inside_the_calibration_limits_and_needs_it(self):
+        config = task_config.load(PROTOTYPE_CONFIG)
+        # The rejected first arm1 file (j1 634) lies outside arm1's j1 limits 0..486.
+        config['b_teach']['raw']['arm1'] = [634, 717, 742, 699]
+        with self.assertRaisesRegex(ValueError, 'B arm1 arm_shoulder_pan_joint count 634 is outside'):
+            load_b_joints(config, calibration_path=str(PROTOTYPE_CALIBRATION))
+        with self.assertRaisesRegex(ValueError, 'need the calibration file'):
+            load_b_joints(task_config.load(PROTOTYPE_CONFIG))
+        self.assertIsNone(load_b_joints({}, calibration_path=str(PROTOTYPE_CALIBRATION)))
 
     def test_prototype_files_are_labelled(self):
         for path in (PROTOTYPE_CONFIG, PROTOTYPE_CALIBRATION, PROTOTYPE_CONTROLLERS):

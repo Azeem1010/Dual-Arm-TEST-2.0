@@ -21,7 +21,7 @@ from .gateways.gripper import create_gripper
 from .gateways.motion import MotionGateway
 from .gateways.truth import TruthObserver, wire_truth
 from .gateways.vision import VisionPickObserver, wire_vision
-from .homes import load_homes, load_slot_joints
+from .homes import load_b_joints, load_homes, load_slot_joints
 from .journal import Journal, config_fingerprint
 from .task_config import load
 from .workflow.ports import TaskCancelled, TaskFault, TaskIO, WorkflowSettings
@@ -60,6 +60,12 @@ class CoordinatorIO(TaskIO):
 
     def move_slot(self, arm, slot, pose, contact=False):
         self._motion.move_slot(arm, slot, pose, contact=contact)
+
+    def check_b(self, arm):
+        self._motion.check_b(arm)
+
+    def move_b(self, arm, pose, contact=False):
+        self._motion.move_b(arm, pose, contact=contact)
 
     def move_home(self, arm):
         self._motion.move_home(arm)
@@ -148,7 +154,11 @@ class CoordinatorNode(Node):
         slot_joints = load_slot_joints(self.config, calibration_path=calibration_path or None)
         if slot_joints is not None:
             self.get_logger().warning(f'C slots use taught {slot_joints["arm"]} joints ({self.config["c_slot_teach"]["source"]})')
-        self.motion = MotionGateway(self, self.config, urdf, homes, self.guard, self.group, slot_joints=slot_joints)
+        b_joints = load_b_joints(self.config, calibration_path=calibration_path or None)
+        if b_joints is not None:
+            self.get_logger().warning(f'B hand-over uses taught joints of both arms ({self.config["b_teach"]["source"]})')
+        self.motion = MotionGateway(self, self.config, urdf, homes, self.guard, self.group, slot_joints=slot_joints,
+                                    b_joints=b_joints)
         self.observer = TruthObserver(self.config, lambda arm: self.motion.tcp_report(arm)['tcp_m'],
                                       self.motion.check_reachable, self.motion.home_tcp, prefilled)
         wire_truth(self, self.observer, self.group)

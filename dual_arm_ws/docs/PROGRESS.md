@@ -1,8 +1,15 @@
-# Development status — 2026-11-13
+# Development status — 2026-11-15
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: prototype C slots from the taught joints
+## Latest result: prototype B hand-over from the taught joints
+
+- 2026-11-15, user decision: in prototype mode both arms hand over in B at the 2026-11-11 H1 B teach readings (arm1 `teach_arm1_B_2.csv`, the accepted redo, 350/731/702/697; arm2 `teach_arm2_B.csv`, 396/703/756/700; last READ) instead of `b_place_xy_m` through IK. A unchanged, C as below, simulation and strict hardware unchanged.
+- New optional `b_teach` block (prototype only); `homes.load_b_joints` converts the counts with the driver's calibration, `MotionGateway.move_b` moves like `move_slot` (planned approach at 52 mm straight above, joint-line descent and lift refused beyond 3 mm, arrival within 4 counts). Arm 2 still asks env_scene that B holds exactly one object within 50 mm, but moves to its taught pose; the next run also checks arm 2's B pose before arm 1 takes an object. In the model the two contact points lie 8.4 mm apart at z 18.9 / 19.8 mm.
+- The B teach was taken with the cup pressing a cap (user confirmed 2026-11-15), so each reading is the contact pose; `contact_lift_m` stays 0.
+- Coordinator 367 and HMI 307 tests pass; Mock Serial prototype launch boots with the taught B and C (evidence/b_teach_20261115/). `move_b` has not run through MoveIt and the controllers; real arms NOT_RUN.
+
+## Earlier result: prototype C slots from the taught joints
 
 - 2026-11-13, user decision: in prototype mode arm 2 places at the 2026-11-11 H1 C-slot teach readings (`teach_arm2_C_1..8.csv`, last READ; the cup was pressing a cap in the slot, so each is the release pose) instead of `c_slots_xy_m` through IK. B-zone teach readings are not used; A and B are unchanged; simulation and strict hardware unchanged.
 - New optional `c_slot_teach` block (prototype only) in `config/prototype/coordinator.yaml`; `homes.load_slot_joints` converts the counts with the calibration file the driver uses, so the motors receive exactly the taught counts. Approach is straight above in the model at `approach_z` (slot 8: 50 mm, since 52 mm needs more than the 9° tilt limit, which was not widened); descent and lift are joint-space lines refused beyond 3 mm model drift; arrival is every joint within 4 counts. `scripts/teach_to_slots.py` reports the poses: the taught points sit 6–10 mm from `c_slots_xy_m`.

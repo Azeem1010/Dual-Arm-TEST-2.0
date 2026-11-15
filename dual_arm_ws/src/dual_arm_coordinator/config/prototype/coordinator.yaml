@@ -75,6 +75,20 @@ c_slot_teach:
   release_lift_m: 0.0          # raise the release pose if the cup presses too hard
   arrival_tolerance_raw: 4
   max_line_drift_m: 0.003      # model drift of the vertical joint line is 0.7..1.8 mm
+# Taught B hand-over (user decision 2026-11-15): arm 1 puts the object down and arm 2 picks it
+# up at these joint counts instead of b_place_xy_m. Last READ of each teach file, torque off,
+# hand-guided to the centre of B with the cup pressing a cap (user confirmed 2026-11-15), so
+# each is the contact pose. arm1 uses the redo; its first file (j1 634)
+# was rejected in the record. In the model the two poses lie 8 mm apart. The camera still
+# confirms that B holds one object within b_pick_tolerance_m of b_place_xy_m.
+b_teach:
+  source: docs/evidence/hardware/20261111_H1/teach_arm1_B_2.csv, teach_arm2_B.csv (last READ)
+  raw:                         # j1, j2, j3, j4
+    arm1: [350, 731, 702, 697]
+    arm2: [396, 703, 756, 700]
+  contact_lift_m: 0.0          # raise both contact poses if the cup presses too hard
+  arrival_tolerance_raw: 4
+  max_line_drift_m: 0.003
 motion:
   planning_s: 10.0
   planning_attempts: 3

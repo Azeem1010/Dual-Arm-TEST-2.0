@@ -21,7 +21,8 @@ from shape_msgs.msg import SolidPrimitive
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 from ..kinematics import CadKinematics
-from ..motion_math import (joint_line, line_drift, line_points, prepare_slot_poses, solve_line, tcp_error,
+from ..motion_math import (joint_line, line_drift, line_points, prepare_b_poses, prepare_slot_poses, solve_line,
+                           tcp_error,
                            tcp_position, tool_tilt_deg, trapezoid_times)
 from ..workflow.ports import TaskFault
 
@@ -42,7 +43,7 @@ def _duration(seconds):
 
 
 class MotionGateway:
-    def __init__(self, node, config, urdf_text, homes, guard, callback_group=None, slot_joints=None):
+    def __init__(self, node, config, urdf_text, homes, guard, callback_group=None, slot_joints=None, b_joints=None):
         if config['target_frame'] != 'world':
             raise ValueError('MotionGateway targets must be in the world frame')
         self._node, self._guard = node, guard
@@ -56,6 +57,11 @@ class MotionGateway:
             self._slot_arm = slot_joints['arm']
             self._slot_poses = prepare_slot_poses(self._models[self._slot_arm], slot_joints['release'], self._teach,
                                                   self._heights['approach_z_m'])
+        # Taught B hand-over (prototype): both arms go to their taught joints, see homes.load_b_joints.
+        self._b_teach, self._b_poses = config.get('b_teach'), None
+        if b_joints is not None:
+            self._b_poses = prepare_b_poses(self._models, b_joints, self._b_teach['contact_lift_m'],
+                                            self._heights['approach_z_m'])
         self._lock = threading.Lock()
         self._joints, self._sequence, self._received = {}, 0, 0.0
         self._attached = dict.fromkeys(ARMS, False)
@@ -317,19 +323,48 @@ class MotionGateway:
         """pose 'above' or 'release'. A contact move is a joint-space line from the current
         joints, refused when the tool would leave the straight TCP segment by more than
         max_line_drift_m; otherwise MoveIt plans to the joints."""
-        target = self._slot(arm, slot)[pose]
-        label = f'{arm} slot {slot} {pose}'
+        self._move_taught(arm, self._slot(arm, slot)[pose], f'{arm} slot {slot} {pose}', contact, self._teach)
+
+    # --- taught B hand-over (prototype) ---
+
+    def _b(self, arm):
+        if self._b_poses is None:
+            raise TaskFault('No taught B joints are configured')
+        return self._b_poses[arm]
+
+    def b_xy(self):
+        """Where arm 1 puts the object down in B: its taught pose when B is taught, else the configured xy."""
+        if self._b_poses is not None:
+            return self._b_poses['arm1']['xy']
+        return tuple(self._zones['b_place_xy_m'])
+
+    def check_b(self, arm):
+        poses = self._b(arm)
+        for name in ('above', 'release'):
+            self._require_valid(arm, poses[name], f'{arm} B {name}')
+
+    def move_b(self, arm, pose, contact=False):
+        """pose 'above' or 'contact' (the taught pose: arm 1 releases, arm 2 grasps there); moves as move_slot."""
+        if pose not in ('above', 'contact'):
+            raise TaskFault(f'Unknown B pose {pose}')
+        target = self._b(arm)['release' if pose == 'contact' else 'above']
+        self._move_taught(arm, target, f'{arm} B {pose}', contact, self._b_teach)
         if contact:
-            self._move_joint_line(arm, target, label)
+            # Taught poses carry no extra lift, so a later held move starts from the cap top.
+            self._contact_lift[arm] = 0.0
+
+    def _move_taught(self, arm, target, label, contact, teach):
+        if contact:
+            self._move_joint_line(arm, target, label, teach['max_line_drift_m'])
         else:
             self._require_valid(arm, target, label)
             self._plan_and_move(arm, target, label)
-        self._confirm_joints(arm, target, label)
+        self._confirm_joints(arm, target, label, teach['arrival_tolerance_raw'])
 
-    def _move_joint_line(self, arm, target, label):
+    def _move_joint_line(self, arm, target, label, limit):
         model = self._models[arm]
         path = joint_line(self.current(arm), target, _JOINT_LINE_STEP_RAD)
-        drift, limit = line_drift(model, path), self._teach['max_line_drift_m']
+        drift = line_drift(model, path)
         if drift > limit:
             raise TaskFault(f'{label}: the joint line leaves the straight path by {drift:.4f} m (limit {limit} m)')
         for q in path[1:]:
@@ -345,10 +380,10 @@ class MotionGateway:
                                       controller_names=[self._arms[arm]['controller']])
         self._run_action(self._execute, goal, label)
 
-    def _confirm_joints(self, arm, target, label):
-        """Like _confirm_arrival, but every joint within arrival_tolerance_raw counts of the taught pose."""
+    def _confirm_joints(self, arm, target, label, tolerance_raw):
+        """Like _confirm_arrival, but every joint within tolerance_raw counts of the taught pose."""
         needed = self._cfg['arrival_samples']
-        limit = self._teach['arrival_tolerance_raw'] * _RAD_PER_COUNT
+        limit = tolerance_raw * _RAD_PER_COUNT
         stable, seen, error = 0, -1, float('inf')
         deadline = time.monotonic() + self._cfg['arrival_timeout_s']
         while time.monotonic() < deadline:
@@ -361,7 +396,7 @@ class MotionGateway:
                 if stable >= needed:
                     return
             time.sleep(0.005)
-        raise TaskFault(f'{label}: {arm} did not settle within {self._teach["arrival_tolerance_raw"]} counts, '
+        raise TaskFault(f'{label}: {arm} did not settle within {tolerance_raw} counts, '
                         f'last error {error / _RAD_PER_COUNT:.1f} counts')
 
     # --- planning scene ---
@@ -445,7 +480,7 @@ class MotionGateway:
         self._apply(scene, label)
 
     def scene_add_b_object(self):
-        self._apply_world([self._world_cap(_B_OBJECT, self._zones['b_place_xy_m'])], 'add B object')
+        self._apply_world([self._world_cap(_B_OBJECT, self.b_xy())], 'add B object')
         self._b_object_present = True
 
     def scene_remove_b_object(self):

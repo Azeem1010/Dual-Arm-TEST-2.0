@@ -6,11 +6,11 @@ import numpy as np
 import yaml
 
 from dual_arm_coordinator.home_pose import convert_home
-from dual_arm_coordinator.homes import load_homes, load_slot_joints
+from dual_arm_coordinator.homes import load_b_joints, load_homes, load_slot_joints
 from dual_arm_coordinator.kinematics import CadKinematics
 from dual_arm_coordinator.motion_math import (MIN_SLOT_CLEARANCE_M, SLOT_APPROACH_STEP_M, joint_line, line_drift,
-                                              line_points, prepare_slot_poses, solve_line, tcp_error, tcp_position,
-                                              tool_tilt_deg, trapezoid_times)
+                                              line_points, prepare_b_poses, prepare_slot_poses, solve_line, tcp_error,
+                                              tcp_position, tool_tilt_deg, trapezoid_times)
 
 PACKAGE = Path(__file__).resolve().parents[1]
 PROTOTYPE_CONFIG = PACKAGE / 'config' / 'prototype' / 'coordinator.yaml'
@@ -271,6 +271,46 @@ class SlotPoses(unittest.TestCase):
     def test_too_low_approach_is_refused(self):
         with self.assertRaisesRegex(ValueError, 'Taught slot 1: approach height'):
             prepare_slot_poses(self.model, self.taught[:1], self.teach, self.poses[0]['release_z'] + 0.01)
+
+
+class BPoses(unittest.TestCase):
+    """The prototype's taught B counts of both arms through the estimated calibration (model only)."""
+
+    @classmethod
+    def setUpClass(cls):
+        config = yaml.safe_load(PROTOTYPE_CONFIG.read_text(encoding='utf-8'))
+        cls.teach, cls.approach_z = config['b_teach'], config['heights']['approach_z_m']
+        cls.taught = load_b_joints(config, calibration_path=str(PROTOTYPE_CALIBRATION))
+        urdf = URDF.read_text(encoding='utf-8')
+        cls.models = {arm: CadKinematics(urdf, arm, config['motion']['max_tool_tilt_deg']) for arm in ('arm1', 'arm2')}
+        cls.poses = prepare_b_poses(cls.models, cls.taught, cls.teach['contact_lift_m'], cls.approach_z)
+
+    def test_contact_is_the_taught_pose_and_above_is_straight_over_it(self):
+        for arm, pose in self.poses.items():
+            with self.subTest(arm=arm):
+                self.assertEqual(pose['release'], list(self.taught[arm]))
+                self.assertAlmostEqual(pose['above'][0], self.taught[arm][0], places=4)
+                np.testing.assert_allclose(tcp_position(self.models[arm], pose['above']),
+                                           [*pose['xy'], pose['above_z']], atol=1e-5)
+                self.assertEqual(pose['above_z'], self.approach_z)
+
+    def test_both_arms_meet_near_the_b_centre(self):
+        # Model only (estimated zeros): the two taught points are about 8 mm apart near b_place (0, 0).
+        first, second = self.poses['arm1'], self.poses['arm2']
+        self.assertLess(np.hypot(*np.subtract(first['xy'], second['xy'])), 0.015)
+        for pose in (first, second):
+            self.assertLess(np.hypot(*pose['xy']), 0.03)
+            self.assertLess(abs(pose['release_z'] - second['release_z']), 0.003)
+
+    def test_vertical_joint_lines_stay_within_the_configured_drift(self):
+        for arm, pose in self.poses.items():
+            with self.subTest(arm=arm):
+                drift = line_drift(self.models[arm], joint_line(pose['above'], pose['release'], 0.01))
+                self.assertLess(drift, self.teach['max_line_drift_m'])
+
+    def test_errors_name_the_arm(self):
+        with self.assertRaisesRegex(ValueError, 'Taught B arm1: approach height'):
+            prepare_b_poses(self.models, {'arm1': self.taught['arm1']}, 0.0, self.poses['arm1']['release_z'] + 0.01)
 
 
 if __name__ == '__main__':

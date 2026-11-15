@@ -11,6 +11,7 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-15：使用者決定 Prototype 的 B 區交接也改用 11-11 H1 示教關節值（arm1 用重做的 `teach_arm1_B_2.csv`，arm2 用 `teach_arm2_B.csv`）。`config/prototype/coordinator.yaml` 新增 `b_teach`；兩臂 B 區接近、下降、抬起都到示教姿勢（`move_b`），Arm 2 仍用相機確認 B 區有一個物件。示教時壓著瓶蓋（使用者 11-15 確認），讀值就是接觸姿勢。測試與 Mock 啟動 PASS，`move_b` 尚未在 MoveIt＋控制器上跑過，實機待測（Orin 要 pull 後重建）。見 `docs/evidence/b_teach_20261115/`。
 - 2026-11-13：使用者決定 Prototype 的 C 格改用 11-11 H1 的 arm2 示教關節值（示教時壓著瓶蓋，等於放置姿勢），不用 B 區示教。`config/prototype/coordinator.yaml` 新增 `c_slot_teach`；接近姿勢在示教點正上方（C8 降到 50 mm，沒放寬 9° 傾角）；下降與抬起走關節直線。測試與 Mock 啟動 PASS，`move_slot` 尚未在 MoveIt＋控制器上跑過，實機待測（Orin 要 pull 後重建）。見 `docs/evidence/slot_teach_20261113/`。
 
 - 2026-11-13：現場回報 Prototype 吸盤高約 2 mm、吸不到瓶蓋。Prototype 的 `heights` 整組降 2 mm（桌面 0.012、吸取 0.0223、放置 0.0233、接近 0.052），模擬與嚴格模式不變；測試通過，實機待重跑（Orin 要 pull 後重新建置）。見 `docs/evidence/prototype_z_20261113/`。

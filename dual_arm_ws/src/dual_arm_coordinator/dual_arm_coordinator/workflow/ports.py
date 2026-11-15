@@ -59,6 +59,8 @@ class WorkflowSettings:
     c_slots: tuple
     # Prototype: arm 2 places at taught joint poses (TaskIO.move_slot) instead of c_slots xy.
     c_slot_joints: bool = False
+    # Prototype: both arms hand over in B at taught joint poses (TaskIO.move_b) instead of b_place xy.
+    b_joints: bool = False
 
     @classmethod
     def from_config(cls, config):
@@ -69,7 +71,8 @@ class WorkflowSettings:
                    a_min=tuple(zones['a_min_xy_m']), a_max=tuple(zones['a_max_xy_m']),
                    b_place=tuple(zones['b_place_xy_m']), b_pick_tolerance=zones['b_pick_tolerance_m'],
                    c_slots=tuple(tuple(slot) for slot in zones['c_slots_xy_m']),
-                   c_slot_joints=config.get('c_slot_teach') is not None)
+                   c_slot_joints=config.get('c_slot_teach') is not None,
+                   b_joints=config.get('b_teach') is not None)
 
 
 class TaskIO:
@@ -108,6 +111,14 @@ class TaskIO:
 
     def move_slot(self, arm, slot, pose, contact=False):
         """Taught slots only: move to slot's 'above' or 'release' joints."""
+        raise NotImplementedError
+
+    def check_b(self, arm):
+        """Taught B only: the approach and contact joints of arm in B are valid."""
+        raise NotImplementedError
+
+    def move_b(self, arm, pose, contact=False):
+        """Taught B only: move to arm's 'above' or 'contact' joints in B."""
         raise NotImplementedError
 
     def move_home(self, arm):

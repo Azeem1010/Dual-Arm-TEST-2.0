@@ -96,6 +96,20 @@ def prepare_slot_poses(model, taught, teach, approach_z):
     return poses
 
 
+def prepare_b_poses(models, taught, contact_lift, approach_z):
+    """Contact and approach joints of each arm's taught B pose, as prepare_slot_poses.
+
+    The contact pose (stored as 'release') is where arm 1 lets go and arm 2 grasps.
+    """
+    poses = {}
+    for arm, q in taught.items():
+        try:
+            poses[arm] = prepare_slot_poses(models[arm], [q], {'release_lift_m': contact_lift}, approach_z)[0]
+        except ValueError as error:
+            raise ValueError(str(error).replace('Taught slot 1', f'Taught B {arm}')) from error
+    return poses
+
+
 def trapezoid_times(path, velocity, acceleration):
     """Time stamps along a joint path; the fastest joint follows a trapezoid profile."""
     if velocity <= 0 or acceleration <= 0:

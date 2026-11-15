@@ -52,6 +52,11 @@ SLOT_TEACH_KEY = 'c_slot_teach'
 SLOT_TEACH_MODES = ('prototype',)
 _SLOT_TEACH_SHAPE = dict.fromkeys(('arm', 'source', 'raw', 'release_lift_m', 'arrival_tolerance_raw',
                                    'max_line_drift_m'))
+# Optional: the B hand-over as taught joint positions of both arms instead of b_place_xy_m
+# (prototype only, user decision 2026-11-15).
+B_TEACH_KEY = 'b_teach'
+_B_TEACH_SHAPE = dict.fromkeys(('source', 'raw', 'contact_lift_m', 'arrival_tolerance_raw', 'max_line_drift_m'))
+OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY)
 
 
 class TaskConfigError(ValueError):
@@ -178,31 +183,63 @@ def _check_slot_teach(doc):
         errors.append(f'{SLOT_TEACH_KEY}.raw must list {SLOT_COUNT} poses of four counts')
     elif not all(type(count) is int and 0 <= count <= 1023 for pose in raw for count in pose):
         errors.append(f'{SLOT_TEACH_KEY}.raw counts must be integers in 0..1023')
-    lift = teach['release_lift_m']
+    return errors + _check_teach_limits(teach, SLOT_TEACH_KEY, 'release_lift_m')
+
+
+def _check_teach_limits(teach, key, lift_key):
+    errors = []
+    lift = teach[lift_key]
     if not _is_number(lift) or not 0 <= lift <= 0.02:
-        errors.append(f'{SLOT_TEACH_KEY}.release_lift_m must be within [0, 0.02]')
+        errors.append(f'{key}.{lift_key} must be within [0, 0.02]')
     tolerance = teach['arrival_tolerance_raw']
     if type(tolerance) is not int or not 1 <= tolerance <= 20:
-        errors.append(f'{SLOT_TEACH_KEY}.arrival_tolerance_raw must be an integer in 1..20')
+        errors.append(f'{key}.arrival_tolerance_raw must be an integer in 1..20')
     drift = teach['max_line_drift_m']
     if not _is_number(drift) or not 0 < drift <= 0.01:
-        errors.append(f'{SLOT_TEACH_KEY}.max_line_drift_m must be within (0, 0.01]')
+        errors.append(f'{key}.max_line_drift_m must be within (0, 0.01]')
     return errors
+
+
+def _check_b_teach(doc):
+    """The taught B hand-over: one pose of four integer AX-12 counts for each arm."""
+    teach = doc[B_TEACH_KEY]
+    errors = _shape_errors(teach, _B_TEACH_SHAPE, f'{B_TEACH_KEY}.')
+    if errors:
+        return errors
+    errors = _unmeasured(teach, f'{B_TEACH_KEY}.')
+    if errors:
+        return errors
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{B_TEACH_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    if not isinstance(teach['source'], str) or not teach['source'].strip():
+        errors.append(f'{B_TEACH_KEY}.source must name where the readings come from')
+    raw = teach['raw']
+    if not isinstance(raw, dict) or set(raw) != {'arm1', 'arm2'}:
+        errors.append(f'{B_TEACH_KEY}.raw must give arm1 and arm2')
+    else:
+        for arm in ('arm1', 'arm2'):
+            pose = raw[arm]
+            if not (isinstance(pose, list) and len(pose) == 4
+                    and all(type(count) is int and 0 <= count <= 1023 for count in pose)):
+                errors.append(f'{B_TEACH_KEY}.raw.{arm} must be four integer counts in 0..1023')
+    return errors + _check_teach_limits(teach, B_TEACH_KEY, 'contact_lift_m')
 
 
 def validate(doc):
     """Return doc unchanged when valid; otherwise raise listing every problem found."""
-    optional = isinstance(doc, dict) and SLOT_TEACH_KEY in doc
-    errors = _shape_errors({key: value for key, value in doc.items() if key != SLOT_TEACH_KEY}
-                           if optional else doc, _SHAPE, '')
+    present = [key for key in OPTIONAL_KEYS if isinstance(doc, dict) and key in doc]
+    required = {key: value for key, value in doc.items() if key not in present} if present else doc
+    errors = _shape_errors(required, _SHAPE, '')
     if not errors:
-        errors = _unmeasured({key: value for key, value in doc.items() if key != SLOT_TEACH_KEY})
+        errors = _unmeasured(required)
     if not errors:
         if doc['schema_version'] != 1:
             errors.append('schema_version must be 1')
         errors += _check_rules(doc) + _check_numbers(doc) + _check_zones(doc)
-        if optional:
+        if SLOT_TEACH_KEY in present:
             errors += _check_slot_teach(doc)
+        if B_TEACH_KEY in present:
+            errors += _check_b_teach(doc)
     if errors:
         raise TaskConfigError('; '.join(errors))
     return doc

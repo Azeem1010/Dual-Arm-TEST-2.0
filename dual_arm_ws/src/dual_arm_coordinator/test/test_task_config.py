@@ -235,6 +235,55 @@ class SlotTeach(unittest.TestCase):
         self.assert_refused(self.with_teach(max_line_drift_m=0), 'max_line_drift_m must be within (0, 0.01]')
 
 
+def b_teach():
+    return {'source': 'test', 'raw': {'arm1': [350, 731, 702, 697], 'arm2': [396, 703, 756, 700]},
+            'contact_lift_m': 0.0, 'arrival_tolerance_raw': 4, 'max_line_drift_m': 0.003}
+
+
+class BTeach(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_teach(self, doc=None, **change):
+        doc = doc or prototype_doc()
+        doc['b_teach'] = {**b_teach(), **change}
+        return doc
+
+    def test_prototype_accepts_a_taught_b_with_or_without_taught_slots(self):
+        self.assertIn('b_teach', task_config.validate(self.with_teach()))
+        doc = self.with_teach()
+        doc['c_slot_teach'] = slot_teach()
+        self.assertEqual({'b_teach', 'c_slot_teach'} & set(task_config.validate(doc)), {'b_teach', 'c_slot_teach'})
+
+    def test_only_prototype_may_teach(self):
+        self.assert_refused(self.with_teach(sim_doc()), "b_teach is only allowed in ('prototype',)")
+
+    def test_shape_and_unknown_keys(self):
+        doc = self.with_teach()
+        del doc['b_teach']['source']
+        doc['b_teach']['extra'] = 1
+        self.assert_refused(doc, 'b_teach.source is missing')
+        self.assert_refused(doc, 'b_teach.extra is not a known setting')
+
+    def test_null_is_not_measured(self):
+        self.assert_refused(self.with_teach(contact_lift_m=None), 'b_teach.contact_lift_m is not measured')
+
+    def test_raw_needs_both_arms_with_four_counts(self):
+        self.assert_refused(self.with_teach(raw={'arm1': [1, 2, 3, 4]}), 'b_teach.raw must give arm1 and arm2')
+        self.assert_refused(self.with_teach(raw=[[1, 2, 3, 4], [1, 2, 3, 4]]), 'b_teach.raw must give arm1 and arm2')
+        for bad in ([1, 2, 3], [1024, 2, 3, 4], [1.0, 2, 3, 4], [True, 2, 3, 4]):
+            with self.subTest(bad=bad):
+                self.assert_refused(self.with_teach(raw={'arm1': [1, 2, 3, 4], 'arm2': bad}),
+                                    'b_teach.raw.arm2 must be four integer counts in 0..1023')
+
+    def test_number_ranges(self):
+        self.assert_refused(self.with_teach(contact_lift_m=0.03), 'b_teach.contact_lift_m must be within [0, 0.02]')
+        self.assert_refused(self.with_teach(arrival_tolerance_raw=21), 'b_teach.arrival_tolerance_raw must be')
+        self.assert_refused(self.with_teach(max_line_drift_m=0.02), 'b_teach.max_line_drift_m must be within')
+
+
 class CommandLine(unittest.TestCase):
     def run_main(self, *args):
         output = io.StringIO()

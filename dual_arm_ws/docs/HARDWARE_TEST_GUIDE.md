@@ -357,6 +357,8 @@ ros2 topic pub -r 5 /dual_arm/status std_msgs/msg/String "{data: '{\"active_arm\
 
 **C 格用示教關節值（2026-11-13）：** Arm 2 放置時直接到 `coordinator.yaml` 的 `c_slot_teach.raw`（11-11 H1 示教，壓著瓶蓋），不經 IK。第一次跑時先看 Arm 2 到格子上方是否對準，再看下壓高度。壓太深就加大 `release_lift_m`；某格偏了，扭力關閉扶到正確位置讀 raw，改該格那一行，再用 `python3 scripts/teach_to_slots.py --from-config` 檢查（不加這個選項時讀 11-11 的 CSV）。改完要重建 `dual_arm_coordinator`。
 
+**B 區用示教關節值（2026-11-15）：** Arm 1 放下、Arm 2 吸起都直接到 `coordinator.yaml` 的 `b_teach.raw`（11-11 H1 示教，壓著瓶蓋；arm1 用重做那筆），不經 IK。Arm 2 仍要相機看到 B 區有一個物件才會動。第一次跑時兩臂各自先看到 B 區上方是否在中央，再看下壓高度。壓太深就加大 `contact_lift_m`。兩臂對不準時，扭力關閉扶到正確位置讀 raw，改 `b_teach.raw` 該臂那一行，用 `python3 scripts/teach_to_slots.py --from-config` 檢查，再重建 `dual_arm_coordinator`。
+
 **前置：**
 
 - 一人只守 CM-530 電源開關，手放在開關上，這是唯一的急停。

@@ -1,5 +1,18 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-15 Prototype B hand-over from the taught joints
+
+Both arms hand over in B at the 11-11 B teach counts in prototype mode. Details: evidence/b_teach_20261115/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Taught B report, prototype config loads | PASS | teach_report.txt, load_prototype.txt |
+| Unit tests coordinator / HMI | PASS | 367 / 307 (first run: 1 FAIL in a new test's own limit assumption, test fixed) |
+| Mock Serial prototype launch boots with taught B and C | PASS | launch.log, steps.log; no task reaches B without cameras |
+| t0 docs check | PASS | t0.log, t0/ |
+| `move_b` through MoveIt and controllers | NOT_RUN | |
+| Hand-over at the taught B poses on real arms | NOT_RUN | Orin needs pull and rebuild; teach taken pressing a cap (user confirmed) |
+
 ## 2026-11-13 Prototype C slots from the taught joints
 
 Arm 2 places at the 11-11 C-slot teach counts in prototype mode. Details: evidence/slot_teach_20261113/README.md.
