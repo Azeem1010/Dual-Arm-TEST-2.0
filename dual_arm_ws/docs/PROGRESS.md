@@ -2,7 +2,12 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: shorter waits around contact moves (2026-11-17)
+## Latest result: prototype fixed transits (2026-11-17)
+
+- Step (4) done: `fixed_transits: true` (prototype only). Non-contact moves first run the joint line to their target at transport speed; refused, and planned with MoveIt as before, when a waypoint fails the validity check or the tool dips more than 5 mm below the lower end (the board has no collision geometry). Cancels are never turned into a fallback.
+- Model check of all 22 transits of the prototype flow: dip check PASS, 3.5–8.0 s each. Coordinator 472 and HMI 320 tests pass; prototype config PASS (evidence/fixed_transits_20261117/). Validity in move_group and the real arms NOT_RUN.
+
+## Earlier result: shorter waits around contact moves (2026-11-17)
 
 - Step (2), two-stage contact moves, skipped (user decision): on the model it saves about 1.5 s per object at the contact acceleration 0.3 rad/s².
 - Step (3) done: prototype `grasp_settle_s` 1.2 (release keeps `vacuum_settle_s` 2.0); `_wait_still` accepts readings already received when they pass the same two-window test; contact-line waypoint validity requests are sent together (`_require_valid_all`). The last two apply in every mode and keep the same checks. Details and estimates: evidence/shorter_waits_20261117/README.md.

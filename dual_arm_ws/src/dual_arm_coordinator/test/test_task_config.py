@@ -311,6 +311,29 @@ class DirectTransfer(unittest.TestCase):
                 self.assert_refused(self.with_direct(value), 'direct_transfer must be true or false')
 
 
+class FixedTransits(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_fixed(self, value, doc=None):
+        doc = doc or prototype_doc()
+        doc['fixed_transits'] = value
+        return doc
+
+    def test_prototype_accepts_it(self):
+        self.assertIs(task_config.validate(self.with_fixed(True))['fixed_transits'], True)
+
+    def test_only_prototype(self):
+        self.assert_refused(self.with_fixed(True, sim_doc()), "fixed_transits is only allowed in ('prototype',)")
+
+    def test_must_be_a_boolean(self):
+        for value in (1, 'yes', None):
+            with self.subTest(value):
+                self.assert_refused(self.with_fixed(value), 'fixed_transits must be true or false')
+
+
 class GraspSettle(unittest.TestCase):
     def assert_refused(self, doc, text):
         with self.assertRaises(TaskConfigError) as caught:

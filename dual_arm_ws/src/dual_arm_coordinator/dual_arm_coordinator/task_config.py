@@ -86,8 +86,12 @@ DIRECT_KEY = 'direct_transfer'
 # full wait (prototype only, user decision 2026-11-17: E0 held a cap in about 1 s).
 GRASP_SETTLE_KEY = 'grasp_settle_s'
 MIN_GRASP_SETTLE_S = 1.0
+# Optional: non-contact moves run the joint line to their target, every waypoint checked and the
+# tool never below the lower end, before falling back to a MoveIt plan (prototype only, user
+# decision 2026-11-17: no planning time and the same path every time).
+FIXED_KEY = 'fixed_transits'
 OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY,
-                 DIRECT_KEY, GRASP_SETTLE_KEY)
+                 DIRECT_KEY, GRASP_SETTLE_KEY, FIXED_KEY)
 
 
 class TaskConfigError(ValueError):
@@ -318,13 +322,17 @@ def _check_b_lift(doc):
     return errors
 
 
-def _check_direct(doc):
+def _check_switch(doc, key):
     errors = []
     if doc['mode'] not in SLOT_TEACH_MODES:
-        errors.append(f'{DIRECT_KEY} is only allowed in {SLOT_TEACH_MODES}')
-    if type(doc[DIRECT_KEY]) is not bool:
-        errors.append(f'{DIRECT_KEY} must be true or false')
+        errors.append(f'{key} is only allowed in {SLOT_TEACH_MODES}')
+    if type(doc[key]) is not bool:
+        errors.append(f'{key} must be true or false')
     return errors
+
+
+def _check_direct(doc):
+    return _check_switch(doc, DIRECT_KEY)
 
 
 def _check_grasp_settle(doc):
@@ -371,6 +379,8 @@ def validate(doc):
             errors += _check_direct(doc)
         if GRASP_SETTLE_KEY in present:
             errors += _check_grasp_settle(doc)
+        if FIXED_KEY in present:
+            errors += _check_switch(doc, FIXED_KEY)
     if errors:
         raise TaskConfigError('; '.join(errors))
     return doc

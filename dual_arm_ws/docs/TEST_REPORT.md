@@ -1,5 +1,16 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 Prototype fixed transits
+
+Non-contact moves run a checked joint line before falling back to MoveIt. Details: evidence/fixed_transits_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 472 / 320 |
+| Prototype config validation | PASS | prototype_config_check.txt |
+| Dip check of the 22 prototype transits on the model | PASS | transits_check.txt |
+| Validity of the fixed paths in move_group, real arms | NOT_RUN | |
+
 ## 2026-11-17 Shorter waits around contact moves
 
 Shorter grasp wait (prototype), stillness from readings already received, batched waypoint validity checks. Details: evidence/shorter_waits_20261117/README.md.

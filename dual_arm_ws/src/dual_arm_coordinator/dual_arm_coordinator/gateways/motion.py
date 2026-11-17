@@ -26,7 +26,7 @@ from ..kinematics import CadKinematics
 from ..motion_math import (joint_line, line_drift, line_points, prepare_b_poses, prepare_slot_poses, solve_line,
                            solve_line_holding_tool, tcp_error,
                            tcp_position, tool_tilt_deg, trapezoid_times)
-from ..workflow.ports import TaskFault
+from ..workflow.ports import TaskCancelled, TaskFault
 
 ARMS = ('arm1', 'arm2')
 _GOAL_JOINT_TOLERANCE = 1e-5
@@ -49,6 +49,8 @@ _SURFACE_CLEARANCE_M = 0.001
 _FRESH_START_LIMIT_RAD = 10 * _RAD_PER_COUNT
 # Joint-line sampling for taught slot moves; small enough that the drift check sees the path.
 _JOINT_LINE_STEP_RAD = 0.01
+# Fixed transits (prototype): how far the tool may go below the lower end of its joint line.
+_FIXED_DIP_M = 0.005
 
 
 def _duration(seconds):
@@ -81,6 +83,8 @@ class MotionGateway:
         self._lock = threading.Lock()
         self._joints, self._sequence, self._received = {}, 0, 0.0
         self._history = {arm: collections.deque() for arm in ARMS}
+        # Prototype: non-contact moves run a checked joint line before falling back to MoveIt.
+        self._fixed_transits = config.get('fixed_transits') is True
         self._attached = dict.fromkeys(ARMS, False)
         # Tool orientation when each arm attached its cap (the cap was lying flat then).
         self._held_tool = dict.fromkeys(ARMS)
@@ -320,6 +324,8 @@ class MotionGateway:
 
     def _plan_and_move(self, arm, q, label):
         self._wait_still(arm, label)
+        if getattr(self, '_fixed_transits', False) and self._move_fixed(arm, q, label):
+            return
         goal = MoveGroup.Goal()
         request = goal.request
         request.group_name = self._arms[arm]['planning_group']
@@ -334,6 +340,58 @@ class MotionGateway:
             for name, value in zip(self._models[arm].names, q)])]
         goal.planning_options.plan_only = False
         self._run_action(self._move_group, goal, label)
+
+    def _fixed_problem(self, arm, path):
+        """Why path may not run as a fixed transit, or None.
+
+        The board has no collision geometry in the planning scene, so validity checks cannot see a
+        tool brought down onto it; the tool may not go lower than the lower end of the line.
+        """
+        model = self._models[arm]
+        heights = [float(tcp_position(model, q)[2]) for q in path]
+        floor = min(heights[0], heights[-1]) - _FIXED_DIP_M
+        if min(heights) < floor:
+            return f'the tool dips to z {min(heights) * 1000:.1f} mm, below {floor * 1000:.1f} mm'
+        return None
+
+    def _move_fixed(self, arm, q, label):
+        """Prototype fixed_transits: run the joint line to q at transport speed instead of a MoveIt plan.
+
+        Every waypoint passes the same validity check as a contact line, and the tool stays above the
+        lower end. Returns False, so the caller plans with MoveIt, when either refuses the line
+        (speed-up 2026-11-17: no planning time, and the same path every time).
+        """
+        path = joint_line(self.current(arm), q, _JOINT_LINE_STEP_RAD)
+        name, logger = f'{label} fixed path', self._node.get_logger()
+        problem = self._fixed_problem(arm, path)
+        if problem is None:
+            try:
+                self._require_valid_all(arm, path[1:], name)
+            except TaskCancelled:
+                raise  # a cancel or safety stop is never a reason to plan instead
+            except TaskFault as error:
+                problem = str(error)
+        if problem is not None:
+            logger.warning(f'{label}: fixed joint path refused ({problem}); planning with MoveIt')
+            return False
+        logger.info(f'{label}: fixed joint path, {len(path)} points')
+        self._run_timed_path(arm, path, name, self._cfg['max_velocity_rad_s'] * self._speeds['transport_scale'])
+        return True
+
+    def _run_timed_path(self, arm, path, label, velocity):
+        """Start from the joints read now and run path; the fastest joint follows a trapezoid."""
+        path = self._fresh_start(arm, path, label)
+        times = trapezoid_times(path, velocity,
+                                self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])
+        if not times:
+            return path[-1]
+        trajectory = JointTrajectory(joint_names=list(self._models[arm].names), points=[
+            JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=_duration(stamp))
+            for q, stamp in zip(path, times)])
+        goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
+                                      controller_names=[self._arms[arm]['controller']])
+        self._run_action(self._execute, goal, label)
+        return path[-1]
 
     def move_home(self, arm):
         label = f'{arm} home'
@@ -478,20 +536,8 @@ class MotionGateway:
 
     def _execute_path(self, arm, path, label):
         """Check every waypoint, start from the joints read now, and run the path at contact speed."""
-        model = self._models[arm]
         self._require_valid_all(arm, path[1:], label)
-        path = self._fresh_start(arm, path, label)
-        times = trapezoid_times(path, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'],
-                                self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])
-        if not times:
-            return path[-1]
-        trajectory = JointTrajectory(joint_names=list(model.names), points=[
-            JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=_duration(stamp))
-            for q, stamp in zip(path, times)])
-        goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
-                                      controller_names=[self._arms[arm]['controller']])
-        self._run_action(self._execute, goal, label)
-        return path[-1]
+        return self._run_timed_path(arm, path, label, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'])
 
     # --- taught C slots (prototype) ---
 
@@ -572,18 +618,7 @@ class MotionGateway:
         if drift > limit:
             raise TaskFault(f'{label}: the joint line leaves the straight path by {drift:.4f} m (limit {limit} m)')
         self._require_valid_all(arm, path[1:], label)
-        path = self._fresh_start(arm, path, label)
-        times = trapezoid_times(path, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'],
-                                self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])
-        if not times:
-            return path[-1]
-        trajectory = JointTrajectory(joint_names=list(model.names), points=[
-            JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=_duration(stamp))
-            for q, stamp in zip(path, times)])
-        goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
-                                      controller_names=[self._arms[arm]['controller']])
-        self._run_action(self._execute, goal, label)
-        return path[-1]
+        return self._run_timed_path(arm, path, label, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'])
 
     def _confirm_joints(self, arm, target, label, tolerance_raw):
         """Like _confirm_arrival, but every joint within tolerance_raw counts of the taught pose."""

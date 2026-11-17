@@ -115,6 +115,11 @@ direct_transfer: true
 # waits 1.2 s; a release still waits gripper.vacuum_settle_s (2.0 s) to vent before the lift.
 # Remove this line to wait vacuum_settle_s after a grasp again.
 grasp_settle_s: 1.2
+# Fixed transits (user decision 2026-11-17): a non-contact move (HOME, above A/B/C) runs the joint
+# line to its target at transport speed instead of a MoveIt plan, after every waypoint passed the
+# validity check and the tool stays no lower than 5 mm below the lower end (the board has no
+# collision geometry). Either refusal falls back to MoveIt. Remove this line to always plan.
+fixed_transits: true
 # Zone A press (user decision 2026-11-17): the joint readings reached the A contact target
 # (dz -0.4 mm) while the cup stayed above the cap, an error the readings cannot see (estimated
 # calibration, link play). Arm 1 aims this much below contact_z_m in zone A only; first value 3 mm.

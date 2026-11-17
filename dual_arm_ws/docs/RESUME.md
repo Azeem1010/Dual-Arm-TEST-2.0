@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-17：加速計畫 (4) 已完成：原型 `fixed_transits: true`，非接觸移動（HOME、A/B/C 上方）先走關節直線、以一般速度執行，不再每次 MoveIt 規劃；任一點碰撞檢查不過，或吸盤低於兩端較低者超過 5 mm（板子沒有碰撞幾何），就退回 MoveIt。取消或安全停止不會被當成退回。模型檢查原型流程 22 段路徑全部通過，每段 3.5–8.0 秒。測試 PASS（coordinator 472、HMI 320），move_group 碰撞檢查與實機 NOT_RUN；實機看 log 的 `fixed joint path refused`。見 `docs/evidence/fixed_transits_20261117/`。下一步：(5) 合入 overlap 分支、預設關。
+
 - 2026-11-17：加速計畫 (2) 接觸區分兩段，使用者決定跳過（模型計算每件只省約 1.5 秒，因為接觸段加速度只有 0.3 rad/s²）。(3) 已完成：原型 `grasp_settle_s` 1.2 秒（放開仍等 2.0 秒）；等停穩先用已收到的讀值套用同一套判斷，過去兩個窗格已經停穩就不再多等；接觸路徑的逐點碰撞檢查改成一次全部送出再等結果（每點照樣檢查）。後兩項所有模式都生效、判斷標準不變。測試 PASS（coordinator 462、HMI 320），實機 NOT_RUN；實機若吸取後瓶蓋掉落，調高或刪掉 `grasp_settle_s`。見 `docs/evidence/shorter_waits_20261117/`。下一步：(4) 示教點之間走固定關節路徑。
 
 - 2026-11-17：身邊沒有 Orin，使用者同意的加速順序：(1) 時間記錄 →(2) 接觸區分兩段 →(3) 縮短等待 →(4) 示教點之間走固定關節路徑 →(5) 合入 overlap 分支但預設關。每項都放在原型設定開關後面、分開提交；等待點取代 HOME、B 區雙格要等 overlap 實機跑過再做。(1) 已完成：新增 `timing.py`，每一步記錄耗時與細項（規劃、移動、到位、等停穩、驗證、等相機、相機、ESP32 回音、吸盤等待），每步一行 `TIMING`、任務結束一段 `TIMING SUMMARY`，CSV 寫在 journal 旁的 `timing/`（原型：`~/.ros/dual_arm/timing/`）。只記錄，不改動作。測試 PASS（coordinator 448、HMI 320），實機輸出 NOT_RUN。見 `docs/evidence/timing_20261117/`。下一步：(2)。
