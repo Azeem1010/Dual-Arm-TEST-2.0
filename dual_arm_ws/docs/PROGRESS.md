@@ -2,6 +2,17 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
+## Latest result: overlapped transfer in prototype mode (連續搬運, 2026-11-17)
+
+User decision 2026-11-17: arm 1 picks the next object while arm 2 carries the previous one to C; both arms may move at once; prototype only, behind a config block; while overlapping arm 1 stays in A/HOME. Simulation and strict hardware still run one arm at a time (C14 unchanged there). Evidence: evidence/overlap_20261117/.
+
+- New `overlap` block in `config/prototype/coordinator.yaml` (`clearance_m` 0.025, `wait_s` 240; prototype only, needs `gripper.auto_confirm`). Remove it to go back to one arm at a time.
+- `workflow/overlap.py`: one thread per arm. Arm 1 picks from A and waits HOME holding until arm 2 has taken the previous object out of B and left; arm 2 enters B only after arm 1 verified its placement and left. Zone B keeps its single owner. B poses of both arms and every slot of the run are checked once at the start (later the other arm or the object in B would make them look invalid). Zone A running empty ends the run SUCCEEDED with a message. When one arm faults the other finishes the part it is in (arm 1 a pick or a placement, arm 2 a whole B-to-C transfer) and stops; cancel and safety stop both at once. Auto resume then usually declines because arm 1 holds its next object.
+- Motion (`gateways/motion.py`, `lanes.py`): with overlap, MoveIt only plans (one plan at a time, `/move_action` takes one goal) and every trajectory goes straight to `/armN_controller/follow_joint_trajectory`. Before it is sent, the x range of all joint frames along the trajectory (filled in at 0.02 rad) is padded by `clearance_m` and reserved; it is granted only clear of the other arm's reservation, or of the range the other arm stands in. Planned trajectories start from the joints read just before sending (same 10-count limit as contact moves). This is an x-only, model-only check: calibration error and link shapes beyond the clearance are not seen.
+- ESP32 commands are serialized (the echo does not name the arm). Journal `holding` updates are locked. The journal `state`/`active_arm` show whichever arm stepped last.
+- HMI label 搬運循環數（模擬） → 搬運件數（模擬／Prototype）; Prototype already passed the count.
+- Coordinator 450 tests pass (25 new: overlap order and faults with a threaded fake world, lanes, config, ESP32 echo, frame points); HMI 320. **NOT_RUN: the FollowJointTrajectory path through MoveIt plan-only and the controllers (Mock Serial was not started because the real prototype system was running on the Orin), real arms.** The install tree was not rebuilt for the same reason.
+
 ## Latest result: prototype field run fixes on the Orin (2026-11-17)
 
 Field runs on the real arms in prototype mode, fixes made between runs on user request. Coordinator 425 tests pass; each change below was loaded on the Orin but most were exercised only once or twice, so treat them as NOT_RUN beyond that. Logs: `~/.ros/dual_arm_hmi/logs/20261117_*` on the Orin (not in the repo).

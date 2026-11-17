@@ -114,7 +114,7 @@ class ControlPanel(Panel):
         self.cycles_row = QWidget(parent)
         cycles_layout = QHBoxLayout(self.cycles_row)
         cycles_layout.setContentsMargins(0, 0, 0, 0)
-        cycles_label = QLabel('搬運循環數（模擬）', self.cycles_row)
+        cycles_label = QLabel('搬運件數（模擬／Prototype）', self.cycles_row)
         self.cycles = QSpinBox(self.cycles_row)
         self.cycles.setRange(1, 8)
         self.cycles.setFixedWidth(64)

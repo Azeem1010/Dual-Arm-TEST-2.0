@@ -7,8 +7,10 @@ ARM = 'arm2'
 
 
 class Arm2Workflow:
-    def __init__(self, context):
+    def __init__(self, context, on_b_released=None):
+        """on_b_released (overlapped run) is called once arm 2 has left zone B with the object."""
         self.ctx = context
+        self._on_b_released = on_b_released
 
     def _validated_b_target(self, target):
         """The observed object in B, which must lie near where arm 2 will grasp it.
@@ -101,6 +103,8 @@ class Arm2Workflow:
         if view.b_has_object or not view.b_arm_clear:
             raise TaskFault('Zone B is not empty and clear after pickup')
         ctx.release_b(ARM, view)
+        if self._on_b_released is not None:
+            self._on_b_released()
 
         ctx.step(ARM, 'APPROACH_C')
         if taught:

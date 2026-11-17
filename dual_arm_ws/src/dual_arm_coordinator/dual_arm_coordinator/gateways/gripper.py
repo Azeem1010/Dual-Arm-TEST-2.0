@@ -144,6 +144,9 @@ class Esp32Suction:
         self._settle, self._confirmer, self._guard = vacuum_settle_s, confirmer, guard
         self._clock, self._sleep = clock, sleep
         self._lock = threading.Lock()
+        # The firmware echoes one command at a time and the echo does not say whose it is, so
+        # with overlapped arms a command and its echo must not interleave with the other arm's.
+        self._command_lock = threading.Lock()
         self._echo = None
 
     def on_status(self, value):
@@ -180,10 +183,11 @@ class Esp32Suction:
         _check_request(arm, operation)
         self._guard()
         command = self._command(arm, operation)
-        with self._lock:
-            self._echo = None
-        self._publish(arm, command)
-        self._await_echo(arm, command)
+        with self._command_lock:
+            with self._lock:
+                self._echo = None
+            self._publish(arm, command)
+            self._await_echo(arm, command)
         # Grasp: let the vacuum build. Release: let it vent, or the lift that follows drags the
         # object along (field run 2026-11-17, arm 1 in B).
         self._wait_for_vacuum()

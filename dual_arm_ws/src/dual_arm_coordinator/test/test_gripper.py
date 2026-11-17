@@ -482,3 +482,36 @@ class Factory(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Esp32OverlappedArms(unittest.TestCase):
+    """Overlapped transfer: both arms may command suction at once, and the echo names no arm."""
+
+    def test_commands_from_two_arms_do_not_take_each_others_echo(self):
+        errors, events = [], []
+        backend = None
+
+        def publish(arm, command):
+            events.append(('sent', command))
+            # The firmware answers a moment later.
+            threading.Timer(0.05, lambda: (events.append(('echo', command)), backend.on_status(command))).start()
+
+        class Confirmer:
+            def suction(self, arm, operation):
+                pass
+
+        backend = Esp32Suction(publish, {'arm1': 1, 'arm2': 2}, 2.0, 0.0, Confirmer(), lambda: None)
+
+        def run(arm):
+            try:
+                backend.suction(arm, 'grasp')
+            except Exception as error:  # noqa: BLE001 - collected for the assertion
+                errors.append(error)
+        threads = [threading.Thread(target=run, args=(arm,)) for arm in ('arm1', 'arm2')]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(5.0)
+        self.assertEqual(errors, [])
+        # Each command is answered before the next one is sent.
+        self.assertEqual([kind for kind, _ in events], ['sent', 'echo', 'sent', 'echo'])

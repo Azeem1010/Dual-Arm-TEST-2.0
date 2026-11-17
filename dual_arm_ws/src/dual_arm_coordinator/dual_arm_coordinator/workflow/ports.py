@@ -68,6 +68,8 @@ class WorkflowSettings:
     # Prototype, taught B: arm 1 lifts straight up to this height after releasing; None keeps the
     # taught joint-line lift.
     b_release_lift_z: float = None
+    # Prototype: arm 1 picks the next object while arm 2 carries the previous one (overlap block).
+    overlap: bool = False
 
     @classmethod
     def from_config(cls, config):
@@ -83,7 +85,8 @@ class WorkflowSettings:
                    a_pick_offset=tuple(config.get('a_pick_offset_xy_m', (0.0, 0.0))),
                    a_press=float(config.get('a_press_m', 0.0)),
                    b_release_lift_z=(heights['approach_z_m'] + config['b_release_lift_extra_m']
-                                     if 'b_release_lift_extra_m' in config else None))
+                                     if 'b_release_lift_extra_m' in config else None),
+                   overlap=config.get('overlap') is not None)
 
 
 class TaskIO:

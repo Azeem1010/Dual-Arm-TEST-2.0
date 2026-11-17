@@ -5,6 +5,7 @@ from ..resources import SlotManager, ZoneManager
 from .arm1_workflow import Arm1Workflow
 from .arm2_workflow import Arm2Workflow
 from .context import TaskContext
+from .overlap import OverlapRun
 from .ports import TaskCancelled, TaskFault
 
 ARMS = ('arm1', 'arm2')
@@ -89,6 +90,8 @@ class Transfer:
         for arm in ARMS:
             self.ctx.step(arm, 'INITIAL_HOME')
             self.io.move_home(arm)
+        if self.ctx.settings.overlap:
+            return self._finish_overlap(limit)
         for _ in range(limit):
             self.io.guard()
             if all(self.ctx.occupied()):
@@ -102,19 +105,33 @@ class Transfer:
                 Arm1Workflow(self.ctx).run()
             Arm2Workflow(self.ctx).run()
             self.journal.update(completed=self.journal.data['completed'] + 1)
+        return self._finish()
+
+    def _finish(self, message=''):
         if all(self.ctx.occupied()):
-            self.journal.update(state='FULL', active_arm='')
+            self.journal.update(state='FULL', active_arm='', message=message)
             self.gate.issue(RECOVERY)
             return 'FULL'
-        self.journal.update(state='SUCCEEDED', active_arm='')
+        self.journal.update(state='SUCCEEDED', active_arm='', message=message)
         return 'SUCCEEDED'
+
+    def _finish_overlap(self, limit):
+        """Prototype overlap: both arms at once (workflow/overlap.py). Zone A running empty ends the run."""
+        run = OverlapRun(self.ctx, self._preflight_slot)
+        run.run(limit)
+        message = ''
+        if run.a_empty_after is not None:
+            message = f'Zone A was empty after {run.a_empty_after} pick(s) in this run'
+        return self._finish(message)
 
     def _preflight_next_slot(self):
         """Stop before taking an object that could not be delivered, so none is stranded in B."""
-        settings = self.ctx.settings
-        if settings.b_joints:
+        if self.ctx.settings.b_joints:
             self.io.check_b('arm2')
-        slot = self.ctx.occupied().index(False) + 1
+        self._preflight_slot(self.ctx.occupied().index(False) + 1)
+
+    def _preflight_slot(self, slot):
+        settings = self.ctx.settings
         if settings.c_slot_joints:
             self.io.check_slot('arm2', slot)
             return

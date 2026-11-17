@@ -79,7 +79,16 @@ MAX_A_PRESS_M = 0.008
 # turned j1 back while the cup still touched the object and pushed it).
 B_LIFT_KEY = 'b_release_lift_extra_m'
 MAX_B_LIFT_EXTRA_M = 0.03
-OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY)
+# Optional: overlapped transfer (prototype only, user decision 2026-11-17): arm 1 picks the next
+# object while arm 2 carries the previous one to C, and puts it in B once arm 2 has left B. Both
+# arms may then move at once; every trajectory first reserves the x range the arm's joints sweep
+# (padded by clearance_m on each side), and an arm waits up to wait_s for the other's range.
+OVERLAP_KEY = 'overlap'
+_OVERLAP_SHAPE = dict.fromkeys(('clearance_m', 'wait_s'))
+OVERLAP_CLEARANCE_RANGE_M = (0.01, 0.10)
+OVERLAP_WAIT_RANGE_S = (1.0, 600.0)
+OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY,
+                 OVERLAP_KEY)
 
 
 class TaskConfigError(ValueError):
@@ -310,6 +319,27 @@ def _check_b_lift(doc):
     return errors
 
 
+def _check_overlap(doc):
+    node = doc[OVERLAP_KEY]
+    if not isinstance(node, dict):
+        return [f'{OVERLAP_KEY} must be a mapping']
+    errors = _shape_errors(node, _OVERLAP_SHAPE, f'{OVERLAP_KEY}.')
+    if errors:
+        return errors
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{OVERLAP_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    if doc['gripper']['auto_confirm'] is not True:
+        # One operator confirmation at a time; two arms could ask at once.
+        errors.append(f'{OVERLAP_KEY} needs gripper.auto_confirm')
+    low, high = OVERLAP_CLEARANCE_RANGE_M
+    if not _is_number(node['clearance_m']) or not low <= node['clearance_m'] <= high:
+        errors.append(f'{OVERLAP_KEY}.clearance_m must be within [{low}, {high}] m')
+    low, high = OVERLAP_WAIT_RANGE_S
+    if not _is_number(node['wait_s']) or not low <= node['wait_s'] <= high:
+        errors.append(f'{OVERLAP_KEY}.wait_s must be within [{low}, {high}] s')
+    return errors
+
+
 def max_resumes(doc):
     """How often a run may resume itself after a fault; 0 when the configuration does not allow it."""
     return doc[AUTO_RESUME_KEY]['max_resumes'] if AUTO_RESUME_KEY in doc else 0
@@ -340,6 +370,8 @@ def validate(doc):
             errors += _check_a_press(doc)
         if B_LIFT_KEY in present:
             errors += _check_b_lift(doc)
+        if OVERLAP_KEY in present:
+            errors += _check_overlap(doc)
     if errors:
         raise TaskConfigError('; '.join(errors))
     return doc

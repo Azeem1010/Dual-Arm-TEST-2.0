@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 Overlapped transfer in prototype mode (連續搬運)
+
+Arm 1 picks the next object while arm 2 carries the previous one; x lanes keep the arms apart. Details: evidence/overlap_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 450 / 320 (pytest_coordinator.log, pytest_hmi.log) |
+| Overlap tests repeated 10 times (thread timing) | PASS | 17 each run |
+| Lane check on prototype poses (model, joint-line paths) | PASS | lanes_check.txt: no conflict; tightest gap 11 mm (arm1 B vs arm2 C) |
+| MoveIt plan-only + FollowJointTrajectory (Mock Serial) | NOT_RUN | real system was running on the Orin |
+| Real arms | NOT_RUN | |
+
 ## 2026-11-17 ESP32 suction on the stop and shutdown buttons
 
 強制停止 sends suction 0; 關閉系統 (prototype) sends 0, then stops the launch with the micro-ROS agent it now starts. Details: evidence/esp32_stop_20261117/README.md.

@@ -38,6 +38,14 @@ class CadKinematics:
             raise ValueError('Expected exactly four active joints')
 
     def forward(self,q):
+        return self._walk(q)[-1]
+
+    def frame_points(self,q):
+        """World positions of every frame along the chain, base to TCP (overlap lanes)."""
+        return np.array([t[:3,3] for t in self._walk(q)])
+
+    def _walk(self,q):
+        frames=[]
         t=np.eye(4)
         index=0
         for joint in self.chain:
@@ -53,7 +61,8 @@ class CadKinematics:
                 rotation[:3,:3]=Rotation.from_rotvec(axis*q[index]).as_matrix()
                 t=t@rotation
                 index+=1
-        return t
+            frames.append(t)
+        return frames
 
     def solve(self,target,seed=None):
         target=np.asarray(target,dtype=float)

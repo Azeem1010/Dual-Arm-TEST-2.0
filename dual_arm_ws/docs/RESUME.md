@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-17：使用者決定做「連續搬運」：Prototype 的 `overlap` 區塊開啟時，Arm 2 把上一件送去 C 的同時，Arm 1 去 A 取下一件，到 HOME 拿著等 Arm 2 離開 B 再放；B 區仍然同時只有一個擁有者。兩臂同時動作時，MoveIt 只負責規劃，軌跡直接送給各臂控制器，送出前先在模型裡預約整段軌跡的 x 範圍（`clearance_m` 0.025），和另一臂重疊就等待（`wait_s` 240）。A 區取完就結束（SUCCEEDED）。模擬和嚴格實機不變。單元測試 PASS（coordinator 450、HMI 320）；**MoveIt 只規劃＋直接送控制器這條路徑還沒在 Mock Serial 或實機跑過**（當時 Orin 上實機系統在跑，沒啟動 Mock，也沒重建 install）。要回到一次一臂，刪掉 `overlap` 區塊後重建。見 `docs/evidence/overlap_20261117/`。
+
 - 2026-11-17：使用者決定「強制停止」也讓 ESP32 吸盤全關（送 0，吸住的瓶蓋會掉），停止時先送一次，取消回覆後再送一次；coordinator 每次送 ESP32 命令前都會再檢查 guard。Prototype 的 micro-ROS agent 改由介面啟動（`hardware.esp32_port`、`hardware.microros_setup`，Orin 本機已填 CP2102）；「關閉系統」會先送 0 並等回音，再關掉 launch 和 agent，沒收到回音也會繼續關閉，但會記一筆 DANGER。coordinator 故障時吸盤仍維持原狀。單元測試、替身 ESP32、agent 啟停 PASS；實機 NOT_RUN（先關掉手動開的 agent）。見 `docs/evidence/esp32_stop_20261117/`。
 
 - 2026-11-15：使用者決定 Prototype 的 B 區交接也改用 11-11 H1 示教關節值（arm1 用重做的 `teach_arm1_B_2.csv`，arm2 用 `teach_arm2_B.csv`）。`config/prototype/coordinator.yaml` 新增 `b_teach`；兩臂 B 區接近、下降、抬起都到示教姿勢（`move_b`），Arm 2 仍用相機確認 B 區有一個物件。示教時壓著瓶蓋（使用者 11-15 確認），讀值就是接觸姿勢。測試與 Mock 啟動 PASS，`move_b` 尚未在 MoveIt＋控制器上跑過，實機待測（Orin 要 pull 後重建）。見 `docs/evidence/b_teach_20261115/`。

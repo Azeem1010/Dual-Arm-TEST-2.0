@@ -369,6 +369,40 @@ class AutoResume(unittest.TestCase):
         self.assert_refused(self.with_resume(node=[]), 'auto_resume must be a mapping')
 
 
+class Overlap(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_overlap(self, doc=None, node=None):
+        doc = doc or prototype_doc()
+        doc['overlap'] = {'clearance_m': 0.025, 'wait_s': 240.0} if node is None else node
+        return doc
+
+    def test_prototype_may_overlap(self):
+        task_config.validate(self.with_overlap())
+
+    def test_only_prototype_may_overlap(self):
+        self.assert_refused(self.with_overlap(sim_doc()), "overlap is only allowed in ('prototype',)")
+
+    def test_needs_automatic_suction_confirmation(self):
+        doc = self.with_overlap()
+        doc['gripper']['auto_confirm'] = False
+        self.assert_refused(doc, 'overlap needs gripper.auto_confirm')
+
+    def test_values_are_bounded(self):
+        for key, value in (('clearance_m', 0.005), ('clearance_m', 0.2), ('clearance_m', None),
+                           ('wait_s', 0.5), ('wait_s', 700.0), ('wait_s', 'x')):
+            with self.subTest(key=key, value=value):
+                node = {'clearance_m': 0.025, 'wait_s': 240.0, key: value}
+                self.assert_refused(self.with_overlap(node=node), f'overlap.{key}')
+
+    def test_shape_is_checked(self):
+        self.assert_refused(self.with_overlap(node={'clearance_m': 0.02}), 'overlap.wait_s is missing')
+        self.assert_refused(self.with_overlap(node=[]), 'overlap must be a mapping')
+
+
 class BTeach(unittest.TestCase):
     def assert_refused(self, doc, text):
         with self.assertRaises(TaskConfigError) as caught:
