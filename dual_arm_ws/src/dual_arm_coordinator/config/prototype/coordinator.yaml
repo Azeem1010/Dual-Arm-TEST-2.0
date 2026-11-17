@@ -140,6 +140,19 @@ descent_correction:
 # object, or when HOME or recovery fails. Remove this block to stop after every fault again.
 auto_resume:
   max_resumes: 3
+# Overlapped transfer (user decision 2026-11-17, 連續搬運): arm 1 picks the next object from A
+# while arm 2 carries the previous one to C, and puts it into B once arm 2 has left B. Both arms
+# then move at once: MoveIt only plans (one plan at a time) and each trajectory goes straight to
+# the arm's controller after reserving the x range all of its joint frames sweep, padded by
+# clearance_m on each side; an arm waits up to wait_s for the other's range. In the model arm 1
+# in A stays below x -0.085 and arm 2 in B above x 0.021, in C and HOME above 0.10.
+# clearance_m covers half a link's width and tracking error; not measured. Zone A running empty
+# ends the run. Remove this block to go back to one arm at a time.
+# OFF for now (user decision 2026-11-17, speed-up step 5): merged but not yet run on Mock Serial or
+# the real arms. To try it, set direct_transfer to false (the two cannot both be on) and uncomment.
+# overlap:
+#   clearance_m: 0.025
+#   wait_s: 240.0
 motion:
   planning_s: 10.0
   planning_attempts: 3

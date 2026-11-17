@@ -25,12 +25,24 @@ class Arm1Workflow:
         return (target.x, target.y)
 
     def run(self):
+        direct = self.ctx.settings.direct_transfer
+        self.pick_a(direct=direct)
+        self.place_b(reserved=direct)
+
+    def pick_a(self, overlapped=False, direct=False):
+        """Take one object from zone A and stop HOME holding it.
+
+        overlapped: arm 2 may be in B or carrying an object meanwhile, so zone B is not checked
+        here; the overlapped run checked the B poses at its start and place_b checks B itself.
+        direct (direct_transfer, never with overlapped): zone B is taken in PREFLIGHT and the arm
+        stops above A, holding the object, for place_b(reserved=True).
+        """
         ctx, io, settings = self.ctx, self.ctx.io, self.ctx.settings
         ctx.step(ARM, 'CHECK_ZONES')
         view = ctx.zone_view()
         if not view.a_has_object:
             raise TaskFault('Zone A has no object')
-        if view.b_has_object or not view.b_arm_clear:
+        if not overlapped and (view.b_has_object or not view.b_arm_clear):
             raise TaskFault('Zone B is not empty and clear')
 
         ctx.step(ARM, 'QUERY_TARGET')
@@ -39,16 +51,13 @@ class Arm1Workflow:
         a_xy = (observed[0] + settings.a_pick_offset[0], observed[1] + settings.a_pick_offset[1])
         above_a = ctx.point(a_xy, settings.approach_z)
         at_a = ctx.point(a_xy, settings.contact_z - settings.a_press)
-        above_b = ctx.point(settings.b_place, settings.approach_z)
-        at_b = ctx.point(settings.b_place, settings.contact_z)
-
         taught = settings.b_joints
         ctx.step(ARM, 'PREFLIGHT')
-        for point in (above_a, at_a) if taught else (above_a, at_a, above_b, at_b):
+        b_points = () if taught or overlapped else self._b_points()
+        for point in (above_a, at_a) + b_points:
             io.check_reachable(ARM, point)
-        if taught:
+        if taught and not overlapped:
             io.check_b(ARM)
-        direct = settings.direct_transfer
         if direct:
             # Without HOME between A and B, B is taken now, while both arms are still HOME (the
             # CHECK_ZONES view). Done inside PREFLIGHT so the progress display never steps back.
@@ -71,6 +80,27 @@ class Arm1Workflow:
             ctx.step(ARM, 'HOME_HOLDING')
             io.move_home(ARM)
 
+    def _b_points(self):
+        settings = self.ctx.settings
+        return (self.ctx.point(settings.b_place, settings.approach_z), self.ctx.point(settings.b_place, settings.contact_z))
+
+    def check_b_poses(self):
+        """Where arm 1 will put objects down in B is valid (with B empty and arm 2 out of it)."""
+        if self.ctx.settings.b_joints:
+            self.ctx.io.check_b(ARM)
+            return
+        for point in self._b_points():
+            self.ctx.io.check_reachable(ARM, point)
+
+    def place_b(self, reserved=False):
+        """Holding an object: put it down in zone B, return HOME and verify it lies there.
+
+        From HOME it takes zone B first; reserved (direct_transfer) means pick_a already took it.
+        """
+        ctx, io, settings = self.ctx, self.ctx.io, self.ctx.settings
+        taught = settings.b_joints
+        above_b, at_b = self._b_points()
+        if not reserved:
             ctx.step(ARM, 'RESERVE_B')
             view = ctx.zone_view()
             if view.b_has_object or not view.b_arm_clear:

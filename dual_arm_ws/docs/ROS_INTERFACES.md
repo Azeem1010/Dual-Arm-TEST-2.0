@@ -40,7 +40,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 
 | 任務與安全節點 | 來源 | 發布 | 訂閱 | Service／Action |
 |---|---|---|---|---|
-| `dual_arm_coordinator` | `dual_arm_coordinator` | `/dual_arm/status`、`/dual_arm/permit`、`/handoff/b_state`、`/gripper/armN/command` | `/joint_states`、`/safety/estop`、`/gripper/armN/state`、`/ground_truth/cap_{1..8}` | Server：`/dual_arm/{start,cancel,confirm,recover,go_home}`。Client：`/move_action`、`/execute_trajectory`、`/apply_planning_scene`、`/check_state_validity`、`/get_planning_scene` |
+| `dual_arm_coordinator` | `dual_arm_coordinator` | `/dual_arm/status`、`/dual_arm/permit`、`/handoff/b_state`、`/gripper/armN/command` | `/joint_states`、`/safety/estop`、`/gripper/armN/state`、`/ground_truth/cap_{1..8}` | Server：`/dual_arm/{start,cancel,confirm,recover,go_home}`。Client：`/move_action`、`/execute_trajectory`、`/armN_controller/follow_joint_trajectory`（只有 Prototype `overlap`）、`/apply_planning_scene`、`/check_state_validity`、`/get_planning_scene` |
 | `dual_arm_hmi_monitor` | `dual_arm_hmi`（操作介面，監看） | 無 | 三支相機 `image_raw`、`/vision/*/debug_image`、`/view_*/image_raw`、`/joint_states`、`/dynamic_joint_states`、`/armN_controller/controller_state`、`/dual_arm/status`、`/safety/status`、`/robot_description`、`/vision/env/zone_state`、`/vision/arm2/grid_state`、`/vision/calibration_status` | Client：`/controller_manager/list_controllers`、`/dual_arm_coordinator/get_parameters` |
 | `dual_arm_hmi_command` | `dual_arm_hmi`（操作介面，指令；`--monitor` 不建立） | 無 | 無 | Client：`/safety/{trigger_stop,reset}`、`/dual_arm/{start,cancel,go_home,recover}` |
 | `safety_supervisor` | `dual_arm_coordinator` | `/safety/status` | `/safety/estop`、`/dual_arm/permit` | Server：`/safety/reset`、`/safety/trigger_stop`。Client：`/controller_manager/switch_controller`、`/controller_manager/list_controllers` |
@@ -132,6 +132,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 |---|---|---|---|
 | `/move_action` | `moveit_msgs/action/MoveGroup` | `move_group` | `dual_arm_coordinator`、`manual_xy`、`scripts/demo_transfer_*.py`、`smoke_runtime.py`、`show_gazebo_motion.py` |
 | `/execute_trajectory` | `moveit_msgs/action/ExecuteTrajectory` | `move_group` | `dual_arm_coordinator`（接觸段） |
+| `/armN_controller/follow_joint_trajectory` | `control_msgs/action/FollowJointTrajectory` | `armN_controller` | `dual_arm_coordinator`（Prototype `overlap`：兩臂同時動作時全部軌跡；`/move_action` 只規劃） |
 | `/arm1_controller/follow_joint_trajectory` | `control_msgs/action/FollowJointTrajectory` | `arm1_controller` | `moveit_simple_controller_manager`、`demo_transfer_pipeline.py`、`test_cm530_mock.py` |
 | `/arm2_controller/follow_joint_trajectory` | `control_msgs/action/FollowJointTrajectory` | `arm2_controller` | `moveit_simple_controller_manager`、`demo_transfer_pipeline.py` |
 

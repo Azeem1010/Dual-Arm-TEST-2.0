@@ -71,6 +71,9 @@ class WorkflowSettings:
     # Prototype: arm 1 goes from A straight to B and arm 2 from B straight to C, without HOME in
     # between. Arm 1 takes zone B before it leaves HOME; arm 2 gives it back once it is HOME again.
     direct_transfer: bool = False
+    # Prototype: arm 1 picks the next object while arm 2 carries the previous one (overlap block).
+    # Never together with direct_transfer (task_config refuses it).
+    overlap: bool = False
 
     @classmethod
     def from_config(cls, config):
@@ -87,7 +90,8 @@ class WorkflowSettings:
                    a_press=float(config.get('a_press_m', 0.0)),
                    b_release_lift_z=(heights['approach_z_m'] + config['b_release_lift_extra_m']
                                      if 'b_release_lift_extra_m' in config else None),
-                   direct_transfer=config.get('direct_transfer', False) is True)
+                   direct_transfer=config.get('direct_transfer', False) is True,
+                   overlap=config.get('overlap') is not None)
 
 
 class TaskIO:

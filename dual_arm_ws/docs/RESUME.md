@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-17：加速計畫 (5) 已完成：合入 Dual-Arm-TEST-2.0 `prototype-overlap-20261117`（`770f960`）。`overlap` 與 `direct_transfer` 不能同時開；原型設定維持 `direct_transfer: true`，`overlap` 區塊註解掉（預設關，下面那條「連續搬運」描述的程式碼已在但沒開）。arm1 `run()` 把 direct 傳進分支的 `pick_a`/`place_b`；arm2 兩條釋放 B 的路徑都會通知 overlap；所有計時路徑（接觸、示教直線、固定路徑）都經過分支的 `_send`，開 overlap 時也會預約 x 範圍。測試 PASS（coordinator 499、HMI 320、overlap 重跑 5 次），overlap 經 MoveIt／控制器與實機 NOT_RUN。加速計畫 1–5 全部完成；下一步要等 Orin：先用預設跑 2 件看 TIMING 分段表，穩定後再試 overlap（先 Mock Serial `go_home`，再實機 `cycles:=2`）。見 `docs/evidence/merge_overlap_20261117/`。
+
 - 2026-11-17：加速計畫 (4) 已完成：原型 `fixed_transits: true`，非接觸移動（HOME、A/B/C 上方）先走關節直線、以一般速度執行，不再每次 MoveIt 規劃；任一點碰撞檢查不過，或吸盤低於兩端較低者超過 5 mm（板子沒有碰撞幾何），就退回 MoveIt。取消或安全停止不會被當成退回。模型檢查原型流程 22 段路徑全部通過，每段 3.5–8.0 秒。測試 PASS（coordinator 472、HMI 320），move_group 碰撞檢查與實機 NOT_RUN；實機看 log 的 `fixed joint path refused`。見 `docs/evidence/fixed_transits_20261117/`。下一步：(5) 合入 overlap 分支、預設關。
 
 - 2026-11-17：加速計畫 (2) 接觸區分兩段，使用者決定跳過（模型計算每件只省約 1.5 秒，因為接觸段加速度只有 0.3 rad/s²）。(3) 已完成：原型 `grasp_settle_s` 1.2 秒（放開仍等 2.0 秒）；等停穩先用已收到的讀值套用同一套判斷，過去兩個窗格已經停穩就不再多等；接觸路徑的逐點碰撞檢查改成一次全部送出再等結果（每點照樣檢查）。後兩項所有模式都生效、判斷標準不變。測試 PASS（coordinator 462、HMI 320），實機 NOT_RUN；實機若吸取後瓶蓋掉落，調高或刪掉 `grasp_settle_s`。見 `docs/evidence/shorter_waits_20261117/`。下一步：(4) 示教點之間走固定關節路徑。
@@ -18,6 +20,8 @@
 - 2026-11-17：身邊沒有 Orin，使用者同意的加速順序：(1) 時間記錄 →(2) 接觸區分兩段 →(3) 縮短等待 →(4) 示教點之間走固定關節路徑 →(5) 合入 overlap 分支但預設關。每項都放在原型設定開關後面、分開提交；等待點取代 HOME、B 區雙格要等 overlap 實機跑過再做。(1) 已完成：新增 `timing.py`，每一步記錄耗時與細項（規劃、移動、到位、等停穩、驗證、等相機、相機、ESP32 回音、吸盤等待），每步一行 `TIMING`、任務結束一段 `TIMING SUMMARY`，CSV 寫在 journal 旁的 `timing/`（原型：`~/.ros/dual_arm/timing/`）。只記錄，不改動作。測試 PASS（coordinator 448、HMI 320），實機輸出 NOT_RUN。見 `docs/evidence/timing_20261117/`。下一步：(2)。
 
 - 2026-11-17：使用者要求加快 Prototype 流程，先拿掉中途回 HOME。11-17 影片顯示一個物件約 153 秒，其中兩臂吸著瓶蓋回 HOME 再出發約多 25 秒。新增 `direct_transfer`（只限 prototype，已在 `config/prototype/coordinator.yaml` 開啟）：arm1 在 PREFLIGHT 就預約 B 區，A 上方直接到 B 上方；arm2 B 上方直接到 C 上方，回 HOME 後在 VERIFY_C 確認 B 區已清空才釋放 B。單元測試 PASS（coordinator 437、HMI 320），MoveIt 直接路徑與實機 NOT_RUN（Orin 要 pull 後重建）。同日使用者決定一般移動加快：`transport_scale` 0.3 → 0.6（0.15 → 0.3 rad/s），接觸段先不動（`contact_scale` 0.2、`acceleration_scale` 0.3 都不變，因為接觸軌跡也用加速度設定）；實機跑時注意 log 有沒有 `exceeds max_step_raw`。下一步候選：加快接觸區（兩段式下降、`settle_s`、吸盤等待）、量驅動每輪時間後再把 transport 拉到 1.0。見 `docs/evidence/direct_transfer_20261117/`。
+
+- 2026-11-17：使用者決定做「連續搬運」：Prototype 的 `overlap` 區塊開啟時，Arm 2 把上一件送去 C 的同時，Arm 1 去 A 取下一件，到 HOME 拿著等 Arm 2 離開 B 再放；B 區仍然同時只有一個擁有者。兩臂同時動作時，MoveIt 只負責規劃，軌跡直接送給各臂控制器，送出前先在模型裡預約整段軌跡的 x 範圍（`clearance_m` 0.025），和另一臂重疊就等待（`wait_s` 240）。A 區取完就結束（SUCCEEDED）。模擬和嚴格實機不變。單元測試 PASS（coordinator 450、HMI 320）；**MoveIt 只規劃＋直接送控制器這條路徑還沒在 Mock Serial 或實機跑過**（當時 Orin 上實機系統在跑，沒啟動 Mock，也沒重建 install）。要回到一次一臂，刪掉 `overlap` 區塊後重建。見 `docs/evidence/overlap_20261117/`。
 
 - 2026-11-17：使用者決定「強制停止」也讓 ESP32 吸盤全關（送 0，吸住的瓶蓋會掉），停止時先送一次，取消回覆後再送一次；coordinator 每次送 ESP32 命令前都會再檢查 guard。Prototype 的 micro-ROS agent 改由介面啟動（`hardware.esp32_port`、`hardware.microros_setup`，Orin 本機已填 CP2102）；「關閉系統」會先送 0 並等回音，再關掉 launch 和 agent，沒收到回音也會繼續關閉，但會記一筆 DANGER。coordinator 故障時吸盤仍維持原狀。單元測試、替身 ESP32、agent 啟停 PASS；實機 NOT_RUN（先關掉手動開的 agent）。見 `docs/evidence/esp32_stop_20261117/`。
 

@@ -1,4 +1,6 @@
 """Shared run state: persists each change before the action that depends on it."""
+import threading
+
 from .. import timing
 from .ports import TaskFault
 
@@ -8,6 +10,8 @@ class TaskContext:
         self.io, self.settings, self.journal = io, settings, journal
         self.zone, self.slots = zone, slots
         self.b_token = None
+        # Overlapped arms update the holding record from two threads.
+        self._holding_lock = threading.Lock()
 
     def step(self, arm, state):
         self.io.guard()
@@ -15,9 +19,10 @@ class TaskContext:
         self.journal.update(active_arm=arm, state=f'{arm.upper()}:{state}')
 
     def set_holding(self, arm, value):
-        holding = self.journal.data['holding']
-        holding[arm] = value
-        self.journal.update(holding=holding)
+        with self._holding_lock:
+            holding = self.journal.data['holding']
+            holding[arm] = value
+            self.journal.update(holding=holding)
 
     def occupied(self):
         return self.journal.data['occupied']

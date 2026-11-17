@@ -2,7 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: prototype fixed transits (2026-11-17)
+## Latest result: overlap branch merged, switched off (2026-11-17)
+
+- Step (5) done: Dual-Arm-TEST-2.0 `prototype-overlap-20261117` (`770f960`) merged. `overlap` and `direct_transfer` cannot both be on; the prototype file keeps `direct_transfer: true` and has the `overlap` block commented out, so the section below about overlap describes code that is present but off.
+- Joined: arm 1 `run()` passes direct/reserved into the branch's `pick_a`/`place_b`; arm 2 calls `on_b_released` from both release paths; every timed path (contact, taught lines, fixed transits) goes through the branch's `_send`, so it reserves a lane when overlap is on. Details: evidence/merge_overlap_20261117/README.md.
+- Coordinator 499 and HMI 320 tests pass; overlap tests 5 × 17 PASS; prototype config PASS. Overlap through MoveIt/controllers and on the real arms NOT_RUN. Speed-up steps 1–5 are all done; waiting points instead of HOME and a two-place B wait for overlap to run on the real arms.
+
+## Earlier result: prototype fixed transits (2026-11-17)
 
 - Step (4) done: `fixed_transits: true` (prototype only). Non-contact moves first run the joint line to their target at transport speed; refused, and planned with MoveIt as before, when a waypoint fails the validity check or the tool dips more than 5 mm below the lower end (the board has no collision geometry). Cancels are never turned into a fallback.
 - Model check of all 22 transits of the prototype flow: dip check PASS, 3.5–8.0 s each. Coordinator 472 and HMI 320 tests pass; prototype config PASS (evidence/fixed_transits_20261117/). Validity in move_group and the real arms NOT_RUN.
@@ -25,6 +31,17 @@ Current status by work package is in MODIFICATION_PLAN.md section 6. Each sectio
 - New optional `direct_transfer` (prototype only, on in `config/prototype/coordinator.yaml`): arm 1 takes zone B in `PREFLIGHT` while both arms are HOME and goes above A → above B directly; arm 2 goes above B → above C directly and releases B in `VERIFY_C`, after it is HOME and the camera sees B empty. Simulation and strict hardware unchanged.
 - Same day, user decision: prototype `transport_scale` 0.3 → 0.6 (planned moves 0.15 → 0.3 rad/s). Contact moves unchanged: `contact_scale` 0.2 and `acceleration_scale` 0.3 (the contact trajectories also use it). Watch the driver log for `exceeds max_step_raw`; the scheduler cycle time was not measured.
 - Coordinator 437 and HMI 320 tests pass; prototype config PASS. The direct MoveIt paths, the faster transport and the real arms are NOT_RUN.
+
+## Earlier result: overlapped transfer in prototype mode (連續搬運, 2026-11-17)
+
+User decision 2026-11-17: arm 1 picks the next object while arm 2 carries the previous one to C; both arms may move at once; prototype only, behind a config block; while overlapping arm 1 stays in A/HOME. Simulation and strict hardware still run one arm at a time (C14 unchanged there). Evidence: evidence/overlap_20261117/.
+
+- New `overlap` block in `config/prototype/coordinator.yaml` (`clearance_m` 0.025, `wait_s` 240; prototype only, needs `gripper.auto_confirm`). Remove it to go back to one arm at a time.
+- `workflow/overlap.py`: one thread per arm. Arm 1 picks from A and waits HOME holding until arm 2 has taken the previous object out of B and left; arm 2 enters B only after arm 1 verified its placement and left. Zone B keeps its single owner. B poses of both arms and every slot of the run are checked once at the start (later the other arm or the object in B would make them look invalid). Zone A running empty ends the run SUCCEEDED with a message. When one arm faults the other finishes the part it is in (arm 1 a pick or a placement, arm 2 a whole B-to-C transfer) and stops; cancel and safety stop both at once. Auto resume then usually declines because arm 1 holds its next object.
+- Motion (`gateways/motion.py`, `lanes.py`): with overlap, MoveIt only plans (one plan at a time, `/move_action` takes one goal) and every trajectory goes straight to `/armN_controller/follow_joint_trajectory`. Before it is sent, the x range of all joint frames along the trajectory (filled in at 0.02 rad) is padded by `clearance_m` and reserved; it is granted only clear of the other arm's reservation, or of the range the other arm stands in. Planned trajectories start from the joints read just before sending (same 10-count limit as contact moves). This is an x-only, model-only check: calibration error and link shapes beyond the clearance are not seen.
+- ESP32 commands are serialized (the echo does not name the arm). Journal `holding` updates are locked. The journal `state`/`active_arm` show whichever arm stepped last.
+- HMI label 搬運循環數（模擬） → 搬運件數（模擬／Prototype）; Prototype already passed the count.
+- Coordinator 450 tests pass (25 new: overlap order and faults with a threaded fake world, lanes, config, ESP32 echo, frame points); HMI 320. **NOT_RUN: the FollowJointTrajectory path through MoveIt plan-only and the controllers (Mock Serial was not started because the real prototype system was running on the Orin), real arms.** The install tree was not rebuilt for the same reason.
 
 ## Earlier result: prototype field run fixes on the Orin (2026-11-17)
 

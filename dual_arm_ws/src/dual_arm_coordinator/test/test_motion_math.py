@@ -316,3 +316,24 @@ class BPoses(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class FramePoints(unittest.TestCase):
+    """Overlap lanes take the x range of every chain frame."""
+
+    @classmethod
+    def setUpClass(cls):
+        urdf = URDF.read_text(encoding='utf-8')
+        cls.models = {arm: CadKinematics(urdf, arm) for arm in ('arm1', 'arm2')}
+
+    def test_last_frame_is_the_tcp_and_first_the_base(self):
+        for arm, model in self.models.items():
+            q = [0.1, -0.3, 0.5, 0.2]
+            points = model.frame_points(q)
+            np.testing.assert_allclose(points[-1], model.forward(q)[:3, 3])
+            self.assertEqual(points.shape[1], 3)
+
+    def test_arms_stand_on_their_own_side(self):
+        upright = [0.0, 0.0, 0.0, 0.0]
+        self.assertLess(self.models['arm1'].frame_points(upright)[:, 0].max(), 0.0)
+        self.assertGreater(self.models['arm2'].frame_points(upright)[:, 0].min(), 0.0)

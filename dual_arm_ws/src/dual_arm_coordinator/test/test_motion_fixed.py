@@ -48,7 +48,7 @@ class FixedTransit(unittest.TestCase):
         g._speeds = {'transport_scale': 0.6, 'contact_scale': 0.2, 'acceleration_scale': 0.3}
         g._arms = {'arm1': {'planning_group': 'arm1', 'controller': 'arm1_controller'}}
         g._move_group, g._execute = 'move_group', 'execute'
-        g._fixed_transits = True
+        g._fixed_transits, g._lanes = True, None
         self.logger = Logger()
         g._node = type('Node', (), {'get_logger': lambda _self: self.logger})()
         g._wait_still = lambda arm, label: None

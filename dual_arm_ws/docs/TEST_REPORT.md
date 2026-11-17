@@ -1,5 +1,16 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 Overlap branch merged, switched off
+
+`prototype-overlap-20261117` merged after the speed-up steps; `overlap` and `direct_transfer` are exclusive, overlap is off in the prototype file. Details: evidence/merge_overlap_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 499 / 320 |
+| test_overlap.py repeated 5 times | PASS | 17 each |
+| Prototype config validation | PASS | prototype_config_check.txt |
+| Overlap through MoveIt and the controllers, real arms | NOT_RUN | |
+
 ## 2026-11-17 Prototype fixed transits
 
 Non-contact moves run a checked joint line before falling back to MoveIt. Details: evidence/fixed_transits_20261117/README.md.
@@ -42,6 +53,18 @@ Arm 1 goes A → B and arm 2 B → C without HOME in between (`direct_transfer`,
 | Prototype config validation | PASS | prototype_config_check.txt |
 | `transport_scale` 0.6: config validation / coordinator tests | PASS | prototype_config_check_speed.txt, coordinator_tests_speed.txt (437) |
 | Direct paths through MoveIt and the controllers | NOT_RUN | |
+| Real arms | NOT_RUN | |
+
+## 2026-11-17 Overlapped transfer in prototype mode (連續搬運)
+
+Arm 1 picks the next object while arm 2 carries the previous one; x lanes keep the arms apart. Details: evidence/overlap_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 450 / 320 (pytest_coordinator.log, pytest_hmi.log) |
+| Overlap tests repeated 10 times (thread timing) | PASS | 17 each run |
+| Lane check on prototype poses (model, joint-line paths) | PASS | lanes_check.txt: no conflict; tightest gap 11 mm (arm1 B vs arm2 C) |
+| MoveIt plan-only + FollowJointTrajectory (Mock Serial) | NOT_RUN | real system was running on the Orin |
 | Real arms | NOT_RUN | |
 
 ## 2026-11-17 ESP32 suction on the stop and shutdown buttons

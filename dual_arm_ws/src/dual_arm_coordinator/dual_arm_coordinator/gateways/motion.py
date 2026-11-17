@@ -11,6 +11,7 @@ import time
 
 from action_msgs.msg import GoalStatus
 from builtin_interfaces.msg import Duration
+from control_msgs.action import FollowJointTrajectory
 from geometry_msgs.msg import Pose
 from moveit_msgs.action import ExecuteTrajectory, MoveGroup
 from moveit_msgs.msg import (AttachedCollisionObject, CollisionObject, Constraints, JointConstraint,
@@ -23,6 +24,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 from .. import timing
 from ..kinematics import CadKinematics
+from ..lanes import XLanes
 from ..motion_math import (joint_line, line_drift, line_points, prepare_b_poses, prepare_slot_poses, solve_line,
                            solve_line_holding_tool, tcp_error,
                            tcp_position, tool_tilt_deg, trapezoid_times)
@@ -51,6 +53,8 @@ _FRESH_START_LIMIT_RAD = 10 * _RAD_PER_COUNT
 _JOINT_LINE_STEP_RAD = 0.01
 # Fixed transits (prototype): how far the tool may go below the lower end of its joint line.
 _FIXED_DIP_M = 0.005
+# Overlap lanes: trajectory points are filled in at this joint step before their x range is taken.
+_SWEEP_STEP_RAD = 0.02
 
 
 def _duration(seconds):
@@ -91,10 +95,23 @@ class MotionGateway:
         # Extra height of the last empty contact move, and of the pick that holds the cap.
         self._contact_lift, self._held_gap = dict.fromkeys(ARMS, 0.0), dict.fromkeys(ARMS, 0.0)
         self._b_object_present = False
+        # Overlapped transfer (prototype): both arms may move at once. MoveIt's move_group runs one
+        # action goal at a time, so it only plans (one plan at a time) and each trajectory goes
+        # straight to that arm's controller, after reserving its x lane (lanes.py).
+        overlap = config.get('overlap')
+        self._lanes = self._plan_lock = None
+        if overlap is not None:
+            self._lanes = XLanes(self._standing_x, overlap['clearance_m'], overlap['wait_s'])
+            self._plan_lock = threading.Lock()
         group = callback_group
         node.create_subscription(JointState, '/joint_states', self._on_joint_state, 10, callback_group=group)
         self._move_group = ActionClient(node, MoveGroup, '/move_action', callback_group=group)
         self._execute = ActionClient(node, ExecuteTrajectory, '/execute_trajectory', callback_group=group)
+        self._follow = {}
+        if self._lanes is not None:
+            self._follow = {arm: ActionClient(node, FollowJointTrajectory,
+                                              f'/{self._arms[arm]["controller"]}/follow_joint_trajectory',
+                                              callback_group=group) for arm in ARMS}
         self._scene = node.create_client(ApplyPlanningScene, '/apply_planning_scene', callback_group=group)
         self._validity = node.create_client(GetStateValidity, '/check_state_validity', callback_group=group)
         self._scene_query = node.create_client(GetPlanningScene, '/get_planning_scene', callback_group=group)
@@ -250,7 +267,8 @@ class MotionGateway:
             time.sleep(0.005)
 
     @timing.timed('move')
-    def _run_action(self, client, goal, label):
+    def _run_action(self, client, goal, label, check=None):
+        """Send goal and wait for its result; check(outcome) names a failure, or None. Returns the outcome."""
         if not client.wait_for_server(timeout_sec=self._cfg['goal_submit_s']):
             raise TaskFault(f'{label} action server is unavailable')
         sent = client.send_goal_async(goal)
@@ -267,14 +285,29 @@ class MotionGateway:
         except BaseException:
             self._cancel(handle, label)
             raise
-        code = outcome.result.error_code.val
-        if outcome.status != GoalStatus.STATUS_SUCCEEDED or code != MoveItErrorCodes.SUCCESS:
-            raise TaskFault(f'{label} failed: status {outcome.status}, MoveIt code {code}')
+        problem = (check or self._moveit_problem)(outcome)
+        if problem is not None:
+            raise TaskFault(f'{label} failed: {problem}')
         # MoveGroup reports how long it planned; move it from 'move' to 'plan'.
         planning = getattr(outcome.result, 'planning_time', None)
         if isinstance(planning, float) and planning > 0.0:
             timing.add('plan', planning)
             timing.add('move', -planning)
+        return outcome
+
+    @staticmethod
+    def _moveit_problem(outcome):
+        code = outcome.result.error_code.val
+        if outcome.status != GoalStatus.STATUS_SUCCEEDED or code != MoveItErrorCodes.SUCCESS:
+            return f'status {outcome.status}, MoveIt code {code}'
+        return None
+
+    @staticmethod
+    def _controller_problem(outcome):
+        code = outcome.result.error_code
+        if outcome.status != GoalStatus.STATUS_SUCCEEDED or code != FollowJointTrajectory.Result.SUCCESSFUL:
+            return f'status {outcome.status}, controller code {code} {outcome.result.error_string}'.rstrip()
+        return None
 
     # --- validity ---
 
@@ -338,8 +371,25 @@ class MotionGateway:
             JointConstraint(joint_name=name, position=float(value), tolerance_above=_GOAL_JOINT_TOLERANCE,
                             tolerance_below=_GOAL_JOINT_TOLERANCE, weight=1.0)
             for name, value in zip(self._models[arm].names, q)])]
-        goal.planning_options.plan_only = False
-        self._run_action(self._move_group, goal, label)
+        if self._lanes is None:
+            goal.planning_options.plan_only = False
+            self._run_action(self._move_group, goal, label)
+            return
+        goal.planning_options.plan_only = True
+        with self._plan_lock:
+            outcome = self._run_action(self._move_group, goal, f'{label} planning')
+        planned = outcome.result.planned_trajectory.joint_trajectory
+        names = list(self._models[arm].names)
+        if sorted(planned.joint_names) != sorted(names) or not planned.points:
+            raise TaskFault(f'{label}: MoveIt planned joints {list(planned.joint_names)}, expected {names}')
+        order = [list(planned.joint_names).index(name) for name in names]
+        path = [[point.positions[index] for index in order] for point in planned.points]
+        # The plan starts where the arm was when planning began; send it from where the arm is now.
+        path = self._fresh_start(arm, path, label)
+        trajectory = JointTrajectory(joint_names=names, points=[
+            JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=point.time_from_start)
+            for q, point in zip(path, planned.points)])
+        self._send(arm, trajectory, path, label)
 
     def _fixed_problem(self, arm, path):
         """Why path may not run as a fixed transit, or None.
@@ -388,9 +438,8 @@ class MotionGateway:
         trajectory = JointTrajectory(joint_names=list(self._models[arm].names), points=[
             JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=_duration(stamp))
             for q, stamp in zip(path, times)])
-        goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
-                                      controller_names=[self._arms[arm]['controller']])
-        self._run_action(self._execute, goal, label)
+        # Through MoveIt, or with overlap straight to the arm's controller once its lane is free.
+        self._send(arm, trajectory, path, label)
         return path[-1]
 
     def move_home(self, arm):
@@ -538,6 +587,42 @@ class MotionGateway:
         """Check every waypoint, start from the joints read now, and run the path at contact speed."""
         self._require_valid_all(arm, path[1:], label)
         return self._run_timed_path(arm, path, label, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'])
+
+    def _send(self, arm, trajectory, path, label):
+        """Run a timed trajectory: through MoveIt, or with overlap straight to the arm's controller in its lane."""
+        if self._lanes is None:
+            goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
+                                          controller_names=[self._arms[arm]['controller']])
+            self._run_action(self._execute, goal, label)
+            return
+        low, high = self.sweep_x(arm, path)
+        self._lanes.reserve(arm, low, high, self._guard, label)
+        try:
+            goal = FollowJointTrajectory.Goal(trajectory=trajectory)
+            self._run_action(self._follow[arm], goal, label, self._controller_problem)
+        finally:
+            self._lanes.finish(arm)
+
+    # --- overlap lanes ---
+
+    def sweep_x(self, arm, path):
+        """Lowest and highest world x of any frame of arm along path, filled in between points."""
+        model, low, high = self._models[arm], math.inf, -math.inf
+        previous = None
+        for q in path:
+            steps = [q] if previous is None else joint_line(previous, q, _SWEEP_STEP_RAD)[1:]
+            for sample in steps:
+                xs = model.frame_points(sample)[:, 0]
+                low, high = min(low, float(xs.min())), max(high, float(xs.max()))
+            previous = q
+        return low, high
+
+    def _standing_x(self, arm):
+        q, _, age = self._sample(arm)
+        if q is None or age > self._cfg['joint_state_max_age_s']:
+            # Unknown position: block every lane until the state is back (or the wait times out).
+            return -math.inf, math.inf
+        return self.sweep_x(arm, [q])
 
     # --- taught C slots (prototype) ---
 
