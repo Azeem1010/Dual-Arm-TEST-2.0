@@ -1,5 +1,6 @@
 """MotionGateway._wait_still: a move starts only once the arm has stopped (field runs 2026-11-17)."""
 import math
+import threading
 import unittest
 
 from dual_arm_coordinator.gateways import motion
@@ -29,6 +30,7 @@ class Still(unittest.TestCase):
         self.gateway = MotionGateway.__new__(MotionGateway)
         self.gateway._cfg = {'settle_s': 0.5, 'arrival_timeout_s': 30.0, 'joint_state_max_age_s': 1.0}
         self.gateway._guard = lambda: None
+        self.gateway._lock, self.gateway._history = threading.Lock(), {}
         self.path, self.reads = None, 0
         self.gateway._sample = self.sample
 
@@ -91,6 +93,51 @@ class Still(unittest.TestCase):
         self.gateway._guard = guard
         with self.assertRaises(TaskCancelled):
             self.gateway._wait_still('arm1', 'arm1 home')
+
+    def history(self, path, seconds=1.2, rate=20.0):
+        """Readings the joint-state callback already kept, up to now, from path(time)."""
+        count = int(seconds * rate)
+        self.gateway._history = {'arm1': [(self.clock.now - (count - i) / rate, path(self.clock.now - (count - i) / rate))
+                                          for i in range(count + 1)]}
+
+    def test_an_arm_already_still_does_not_wait_again(self):
+        # Field speed-up 2026-11-17: the arm stood still during the vacuum or camera wait.
+        self.clock.now = 50.0
+        self.path = lambda t: [0.1, 0.2, 0.3, 0.4]
+        self.history(self.path)
+        self.gateway._wait_still('arm1', 'arm1 lift')
+        self.assertEqual(self.clock.now, 50.0)
+
+    def test_a_hunting_arm_already_still_does_not_wait_again(self):
+        self.clock.now = 50.0
+        self.path = lambda t: [0.0, 0.0, 2 * COUNT * math.sin(2 * math.pi * 3.0 * t), 0.0]
+        self.history(self.path)
+        self.gateway._history['arm2'] = self.gateway._history.pop('arm1')
+        self.gateway._wait_still('arm2', 'arm2 lift')
+        self.assertEqual(self.clock.now, 50.0)
+
+    def test_movement_in_the_kept_readings_still_waits(self):
+        # Sagged until 0.3 s ago: the previous window saw it move.
+        self.clock.now = 50.0
+        self.path = lambda t: [0.0, -6 * COUNT * min(t - 48.8, 0.9) / 0.9, 0.0, 0.0]
+        self.history(self.path)
+        self.gateway._wait_still('arm1', 'arm1 lift')
+        self.assertGreater(self.clock.now, 50.0)
+
+    def test_too_few_kept_readings_still_wait(self):
+        self.clock.now = 50.0
+        self.path = lambda t: [0.1, 0.2, 0.3, 0.4]
+        self.history(self.path, rate=2.0)
+        self.gateway._wait_still('arm1', 'arm1 lift')
+        self.assertGreater(self.clock.now, 50.0)
+
+    def test_old_kept_readings_still_wait(self):
+        self.clock.now = 50.0
+        self.path = lambda t: [0.1, 0.2, 0.3, 0.4]
+        self.history(self.path)
+        self.clock.now = 52.0  # the newest kept reading is 2 s old
+        self.gateway._wait_still('arm1', 'arm1 lift')
+        self.assertGreater(self.clock.now, 52.0)
 
     def test_no_window_means_no_wait(self):
         self.gateway._cfg['settle_s'] = None

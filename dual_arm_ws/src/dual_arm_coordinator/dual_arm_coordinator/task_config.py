@@ -82,8 +82,12 @@ MAX_B_LIFT_EXTRA_M = 0.03
 # Optional: arm 1 goes from A straight to B and arm 2 from B straight to C, without HOME in
 # between (prototype only, user decision 2026-11-17: the video showed about 25 s of detour).
 DIRECT_KEY = 'direct_transfer'
+# Optional: wait this long after a grasp instead of gripper.vacuum_settle_s; the release keeps the
+# full wait (prototype only, user decision 2026-11-17: E0 held a cap in about 1 s).
+GRASP_SETTLE_KEY = 'grasp_settle_s'
+MIN_GRASP_SETTLE_S = 1.0
 OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY,
-                 DIRECT_KEY)
+                 DIRECT_KEY, GRASP_SETTLE_KEY)
 
 
 class TaskConfigError(ValueError):
@@ -323,6 +327,16 @@ def _check_direct(doc):
     return errors
 
 
+def _check_grasp_settle(doc):
+    errors = []
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{GRASP_SETTLE_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    value, high = doc[GRASP_SETTLE_KEY], doc['gripper']['vacuum_settle_s']
+    if not _is_number(value) or not _is_number(high) or not MIN_GRASP_SETTLE_S <= value <= high:
+        errors.append(f'{GRASP_SETTLE_KEY} must be within [{MIN_GRASP_SETTLE_S}, gripper.vacuum_settle_s] s')
+    return errors
+
+
 def max_resumes(doc):
     """How often a run may resume itself after a fault; 0 when the configuration does not allow it."""
     return doc[AUTO_RESUME_KEY]['max_resumes'] if AUTO_RESUME_KEY in doc else 0
@@ -355,6 +369,8 @@ def validate(doc):
             errors += _check_b_lift(doc)
         if DIRECT_KEY in present:
             errors += _check_direct(doc)
+        if GRASP_SETTLE_KEY in present:
+            errors += _check_grasp_settle(doc)
     if errors:
         raise TaskConfigError('; '.join(errors))
     return doc

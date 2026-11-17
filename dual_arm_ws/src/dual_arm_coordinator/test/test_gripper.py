@@ -399,6 +399,17 @@ class Esp32Confirmation(Esp32Case):
         self.backend.suction('arm1', 'release')
         self.assertGreaterEqual(self.confirmed[0][2], self.SETTLE)
 
+    def test_a_shorter_grasp_wait_leaves_the_release_wait(self):
+        # Prototype grasp_settle_s (2026-11-17): E0 held a cap in about 1 s; venting keeps the full wait.
+        self.backend = Esp32Suction(self.publish, {'arm1': 1, 'arm2': 2}, self.ECHO_TIMEOUT, self.SETTLE, self,
+                                    self.guard, self.time.clock, self.time.sleep, grasp_settle_s=0.2)
+        self.backend.suction('arm1', 'grasp')
+        grasped = self.confirmed[0][2]
+        self.assertGreaterEqual(grasped, 0.2)
+        self.assertLess(grasped, self.SETTLE)
+        self.backend.suction('arm1', 'release')
+        self.assertGreaterEqual(self.confirmed[1][2] - grasped, self.SETTLE)
+
     def test_cancel_during_vacuum_wait(self):
         def cancel():
             if self.time.now >= 0.1:

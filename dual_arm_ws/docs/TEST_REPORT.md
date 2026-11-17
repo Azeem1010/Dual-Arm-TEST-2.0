@@ -1,5 +1,16 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 Shorter waits around contact moves
+
+Shorter grasp wait (prototype), stillness from readings already received, batched waypoint validity checks. Details: evidence/shorter_waits_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 462 / 320 |
+| Prototype config validation | PASS | prototype_config_check.txt |
+| move_group answering batched validity requests | NOT_RUN | |
+| Real arms | NOT_RUN | |
+
 ## 2026-11-17 Per-step timing of every task run
 
 Every task logs where it spent its time and writes a CSV beside the journal. Details: evidence/timing_20261117/README.md.

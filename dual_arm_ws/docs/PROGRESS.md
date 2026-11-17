@@ -2,7 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: per-step timing of every task run (2026-11-17)
+## Latest result: shorter waits around contact moves (2026-11-17)
+
+- Step (2), two-stage contact moves, skipped (user decision): on the model it saves about 1.5 s per object at the contact acceleration 0.3 rad/s².
+- Step (3) done: prototype `grasp_settle_s` 1.2 (release keeps `vacuum_settle_s` 2.0); `_wait_still` accepts readings already received when they pass the same two-window test; contact-line waypoint validity requests are sent together (`_require_valid_all`). The last two apply in every mode and keep the same checks. Details and estimates: evidence/shorter_waits_20261117/README.md.
+- Coordinator 462 and HMI 320 tests pass; prototype config PASS. move_group with batched requests and the real arms NOT_RUN.
+
+## Earlier result: per-step timing of every task run (2026-11-17)
 
 - User request: speed up the prototype without an Orin at hand and with few separate measurements. Plan agreed in order: (1) timing record, (2) two-stage contact moves, (3) shorter waits, (4) fixed joint-line transits between taught poses, (5) merge the overlap branch switched off; each behind a prototype setting. Waiting points instead of HOME and a two-place B come only after overlap ran on the real arms.
 - Done (1): new `timing.py`. Each workflow step is timed until the next step of the same thread; gateways mark plan, move, arrive, still, check, camera_wait, camera, echo and vacuum inside it. The coordinator logs one `TIMING` line per step and a `TIMING SUMMARY` at the end of a task, and writes `<journal folder>/timing/*.csv` (prototype: `~/.ros/dual_arm/timing/`). Records only; the task behaves as before.

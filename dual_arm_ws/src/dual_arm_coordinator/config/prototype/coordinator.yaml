@@ -111,6 +111,10 @@ b_release_lift_extra_m: 0.005
 # detour per object). Arm 1 takes zone B before leaving HOME; arm 2 gives it back when HOME again,
 # after the camera sees B empty. Remove this line to go through HOME again.
 direct_transfer: true
+# Grasp wait (user decision 2026-11-17): E0 held a cap in about 1 s (on-site estimate), so a grasp
+# waits 1.2 s; a release still waits gripper.vacuum_settle_s (2.0 s) to vent before the lift.
+# Remove this line to wait vacuum_settle_s after a grasp again.
+grasp_settle_s: 1.2
 # Zone A press (user decision 2026-11-17): the joint readings reached the A contact target
 # (dz -0.4 mm) while the cup stayed above the cap, an error the readings cannot see (estimated
 # calibration, link play). Arm 1 aims this much below contact_z_m in zone A only; first value 3 mm.

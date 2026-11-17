@@ -311,6 +311,30 @@ class DirectTransfer(unittest.TestCase):
                 self.assert_refused(self.with_direct(value), 'direct_transfer must be true or false')
 
 
+class GraspSettle(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_grasp(self, value, doc=None):
+        doc = doc or prototype_doc()
+        doc['gripper']['vacuum_settle_s'] = 2.0  # the prototype file's value; the fixture comes from simulation
+        doc['grasp_settle_s'] = value
+        return doc
+
+    def test_prototype_accepts_it(self):
+        self.assertEqual(task_config.validate(self.with_grasp(1.2))['grasp_settle_s'], 1.2)
+
+    def test_only_prototype(self):
+        self.assert_refused(self.with_grasp(1.2, sim_doc()), "grasp_settle_s is only allowed in ('prototype',)")
+
+    def test_not_below_one_second_nor_above_the_release_wait(self):
+        for value in (0.9, 2.1, 'x', None):
+            with self.subTest(value):
+                self.assert_refused(self.with_grasp(value), 'grasp_settle_s must be within')
+
+
 class DescentCorrection(unittest.TestCase):
     def assert_refused(self, doc, text):
         with self.assertRaises(TaskConfigError) as caught:

@@ -4,6 +4,7 @@ The planning group uses position-only KDL, which does not hold the suction axis,
 so targets are solved here with CadKinematics and sent as joint values. All
 targets are in the URDF world frame; other frames are converted by the caller.
 """
+import collections
 import math
 import threading
 import time
@@ -39,6 +40,8 @@ _RAD_PER_COUNT = math.radians(300.0) / 1023.0
 # arm2 elbow swung 4 counts and arm 1's elbow and wrist 2 (field 2026-11-17), and a range test
 # never passed. A sag still moves the average from one window to the next.
 _STILL_RAD = 1.0 * _RAD_PER_COUNT
+# Readings each window needs before already-received readings may prove the arm still.
+_STILL_MIN_READINGS = 3
 # A descent correction never aims the tool closer than this to the board surface.
 _SURFACE_CLEARANCE_M = 0.001
 # A trajectory starts from the joints read just before it is sent; a larger change since the
@@ -77,6 +80,7 @@ class MotionGateway:
                                             self._heights['approach_z_m'])
         self._lock = threading.Lock()
         self._joints, self._sequence, self._received = {}, 0, 0.0
+        self._history = {arm: collections.deque() for arm in ARMS}
         self._attached = dict.fromkeys(ARMS, False)
         # Tool orientation when each arm attached its cap (the cap was lying flat then).
         self._held_tool = dict.fromkeys(ARMS)
@@ -94,10 +98,19 @@ class MotionGateway:
     # --- feedback ---
 
     def _on_joint_state(self, message):
+        now = time.monotonic()
         with self._lock:
             self._joints.update(zip(message.name, message.position))
             self._sequence += 1
-            self._received = time.monotonic()
+            self._received = now
+            # Kept for _wait_still: two settle_s windows plus a margin.
+            keep = 2.0 * (self._cfg['settle_s'] or 0.0) + 0.5
+            for arm, names in ((arm, self._models[arm].names) for arm in ARMS):
+                if all(name in self._joints for name in names):
+                    history = self._history[arm]
+                    history.append((now, [self._joints[name] for name in names]))
+                    while history and history[0][0] < now - keep:
+                        history.popleft()
 
     def _sample(self, arm):
         names = self._models[arm].names
@@ -147,6 +160,8 @@ class MotionGateway:
         window = self._cfg['settle_s']
         if not window:
             return
+        if self._still_already(arm, window):
+            return
         timeout = self._cfg['arrival_timeout_s']
         deadline = time.monotonic() + timeout
         previous, samples, started, seen = None, [], time.monotonic(), -1
@@ -166,6 +181,25 @@ class MotionGateway:
                 samples, started = [], now
             time.sleep(0.005)
         raise TaskFault(f'{label}: {arm} did not stop moving within {timeout} s')
+
+    def _still_already(self, arm, window):
+        """The same test as _wait_still on the readings of the last two windows, already received.
+
+        Before a move the arm has often stood for seconds (vacuum, camera, validity checks); then
+        the two windows that ended now show it still and the move need not wait for two more
+        (speed-up 2026-11-17). Too few or old readings: wait as before.
+        """
+        now = time.monotonic()
+        with self._lock:
+            history = list(getattr(self, '_history', {}).get(arm, ()))
+        if not history or now - history[-1][0] > self._cfg['joint_state_max_age_s']:
+            return False
+        older = [q for stamp, q in history if now - 2.0 * window <= stamp < now - window]
+        recent = [q for stamp, q in history if now - window <= stamp <= now]
+        if len(older) < _STILL_MIN_READINGS or len(recent) < _STILL_MIN_READINGS:
+            return False
+        means = [[sum(column) / len(samples) for column in zip(*samples)] for samples in (older, recent)]
+        return max(abs(a - b) for a, b in zip(*means)) <= _STILL_RAD
 
     def tcp_report(self, arm):
         q = self.current(arm)
@@ -240,16 +274,37 @@ class MotionGateway:
 
     # --- validity ---
 
-    @timing.timed('check')
-    def _require_valid(self, arm, q, label):
+    def _validity_request(self, arm, q):
         request = GetStateValidity.Request()
         request.group_name = self._arms[arm]['planning_group']
         request.robot_state = RobotState(is_diff=True, joint_state=JointState(
             name=list(self._models[arm].names), position=[float(value) for value in q]))
-        response = self._call(self._validity, request, 'State validity')
+        return request
+
+    @staticmethod
+    def _raise_invalid(response, label):
         if not response.valid:
             pairs = sorted({f'{c.contact_body_1}/{c.contact_body_2}' for c in response.contacts})
             raise TaskFault(f'{label}: state is invalid {pairs}')
+
+    @timing.timed('check')
+    def _require_valid(self, arm, q, label):
+        self._raise_invalid(self._call(self._validity, self._validity_request(arm, q), 'State validity'), label)
+
+    @timing.timed('check')
+    def _require_valid_all(self, arm, path, label):
+        """Check every joint state of path; all requests are sent before the first answer is awaited.
+
+        One call at a time took about a second for a contact line (2026-11-17); the checks
+        themselves are unchanged, and the first invalid state in path order faults.
+        """
+        if not path:
+            return
+        if not self._validity.wait_for_service(timeout_sec=self._cfg['goal_submit_s']):
+            raise TaskFault('State validity service is unavailable')
+        futures = [self._validity.call_async(self._validity_request(arm, q)) for q in path]
+        for future in futures:
+            self._raise_invalid(self._wait(future, self._cfg['goal_submit_s'], 'State validity'), label)
 
     def _solve(self, arm, xyz, seed):
         try:
@@ -424,8 +479,7 @@ class MotionGateway:
     def _execute_path(self, arm, path, label):
         """Check every waypoint, start from the joints read now, and run the path at contact speed."""
         model = self._models[arm]
-        for q in path[1:]:
-            self._require_valid(arm, q, label)
+        self._require_valid_all(arm, path[1:], label)
         path = self._fresh_start(arm, path, label)
         times = trapezoid_times(path, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'],
                                 self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])
@@ -517,8 +571,7 @@ class MotionGateway:
         drift = line_drift(model, path)
         if drift > limit:
             raise TaskFault(f'{label}: the joint line leaves the straight path by {drift:.4f} m (limit {limit} m)')
-        for q in path[1:]:
-            self._require_valid(arm, q, label)
+        self._require_valid_all(arm, path[1:], label)
         path = self._fresh_start(arm, path, label)
         times = trapezoid_times(path, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'],
                                 self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])

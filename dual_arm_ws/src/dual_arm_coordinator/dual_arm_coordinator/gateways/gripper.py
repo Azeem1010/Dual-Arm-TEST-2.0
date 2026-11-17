@@ -140,9 +140,11 @@ class Esp32Suction:
     """
 
     def __init__(self, publish, modules, echo_timeout_s, vacuum_settle_s, confirmer, guard,
-                 clock=time.monotonic, sleep=time.sleep):
+                 clock=time.monotonic, sleep=time.sleep, grasp_settle_s=None):
+        """grasp_settle_s (prototype): a shorter wait after a grasp; the release keeps vacuum_settle_s."""
         self._publish, self._modules, self._echo_timeout = publish, modules, echo_timeout_s
         self._settle, self._confirmer, self._guard = vacuum_settle_s, confirmer, guard
+        self._grasp_settle = vacuum_settle_s if grasp_settle_s is None else grasp_settle_s
         self._clock, self._sleep = clock, sleep
         self._lock = threading.Lock()
         self._echo = None
@@ -173,8 +175,8 @@ class Esp32Suction:
             self._sleep(_POLL_S)
 
     @timing.timed('vacuum')
-    def _wait_for_vacuum(self):
-        deadline = self._clock() + self._settle
+    def _wait_for_vacuum(self, operation):
+        deadline = self._clock() + (self._grasp_settle if operation == 'grasp' else self._settle)
         while self._clock() < deadline:
             self._guard()
             self._sleep(_POLL_S)
@@ -189,11 +191,11 @@ class Esp32Suction:
         self._await_echo(arm, command)
         # Grasp: let the vacuum build. Release: let it vent, or the lift that follows drags the
         # object along (field run 2026-11-17, arm 1 in B).
-        self._wait_for_vacuum()
+        self._wait_for_vacuum(operation)
         self._confirmer.suction(arm, operation)
 
 
-def _wire_esp32(node, settings, guard, confirmer, callback_group):
+def _wire_esp32(node, settings, guard, confirmer, callback_group, grasp_settle_s=None):
     from std_msgs.msg import Int32
 
     publisher = node.create_publisher(Int32, '/suction_command', 10)
@@ -211,7 +213,7 @@ def _wire_esp32(node, settings, guard, confirmer, callback_group):
         publisher.publish(Int32(data=command))
 
     backend = Esp32Suction(publish, settings['esp32_modules'], settings['esp32_echo_timeout_s'],
-                           settings['vacuum_settle_s'], confirmer, guard)
+                           settings['vacuum_settle_s'], confirmer, guard, grasp_settle_s=grasp_settle_s)
     node.create_subscription(Int32, '/suction_status', lambda message: backend.on_status(message.data),
                              10, callback_group=callback_group)
     return backend
@@ -256,5 +258,7 @@ def create_gripper(node, config, guard, *, locator=None, gate=None, announce=Non
         if gate is None or announce is None:
             raise ValueError('Operator confirmation needs a token gate and an announce callback')
         confirmer = ManualTokenSuction(gate, announce, settings['reply_timeout_s'], guard, settings['auto_confirm'])
-        return confirmer if backend == 'manual_token' else _wire_esp32(node, settings, guard, confirmer, callback_group)
+        if backend == 'manual_token':
+            return confirmer
+        return _wire_esp32(node, settings, guard, confirmer, callback_group, config.get('grasp_settle_s'))
     raise ValueError(f'Suction backend {backend} is not available')
