@@ -15,6 +15,7 @@ from std_srvs.srv import Trigger
 
 from dual_arm_interfaces.srv import ConfirmStep
 
+from . import timing
 from .confirmation import TokenError, TokenGate
 from .gateways.env_scene import wire_env_scene
 from .gateways.gripper import create_gripper
@@ -279,6 +280,8 @@ class CoordinatorNode(Node):
         return response
 
     def _run_task(self):
+        timing.TIMER.on_step = self.get_logger().info
+        timing.TIMER.start()
         try:
             if self.max_resumes:
                 result = self.transfer.run_resuming(self.cycles, self.max_resumes, self.get_logger().warning)
@@ -288,9 +291,22 @@ class CoordinatorNode(Node):
         except Exception as error:
             self.get_logger().error(f'Task stopped: {error}')
         finally:
+            self._report_timing()
             with self.lock:
                 self.busy = False
             self.publish_status()
+
+    def _report_timing(self):
+        """Log where the run spent its time and keep it as CSV beside the journal; never fails the task."""
+        try:
+            records = timing.TIMER.finish()
+            if records:
+                path = self.journal.path.parent / 'timing' / f'{time.strftime("%Y%m%d_%H%M%S")}.csv'
+                timing.write_csv(records, path)
+                summary = timing.summary(records, int(self.journal.data.get('completed', 0)))
+                self.get_logger().info(f'{summary}\nTIMING CSV {path}')
+        except Exception as error:  # noqa: BLE001 - timing is only a record
+            self.get_logger().warning(f'Timing report failed: {error}')
 
     def _cancel(self, _request, response):
         with self.lock:

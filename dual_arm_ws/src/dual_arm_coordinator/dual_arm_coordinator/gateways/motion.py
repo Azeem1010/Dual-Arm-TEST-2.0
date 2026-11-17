@@ -20,6 +20,7 @@ from sensor_msgs.msg import JointState
 from shape_msgs.msg import SolidPrimitive
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
+from .. import timing
 from ..kinematics import CadKinematics
 from ..motion_math import (joint_line, line_drift, line_points, prepare_b_poses, prepare_slot_poses, solve_line,
                            solve_line_holding_tool, tcp_error,
@@ -116,6 +117,7 @@ class MotionGateway:
             self._guard()
             time.sleep(0.01)
 
+    @timing.timed('arrive')
     def _confirm_arrival(self, arm, target, label):
         """Require consecutive new measurements within the TCP limit, not just an accepted goal."""
         model, needed = self._models[arm], self._cfg['arrival_samples']
@@ -134,6 +136,7 @@ class MotionGateway:
             time.sleep(0.005)
         raise TaskFault(f'{label}: {arm} did not settle within {limit} m, last error {error:.5f} m')
 
+    @timing.timed('still')
     def _wait_still(self, arm, label):
         """Wait until every joint of arm has stayed within _STILL_RAD for settle_s.
 
@@ -208,6 +211,7 @@ class MotionGateway:
                 return
             time.sleep(0.005)
 
+    @timing.timed('move')
     def _run_action(self, client, goal, label):
         if not client.wait_for_server(timeout_sec=self._cfg['goal_submit_s']):
             raise TaskFault(f'{label} action server is unavailable')
@@ -228,9 +232,15 @@ class MotionGateway:
         code = outcome.result.error_code.val
         if outcome.status != GoalStatus.STATUS_SUCCEEDED or code != MoveItErrorCodes.SUCCESS:
             raise TaskFault(f'{label} failed: status {outcome.status}, MoveIt code {code}')
+        # MoveGroup reports how long it planned; move it from 'move' to 'plan'.
+        planning = getattr(outcome.result, 'planning_time', None)
+        if isinstance(planning, float) and planning > 0.0:
+            timing.add('plan', planning)
+            timing.add('move', -planning)
 
     # --- validity ---
 
+    @timing.timed('check')
     def _require_valid(self, arm, q, label):
         request = GetStateValidity.Request()
         request.group_name = self._arms[arm]['planning_group']

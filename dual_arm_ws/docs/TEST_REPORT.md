@@ -1,5 +1,15 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 Per-step timing of every task run
+
+Every task logs where it spent its time and writes a CSV beside the journal. Details: evidence/timing_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 448 / 320 |
+| flake8 on the new files (not a project check) | style warnings only | flake8.txt |
+| Log lines and CSV from a real ROS run | NOT_RUN | |
+
 ## 2026-11-17 Prototype direct transfer (no HOME between zones)
 
 Arm 1 goes A → B and arm 2 B → C without HOME in between (`direct_transfer`, prototype only). Details: evidence/direct_transfer_20261117/README.md.

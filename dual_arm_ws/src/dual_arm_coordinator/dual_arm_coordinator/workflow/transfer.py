@@ -1,6 +1,7 @@
 """Batch A-to-B-to-C transfer with one owner for the journal and zone B."""
 import uuid
 
+from .. import timing
 from ..resources import SlotManager, ZoneManager
 from .arm1_workflow import Arm1Workflow
 from .arm2_workflow import Arm2Workflow
@@ -69,6 +70,8 @@ class Transfer:
                 resumes += 1
                 notify(f'Resuming {resumes}/{max_resumes} after: {error}')
                 self.io.guard()
+                # The HOME and recovery after a fault are their own entry in the timing record.
+                timing.TIMER.step('both', 'RESUME')
                 self.go_home()
                 self.recover(self.gate.current[0], True, keep_b_object=True)
                 continue

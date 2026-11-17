@@ -2,7 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: prototype direct transfer, no HOME between zones (2026-11-17)
+## Latest result: per-step timing of every task run (2026-11-17)
+
+- User request: speed up the prototype without an Orin at hand and with few separate measurements. Plan agreed in order: (1) timing record, (2) two-stage contact moves, (3) shorter waits, (4) fixed joint-line transits between taught poses, (5) merge the overlap branch switched off; each behind a prototype setting. Waiting points instead of HOME and a two-place B come only after overlap ran on the real arms.
+- Done (1): new `timing.py`. Each workflow step is timed until the next step of the same thread; gateways mark plan, move, arrive, still, check, camera_wait, camera, echo and vacuum inside it. The coordinator logs one `TIMING` line per step and a `TIMING SUMMARY` at the end of a task, and writes `<journal folder>/timing/*.csv` (prototype: `~/.ros/dual_arm/timing/`). Records only; the task behaves as before.
+- Coordinator 448 and HMI 320 tests pass (evidence/timing_20261117/). Output from a real ROS run NOT_RUN.
+
+## Earlier result: prototype direct transfer, no HOME between zones (2026-11-17)
 
 - User decision: speed up the prototype flow, first by removing the HOME detour. The 11-17 field video (one object about 153 s) showed both arms going back HOME while holding the cap, about 25 s per object (evidence/direct_transfer_20261117/README.md).
 - New optional `direct_transfer` (prototype only, on in `config/prototype/coordinator.yaml`): arm 1 takes zone B in `PREFLIGHT` while both arms are HOME and goes above A → above B directly; arm 2 goes above B → above C directly and releases B in `VERIFY_C`, after it is HOME and the camera sees B empty. Simulation and strict hardware unchanged.

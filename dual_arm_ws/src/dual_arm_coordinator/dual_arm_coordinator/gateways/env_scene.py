@@ -9,6 +9,7 @@ Whether zone B is free of arms comes from joint feedback, not from the camera.
 import math
 import time
 
+from .. import timing
 from ..workflow.ports import GridView, PickView, PlaceView, TaskFault, ZoneView
 
 ACCEPTED_SOURCES = ('standard', 'measured')
@@ -52,6 +53,7 @@ class EnvSceneObserver:
         self._can_reach, self._home_tcp, self._settings = can_reach, home_tcp, settings
         self._guard, self._settle, self._timeout, self._clock, self._sleep = guard, settle_s, image_timeout_s, clock, sleep
 
+    @timing.timed('camera_wait')
     def _wait_for_image(self):
         after = self._clock() + self._settle + SCENE_LAG_S
         deadline = after + self._timeout
@@ -69,7 +71,8 @@ class EnvSceneObserver:
         problem = self._wait_for_image()
         if problem:
             return None, problem
-        response = self._scene_call()
+        with timing.span('camera'):
+            response = self._scene_call()
         if not response.success:
             return None, response.message
         scene = response.scene

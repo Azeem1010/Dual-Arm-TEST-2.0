@@ -8,6 +8,7 @@ import re
 import threading
 import time
 
+from .. import timing
 from ..confirmation import TokenError
 from ..task_config import AUTO_CONFIRM_MODES
 from ..workflow.ports import TaskFault
@@ -156,6 +157,7 @@ class Esp32Suction:
     def _command(self, arm, operation):
         return (self._modules[arm] - 1) * 2 + (1 if operation == 'grasp' else 2)
 
+    @timing.timed('echo')
     def _await_echo(self, arm, command):
         deadline = self._clock() + self._echo_timeout
         while True:
@@ -170,6 +172,7 @@ class Esp32Suction:
                 raise TaskFault(f'{arm}: no suction controller reply to command {command}')
             self._sleep(_POLL_S)
 
+    @timing.timed('vacuum')
     def _wait_for_vacuum(self):
         deadline = self._clock() + self._settle
         while self._clock() < deadline:

@@ -1,4 +1,5 @@
 """Shared run state: persists each change before the action that depends on it."""
+from .. import timing
 from .ports import TaskFault
 
 
@@ -10,6 +11,7 @@ class TaskContext:
 
     def step(self, arm, state):
         self.io.guard()
+        timing.TIMER.step(arm, state)
         self.journal.update(active_arm=arm, state=f'{arm.upper()}:{state}')
 
     def set_holding(self, arm, value):
