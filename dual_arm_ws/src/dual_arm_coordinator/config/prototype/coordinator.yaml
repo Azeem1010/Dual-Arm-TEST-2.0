@@ -43,7 +43,10 @@ zones:
   a_min_xy_m: [-0.30, -0.12]
   a_max_xy_m: [-0.10, 0.12]
   b_place_xy_m: [0.0, 0.0]
-  b_pick_tolerance_m: 0.05     # simulation 0.02
+  # 2026-11-17: 0.05 -> 0.01, measured from arm2's taught B point. Arm 2 always goes to that pose, so an object
+  # further off than about the cup radius (9 mm) cannot be picked; refuse it instead. The camera
+  # adds a few mm of its own (slot chk 3-6 mm); raise this if good placements are refused.
+  b_pick_tolerance_m: 0.01     # simulation 0.02
   # Field ruler measurement 2026-11-13 (env_camera_vision 6b3d5c1): slot 1 front edge 75 mm,
   # so the whole grid sits 5 mm toward the user from the simulation (y 0.050/0.015/-0.020/-0.055).
   c_slots_xy_m:
@@ -63,15 +66,17 @@ zones:
 c_slot_teach:
   arm: arm2
   source: docs/evidence/hardware/20261111_H1/teach_arm2_C_1..8.csv (last READ)
+  # 2026-11-17: j1 shifted by -306 with the arm2 j1 zero (B re-taught at j1 90, was 396);
+  # j2..j4 unchanged. Was 572/635/560/608/549/587/540/576.
   raw:                         # j1, j2, j3, j4; C1 and C2 were unsteady while taught
-    - [572, 630, 926, 602]
-    - [635, 636, 906, 600]
-    - [560, 645, 885, 596]
-    - [608, 666, 838, 629]
-    - [549, 701, 767, 664]
-    - [587, 721, 724, 694]
-    - [540, 779, 602, 758]
-    - [576, 803, 557, 760]
+    - [266, 630, 926, 602]
+    - [329, 636, 906, 600]
+    - [254, 645, 885, 596]
+    - [302, 666, 838, 629]
+    - [243, 701, 767, 664]
+    - [281, 721, 724, 694]
+    - [234, 779, 602, 758]
+    - [270, 803, 557, 760]
   release_lift_m: 0.0          # raise the release pose if the cup presses too hard
   arrival_tolerance_raw: 4
   max_line_drift_m: 0.003      # model drift of the vertical joint line is 0.7..1.8 mm
@@ -80,15 +85,44 @@ c_slot_teach:
 # hand-guided to the centre of B with the cup pressing a cap (user confirmed 2026-11-15), so
 # each is the contact pose. arm1 uses the redo; its first file (j1 634)
 # was rejected in the record. In the model the two poses lie 8 mm apart. The camera still
-# confirms that B holds one object within b_pick_tolerance_m of b_place_xy_m.
+# confirms that B holds one object within b_pick_tolerance_m of arm2's taught contact point
+# (not b_place_xy_m, which is not where the taught hand-over happens; 2026-11-17).
 b_teach:
-  source: docs/evidence/hardware/20261111_H1/teach_arm1_B_2.csv, teach_arm2_B.csv (last READ)
+  source: docs/evidence/hardware/20261111_H1/teach_arm1_B_2.csv, 20261117_B_TEACH/teach_arm2_B_2.csv (last READ)
   raw:                         # j1, j2, j3, j4
     arm1: [350, 731, 702, 697]
-    arm2: [396, 703, 756, 700]
+    arm2: [95, 707, 757, 700]    # 2026-11-17 16:13 re-taught (teach_arm2_B_2.csv); earlier 14:20 90, 700, 779, 683; 11-11 396, 703, 756, 700
   contact_lift_m: 0.0          # raise both contact poses if the cup presses too hard
   arrival_tolerance_raw: 4
   max_line_drift_m: 0.003
+# Zone A pick correction (user decision 2026-11-17): added to the camera's cap position before
+# arm 1 picks; the zone A bounds still check the camera's value. +x points from A towards B.
+# 2026-11-17: the cup missed the cap sideways; first step 2 mm towards B.
+a_pick_offset_xy_m: [0.002, 0.0]
+# B release lift (user decision 2026-11-17): after releasing in B, arm 1 lifts straight up from
+# where its cup is (xy held, j1 not turned back to the taught count) to approach_z_m plus this.
+# The taught joint-line lift pushed the object sideways.
+b_release_lift_extra_m: 0.005
+# Zone A press (user decision 2026-11-17): the joint readings reached the A contact target
+# (dz -0.4 mm) while the cup stayed above the cap, an error the readings cannot see (estimated
+# calibration, link play). Arm 1 aims this much below contact_z_m in zone A only; first value 3 mm.
+# 2026-11-17: 3 -> 6 mm; with 3 mm the cup still missed caps at y > 0 (log: joints at target).
+a_press_m: 0.006
+# Descent correction (user decision 2026-11-17): the cup sometimes stopped short of the cap
+# and a restart helped (warm motors?). After a downward contact move, when the joint readings
+# put the tool more than tolerance_m above the target, descend again by the shortfall, at most
+# max_extra_m below the target and attempts times; otherwise fault. Every contact move also logs
+# its target, measured height and joint errors.
+descent_correction:
+  tolerance_m: 0.002
+  max_extra_m: 0.005
+  attempts: 2
+# Auto resume (user decision 2026-11-17): after a fault both arms go HOME, the task recovers and
+# the remaining cycles continue, at most max_resumes times per start. An object arm 1 left in B
+# stays and arm 2 takes it. Never resumes after a cancel or e-stop, while an arm may hold an
+# object, or when HOME or recovery fails. Remove this block to stop after every fault again.
+auto_resume:
+  max_resumes: 3
 motion:
   planning_s: 10.0
   planning_attempts: 3
@@ -109,7 +143,7 @@ gripper:
   auto_confirm: true           # nobody confirms suction in the prototype
   reply_timeout_s: 20.0
   esp32_echo_timeout_s: 2.0
-  vacuum_settle_s: 2.0         # E0 2026-11-13: ~1 s measured, 1.0 had no margin
+  vacuum_settle_s: 2.0         # E0 2026-11-13: ~1 s measured, 1.0 had no margin; also waited after release (2026-11-17)
   esp32_modules:               # confirmed by E0 on 2026-11-13
     arm1: 1
     arm2: 2

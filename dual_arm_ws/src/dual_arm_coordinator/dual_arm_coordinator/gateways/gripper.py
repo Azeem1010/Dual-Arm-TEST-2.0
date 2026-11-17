@@ -184,8 +184,9 @@ class Esp32Suction:
             self._echo = None
         self._publish(arm, command)
         self._await_echo(arm, command)
-        if operation == 'grasp':
-            self._wait_for_vacuum()
+        # Grasp: let the vacuum build. Release: let it vent, or the lift that follows drags the
+        # object along (field run 2026-11-17, arm 1 in B).
+        self._wait_for_vacuum()
         self._confirmer.suction(arm, operation)
 
 
@@ -202,6 +203,8 @@ def _wire_esp32(node, settings, guard, confirmer, callback_group):
             if time.monotonic() >= deadline:
                 raise TaskFault(f'{arm}: the suction controller is not connected')
             time.sleep(0.01)
+        # Checked again here: once a stop is in, the interface's "all off" must stay the last command.
+        guard()
         publisher.publish(Int32(data=command))
 
     backend = Esp32Suction(publish, settings['esp32_modules'], settings['esp32_echo_timeout_s'],

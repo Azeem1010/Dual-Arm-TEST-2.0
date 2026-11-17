@@ -19,7 +19,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 CONFIG = yaml.safe_load((PACKAGE / 'config' / 'sim' / 'coordinator.yaml').read_text(encoding='utf-8'))
 SETTINGS = WorkflowSettings.from_config(CONFIG)
 FINGERPRINT = 'fingerprint-a'
-MOTIONS = ('move_home', 'move_to', 'move_slot', 'move_b')
+MOTIONS = ('move_home', 'move_to', 'move_slot', 'move_b', 'lift_vertical')
 
 
 class World(TaskIO):
@@ -35,6 +35,10 @@ class World(TaskIO):
         self.zone_patch, self.grid_patch, self.pick_patch, self.place_patch = None, None, None, None
         self.b_offset, self.b_patch = (0.0, 0.0), None
         self.unreachable = set()
+        # The planning scene's B object: the taught contact poses press on it (field 2026-11-17).
+        self.scene_b = False
+        # Taught B contact points in world xy; the field ones lie up to 25 mm from b_place.
+        self.b_grasp = {'arm1': SETTINGS.b_place, 'arm2': SETTINGS.b_place}
 
     def _call(self, name, *args):
         self.counts[name] = self.counts.get(name, 0) + 1
@@ -104,6 +108,16 @@ class World(TaskIO):
         self._call('check_b', arm)
         if (arm, 'B') in self.unreachable:
             raise TaskFault(f'{arm} cannot reach taught B')
+        if self.scene_b:
+            raise TaskFault(f'{arm} B release: state is invalid [cap_in_b/{arm}_cad_link_4]')
+
+    def lift_vertical(self, arm, z):
+        self._call('lift_vertical', arm, z)
+        self._after_motion()
+
+    def b_grasp_xy(self, arm):
+        self._call('b_grasp_xy', arm)
+        return self.b_grasp[arm]
 
     def move_b(self, arm, pose, contact=False):
         self._call('move_b', arm, pose, contact)
@@ -144,12 +158,15 @@ class World(TaskIO):
 
     def scene_reset(self):
         self._call('scene_reset')
+        self.scene_b = False
 
     def scene_add_b_object(self):
         self._call('scene_add_b_object')
+        self.scene_b = True
 
     def scene_remove_b_object(self):
         self._call('scene_remove_b_object')
+        self.scene_b = False
 
     def scene_add_slot_object(self, slot):
         self._call('scene_add_slot_object', slot)
@@ -191,6 +208,16 @@ class Base(unittest.TestCase):
 
     def calls_named(self, name):
         return [call for call in self.world.calls if call[0] == name]
+
+    def assert_b_object_after_arm1_lift(self, lift):
+        """The cup touches the object until arm 1 has lifted, so the scene may only gain it afterwards."""
+        calls = self.world.calls
+        added = next(index for index, call in enumerate(calls) if call[0] == 'scene_add_b_object')
+        released = max(index for index, call in enumerate(calls[:added]) if call[:3] == ('suction', 'arm1', 'release'))
+        lifts = [call for call in calls[released:added] if call[0] in MOTIONS]
+        self.assertEqual(len(lifts), 1, 'arm 1 must lift between releasing in B and adding the B object')
+        self.assertEqual(lifts[0][:2], (lift, 'arm1'))
+        self.assertTrue(lifts[0][-1], 'the lift is a contact move')
 
     def token(self):
         return self.gate.current[0]
@@ -238,6 +265,10 @@ class TaughtB(Base):
         self.assertFalse([call for call in self.calls_named('move_to') if self.world._at_b(call[2][:2])])
         self.assertFalse([call for call in self.calls_named('check_reachable') if self.world._at_b(call[2][:2])])
 
+    def test_b_object_enters_the_scene_after_arm1_lifts(self):
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assert_b_object_after_arm1_lift('move_b')
+
     def test_b_is_still_observed_before_arm2_picks(self):
         self.transfer.run(1)
         self.assertEqual(len(self.calls_named('b_pick_target')), 1)
@@ -248,6 +279,19 @@ class TaughtB(Base):
         self.assertEqual(self.world.a_objects, 8)
         self.assertFalse(self.world.b_object)
         self.assertEqual(self.calls_named('suction'), [])
+
+    def test_b_object_is_checked_against_arm2_taught_point(self):
+        # Field 2026-11-17: the object lay 3 mm from arm 2's taught point but 20 mm from b_place.
+        far = SETTINGS.b_pick_tolerance + 0.01
+        self.world.b_grasp['arm2'] = (SETTINGS.b_place[0] + far, SETTINGS.b_place[1])
+        self.world.b_offset = (far + 0.003, 0.0)
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assertTrue(self.calls_named('b_grasp_xy'))
+
+    def test_b_object_away_from_arm2_taught_point_is_refused(self):
+        self.world.b_offset = (SETTINGS.b_pick_tolerance + 0.001, 0.0)
+        self.assert_faulted("from arm2's taught B point")
+        self.assertFalse([call for call in self.calls_named('move_b') if call[1] == 'arm2'])
 
     def test_arm1_b_is_checked_before_taking_an_object(self):
         self.world.unreachable.add(('arm1', 'B'))
@@ -265,6 +309,10 @@ class TaughtB(Base):
 
 
 class HappyPath(Base):
+    def test_b_object_enters_the_scene_after_arm1_lifts(self):
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assert_b_object_after_arm1_lift('move_to')
+
     def test_one_object_reaches_slot_one(self):
         self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
         self.assertEqual(self.world.c, [True] + [False] * 7)
@@ -298,6 +346,150 @@ class HappyPath(Base):
         for limit in (0, 9, True, 1.0):
             with self.assertRaises(ValueError):
                 self.transfer.run(limit)
+
+
+class APickOffset(Base):
+    """Prototype: a fixed correction moves where arm 1 picks in zone A, nothing else."""
+    settings = replace(SETTINGS, a_pick_offset=(0.002, -0.001))
+
+    def test_arm1_picks_at_the_corrected_point(self):
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        x, y = -0.14 + 0.002, -0.03 - 0.001
+        a_moves = [call[2] for call in self.calls_named('move_to') if call[1] == 'arm1' and call[2][0] < -0.05]
+        self.assertEqual({(round(m[0], 6), round(m[1], 6)) for m in a_moves}, {(round(x, 6), round(y, 6))})
+        checked = [call[2] for call in self.calls_named('check_reachable') if call[1] == 'arm1' and call[2][0] < -0.05]
+        self.assertEqual({(round(m[0], 6), round(m[1], 6)) for m in checked}, {(round(x, 6), round(y, 6))})
+
+    def test_zone_bounds_use_the_observation(self):
+        # The observation lies 1 mm inside zone A; the correction may take the cup 2 mm past the edge.
+        edge = SETTINGS.a_max[0]
+        self.world.pick_patch = lambda view: replace(view, x=edge - 0.001)
+        self.settings = replace(SETTINGS, a_pick_offset=(0.002, 0.0))
+        self.make()
+        self.transfer.run(1)
+        self.assertNotIn('outside zone A', self.state['message'])
+
+    def test_default_is_no_offset(self):
+        self.assertEqual(SETTINGS.a_pick_offset, (0.0, 0.0))
+        self.assertEqual(SETTINGS.a_press, 0.0)
+
+
+class BReleaseLift(Base):
+    """Prototype, taught B: arm 1 lifts straight up from where it released, to the set height."""
+    settings = replace(SETTINGS, b_joints=True, b_release_lift_z=SETTINGS.approach_z + 0.005)
+
+    def test_arm1_lifts_vertically_instead_of_back_to_the_taught_pose(self):
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assertEqual([call[1:] for call in self.calls_named('lift_vertical')],
+                         [('arm1', SETTINGS.approach_z + 0.005)])
+        arm1_b = [call[2:] for call in self.calls_named('move_b') if call[1] == 'arm1']
+        self.assertEqual(arm1_b, [('above', False), ('contact', True)])
+        # arm 2 still lifts at its taught pose
+        self.assertIn(('arm2', 'above', True), [call[1:] for call in self.calls_named('move_b')])
+
+    def test_the_lift_comes_right_after_the_release_and_before_the_b_object(self):
+        self.transfer.run(1)
+        names = [call[0] for call in self.world.calls]
+        lift = names.index('lift_vertical')
+        self.assertEqual(names[lift - 1], 'detach')
+        self.assertEqual(names[lift + 1], 'scene_add_b_object')
+
+    def test_without_the_setting_the_taught_lift_is_kept(self):
+        self.settings = replace(SETTINGS, b_joints=True)
+        self.make()
+        self.transfer.run(1)
+        self.assertEqual(self.calls_named('lift_vertical'), [])
+
+
+class APress(Base):
+    """Prototype: arm 1 aims a_press below contact_z in zone A only."""
+    settings = replace(SETTINGS, a_press=0.003)
+
+    def test_only_the_a_descent_goes_deeper(self):
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        deep = round(SETTINGS.contact_z - 0.003, 6)
+        moves = [(call[1], round(call[2][0], 6), round(call[2][2], 6)) for call in self.calls_named('move_to')]
+        a_descents = [m for m in moves if m[0] == 'arm1' and m[1] < -0.05 and m[2] < SETTINGS.approach_z]
+        self.assertEqual({m[2] for m in a_descents}, {deep})
+        others = [m for m in moves if not (m[0] == 'arm1' and m[1] < -0.05)]
+        self.assertNotIn(deep, {m[2] for m in others})
+        self.assertIn(deep, {round(call[2][2], 6) for call in self.calls_named('check_reachable') if call[1] == 'arm1'})
+
+
+class AutoResume(Base):
+    """Prototype: after a fault the arms go HOME, the task recovers and continues by itself."""
+
+    def resume(self, limit=1, max_resumes=3):
+        self.notes = []
+        return self.transfer.run_resuming(limit, max_resumes, self.notes.append)
+
+    def test_object_left_in_b_is_taken_by_arm2_after_a_fault(self):
+        # Fails after arm 1 released in B and lifted: the object stays in B.
+        self.world.fail['scene_add_b_object'] = 1
+        self.assertEqual(self.resume(), 'SUCCEEDED')
+        self.assertEqual(self.world.c, [True] + [False] * 7)
+        self.assertEqual(self.world.a_objects, 7)
+        self.assertFalse(self.world.b_object)
+        self.assertEqual(len(self.calls_named('scene_reset')), 1)
+        self.assertEqual((self.state['state'], self.state['completed'], self.state['b_owner']), ('SUCCEEDED', 1, ''))
+        self.assertEqual(len(self.notes), 1)
+
+    def test_fault_after_the_release_in_c_counts_the_delivered_object(self):
+        self.world.fail['scene_add_slot_object'] = 1
+        self.assertEqual(self.resume(), 'SUCCEEDED')
+        self.assertEqual(self.world.c, [True] + [False] * 7)
+        self.assertEqual(self.world.a_objects, 7)
+        self.assertEqual(self.state['completed'], 1)
+
+    def test_remaining_cycles_continue(self):
+        self.world.fail['scene_add_b_object'] = 2
+        self.assertEqual(self.resume(limit=3), 'SUCCEEDED')
+        self.assertEqual(self.world.c, [True] * 3 + [False] * 5)
+        self.assertEqual(self.world.a_objects, 5)
+        self.assertEqual(self.state['completed'], 3)
+
+    def test_no_resume_while_an_arm_may_hold_an_object(self):
+        self.world.fail['suction'] = 1
+        with self.assertRaises(TaskFault):
+            self.resume()
+        self.assertEqual(self.state['state'], 'FAULT')
+        self.assertFalse(self.calls_named('scene_reset'))
+        self.assertIn('may still hold', self.notes[0])
+
+    def test_no_resume_after_cancel(self):
+        self.world.cancel_after = 3
+        with self.assertRaises(TaskCancelled):
+            self.resume()
+        self.assertEqual(self.state['state'], 'FAULT')
+        self.assertFalse(self.calls_named('scene_reset'))
+
+    def test_resumes_are_limited(self):
+        self.world.unreachable.add(('arm2', SETTINGS.c_slots[0]))
+        with self.assertRaises(TaskFault):
+            self.resume(max_resumes=2)
+        self.assertEqual(self.state['state'], 'FAULT')
+        self.assertEqual(len(self.calls_named('scene_reset')), 2)
+        self.assertIn('2 automatic resumes already used', self.notes[-1])
+
+    def test_failed_recovery_stops(self):
+        self.world.fail['scene_add_b_object'] = 1
+        # The camera still sees an arm in B after HOME.
+        self.world.zone_patch = lambda view, count: replace(view, b_arm_clear=False) if count >= 5 else view
+        with self.assertRaises(TaskFault):
+            self.resume()
+        self.assertEqual(self.state['state'], 'FAULT')
+
+    def test_manual_recovery_keeps_b_object_only_when_asked(self):
+        self.world.fail['scene_add_b_object'] = 1
+        with self.assertRaises(TaskFault):
+            self.transfer.run(1)
+        self.transfer.go_home()
+        with self.assertRaises(TaskFault):
+            self.transfer.recover(self.token(), True)
+        self.transfer.recover(self.token(), True, keep_b_object=True)
+        self.assertEqual(self.state['state'], 'IDLE')
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assertEqual(self.world.a_objects, 7)
 
 
 class Persistence(Base):

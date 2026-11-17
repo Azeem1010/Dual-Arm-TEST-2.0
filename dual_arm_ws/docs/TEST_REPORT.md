@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 ESP32 suction on the stop and shutdown buttons
+
+強制停止 sends suction 0; 關閉系統 (prototype) sends 0, then stops the launch with the micro-ROS agent it now starts. Details: evidence/esp32_stop_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests HMI / coordinator | PASS | 320 / 384 |
+| Coordinator with the untracked `test_motion_still.py` (not part of this work) | FAIL | 1 timing assertion |
+| Commander against a stand-in ESP32 | PASS | esp32_stub_check.txt |
+| Agent part of the prototype launch | PASS | agent_launch.txt |
+| Stop and shutdown on the real ESP32 | NOT_RUN | |
+
 ## 2026-11-15 Prototype B hand-over from the taught joints
 
 Both arms hand over in B at the 11-11 B teach counts in prototype mode. Details: evidence/b_teach_20261115/README.md.

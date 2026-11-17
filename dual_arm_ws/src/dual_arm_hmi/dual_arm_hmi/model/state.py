@@ -400,6 +400,9 @@ def _go_home_state(s, tools_cleared):
         return _refuse('任務執行中')
     if s.latched:
         return _refuse('請先解除鎖定')
+    if s.mode.allows_hardware_tasks and not s.controllers_active:
+        # Real arms: MoveIt would plan and the trajectory controller reject it (MoveIt code -4).
+        return _refuse('控制器未啟用，請先上扭力')
     if s.arms_at_home:
         return _refuse('兩臂已在 HOME')
     if not tools_cleared:

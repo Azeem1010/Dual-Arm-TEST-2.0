@@ -44,13 +44,17 @@ class PrototypeFiles(unittest.TestCase):
                 self.assertLessEqual(joint['min_raw'], raw, f'{arm} {suffix}')
                 self.assertLessEqual(raw, joint['max_raw'], f'{arm} {suffix}')
 
+    # User decision 2026-11-17: arm2 j1 read 90 at B where 2026-11-11 read 396, so its zero moved by -306.
+    ZERO_EXCEPTIONS = {('arm2', 'arm_shoulder_pan_joint'): 206}
+
     def test_prototype_calibration_matches_runtime_json(self):
         runtime = json.loads(RUNTIME.read_text(encoding='utf-8'))['home']
         data = calibration()
         for arm in ARMS:
             for index, suffix in enumerate(JOINT_SUFFIXES):
                 joint = data['joints'][f'{arm}_{suffix}']
-                self.assertEqual(joint['zero_raw'], runtime[arm]['raw_at_cad_zero'][index])
+                expected = self.ZERO_EXCEPTIONS.get((arm, suffix), runtime[arm]['raw_at_cad_zero'][index])
+                self.assertEqual(joint['zero_raw'], expected)
                 self.assertEqual(joint['direction'], runtime[arm]['direction'][index])
 
     def test_taught_slots_round_trip_to_the_taught_counts(self):
@@ -68,8 +72,8 @@ class PrototypeFiles(unittest.TestCase):
 
     def test_taught_slots_must_be_inside_the_calibration_limits(self):
         config = task_config.load(PROTOTYPE_CONFIG)
-        config['c_slot_teach']['raw'][0] = [0, 630, 926, 602]
-        with self.assertRaisesRegex(ValueError, 'Slot 1 arm_shoulder_pan_joint count 0 is outside'):
+        config['c_slot_teach']['raw'][0] = [1000, 630, 926, 602]
+        with self.assertRaisesRegex(ValueError, 'Slot 1 arm_shoulder_pan_joint count 1000 is outside'):
             load_slot_joints(config, calibration_path=str(PROTOTYPE_CALIBRATION))
 
     def test_taught_slots_need_the_driver_calibration(self):

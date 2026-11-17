@@ -83,7 +83,7 @@ B. 不需要實機的開發，建議順序
 - TCP 是 arm1_tcp，MoveIt 基座是 arm1_base_link，視覺輸出 arm1_base，必須經 TF。
 - 實機不可使用 SRDF 的 home named state，那是模擬值。實機 HOME 由 calibration.yaml 換算。
 - CM-530 開機時扭力是關的，重置會立刻關扭力，手臂會掉。韌體沒有 STOP 也沒有 watchdog。第 17 版韌體無法寫入或讀取 Moving Speed，值 0 代表最高速。
-- ESP32 沒有真空感測，/suction_status 只是命令回音。發生故障時不要自動送 0，持有中的物件會掉落。
+- ESP32 沒有真空感測，/suction_status 只是命令回音。coordinator 故障時不要自動送 0，持有中的物件會掉落；只有操作員按「強制停止」或「關閉系統」才送 0（使用者 2026-11-17 決定）。
 - 模擬速度 1.0／0.5／1.0 不能用在實機，實機由 0.05 起步。
 - 改 C/C++ 要跑 ASan/UBSan、TSan（docs/evidence/wp8/wp8.sh sanitize）。
 

@@ -27,6 +27,35 @@ def solve_line(model, start_q, points, max_jump):
     return path
 
 
+def solve_line_holding_tool(model, start_q, points, max_jump, tolerance=1e-4):
+    """Solve IK along points keeping the tool axis it has at start_q.
+
+    solve_line forces the cup straight down (or the nearest tilt), so from a taught pose with
+    a tilted cup its first step flips the wrist. Holding the starting axis keeps the cup's
+    orientation while it moves, as a straight lift off an object needs (field run 2026-11-17).
+    """
+    from scipy.optimize import least_squares
+
+    axis = model.forward(np.asarray(start_q, dtype=float))[:3, 2]
+    path = [list(start_q)]
+    for point in points:
+        target = np.asarray(point, dtype=float)
+
+        def residual(q):
+            pose = model.forward(q)
+            return np.r_[pose[:3, 3] - target, 0.1 * (pose[:3, 2] - axis)]
+        seed = np.clip(np.asarray(path[-1], dtype=float), model.lower, model.upper)
+        result = least_squares(residual, seed, bounds=(model.lower, model.upper), max_nfev=300,
+                               gtol=1e-12, ftol=1e-12, xtol=1e-12)
+        if np.linalg.norm(model.forward(result.x)[:3, 3] - target) > tolerance:
+            raise ValueError(f'No solution keeping the tool axis at {np.round(point, 4).tolist()}')
+        q = result.x.tolist()
+        if max(abs(a - b) for a, b in zip(q, path[-1])) > max_jump:
+            raise ValueError(f'Joint jump above {max_jump} rad at {np.round(point, 4).tolist()}')
+        path.append(q)
+    return path
+
+
 def joint_line(start_q, end_q, max_step):
     """Joint-space straight line from start to end, no joint moving more than max_step per step."""
     start, end = np.asarray(start_q, dtype=float), np.asarray(end_q, dtype=float)

@@ -16,3 +16,21 @@ def test_torque_reply_uses_ok():
     from dual_arm_hmi.sources.ros_command import reply_from
     reply = reply_from(TORQUE, SetHardwareComponentState.Response(ok=True))
     assert reply.ok and reply.service == TORQUE
+
+
+def test_switch_controller_activates_both_arms_strictly():
+    from controller_manager_msgs.srv import SwitchController
+    from dual_arm_hmi.sources.ros_command import reply_from, request_for
+    request = request_for('/controller_manager/switch_controller')
+    assert list(request.activate_controllers) == ['arm1_controller', 'arm2_controller']
+    assert request.strictness == SwitchController.Request.STRICT
+    assert reply_from('/controller_manager/switch_controller', SwitchController.Response(ok=True)).ok
+    assert not reply_from('/controller_manager/switch_controller', SwitchController.Response(ok=False)).ok
+
+
+def test_suction_off_publishes_zero_and_needs_the_zero_echo():
+    from std_msgs.msg import Int32
+    from dual_arm_hmi.sources.ros_command import SERVICES, SUCTION_OFF, reply_from, request_for
+    assert SERVICES[SUCTION_OFF][0] is Int32 and request_for(SUCTION_OFF).data == 0
+    assert reply_from(SUCTION_OFF, 0).ok
+    assert not reply_from(SUCTION_OFF, 3).ok

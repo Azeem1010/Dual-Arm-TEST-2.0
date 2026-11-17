@@ -23,7 +23,7 @@ from .gateways.truth import TruthObserver, wire_truth
 from .gateways.vision import VisionPickObserver, wire_vision
 from .homes import load_b_joints, load_homes, load_slot_joints
 from .journal import Journal, config_fingerprint
-from .task_config import load
+from .task_config import load, max_resumes
 from .workflow.ports import TaskCancelled, TaskFault, TaskIO, WorkflowSettings
 from .workflow.transfer import RECOVERY, Transfer
 
@@ -66,6 +66,12 @@ class CoordinatorIO(TaskIO):
 
     def move_b(self, arm, pose, contact=False):
         self._motion.move_b(arm, pose, contact=contact)
+
+    def b_grasp_xy(self, arm):
+        return self._motion.b_grasp_xy(arm)
+
+    def lift_vertical(self, arm, z):
+        self._motion.lift_vertical(arm, z)
 
     def move_home(self, arm):
         self._motion.move_home(arm)
@@ -135,6 +141,10 @@ class CoordinatorNode(Node):
             self.get_logger().warning(
                 'PROTOTYPE mode: estimated calibration, no e-stop heartbeat, suction auto-confirmed')
         self.require_safety = require_safety
+        self.max_resumes = max_resumes(self.config)
+        if self.max_resumes:
+            self.get_logger().warning(f'PROTOTYPE auto resume: after a fault both arms go HOME and the task '
+                                      f'continues, at most {self.max_resumes} times per start')
 
         self.group, self.lock = ReentrantCallbackGroup(), threading.RLock()
         self.cancel, self.busy, self.worker = threading.Event(), False, None
@@ -270,7 +280,10 @@ class CoordinatorNode(Node):
 
     def _run_task(self):
         try:
-            result = self.transfer.run(self.cycles)
+            if self.max_resumes:
+                result = self.transfer.run_resuming(self.cycles, self.max_resumes, self.get_logger().warning)
+            else:
+                result = self.transfer.run(self.cycles)
             self.get_logger().info(f'Task finished: {result}')
         except Exception as error:
             self.get_logger().error(f'Task stopped: {error}')
@@ -340,7 +353,8 @@ class CoordinatorNode(Node):
             self.busy = True
             self.cancel.clear()
         try:
-            self.transfer.recover(request.token, request.success)
+            # With auto resume an object arm 1 left in B may stay; arm 2 takes it on the next start.
+            self.transfer.recover(request.token, request.success, keep_b_object=bool(self.max_resumes))
             response.accepted, response.message = True, 'Recovered; send a new start'
         except (TaskFault, TokenError, RuntimeError) as error:
             response.accepted, response.message = False, str(error)

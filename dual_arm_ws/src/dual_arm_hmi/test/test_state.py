@@ -81,6 +81,11 @@ def test_go_home_needs_confirmation_and_is_refused_on_hardware():
     assert evaluate_actions(hardware, True)[Action.GO_HOME].reason == '實機需等 H5 通過'
 
 
+def test_prototype_go_home_needs_the_controllers():
+    snapshot = replace(fault(arms_at_home=False), mode=Mode.HARDWARE_PROTOTYPE, controllers_active=False)
+    assert evaluate_actions(snapshot, True)[Action.GO_HOME].reason == '控制器未啟用，請先上扭力'
+
+
 def test_go_home_refused_while_latched_or_running():
     assert not evaluate_actions(latched(), True)[Action.GO_HOME].enabled
     assert not evaluate_actions(ready(task=TaskStatus(busy=True), arms_at_home=False), True)[Action.GO_HOME].enabled

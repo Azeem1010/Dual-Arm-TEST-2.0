@@ -11,6 +11,7 @@ from ..model.state import Mode
 
 USER_PROFILES = Path('~/.ros/dual_arm_hmi/profiles.yaml').expanduser()
 _MOCK_CALIBRATION = 'src/cm530_hardware/test/fixtures/calibration_mock.yaml'
+_MICROROS_SETUP = '~/microros_ws/install/local_setup.bash'
 
 
 _CAMERA_DEVICES = ('env_cam_device', 'arm1_cam_device', 'arm2_cam_device')
@@ -126,14 +127,23 @@ def _prototype_plan(profiles, journal_path, cycles, environ):
     port = hardware.get('port') or ''
     if not port:
         return LaunchPlan(problem='設定檔未填控制板路徑 hardware.port')
+    esp32 = str(hardware.get('esp32_port') or '').strip()
+    if not esp32:
+        return LaunchPlan(problem='設定檔未填吸盤控制板路徑 hardware.esp32_port')
+    setup = str(hardware.get('microros_setup') or _MICROROS_SETUP).strip()
+    if not Path(setup).expanduser().is_file():
+        return LaunchPlan(problem=f'找不到 micro-ROS agent 的 {setup}（ORIN_DEPLOYMENT 6.1）')
     problem = domain_problem(profiles, environ)
     if problem:
         return LaunchPlan(problem=problem)
     words = ['ros2', 'launch', 'dual_arm_bringup', 'hardware_prototype.launch.py', f'port:={port}',
+             f'esp32_port:={esp32}', f'microros_setup:={setup}',
              f'cycles:={int(cycles)}', f'journal_path:={journal_path}']
     if hardware.get('vision_calib_dir'):
         words.append(f'calib_dir:={hardware["vision_calib_dir"]}')
     words += [f'{name}:={path}' for name in _CAMERA_DEVICES if (path := str(hardware.get(name) or '').strip())]
+    if hardware.get('show_debug') is True:
+        words.append('show_debug:=true')
     return LaunchPlan(tuple(words), environment=(('ROS_DOMAIN_ID', domain_for(Mode.HARDWARE_PROTOTYPE, profiles, environ)),),
                       notice='PROTOTYPE：估計校正，CM-530 電源開關是唯一急停')
 

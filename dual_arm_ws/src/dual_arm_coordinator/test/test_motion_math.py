@@ -295,12 +295,13 @@ class BPoses(unittest.TestCase):
                 self.assertEqual(pose['above_z'], self.approach_z)
 
     def test_both_arms_meet_near_the_b_centre(self):
-        # Model only (estimated zeros): the two taught points are about 8 mm apart near b_place (0, 0).
+        # Model only (estimated zeros): the two taught points are about 4 mm apart near b_place (0, 0).
+        # Since the 2026-11-17 arm2 re-teach its contact lies 5 mm below arm 1's (pressed harder).
         first, second = self.poses['arm1'], self.poses['arm2']
         self.assertLess(np.hypot(*np.subtract(first['xy'], second['xy'])), 0.015)
         for pose in (first, second):
             self.assertLess(np.hypot(*pose['xy']), 0.03)
-            self.assertLess(abs(pose['release_z'] - second['release_z']), 0.003)
+            self.assertLess(abs(pose['release_z'] - second['release_z']), 0.006)
 
     def test_vertical_joint_lines_stay_within_the_configured_drift(self):
         for arm, pose in self.poses.items():

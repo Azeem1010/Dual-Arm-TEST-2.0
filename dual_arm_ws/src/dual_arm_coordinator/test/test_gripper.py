@@ -394,9 +394,10 @@ class Esp32Confirmation(Esp32Case):
         self.backend.suction('arm1', 'grasp')
         self.assertGreaterEqual(self.confirmed[0][2], self.SETTLE)
 
-    def test_release_does_not_wait_for_vacuum(self):
+    def test_release_waits_for_the_vacuum_to_vent(self):
+        # Lifting at once dragged the object in B (field run 2026-11-17).
         self.backend.suction('arm1', 'release')
-        self.assertLess(self.confirmed[0][2], self.SETTLE)
+        self.assertGreaterEqual(self.confirmed[0][2], self.SETTLE)
 
     def test_cancel_during_vacuum_wait(self):
         def cancel():

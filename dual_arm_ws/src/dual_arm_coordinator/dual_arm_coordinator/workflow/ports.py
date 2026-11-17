@@ -61,6 +61,13 @@ class WorkflowSettings:
     c_slot_joints: bool = False
     # Prototype: both arms hand over in B at taught joint poses (TaskIO.move_b) instead of b_place xy.
     b_joints: bool = False
+    # Prototype: added to the observed zone A object before arm 1 picks it.
+    a_pick_offset: tuple = (0.0, 0.0)
+    # Prototype: arm 1 aims this much below contact_z when it picks in zone A.
+    a_press: float = 0.0
+    # Prototype, taught B: arm 1 lifts straight up to this height after releasing; None keeps the
+    # taught joint-line lift.
+    b_release_lift_z: float = None
 
     @classmethod
     def from_config(cls, config):
@@ -72,7 +79,11 @@ class WorkflowSettings:
                    b_place=tuple(zones['b_place_xy_m']), b_pick_tolerance=zones['b_pick_tolerance_m'],
                    c_slots=tuple(tuple(slot) for slot in zones['c_slots_xy_m']),
                    c_slot_joints=config.get('c_slot_teach') is not None,
-                   b_joints=config.get('b_teach') is not None)
+                   b_joints=config.get('b_teach') is not None,
+                   a_pick_offset=tuple(config.get('a_pick_offset_xy_m', (0.0, 0.0))),
+                   a_press=float(config.get('a_press_m', 0.0)),
+                   b_release_lift_z=(heights['approach_z_m'] + config['b_release_lift_extra_m']
+                                     if 'b_release_lift_extra_m' in config else None))
 
 
 class TaskIO:
@@ -119,6 +130,14 @@ class TaskIO:
 
     def move_b(self, arm, pose, contact=False):
         """Taught B only: move to arm's 'above' or 'contact' joints in B."""
+        raise NotImplementedError
+
+    def lift_vertical(self, arm, z):
+        """Move the tool straight up to height z, keeping the xy where it is now."""
+        raise NotImplementedError
+
+    def b_grasp_xy(self, arm):
+        """Taught B only: world xy of arm's tool at its taught contact pose in B."""
         raise NotImplementedError
 
     def move_home(self, arm):

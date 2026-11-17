@@ -1,0 +1,62 @@
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-10-14-48-42-872582-AGX-Orin-34572
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [cm530_mock_serial-1]: process started with pid [34575]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/0
+[INFO] [robot_state_publisher-2]: process started with pid [34577]
+[INFO] [ros2_control_node-3]: process started with pid [34578]
+[INFO] [spawner-4]: process started with pid [34579]
+[robot_state_publisher-2] [INFO] [1794293325.189665781] [robot_state_publisher]: Robot initialized
+[ros2_control_node-3] [INFO] [1794293325.218630165] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[ros2_control_node-3] [INFO] [1794293325.234396698] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-3] [INFO] [1794293325.234641563] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-3] [INFO] [1794293325.234681435] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-3] [INFO] [1794293325.234704124] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-3] [WARN] [1794293325.234925533] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-3] [INFO] [1794293325.370918964] [controller_manager]: Received robot description from topic.
+[ros2_control_node-3] [INFO] [1794293325.371216405] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-3] [INFO] [1794293325.385946870] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794293325.388985315] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-3] [INFO] [1794293325.389231844] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794293325.401118425] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794293325.402102493] [controller_manager]: Activating component 'DualArmSystem'.
+[ros2_control_node-3] [INFO] [1794293325.402164861] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794293325.607074724] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 connected on /tmp/cm530_mock_serial (read-only)
+[ros2_control_node-3] [INFO] [1794293325.607260709] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794293325.607333253] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794293325.608498122] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794293325.608775436] [controller_manager]: Registering statistics for : DualArmSystem
+[ros2_control_node-3] [INFO] [1794293325.609086509] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[ros2_control_node-3] [INFO] [1794293326.024142226] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[ros2_control_node-3] [INFO] [1794293326.024269555] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794293326.037518574] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers.yaml 
+[spawner-4] [INFO] [1794293326.094565516] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[ros2_control_node-3] [INFO] [1794293326.097221368] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794293326.097651866] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ros2_control_node-3] [INFO] [1794293326.149945347] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[ros2_control_node-3] [INFO] [1794293326.155973245] [controller_manager]: Successfully switched controllers!
+[spawner-4] [INFO] [1794293326.168849015] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[INFO] [spawner-4]: process has finished cleanly [pid 34579]
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [ros2_control_node-3]: sending signal 'SIGINT' to process[ros2_control_node-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [cm530_mock_serial-1]: sending signal 'SIGINT' to process[cm530_mock_serial-1]
+[ros2_control_node-3] [INFO] [1794293328.191296036] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794293328.191466629] [controller_manager]: Shutdown request received....
+[ros2_control_node-3] [INFO] [1794293328.191566917] [controller_manager]: Shutting down all controllers in the controller manager.
+[ros2_control_node-3] [INFO] [1794293328.191605030] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794293328.191710790] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794293328.192007207] [resource_manager]: 'deactivate' hardware 'DualArmSystem' 
+[INFO] [cm530_mock_serial-1]: process has finished cleanly [pid 34575]
+[robot_state_publisher-2] [INFO] [1794293328.192751339] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794293328.197634625] [resource_manager]: Successful 'deactivate' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794293328.197703617] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794293328.197927362] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794293328.198101283] [controller_manager]: Shutting down the controller manager.
+[ros2_control_node-3] [ERROR] [1794293328.198860551] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-3] [ERROR] [1794293328.198860583] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-3] [INFO] [1794293328.206037447] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-3] [INFO] [1794293328.206094407] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[ros2_control_node-3] [INFO] [1794293328.209380278] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-3] [INFO] [1794293328.209422327] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 34577]
+[INFO] [ros2_control_node-3]: process has finished cleanly [pid 34578]

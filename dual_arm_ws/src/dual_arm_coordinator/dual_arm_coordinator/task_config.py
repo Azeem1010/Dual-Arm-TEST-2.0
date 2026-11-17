@@ -56,7 +56,30 @@ _SLOT_TEACH_SHAPE = dict.fromkeys(('arm', 'source', 'raw', 'release_lift_m', 'ar
 # (prototype only, user decision 2026-11-15).
 B_TEACH_KEY = 'b_teach'
 _B_TEACH_SHAPE = dict.fromkeys(('source', 'raw', 'contact_lift_m', 'arrival_tolerance_raw', 'max_line_drift_m'))
-OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY)
+# Optional: after a fault, go HOME, recover and continue by itself, at most max_resumes times per start
+# (prototype only, user decision 2026-11-17).
+AUTO_RESUME_KEY = 'auto_resume'
+_AUTO_RESUME_SHAPE = dict.fromkeys(('max_resumes',))
+MAX_RESUMES_LIMIT = 5
+# Optional: a fixed xy correction added to the observed zone A object before arm 1 picks it
+# (prototype only, user decision 2026-11-17: the cup missed the cap sideways).
+A_OFFSET_KEY = 'a_pick_offset_xy_m'
+MAX_A_OFFSET_M = 0.02
+# Optional: re-aim a contact descent that stopped short by more than tolerance_m, at most
+# max_extra_m below the target and attempts times (prototype only, user decision 2026-11-17).
+DESCENT_KEY = 'descent_correction'
+_DESCENT_SHAPE = dict.fromkeys(('tolerance_m', 'max_extra_m', 'attempts'))
+MAX_DESCENT_EXTRA_M = 0.01
+# Optional: arm 1 aims this much below contact_z_m when it picks in zone A (prototype only,
+# user decision 2026-11-17: the joints reached the target but the cup stayed above the cap).
+A_PRESS_KEY = 'a_press_m'
+MAX_A_PRESS_M = 0.008
+# Optional: after releasing in a taught B, arm 1 lifts straight up from where its cup is to
+# approach_z_m plus this (prototype only, user decision 2026-11-17: the taught joint-line lift
+# turned j1 back while the cup still touched the object and pushed it).
+B_LIFT_KEY = 'b_release_lift_extra_m'
+MAX_B_LIFT_EXTRA_M = 0.03
+OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY)
 
 
 class TaskConfigError(ValueError):
@@ -225,6 +248,73 @@ def _check_b_teach(doc):
     return errors + _check_teach_limits(teach, B_TEACH_KEY, 'contact_lift_m')
 
 
+def _check_auto_resume(doc):
+    node = doc[AUTO_RESUME_KEY]
+    if not isinstance(node, dict):
+        return [f'{AUTO_RESUME_KEY} must be a mapping']
+    errors = _shape_errors(node, _AUTO_RESUME_SHAPE, f'{AUTO_RESUME_KEY}.')
+    if errors:
+        return errors
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{AUTO_RESUME_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    count = node['max_resumes']
+    if type(count) is not int or not 1 <= count <= MAX_RESUMES_LIMIT:
+        errors.append(f'{AUTO_RESUME_KEY}.max_resumes must be an integer in 1..{MAX_RESUMES_LIMIT}')
+    return errors
+
+
+def _check_a_offset(doc):
+    value = doc[A_OFFSET_KEY]
+    errors = []
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{A_OFFSET_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    if not _is_xy(value) or not all(abs(item) <= MAX_A_OFFSET_M for item in value):
+        errors.append(f'{A_OFFSET_KEY} must be [x, y] with each within +-{MAX_A_OFFSET_M} m')
+    return errors
+
+
+def _check_descent(doc):
+    node = doc[DESCENT_KEY]
+    if not isinstance(node, dict):
+        return [f'{DESCENT_KEY} must be a mapping']
+    errors = _shape_errors(node, _DESCENT_SHAPE, f'{DESCENT_KEY}.')
+    if errors:
+        return errors
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{DESCENT_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    for key in ('tolerance_m', 'max_extra_m'):
+        if not _is_number(node[key]) or not 0 < node[key] <= MAX_DESCENT_EXTRA_M:
+            errors.append(f'{DESCENT_KEY}.{key} must be within (0, {MAX_DESCENT_EXTRA_M}]')
+    if type(node['attempts']) is not int or not 1 <= node['attempts'] <= 3:
+        errors.append(f'{DESCENT_KEY}.attempts must be an integer in 1..3')
+    return errors
+
+
+def _check_a_press(doc):
+    errors = []
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{A_PRESS_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    if not _is_number(doc[A_PRESS_KEY]) or not 0 < doc[A_PRESS_KEY] <= MAX_A_PRESS_M:
+        errors.append(f'{A_PRESS_KEY} must be within (0, {MAX_A_PRESS_M}] m')
+    return errors
+
+
+def _check_b_lift(doc):
+    errors = []
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{B_LIFT_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    if B_TEACH_KEY not in doc:
+        errors.append(f'{B_LIFT_KEY} needs {B_TEACH_KEY}')
+    if not _is_number(doc[B_LIFT_KEY]) or not 0 <= doc[B_LIFT_KEY] <= MAX_B_LIFT_EXTRA_M:
+        errors.append(f'{B_LIFT_KEY} must be within [0, {MAX_B_LIFT_EXTRA_M}] m')
+    return errors
+
+
+def max_resumes(doc):
+    """How often a run may resume itself after a fault; 0 when the configuration does not allow it."""
+    return doc[AUTO_RESUME_KEY]['max_resumes'] if AUTO_RESUME_KEY in doc else 0
+
+
 def validate(doc):
     """Return doc unchanged when valid; otherwise raise listing every problem found."""
     present = [key for key in OPTIONAL_KEYS if isinstance(doc, dict) and key in doc]
@@ -240,6 +330,16 @@ def validate(doc):
             errors += _check_slot_teach(doc)
         if B_TEACH_KEY in present:
             errors += _check_b_teach(doc)
+        if AUTO_RESUME_KEY in present:
+            errors += _check_auto_resume(doc)
+        if A_OFFSET_KEY in present:
+            errors += _check_a_offset(doc)
+        if DESCENT_KEY in present:
+            errors += _check_descent(doc)
+        if A_PRESS_KEY in present:
+            errors += _check_a_press(doc)
+        if B_LIFT_KEY in present:
+            errors += _check_b_lift(doc)
     if errors:
         raise TaskConfigError('; '.join(errors))
     return doc

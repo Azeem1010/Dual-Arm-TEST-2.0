@@ -1,0 +1,274 @@
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-11-14-45-00-366852-AGX-Orin-26914
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [cm530_mock_serial-1]: process started with pid [26917]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/3
+[INFO] [robot_state_publisher-2]: process started with pid [26919]
+[INFO] [ros2_control_node-3]: process started with pid [26920]
+[INFO] [spawner-4]: process started with pid [26921]
+[INFO] [spawner-5]: process started with pid [26922]
+[INFO] [spawner-6]: process started with pid [26923]
+[robot_state_publisher-2] [INFO] [1794379502.610884923] [robot_state_publisher]: Robot initialized
+[ros2_control_node-3] [INFO] [1794379502.615763117] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[ros2_control_node-3] [INFO] [1794379502.628967755] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-3] [INFO] [1794379502.629196207] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-3] [INFO] [1794379502.629232176] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-3] [INFO] [1794379502.629249648] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-3] [WARN] [1794379502.629459955] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-3] [INFO] [1794379502.768320406] [controller_manager]: Received robot description from topic.
+[ros2_control_node-3] [INFO] [1794379502.768603259] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-3] [INFO] [1794379502.783738650] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379502.786422535] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-3] [INFO] [1794379502.786658955] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379502.800850202] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794379502.801421923] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[ros2_control_node-3] [INFO] [1794379502.801478180] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-3] [ERROR] [1794379502.807352967] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: calibration status is NOT_RUN, not PASS
+[ros2_control_node-3] [ERROR] [1794379502.807508106] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: hardware_use_allowed is false
+[ros2_control_node-3] [ERROR] [1794379502.807546666] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: moving_speed_verified is false
+[ros2_control_node-3] [ERROR] [1794379502.807573739] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: max_step_raw is not set
+[ros2_control_node-3] [ERROR] [1794379502.807596843] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: evidence_kind none cannot authorize this port
+[ros2_control_node-3] [ERROR] [1794379502.807654604] [resource_manager]: Failed to 'configure' hardware 'DualArmSystem'
+[ros2_control_node-3] terminate called after throwing an instance of 'std::runtime_error'
+[ros2_control_node-3]   what():  Failed to set the initial state of the component : DualArmSystem to inactive
+[ros2_control_node-3] Stack trace (most recent call last) in thread 26958:
+[ros2_control_node-3] #17   Object "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1", at 0xffffffffffffffff, in 
+[ros2_control_node-3] #16   Source "../sysdeps/unix/sysv/linux/aarch64/clone3.S", line 76, in thread_start [0xffff9ad1bb4b]
+[ros2_control_node-3] #15   Source "./nptl/pthread_create.c", line 447, in start_thread [0xffff9acb582b]
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [spawner-6]: sending signal 'SIGINT' to process[spawner-6]
+[INFO] [spawner-5]: sending signal 'SIGINT' to process[spawner-5]
+[INFO] [spawner-4]: sending signal 'SIGINT' to process[spawner-4]
+[INFO] [ros2_control_node-3]: sending signal 'SIGINT' to process[ros2_control_node-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [cm530_mock_serial-1]: sending signal 'SIGINT' to process[cm530_mock_serial-1]
+[spawner-6] Traceback (most recent call last):
+[spawner-6]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-6]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-6]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-6]     return next(matches).load()
+[spawner-6]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[INFO] [cm530_mock_serial-1]: process has finished cleanly [pid 26917]
+[spawner-5] Traceback (most recent call last):
+[spawner-5]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-5]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-5]     return next(matches).load()
+[spawner-5]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[ros2_control_node-3] [INFO] [1794379503.175714275] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794379503.175918406] [controller_manager]: Shutdown request received....
+[ros2_control_node-3] [INFO] [1794379503.176047656] [controller_manager]: Shutting down all controllers in the controller manager.
+[ros2_control_node-3] [INFO] [1794379503.176102857] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379503.176261420] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
+[ros2_control_node-3] [WARN] [1794379503.176283212] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176313453] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176330125] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176343789] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176358221] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176371182] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176384462] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176396302] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176409006] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176422254] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176434991] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176447183] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176458895] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176470895] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176483632] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176495184] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176507152] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176519280] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[spawner-4] Traceback (most recent call last):
+[spawner-4]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-4]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-4]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-4]     return next(matches).load()
+[spawner-4]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[spawner-4]     module = import_module(match.group('module'))
+[spawner-4]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[spawner-4]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-4]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-4]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/__init__.py", line 15, in <module>
+[spawner-5]     module = import_module(match.group('module'))
+[spawner-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[spawner-5]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-5]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-5]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/__init__.py", line 15, in <module>
+[spawner-5]     from .controller_manager_services import (
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/controller_manager_services.py", line 39, in <module>
+[spawner-5]     from ros2param.api import call_set_parameters
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2param/api/__init__.py", line 21, in <module>
+[spawner-5]     from rclpy.parameter_client import AsyncParameterClient
+[spawner-6]     module = import_module(match.group('module'))
+[spawner-6]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[spawner-6]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-6]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-6]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/__init__.py", line 15, in <module>
+[spawner-6]     from .controller_manager_services import (
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/controller_manager_services.py", line 39, in <module>
+[spawner-6]     from ros2param.api import call_set_parameters
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2param/api/__init__.py", line 21, in <module>
+[robot_state_publisher-2] [INFO] [1794379503.176441551] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/parameter_client.py", line 28, in <module>
+[spawner-5]     from rclpy.node import Node
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 80, in <module>
+[ros2_control_node-3] [WARN] [1794379503.176590097] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176619666] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176635986] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176649810] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176664755] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176678899] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176692147] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176705491] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176718611] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176732372] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176745748] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176759284] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176772564] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176785045] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176798613] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[spawner-4]     from .controller_manager_services import (
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/controller_manager_services.py", line 39, in <module>
+[spawner-4]     from ros2param.api import call_set_parameters
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2param/api/__init__.py", line 21, in <module>
+[spawner-4]     from rclpy.parameter_client import AsyncParameterClient
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/parameter_client.py", line 28, in <module>
+[spawner-4]     from rclpy.node import Node
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 80, in <module>
+[spawner-4]     from rclpy.time_source import TimeSource
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/time_source.py", line 25, in <module>
+[spawner-4]     import rosgraph_msgs.msg
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/__init__.py", line 9, in <module>
+[spawner-4]     from rosgraph_msgs.msg._type_hash import TypeHash  # noqa: F401
+[spawner-4]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/_type_hash.py", line 18, in <module>
+[spawner-4]     import numpy  # noqa: E402, I100
+[spawner-4]     ^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 159, in <module>
+[spawner-4]     from . import ma
+[spawner-4]   File "/usr/lib/python3/dist-packages/numpy/ma/__init__.py", line 42, in <module>
+[spawner-6]     from rclpy.parameter_client import AsyncParameterClient
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/parameter_client.py", line 28, in <module>
+[spawner-6]     from rclpy.node import Node
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 80, in <module>
+[spawner-6]     from rclpy.time_source import TimeSource
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/time_source.py", line 25, in <module>
+[spawner-6]     import rosgraph_msgs.msg
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/__init__.py", line 9, in <module>
+[spawner-6]     from rosgraph_msgs.msg._type_hash import TypeHash  # noqa: F401
+[spawner-6]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/_type_hash.py", line 18, in <module>
+[spawner-6]     import numpy  # noqa: E402, I100
+[spawner-6]     ^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 158, in <module>
+[spawner-6]     from . import ctypeslib
+[spawner-6]   File "/usr/lib/python3/dist-packages/numpy/ctypeslib.py", line 374, in <module>
+[ros2_control_node-3] [WARN] [1794379503.176811861] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176825749] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176838485] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176851766] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176880822] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176906167] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794379503.176920855] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [INFO] [1794379503.177022297] [controller_manager]: Shutting down the controller manager.
+[ros2_control_node-3] [ERROR] [1794379503.177218524] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-3] [ERROR] [1794379503.177228732] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[spawner-5]     from rclpy.time_source import TimeSource
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/time_source.py", line 25, in <module>
+[spawner-5]     import rosgraph_msgs.msg
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/__init__.py", line 9, in <module>
+[spawner-5]     from rosgraph_msgs.msg._type_hash import TypeHash  # noqa: F401
+[spawner-5]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/_type_hash.py", line 18, in <module>
+[spawner-5]     import numpy  # noqa: E402, I100
+[spawner-5]     ^^^^^^^^^^^^
+[spawner-5]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 159, in <module>
+[spawner-5]     from . import ma
+[spawner-5]   File "/usr/lib/python3/dist-packages/numpy/ma/__init__.py", line 42, in <module>
+[spawner-4]     from . import core
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1124, in get_code
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 753, in _compile_bytecode
+[spawner-4] KeyboardInterrupt
+[spawner-5]     from . import core
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 1087, in get_code
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 1187, in get_data
+[spawner-5] KeyboardInterrupt
+[spawner-6]     _scalar_type_map = _get_scalar_type_map()
+[spawner-6]                        ^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3/dist-packages/numpy/ctypeslib.py", line 371, in _get_scalar_type_map
+[spawner-6]     return {_dtype(ctype): ctype for ctype in simple_types}
+[spawner-6]             ^^^^^^^^^^^^^
+[spawner-6]   File "<frozen importlib._bootstrap>", line 463, in _lock_unlock_module
+[spawner-6] KeyboardInterrupt
+[ERROR] [spawner-5]: process has died [pid 26922, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner arm1_controller --controller-manager-timeout 60 --inactive --ros-args'].
+[ERROR] [spawner-6]: process has died [pid 26923, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner arm2_controller --controller-manager-timeout 60 --inactive --ros-args'].
+[ERROR] [spawner-4]: process has died [pid 26921, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner joint_state_broadcaster --controller-manager-timeout 60 --ros-args'].
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 26919]
+[ros2_control_node-3] #14   Source "../../../../../src/libstdc++-v3/src/c++11/thread.cc", line 104, in execute_native_thread_routine [0xffff9af11adf]
+[ERROR] [ros2_control_node-3]: process[ros2_control_node-3] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [ros2_control_node-3]: sending signal 'SIGTERM' to process[ros2_control_node-3]
+[ros2_control_node-3] [INFO] [1794379508.175470985] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] #13   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0xffff9b23bc3b, in rclcpp::executors::MultiThreadedExecutor::run(unsigned long)
+[ros2_control_node-3] #12   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0xffff9b208c93, in rclcpp::Executor::execute_any_executable(rclcpp::AnyExecutable&)
+[ros2_control_node-3] #11   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0xffff9b207f17, in rclcpp::Executor::execute_subscription(std::shared_ptr<rclcpp::SubscriptionBase>)
+[ros2_control_node-3] #10   Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0xffff9b51155b, in 
+[ros2_control_node-3] #9    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0xffff9b48060f, in controller_manager::ControllerManager::robot_description_callback(std_msgs::msg::String_<std::allocator<void> > const&)
+[ros2_control_node-3] #8    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0xffff9b489343, in controller_manager::ControllerManager::set_initial_hardware_components_state()
+[ros2_control_node-3] #7    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0xffff9b48004b, in 
+[ros2_control_node-3] #6    Source "../../../../src/libstdc++-v3/libsupc++/eh_throw.cc", line 98, in __cxa_throw [0xffff9aeda907]
+[ros2_control_node-3] #5    Source "../../../../src/libstdc++-v3/libsupc++/eh_terminate.cc", line 58, in terminate [0xffff9aed0e03]
+[ros2_control_node-3] #4    Source "../../../../src/libstdc++-v3/libsupc++/eh_terminate.cc", line 48, in __aarch64_swp8_acq_rel [0xffff9aeda56f]
+[ros2_control_node-3] #3    Source "../../../../src/libstdc++-v3/libsupc++/vterminate.cc", line 95, in __verbose_terminate_handler [0xffff9aedd4d7]
+[ros2_control_node-3] #2    Source "./stdlib/abort.c", line 79, in abort [0xffff9ac57dff]
+[ros2_control_node-3] #1    Source "../sysdeps/posix/raise.c", line 26, in raise [0xffff9ac6cb3b]
+[ros2_control_node-3] #0    Source "./nptl/pthread_kill.c", line 44, in __pthread_kill_implementation [0xffff9acb74d8]
+[ros2_control_node-3] Aborted (Signal sent by tkill() 26920 2002)
+[ERROR] [ros2_control_node-3]: process[ros2_control_node-3] failed to terminate '10.0' seconds after receiving 'SIGTERM', escalating to 'SIGKILL'
+[INFO] [ros2_control_node-3]: sending signal 'SIGKILL' to process[ros2_control_node-3]
+[ERROR] [ros2_control_node-3]: process has died [pid 26920, exit code -9, cmd '/opt/ros/jazzy/lib/controller_manager/ros2_control_node --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_bgz23rgx -r ~/robot_description:=/robot_description'].

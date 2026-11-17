@@ -25,6 +25,10 @@ hardware:
   env_cam_device: ''
   arm1_cam_device: ''
   arm2_cam_device: ''
+  # Prototype：ESP32 吸盤（CP2102）。啟動系統時一起開 micro-ROS agent，關閉系統時先送 0 全關再關掉
+  esp32_port: ''            # /dev/serial/by-id/... 必填
+  microros_setup: ~/microros_ws/install/local_setup.bash
+  show_debug: false        # Prototype：true = 環境相機另開 OpenCV 辨識框視窗（Orin 桌面）
   # 實機專用的 ROS domain，不可和模擬相同，避免模擬的回授與影像混進實機。
   # 0 是 ROS 預設值，現場終端機不設 ROS_DOMAIN_ID 就能看到實機；這個設定不受環境變數影響
   ros_domain_id: '0'

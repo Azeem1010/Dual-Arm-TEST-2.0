@@ -5,7 +5,7 @@ from ..resources import SlotManager, ZoneManager
 from .arm1_workflow import Arm1Workflow
 from .arm2_workflow import Arm2Workflow
 from .context import TaskContext
-from .ports import TaskFault
+from .ports import TaskCancelled, TaskFault
 
 ARMS = ('arm1', 'arm2')
 RECOVERY = 'recovery'
@@ -41,6 +41,48 @@ class Transfer:
             # Resource managers and gateways report refusals with other exception types.
             self._fault(error)
             raise TaskFault(str(error)) from error
+
+    def run_resuming(self, limit, max_resumes, notify=lambda message: None):
+        """Prototype: run, and after a fault go HOME, recover and continue, at most max_resumes times.
+
+        Progress is counted in C slots, since a fault after the release in C has delivered its
+        object. An object arm 1 left in B stays there and arm 2 takes it next. The task stops for
+        good when it was canceled or stopped by a safety source, an arm may still hold an object,
+        or HOME or recovery fails.
+        """
+        start_filled = sum(self.journal.data['occupied'])
+        resumes = 0
+        while True:
+            done = sum(self.journal.data['occupied']) - start_filled
+            if done >= limit:
+                self.journal.update(state='SUCCEEDED', active_arm='', completed=done)
+                return 'SUCCEEDED'
+            try:
+                result = self.run(limit - done)
+            except TaskCancelled:
+                raise
+            except TaskFault as error:
+                problem = self._resume_problem(resumes, max_resumes)
+                if problem is not None:
+                    notify(f'Not resuming: {problem}')
+                    raise
+                resumes += 1
+                notify(f'Resuming {resumes}/{max_resumes} after: {error}')
+                self.io.guard()
+                self.go_home()
+                self.recover(self.gate.current[0], True, keep_b_object=True)
+                continue
+            self.journal.update(completed=sum(self.journal.data['occupied']) - start_filled)
+            return result
+
+    def _resume_problem(self, resumes, max_resumes):
+        if resumes >= max_resumes:
+            return f'{max_resumes} automatic resumes already used'
+        holding = self.journal.data['holding']
+        held = [arm for arm in ARMS if holding[arm] != 'empty']
+        if held:
+            return f'{", ".join(held)} may still hold an object'
+        return None
 
     def _run(self, limit):
         self.journal.update(state='STARTING', cycle_id=uuid.uuid4().hex, completed=0, message='')
@@ -118,16 +160,18 @@ class Transfer:
         self.journal.update(active_arm='')
         return order
 
-    def recover(self, token, cleared):
+    def recover(self, token, cleared, keep_b_object=False):
         """Return to IDLE after a person cleared the tools and zone B.
 
-        The token is single use, so a refused attempt issues a fresh one.
+        With keep_b_object (prototype auto resume) one object may stay in B with no arm inside;
+        the next run then starts with arm 2 taking it. The token is single use, so a refused
+        attempt issues a fresh one.
         """
         if self.journal.data['state'] not in _NEEDS_RECOVERY:
             raise TaskFault('Nothing to recover')
         self.gate.consume(token, RECOVERY)
         try:
-            occupied = self._verified_scene(cleared)
+            occupied = self._verified_scene(cleared, keep_b_object)
             # A fault can leave attached or recorded objects behind in the planning scene.
             self.io.scene_reset()
             for index, filled in enumerate(occupied):
@@ -144,14 +188,16 @@ class Transfer:
                             occupied=occupied, slot=0, message='',
                             config_fingerprint=self.journal.fingerprint)
 
-    def _verified_scene(self, cleared):
+    def _verified_scene(self, cleared, keep_b_object=False):
         if cleared is not True:
             raise TaskFault('Operator did not confirm that the tools and zone B are clear')
         for arm in ARMS:
             if not self.io.at_home(arm):
                 raise TaskFault(f'{arm} is not at HOME')
         view = self.ctx.zone_view()
-        if view.b_has_object or not view.b_arm_clear:
+        if not view.b_arm_clear:
+            raise TaskFault('Zone B must be clear of both arms for recovery')
+        if view.b_has_object and not keep_b_object:
             raise TaskFault('Zone B must be empty and clear for recovery')
         grid = self.io.grid()
         if not grid.success:

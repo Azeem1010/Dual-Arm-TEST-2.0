@@ -64,6 +64,28 @@ def test_prototype_uses_its_own_launch(profiles):
     assert 'calib_dir:=/c' in plan.command and 'cycles:=2' in plan.command and 'journal_path:=/tmp/j.json' in plan.command
     assert not any('vision_hardware.launch.py' in word for word in plan.command)
     assert dict(plan.environment)['ROS_DOMAIN_ID'] == domain_for(Mode.HARDWARE_READ_ONLY, profiles)
+    assert 'show_debug:=true' not in plan.command
+
+
+def test_prototype_starts_the_micro_ros_agent_on_the_esp32_port(profiles):
+    plan = build_plan(Mode.HARDWARE_PROTOTYPE, hardware_profiles(profiles), WORKSPACE, '', 1)
+    assert not plan.problem and 'esp32_port:=/dev/serial/by-id/e' in plan.command
+    assert f'microros_setup:={__file__}' in plan.command
+
+
+def test_prototype_needs_the_esp32_port_and_the_agent(profiles, tmp_path):
+    plan = build_plan(Mode.HARDWARE_PROTOTYPE, hardware_profiles(profiles, esp32_port=''), WORKSPACE, '', 1)
+    assert 'hardware.esp32_port' in plan.problem and not plan.command
+    plan = build_plan(Mode.HARDWARE_PROTOTYPE, hardware_profiles(profiles, microros_setup=str(tmp_path / 'none.bash')),
+                      WORKSPACE, '', 1)
+    assert 'micro-ROS' in plan.problem and not plan.command
+
+
+def test_prototype_opens_the_opencv_window_only_when_asked(profiles):
+    on = build_plan(Mode.HARDWARE_PROTOTYPE, hardware_profiles(profiles, show_debug=True), WORKSPACE, '', 1)
+    assert not on.problem and 'show_debug:=true' in on.command
+    text = build_plan(Mode.HARDWARE_PROTOTYPE, hardware_profiles(profiles, show_debug='false'), WORKSPACE, '', 1)
+    assert 'show_debug:=true' not in text.command
 
 
 def test_unknown_mode_is_refused(profiles):
@@ -92,7 +114,8 @@ def test_workspace_from_install_prefix(tmp_path):
 
 
 def hardware_profiles(profiles, **hardware):
-    profiles['hardware'] = {**profiles['hardware'], 'port': '/dev/serial/by-id/x', **hardware}
+    profiles['hardware'] = {**profiles['hardware'], 'port': '/dev/serial/by-id/x', 'esp32_port': '/dev/serial/by-id/e',
+                            'microros_setup': __file__, **hardware}
     return profiles
 
 

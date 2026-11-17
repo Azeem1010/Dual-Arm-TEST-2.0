@@ -1,0 +1,92 @@
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-11-14-45-26-323903-AGX-Orin-27202
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [cm530_mock_serial-1]: process started with pid [27215]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/3
+[INFO] [robot_state_publisher-2]: process started with pid [27229]
+[INFO] [ros2_control_node-3]: process started with pid [27230]
+[INFO] [spawner-4]: process started with pid [27231]
+[INFO] [spawner-5]: process started with pid [27232]
+[INFO] [spawner-6]: process started with pid [27233]
+[robot_state_publisher-2] [INFO] [1794379528.579524012] [robot_state_publisher]: Robot initialized
+[ros2_control_node-3] [INFO] [1794379528.583555280] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[ros2_control_node-3] [INFO] [1794379528.596933202] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-3] [INFO] [1794379528.597141013] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-3] [INFO] [1794379528.597176790] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-3] [INFO] [1794379528.597200278] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-3] [WARN] [1794379528.597396505] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-3] [INFO] [1794379529.061446624] [controller_manager]: Received robot description from topic.
+[ros2_control_node-3] [INFO] [1794379529.061742373] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-3] [INFO] [1794379529.076993926] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379529.079675603] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-3] [INFO] [1794379529.079895959] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379529.092943859] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794379529.093523229] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[ros2_control_node-3] [INFO] [1794379529.093569565] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379529.298541593] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 connected on /tmp/cm530_mock_serial (motion authorized)
+[ros2_control_node-3] [INFO] [1794379529.298702428] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794379529.298977793] [controller_manager]: Registering statistics for : DualArmSystem
+[ros2_control_node-3] [INFO] [1794379529.299244517] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[ros2_control_node-3] [INFO] [1794379529.369609830] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[ros2_control_node-3] [INFO] [1794379529.369769801] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794379529.377754703] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_31mxecwg 
+[spawner-4] [INFO] [1794379529.436912948] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[ros2_control_node-3] [INFO] [1794379529.439556576] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794379529.439915014] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ros2_control_node-3] [INFO] [1794379529.472095588] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[ros2_control_node-3] [INFO] [1794379529.478364014] [controller_manager]: Successfully switched controllers!
+[spawner-4] [INFO] [1794379529.491098116] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[spawner-6] [INFO] [1794379529.707926440] [spawner_arm2_controller]: waiting for service /controller_manager/list_controllers to become available...
+[INFO] [spawner-4]: process has finished cleanly [pid 27231]
+[ros2_control_node-3] [INFO] [1794379530.713446254] [controller_manager]: Loading controller : 'arm2_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-3] [INFO] [1794379530.713564912] [controller_manager]: Loading controller 'arm2_controller'
+[ros2_control_node-3] [INFO] [1794379530.726406024] [controller_manager]: Controller 'arm2_controller' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_31mxecwg 
+[spawner-6] [INFO] [1794379530.792147163] [spawner_arm2_controller]: Loaded arm2_controller
+[ros2_control_node-3] [INFO] [1794379530.795322161] [controller_manager]: Configuring controller: 'arm2_controller'
+[ros2_control_node-3] [INFO] [1794379530.796015644] [arm2_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-3] [INFO] [1794379530.796164511] [arm2_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-3] [INFO] [1794379530.796305409] [arm2_controller]: Using 'splines' interpolation method.
+[ros2_control_node-3] [INFO] [1794379530.803627805] [arm2_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-3] [INFO] [1794379530.821463529] [arm2_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-3] [INFO] [1794379530.821583627] [arm2_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[spawner-5] [INFO] [1794379531.021335855] [spawner_arm1_controller]: waiting for service /controller_manager/list_controllers to become available...
+[INFO] [spawner-6]: process has finished cleanly [pid 27233]
+[ros2_control_node-3] [INFO] [1794379531.276201043] [controller_manager]: Loading controller : 'arm1_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-3] [INFO] [1794379531.276354358] [controller_manager]: Loading controller 'arm1_controller'
+[ros2_control_node-3] [INFO] [1794379531.277097986] [controller_manager]: Controller 'arm1_controller' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_31mxecwg 
+[spawner-5] [INFO] [1794379531.321246698] [spawner_arm1_controller]: Loaded arm1_controller
+[ros2_control_node-3] [INFO] [1794379531.323852118] [controller_manager]: Configuring controller: 'arm1_controller'
+[ros2_control_node-3] [INFO] [1794379531.324287901] [arm1_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-3] [INFO] [1794379531.324351326] [arm1_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-3] [INFO] [1794379531.324384223] [arm1_controller]: Using 'splines' interpolation method.
+[ros2_control_node-3] [INFO] [1794379531.326802055] [arm1_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-3] [INFO] [1794379531.334141955] [arm1_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-3] [INFO] [1794379531.334219396] [arm1_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [spawner-5]: process has finished cleanly [pid 27232]
+[ros2_control_node-3] [INFO] [1794379534.199379393] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[ros2_control_node-3] [ERROR] [1794379534.200270192] [controller_manager.hardware_component.system.DualArmSystem]: Activation refused, move the arm by hand first: arm1_arm_shoulder_pan_joint is at raw 512, outside 600..1023
+[ros2_control_node-3] [ERROR] [1794379534.200999356] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 fault: communication stopped; use the hardware emergency stop if needed
+[ros2_control_node-3] [ERROR] [1794379534.201212800] [resource_manager]: Failed to 'activate' hardware 'DualArmSystem'
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [ros2_control_node-3]: sending signal 'SIGINT' to process[ros2_control_node-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [cm530_mock_serial-1]: sending signal 'SIGINT' to process[cm530_mock_serial-1]
+[ros2_control_node-3] [INFO] [1794379534.473497321] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794379534.473707501] [controller_manager]: Shutdown request received....
+[ros2_control_node-3] [INFO] [1794379534.473810447] [controller_manager]: Shutting down all controllers in the controller manager.
+[ros2_control_node-3] [INFO] [1794379534.473868208] [controller_manager]: Shutting down controller 'arm2_controller'
+[ros2_control_node-3] [INFO] [1794379534.474350136] [controller_manager]: Shutting down controller 'arm1_controller'
+[ros2_control_node-3] [INFO] [1794379534.474515418] [controller_manager]: Deactivating controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794379534.474616508] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794379534.474749438] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794379534.474806719] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794379534.474918145] [controller_manager]: Shutting down the controller manager.
+[ros2_control_node-3] [ERROR] [1794379534.475136549] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-3] [ERROR] [1794379534.475137061] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[INFO] [cm530_mock_serial-1]: process has finished cleanly [pid 27215]
+[robot_state_publisher-2] [INFO] [1794379534.475453546] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794379534.482696804] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-3] [INFO] [1794379534.482751141] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[ros2_control_node-3] [INFO] [1794379534.487259633] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-3] [INFO] [1794379534.487306322] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 27229]
+[INFO] [ros2_control_node-3]: process has finished cleanly [pid 27230]

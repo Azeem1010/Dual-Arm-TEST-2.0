@@ -14,9 +14,11 @@ from ..model.state import Action, CommandFeedback, EventRecord, Level, Mode, Pha
 from .base import DataSource
 
 LAUNCH_ACTIONS = frozenset({Action.START_SYSTEM, Action.SHUTDOWN, Action.RESET_SIMULATION})
-# The services each command calls. The stop button cancels the task and latches the supervisor.
+SUCTION_OFF = '/suction_command'
+# The services each command calls. The stop button cancels the task, latches the supervisor and turns
+# the ESP32 suction off (user decision 2026-11-17: a held object drops).
 TASK_ACTIONS = {
-    Action.STOP: ('/safety/trigger_stop', '/dual_arm/cancel'),
+    Action.STOP: ('/safety/trigger_stop', '/dual_arm/cancel', SUCTION_OFF),
     Action.SAFETY_RESET: ('/safety/reset',),
     Action.START_TASK: ('/dual_arm/start',),
     Action.CANCEL_TASK: ('/dual_arm/cancel',),
@@ -29,13 +31,18 @@ _FINISHED_BY_REPLY = frozenset({Action.SAFETY_RESET, Action.RECOVER, Action.TORQ
 _HARDWARE_TASK_ACTIONS = frozenset({Action.STOP})
 # The prototype also turns the torque on from the interface (2026-11-13).
 _TORQUE = {Action.TORQUE_ON: ('/controller_manager/set_hardware_component_state',)}
+# In order: controllers can only be activated once the hardware component is active.
+# The stop sends "all off" again once the task is canceled, so it is the last suction command even if
+# the coordinator published one while the stop was on its way.
+_THEN = {Action.TORQUE_ON: ('/controller_manager/switch_controller',), Action.STOP: (SUCTION_OFF,)}
 _RESIDUAL_CHECK_S = 2.0
 EVENT_LIMIT = 200
 # How long a command may stay accepted without the task ever showing busy before it counts as settled.
 _SETTLE_S = 1.5
 _SERVICE_TEXT = {'/safety/trigger_stop': '安全監控', '/safety/reset': '安全監控', '/dual_arm/start': '任務',
                  '/dual_arm/cancel': '任務', '/dual_arm/go_home': '任務', '/dual_arm/recover': '任務',
-                 '/controller_manager/set_hardware_component_state': '馬達扭力'}
+                 '/controller_manager/set_hardware_component_state': '馬達扭力',
+                 '/controller_manager/switch_controller': '手臂控制器', SUCTION_OFF: '吸盤'}
 
 
 @dataclass
@@ -46,6 +53,7 @@ class _Command:
     replies: list
     accepted_at: float = 0.0
     seen_busy: bool = False
+    then: tuple = ()   # services sent as a new batch once every reply of this one is accepted
 
 
 class LiveSource(DataSource):
@@ -143,7 +151,7 @@ class LiveSource(DataSource):
         if action is Action.START_SYSTEM:
             self._start(self._selected)
         elif action is Action.SHUTDOWN:
-            self._shutdown()
+            self._shutdown_suction_first()
         elif action is Action.RESET_SIMULATION:
             self._remember(journal_path=new_journal_path(time.strftime('%Y%m%d_%H%M%S')))
             self._restart_mode = Mode.SIMULATION
@@ -169,11 +177,18 @@ class LiveSource(DataSource):
                 self._feedback = CommandFeedback(action, '已拒絕', '沒有可停止的節點；危險時請按實體急停')
                 self._note(Level.WARN, f'{action.value}：沒有可停止的節點')
                 return
-        self._batch += 1
-        self._command = _Command(action, self._batch, len(services), [])
-        self._commander.send(self._batch, [(name, request_for(name, token, cleared)) for name in services])
+        then = _THEN.get(action, ())
+        if action is Action.STOP:
+            then = tuple(name for name in then if name in services)
+        self._dispatch(action, services, [(name, request_for(name, token, cleared)) for name in services], then=then)
         self._feedback = CommandFeedback(action, '已送出')
         self._note(Level.NEUTRAL, f'操作：{action.value}')
+
+    def _dispatch(self, action, services, calls, then=(), earlier=()):
+        """earlier: replies of a previous batch of the same command, still counted for its outcome."""
+        self._batch += 1
+        self._command = _Command(action, self._batch, len(earlier) + len(services), list(earlier), then=tuple(then))
+        self._commander.send(self._batch, calls)
 
     def _collect_replies(self):
         if self._commander is None:
@@ -189,12 +204,23 @@ class LiveSource(DataSource):
         command = self._command
         if command is None or command.accepted_at or len(command.replies) < command.expected:
             return
+        if command.action is Action.SHUTDOWN:
+            self._command = None
+            self._shutdown_after_suction(command.replies)
+            return
         accepted = [reply for reply in command.replies if reply.ok]
         # The stop counts once anything stopped; every other command needs all of its services.
         refused = not accepted if command.action is Action.STOP else len(accepted) < len(command.replies)
         message = '；'.join(reply.message for reply in command.replies if reply.ok is not refused)
         if refused:
             self._feedback, self._command = CommandFeedback(command.action, '已拒絕', message), None
+        elif command.then:
+            from .ros_command import request_for
+            # The stop keeps what already happened: one stopped node is enough for it.
+            earlier = command.replies if command.action is Action.STOP else ()
+            self._dispatch(command.action, command.then, [(name, request_for(name)) for name in command.then],
+                           earlier=earlier)
+            self._feedback = CommandFeedback(command.action, '已送出', message)
         elif command.action in _FINISHED_BY_REPLY:
             self._feedback, self._command = CommandFeedback(command.action, '完成', message), None
         else:
@@ -245,6 +271,25 @@ class LiveSource(DataSource):
         self._ros.expect_disconnect(False)
         self._feedback = CommandFeedback(Action.START_SYSTEM, '已接受', '等待控制器就緒')
         self._note(Level.BUSY, f'啟動系統：{mode.value}')
+
+    def _shutdown_suction_first(self):
+        """Turn the ESP32 suction off before the launch (and with it the micro-ROS agent) is stopped.
+
+        Without the agent the board keeps its last relay state, so a running pump would never stop.
+        """
+        if self._commander is None or not self._commander.available(SUCTION_OFF):
+            self._shutdown()
+            return
+        from .ros_command import request_for
+        self._dispatch(Action.SHUTDOWN, (SUCTION_OFF,), [(SUCTION_OFF, request_for(SUCTION_OFF))])
+        self._feedback = CommandFeedback(Action.SHUTDOWN, '已送出', '先關閉吸盤')
+        self._note(Level.NEUTRAL, '關閉系統：先關閉吸盤')
+
+    def _shutdown_after_suction(self, replies):
+        # Shut down either way; the operator must know when the pumps may still run.
+        if not all(reply.ok for reply in replies):
+            self._note(Level.DANGER, '關閉系統：吸盤沒有確認全關，泵可能仍在運轉，請切斷吸盤電源')
+        self._shutdown()
 
     def _shutdown(self):
         self._ros.expect_disconnect(True)

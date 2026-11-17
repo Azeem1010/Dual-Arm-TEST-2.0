@@ -202,6 +202,15 @@ class DeviceInUse(unittest.TestCase):
             open(closed, 'w').close()
             self.assertFalse(device_in_use(closed))
 
+    def test_read_only_handle_does_not_count(self):
+        with tempfile.TemporaryDirectory() as folder:
+            device = os.path.join(folder, 'video')
+            open(device, 'w').close()
+            with open(device, 'rb'):
+                self.assertFalse(device_in_use(device))
+            with open(device, 'r+b'):
+                self.assertTrue(device_in_use(device))
+
 
 if __name__ == '__main__':
     unittest.main()

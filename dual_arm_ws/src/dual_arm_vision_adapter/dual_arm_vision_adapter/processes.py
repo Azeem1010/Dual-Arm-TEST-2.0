@@ -54,8 +54,25 @@ class GroupProcess:
         self._signal(signal.SIGKILL)
 
 
+def _opened_for_writing(pid, fd):
+    """True unless /proc says the descriptor is read-only (O_RDONLY)."""
+    try:
+        with open(f'/proc/{pid}/fdinfo/{fd}', encoding='ascii') as info:
+            for line in info:
+                if line.startswith('flags:'):
+                    return int(line.split()[1], 8) & os.O_ACCMODE != os.O_RDONLY
+    except (OSError, ValueError, IndexError):
+        pass
+    return True
+
+
 def device_in_use(path):
-    """True when any process has the device (after resolving links) open."""
+    """True when any process has the device (after resolving links) open for writing.
+
+    Streaming a V4L2 camera opens it read-write. Read-only handles are only queries:
+    usb_cam keeps every /dev/video* it enumerated open read-only (2026-11-13 on the
+    Orin), which must not block the arm cameras.
+    """
     target = os.path.realpath(path)
     try:
         pids = [name for name in os.listdir('/proc') if name.isdigit()]
@@ -69,7 +86,7 @@ def device_in_use(path):
             continue
         for name in names:
             try:
-                if os.readlink(f'{folder}/{name}') == target:
+                if os.readlink(f'{folder}/{name}') == target and _opened_for_writing(pid, name):
                     return True
             except OSError:
                 continue

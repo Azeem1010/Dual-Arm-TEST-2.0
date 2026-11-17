@@ -345,6 +345,7 @@ def test_a_faulted_run_is_reported_as_failed(commanded):
 
 def test_stop_calls_the_supervisor_and_the_task(commanded):
     source, ros, made, clock = commanded
+    made[0].services -= {live_source.SUCTION_OFF}
     source.invoke(Action.STOP)
     assert [service for service, _ in made[0].sent[-1][1]] == ['/safety/trigger_stop', '/dual_arm/cancel']
     made[0].queued = [(made[0].sent[-1][0], live_reply('/safety/trigger_stop', True)),
@@ -355,6 +356,60 @@ def test_stop_calls_the_supervisor_and_the_task(commanded):
     clock[0] += 2
     feedback = source.snapshot().feedback
     assert feedback.phase == '完成' and '鎖定' in feedback.message
+
+
+def test_stop_turns_the_suction_off_now_and_again_after_the_cancel(commanded):
+    source, ros, made, clock = commanded
+    source.invoke(Action.STOP)
+    assert [name for name, _ in made[0].sent[-1][1]] == ['/safety/trigger_stop', '/dual_arm/cancel', '/suction_command']
+    assert made[0].sent[-1][1][2][1].data == 0
+    batch = made[0].sent[-1][0]
+    made[0].queued = [(batch, live_reply('/safety/trigger_stop', True)),
+                      (batch, live_reply('/dual_arm/cancel', False, 'No task is running')),
+                      (batch, live_reply('/suction_command', False, '沒有回覆'))]
+    source.snapshot()
+    # Sent again once the cancel is in, so no coordinator command can follow it.
+    assert [name for name, _ in made[0].sent[-1][1]] == ['/suction_command'] and len(made[0].sent) == 2
+    made[0].reply(False, '沒有回覆')
+    # The supervisor stop still counts.
+    assert source.snapshot().feedback.phase == '已接受'
+
+
+def test_stop_without_the_esp32_sends_no_suction_command(commanded):
+    source, _, made, _ = commanded
+    made[0].services -= {live_source.SUCTION_OFF}
+    source.invoke(Action.STOP)
+    made[0].reply()
+    source.snapshot()
+    assert all(name != '/suction_command' for _, calls in made[0].sent for name, _ in calls)
+
+
+def test_shutdown_turns_the_suction_off_before_stopping_the_launch(commanded):
+    source, _, made, _ = commanded
+    launcher = source._launcher
+    source.invoke(Action.SHUTDOWN)
+    assert [name for name, _ in made[0].sent[-1][1]] == ['/suction_command']
+    assert launcher.status_value.state == 'running'
+    made[0].reply(True, '吸盤泵、閥全關')
+    source.snapshot()
+    assert launcher.status_value.state == 'stopping'
+
+
+def test_shutdown_goes_on_and_warns_when_the_suction_does_not_answer(commanded):
+    source, _, made, _ = commanded
+    source.invoke(Action.SHUTDOWN)
+    made[0].reply(False, '沒有回覆')
+    snapshot = source.snapshot()
+    assert source._launcher.status_value.state == 'stopping'
+    assert any('泵可能仍在運轉' in event.message for event in snapshot.events)
+
+
+def test_shutdown_without_the_esp32_stops_at_once(commanded):
+    source, _, made, _ = commanded
+    made[0].services -= {live_source.SUCTION_OFF}
+    count = len(made[0].sent)
+    source.invoke(Action.SHUTDOWN)
+    assert len(made[0].sent) == count and source._launcher.status_value.state == 'stopping'
 
 
 def test_stop_skips_missing_services_and_refuses_when_none_exist(commanded):
@@ -437,6 +492,30 @@ def test_torque_is_wired_only_for_the_prototype(commanded):
     assert Action.TORQUE_ON in source.snapshot().wired_actions
     source.invoke(Action.TORQUE_ON)
     assert made[0].sent[-1][1][0][0] == '/controller_manager/set_hardware_component_state'
+
+
+def test_torque_on_activates_the_arm_controllers_after_the_hardware(commanded):
+    source, ros, made, _ = commanded
+    ros.base = connected(mode=Mode.HARDWARE_PROTOTYPE, phase=Phase.READ_ONLY, task=TaskStatus())
+    source.snapshot()
+    source.invoke(Action.TORQUE_ON)
+    assert [name for name, _ in made[0].sent[-1][1]] == ['/controller_manager/set_hardware_component_state']
+    made[0].reply()
+    source.snapshot()
+    assert [name for name, _ in made[0].sent[-1][1]] == ['/controller_manager/switch_controller']
+    assert source.snapshot().feedback.phase == '已送出'
+    made[0].reply()
+    assert source.snapshot().feedback.phase == '完成'
+
+
+def test_torque_refused_does_not_touch_the_controllers(commanded):
+    source, ros, made, _ = commanded
+    ros.base = connected(mode=Mode.HARDWARE_PROTOTYPE, phase=Phase.READ_ONLY, task=TaskStatus())
+    source.snapshot()
+    source.invoke(Action.TORQUE_ON)
+    made[0].reply(ok=False)
+    assert source.snapshot().feedback.phase == '已拒絕'
+    assert len(made[0].sent) == 1
 
 
 def test_commands_follow_the_monitor_to_another_domain(monkeypatch):

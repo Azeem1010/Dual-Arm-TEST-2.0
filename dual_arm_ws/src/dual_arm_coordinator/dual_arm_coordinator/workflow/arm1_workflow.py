@@ -34,8 +34,11 @@ class Arm1Workflow:
             raise TaskFault('Zone B is not empty and clear')
 
         ctx.step(ARM, 'QUERY_TARGET')
-        a_xy = self._validated_target(io.pick_target())
-        above_a, at_a = ctx.point(a_xy, settings.approach_z), ctx.point(a_xy, settings.contact_z)
+        observed = self._validated_target(io.pick_target())
+        # The zone check uses the observation; the correction only moves where the cup goes.
+        a_xy = (observed[0] + settings.a_pick_offset[0], observed[1] + settings.a_pick_offset[1])
+        above_a = ctx.point(a_xy, settings.approach_z)
+        at_a = ctx.point(a_xy, settings.contact_z - settings.a_press)
         above_b = ctx.point(settings.b_place, settings.approach_z)
         at_b = ctx.point(settings.b_place, settings.contact_z)
 
@@ -84,12 +87,18 @@ class Arm1Workflow:
         ctx.set_holding(ARM, 'empty')
         ctx.step(ARM, 'DETACH')
         io.detach(ARM)
-        io.scene_add_b_object()
         ctx.step(ARM, 'LIFT_B')
-        if taught:
+        if taught and settings.b_release_lift_z is not None:
+            # Straight up from where the cup is: the joint line back to the taught pose also
+            # turned j1 while the cup touched the object and pushed it (field run 2026-11-17).
+            io.lift_vertical(ARM, settings.b_release_lift_z)
+        elif taught:
             io.move_b(ARM, 'above', contact=True)
         else:
             io.move_to(ARM, above_b, contact=True)
+        # The cup still touches the object until the lift ends, so the object may only enter the
+        # world scene now; added earlier, every lift state collides with it (field run 2026-11-17).
+        io.scene_add_b_object()
         ctx.step(ARM, 'HOME_EMPTY')
         io.move_home(ARM)
 

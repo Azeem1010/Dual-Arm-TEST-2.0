@@ -77,7 +77,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/safety/estop` | `std_msgs/msg/Bool` | 急停心跳，`true` 為觸發；實機來源尚不存在 | 需持續發布 |
 | `/safety/status` | `std_msgs/msg/String`（JSON） | 安全鎖定狀態、原因，以及實際查證的 `controllers_stopped` | transient_local、depth 1；5 Hz |
 
-| `/suction_command` | `std_msgs/msg/Int32` | ROS→ESP32，僅實機。`0` 全關，`1`／`2` 模組 1 吸取／釋放，`3`／`4` 模組 2 | 尚未接真正的 ESP32 |
+| `/suction_command` | `std_msgs/msg/Int32` | ROS→ESP32，僅實機。`0` 全關，`1`／`2` 模組 1 吸取／釋放，`3`／`4` 模組 2。coordinator 與操作介面（強制停止、關閉系統送 `0`）都會發布 | E0 已接真正的 ESP32（2026-11-13） |
 | `/suction_status` | `std_msgs/msg/Int32` | ESP32→ROS，命令回音，不是真空感測 | 尚未接真正的 ESP32 |
 
 depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位以 [vision_interfaces/msg](../src/vision_interfaces/msg) 為準，依 `AGENTS.md` 不可改動。

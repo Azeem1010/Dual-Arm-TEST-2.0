@@ -240,6 +240,135 @@ def b_teach():
             'contact_lift_m': 0.0, 'arrival_tolerance_raw': 4, 'max_line_drift_m': 0.003}
 
 
+class BReleaseLift(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_lift(self, value, doc=None, teach=True):
+        doc = doc or prototype_doc()
+        if teach:
+            doc['b_teach'] = b_teach()
+        doc['b_release_lift_extra_m'] = value
+        return doc
+
+    def test_prototype_accepts_it(self):
+        self.assertEqual(task_config.validate(self.with_lift(0.005))['b_release_lift_extra_m'], 0.005)
+
+    def test_needs_a_taught_b(self):
+        self.assert_refused(self.with_lift(0.005, teach=False), 'b_release_lift_extra_m needs b_teach')
+
+    def test_value_is_bounded(self):
+        for value in (-0.001, 0.031, 'x', None):
+            with self.subTest(value):
+                self.assert_refused(self.with_lift(value), 'b_release_lift_extra_m must be within')
+
+
+class APress(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_press(self, value, doc=None):
+        doc = doc or prototype_doc()
+        doc['a_press_m'] = value
+        return doc
+
+    def test_prototype_accepts_it(self):
+        self.assertEqual(task_config.validate(self.with_press(0.003))['a_press_m'], 0.003)
+
+    def test_only_prototype(self):
+        self.assert_refused(self.with_press(0.003, sim_doc()), "a_press_m is only allowed in ('prototype',)")
+
+    def test_value_is_bounded(self):
+        for value in (0.0, -0.001, 0.009, 'x', None):
+            with self.subTest(value):
+                self.assert_refused(self.with_press(value), 'a_press_m must be within')
+
+
+class DescentCorrection(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_descent(self, doc=None, **change):
+        doc = doc or prototype_doc()
+        doc['descent_correction'] = {**{'tolerance_m': 0.002, 'max_extra_m': 0.005, 'attempts': 2}, **change}
+        return doc
+
+    def test_prototype_accepts_it(self):
+        self.assertIn('descent_correction', task_config.validate(self.with_descent()))
+
+    def test_only_prototype(self):
+        self.assert_refused(self.with_descent(sim_doc()), "descent_correction is only allowed in ('prototype',)")
+
+    def test_values_are_bounded(self):
+        for change, text in (({'max_extra_m': 0.02}, 'max_extra_m must be within'),
+                             ({'tolerance_m': 0.0}, 'tolerance_m must be within'),
+                             ({'attempts': 4}, 'attempts must be an integer'),
+                             ({'attempts': 1.0}, 'attempts must be an integer'),
+                             ({'extra': 1}, 'descent_correction.extra is not a known setting')):
+            with self.subTest(change):
+                self.assert_refused(self.with_descent(**change), text)
+
+
+class APickOffset(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_offset(self, value, doc=None):
+        doc = doc or prototype_doc()
+        doc['a_pick_offset_xy_m'] = value
+        return doc
+
+    def test_prototype_accepts_a_small_offset(self):
+        self.assertEqual(task_config.validate(self.with_offset([0.002, -0.001]))['a_pick_offset_xy_m'], [0.002, -0.001])
+
+    def test_only_prototype_may_offset(self):
+        self.assert_refused(self.with_offset([0.002, 0.0], sim_doc()), "a_pick_offset_xy_m is only allowed in ('prototype',)")
+
+    def test_offset_is_bounded(self):
+        for value in ([0.021, 0.0], [0.0, -0.03], [0.002], 'x', [None, 0.0]):
+            with self.subTest(value):
+                self.assert_refused(self.with_offset(value), 'a_pick_offset_xy_m must be [x, y]')
+
+
+class AutoResume(unittest.TestCase):
+    def assert_refused(self, doc, text):
+        with self.assertRaises(TaskConfigError) as caught:
+            task_config.validate(doc)
+        self.assertIn(text, str(caught.exception))
+
+    def with_resume(self, doc=None, node=None):
+        doc = doc or prototype_doc()
+        doc['auto_resume'] = {'max_resumes': 3} if node is None else node
+        return doc
+
+    def test_prototype_may_resume(self):
+        doc = task_config.validate(self.with_resume())
+        self.assertEqual(task_config.max_resumes(doc), 3)
+
+    def test_absent_means_no_resume(self):
+        self.assertEqual(task_config.max_resumes(task_config.validate(prototype_doc())), 0)
+
+    def test_only_prototype_may_resume(self):
+        self.assert_refused(self.with_resume(sim_doc()), "auto_resume is only allowed in ('prototype',)")
+
+    def test_count_is_bounded(self):
+        for value in (0, 6, 1.0, True, None):
+            with self.subTest(value):
+                self.assert_refused(self.with_resume(node={'max_resumes': value}), 'auto_resume.max_resumes must be')
+
+    def test_shape_is_checked(self):
+        self.assert_refused(self.with_resume(node={'max_resumes': 1, 'extra': 1}), 'auto_resume.extra is not a known setting')
+        self.assert_refused(self.with_resume(node=[]), 'auto_resume must be a mapping')
+
+
 class BTeach(unittest.TestCase):
     def assert_refused(self, doc, text):
         with self.assertRaises(TaskConfigError) as caught:

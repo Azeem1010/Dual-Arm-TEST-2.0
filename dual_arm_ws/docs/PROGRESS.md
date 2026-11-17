@@ -2,7 +2,26 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: prototype B hand-over from the taught joints
+## Latest result: prototype field run fixes on the Orin (2026-11-17)
+
+Field runs on the real arms in prototype mode, fixes made between runs on user request. Coordinator 425 tests pass; each change below was loaded on the Orin but most were exercised only once or twice, so treat them as NOT_RUN beyond that. Logs: `~/.ros/dual_arm_hmi/logs/20261117_*` on the Orin (not in the repo).
+
+- Workflow order: arm 1 adds the B object to the scene only after its lift (the taught contact pose pressed into it: `state is invalid [cap_in_b/arm1_cad_link_4]`); arm 2 no longer re-checks its taught B poses while arm 1's object is in the scene (checked at cycle start instead).
+- B pick check: with a taught B, the observed object is compared with arm 2's taught contact xy (`b_grasp_xy`), not `b_place_xy_m` (field: 3 mm vs 20 mm). Prototype `b_pick_tolerance_m` 0.05 → 0.01.
+- Auto resume (`auto_resume.max_resumes: 3`, prototype only): after a fault both arms go HOME, recovery keeps an object arm 1 left in B, and the remaining cycles continue; never after cancel/e-stop, while an arm may hold an object, or when HOME/recovery fails. Manual 復歸 also keeps that object.
+- Motion: wait until the arm is still (window averages, so a hunting AX-12 counts as still) before every move; each contact trajectory starts from the joints read just before sending; prototype MoveIt `allowed_start_tolerance` 0.03 rad (`moveit_start_tolerance`, strict hardware keeps 0.01). Field: loaded joints crept 2–7 counts and the arm2 elbow hunted 4 counts at rest.
+- Suction release waits `vacuum_settle_s` to vent before the lift (lifting at once dragged the cap).
+- Arm 1 after releasing in B lifts straight up from where its cup is, holding the cup's orientation (`solve_line_holding_tool`), to `approach_z_m + b_release_lift_extra_m` (5 mm); the taught joint-line lift turned j1 back while touching the cap and pushed it.
+- Zone A: `a_pick_offset_xy_m` [0.002, 0] (2 mm towards B), `a_press_m` 0.006 (joints reached the target while the cup stayed above the cap at y > 0; an error the readings cannot see), `descent_correction` (re-aim a descent the readings show short, ≤ 5 mm, never below 1 mm above the board). Every contact move logs target vs measured height and joint errors.
+- arm2 re-taught at B (`20261117_B_TEACH`): j1 read 90–95 where 11-11 read 396 at the same place. User decision: take every arm2 j1 reading as shifted by −306 — prototype calibration arm2 j1 zero 512 → 206 (limits 0..499), C slot j1 counts −306, B arm2 `95, 707, 757, 700`. The cause (horn moved?) is not confirmed; arm2 HOME direction in the model changed accordingly.
+- One full A → B → C cycle reached C slot 8 (FULL). Still open: zone A height error depends on position; caps near y −59 mm are at the edge of arm 1's reach (9° tilt limit).
+
+## Earlier result: ESP32 suction on the stop and shutdown buttons
+
+- 2026-11-17, user decision: 強制停止 also sends `/suction_command` 0 (a held cap drops), once at once and again after the cancel is answered; the coordinator checks `guard()` before every ESP32 publish. In prototype mode the interface starts the micro-ROS agent inside `hardware_prototype.launch.py` (`hardware.esp32_port`, `hardware.microros_setup`); 關閉系統 sends 0 first and waits for the echo, then stops the launch and the agent. Coordinator faults still leave the suction as it is.
+- HMI 320 and coordinator 384 tests pass; the commander works against a stand-in ESP32 and the agent part of the launch starts and stops (evidence/esp32_stop_20261117/). Real ESP32 from the interface NOT_RUN; stop the manually started agent first.
+
+## Earlier result: prototype B hand-over from the taught joints
 
 - 2026-11-15, user decision: in prototype mode both arms hand over in B at the 2026-11-11 H1 B teach readings (arm1 `teach_arm1_B_2.csv`, the accepted redo, 350/731/702/697; arm2 `teach_arm2_B.csv`, 396/703/756/700; last READ) instead of `b_place_xy_m` through IK. A unchanged, C as below, simulation and strict hardware unchanged.
 - New optional `b_teach` block (prototype only); `homes.load_b_joints` converts the counts with the driver's calibration, `MotionGateway.move_b` moves like `move_slot` (planned approach at 52 mm straight above, joint-line descent and lift refused beyond 3 mm, arrival within 4 counts). Arm 2 still asks env_scene that B holds exactly one object within 50 mm, but moves to its taught pose; the next run also checks arm 2's B pose before arm 1 takes an object. In the model the two contact points lie 8.4 mm apart at z 18.9 / 19.8 mm.

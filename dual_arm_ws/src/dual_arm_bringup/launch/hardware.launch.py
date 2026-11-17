@@ -93,6 +93,9 @@ def setup(context):
                 'ompl': yaml.safe_load((config / 'ompl_planning.yaml').read_text()),
             }
             params.update(yaml.safe_load((config / 'moveit_controllers.yaml').read_text()))
+            # How far the arm may be from a trajectory's first point when it starts (MoveIt default 0.01 rad).
+            params['trajectory_execution'] = {
+                'allowed_start_tolerance': float(LaunchConfiguration('moveit_start_tolerance').perform(context))}
             actions.append(Node(package='dual_arm_bringup', executable='move_group_lifetime',
                                 parameters=[params], output='screen'))
     if not use_mock:
@@ -117,6 +120,8 @@ def generate_launch_description():
         DeclareLaunchArgument('controllers_file', default_value=''),
         DeclareLaunchArgument('use_mock_serial', default_value='false'),
         DeclareLaunchArgument('use_moveit', default_value='true'),
+        DeclareLaunchArgument('moveit_start_tolerance', default_value='0.01',
+                              description='MoveIt allowed_start_tolerance (rad)；只有 prototype 放寬'),
         DeclareLaunchArgument('require_estop', default_value='true',
                               description='safety_supervisor 要求 /safety/estop 心跳；只有 prototype 設 false'),
         OpaqueFunction(function=setup),

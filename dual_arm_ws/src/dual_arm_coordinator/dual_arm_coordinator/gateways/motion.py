@@ -22,7 +22,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 from ..kinematics import CadKinematics
 from ..motion_math import (joint_line, line_drift, line_points, prepare_b_poses, prepare_slot_poses, solve_line,
-                           tcp_error,
+                           solve_line_holding_tool, tcp_error,
                            tcp_position, tool_tilt_deg, trapezoid_times)
 from ..workflow.ports import TaskFault
 
@@ -33,6 +33,16 @@ _B_OBJECT = 'cap_in_b'
 _STRAIGHT_DOWN_DEG = 0.5
 # AX-12A: 300 degrees over 1023 counts, as in home_pose.py and cm530_hardware.
 _RAD_PER_COUNT = math.radians(300.0) / 1023.0
+# An arm counts as still when the average of every joint over one settle_s window differs from
+# the previous window's by at most this. Averages, because a holding AX-12 hunts: at rest the
+# arm2 elbow swung 4 counts and arm 1's elbow and wrist 2 (field 2026-11-17), and a range test
+# never passed. A sag still moves the average from one window to the next.
+_STILL_RAD = 1.0 * _RAD_PER_COUNT
+# A descent correction never aims the tool closer than this to the board surface.
+_SURFACE_CLEARANCE_M = 0.001
+# A trajectory starts from the joints read just before it is sent; a larger change since the
+# path was computed means the arm moved on its own, so it is refused.
+_FRESH_START_LIMIT_RAD = 10 * _RAD_PER_COUNT
 # Joint-line sampling for taught slot moves; small enough that the drift check sees the path.
 _JOINT_LINE_STEP_RAD = 0.01
 
@@ -58,6 +68,8 @@ class MotionGateway:
             self._slot_poses = prepare_slot_poses(self._models[self._slot_arm], slot_joints['release'], self._teach,
                                                   self._heights['approach_z_m'])
         # Taught B hand-over (prototype): both arms go to their taught joints, see homes.load_b_joints.
+        # Prototype: re-aim a contact descent that stopped short (see _correct_descent).
+        self._descent = config.get('descent_correction')
         self._b_teach, self._b_poses = config.get('b_teach'), None
         if b_joints is not None:
             self._b_poses = prepare_b_poses(self._models, b_joints, self._b_teach['contact_lift_m'],
@@ -121,6 +133,36 @@ class MotionGateway:
                     return
             time.sleep(0.005)
         raise TaskFault(f'{label}: {arm} did not settle within {limit} m, last error {error:.5f} m')
+
+    def _wait_still(self, arm, label):
+        """Wait until every joint of arm has stayed within _STILL_RAD for settle_s.
+
+        A loaded AX-12 keeps sagging after the controller reports the goal reached; a move
+        planned from that state is refused once the arm has drifted 0.01 rad from its start
+        (field runs 2026-11-17: shoulder and wrist of arm 1 holding a cap).
+        """
+        window = self._cfg['settle_s']
+        if not window:
+            return
+        timeout = self._cfg['arrival_timeout_s']
+        deadline = time.monotonic() + timeout
+        previous, samples, started, seen = None, [], time.monotonic(), -1
+        while time.monotonic() < deadline:
+            self._guard()
+            q, sequence, age = self._sample(arm)
+            if q is not None and sequence != seen and age <= self._cfg['joint_state_max_age_s']:
+                seen = sequence
+                samples.append(q)
+            now = time.monotonic()
+            if now - started >= window:
+                if samples:
+                    mean = [sum(column) / len(samples) for column in zip(*samples)]
+                    if previous is not None and max(abs(a - b) for a, b in zip(mean, previous)) <= _STILL_RAD:
+                        return
+                    previous = mean
+                samples, started = [], now
+            time.sleep(0.005)
+        raise TaskFault(f'{label}: {arm} did not stop moving within {timeout} s')
 
     def tcp_report(self, arm):
         q = self.current(arm)
@@ -212,6 +254,7 @@ class MotionGateway:
     # --- motion ---
 
     def _plan_and_move(self, arm, q, label):
+        self._wait_still(arm, label)
         goal = MoveGroup.Goal()
         request = goal.request
         request.group_name = self._arms[arm]['planning_group']
@@ -236,12 +279,93 @@ class MotionGateway:
         label = f'{arm} to {tuple(xyz)}'
         if contact:
             xyz = self._contact_target(arm, xyz)
-            self._move_straight(arm, xyz, label)
+            descending = xyz[2] < self._tcp(arm)[2]
+            commanded = self._move_straight(arm, xyz, label)
+            self._confirm_arrival(arm, xyz, label)
+            if descending and self._descent:
+                commanded = self._correct_descent(arm, xyz, label) or commanded
+            self._report_arrival(arm, xyz, commanded, label)
         else:
             q = self._solve(arm, xyz, self.current(arm))
             self._require_valid(arm, q, label)
             self._plan_and_move(arm, q, label)
+            self._confirm_arrival(arm, xyz, label)
+
+    def lift_vertical(self, arm, z):
+        """Straight up from where the tool is now to height z; xy is held, not corrected."""
+        label = f'{arm} vertical lift to z {z:.4f}'
+        self._wait_still(arm, label)
+        start = self.current(arm)
+        x, y, now_z = (float(value) for value in tcp_position(self._models[arm], start))
+        if z <= now_z:
+            raise TaskFault(f'{label}: the tool is already at z {now_z:.4f}')
+        xyz = (x, y, float(z))
+        points = line_points((x, y, now_z), xyz, self._cfg['waypoint_step_m'])
+        try:
+            # Keep the cup's orientation: the taught B pose is tilted, and a downward solve
+            # would flip the wrist at the first step.
+            path = solve_line_holding_tool(self._models[arm], start, points, self._cfg['waypoint_joint_jump_rad'])
+        except ValueError as error:
+            raise TaskFault(f'{label}: {error}') from error
+        commanded = self._execute_path(arm, path, label)
         self._confirm_arrival(arm, xyz, label)
+        self._report_arrival(arm, xyz, commanded, label)
+
+    def _tcp(self, arm):
+        return [float(value) for value in tcp_position(self._models[arm], self.current(arm))]
+
+    def _correct_descent(self, arm, xyz, label):
+        """Descend again while the measured tool stays above the target (prototype).
+
+        A warm or loaded AX-12 stops short of its goal, and the 1 cm arrival check lets a cup
+        that never reached the cap pass (field runs 2026-11-17). The joint readings show the
+        shortfall, so the line is re-aimed lower by it, at most max_extra_m below the target.
+        A shortfall the readings cannot see (calibration error) is not corrected.
+        Returns the last commanded joints, or None when no correction was needed.
+        """
+        cfg, logger = self._descent, self._node.get_logger()
+        extra, commanded = 0.0, None
+        for attempt in range(cfg['attempts'] + 1):
+            self._wait_still(arm, label)
+            short = self._tcp(arm)[2] - xyz[2]
+            if short <= cfg['tolerance_m']:
+                return commanded
+            # Never aim into the board: with a deep zone A press, the cap itself may hold the cup up.
+            floor_extra = xyz[2] - (self._heights['surface_z_m'] + _SURFACE_CLEARANCE_M)
+            limit = min(cfg['max_extra_m'], max(0.0, floor_extra))
+            if attempt == cfg['attempts'] or extra >= limit:
+                raise TaskFault(f'{label}: {arm} stopped {short * 1000:.1f} mm above the target '
+                                f'after {extra * 1000:.1f} mm of extra descent')
+            extra = min(limit, extra + short)
+            aim = (xyz[0], xyz[1], xyz[2] - extra)
+            logger.warning(f'{label}: {arm} stopped {short * 1000:.1f} mm above the target; '
+                           f'descending again to {extra * 1000:.1f} mm below it')
+            commanded = self._move_straight(arm, aim, f'{label} correction')
+        return commanded
+
+    def _fresh_start(self, arm, path, label):
+        """Replace the first point by the joints read now.
+
+        Checking every waypoint takes about a second, and a loaded joint can creep by more than
+        the controller's 0.01 rad start tolerance meanwhile (field run 2026-11-17: arm 1 elbow
+        lifting a cap in A), which aborts the trajectory.
+        """
+        now = self.current(arm)
+        moved = max(abs(a - b) for a, b in zip(now, path[0]))
+        if moved > _FRESH_START_LIMIT_RAD:
+            raise TaskFault(f'{label}: {arm} moved {moved / _RAD_PER_COUNT:.1f} counts while its path was checked')
+        return [list(now)] + [list(q) for q in path[1:]]
+
+    def _report_arrival(self, arm, xyz, commanded, label):
+        """Log where a contact move ended: target and measured TCP, and each joint's error."""
+        q = self.current(arm)
+        tcp = [float(value) for value in tcp_position(self._models[arm], q)]
+        joints = ('n/a' if commanded is None else
+                  '[' + ', '.join(f'{(a - b) / _RAD_PER_COUNT:+.1f}' for a, b in zip(q, commanded)) + ']')
+        self._node.get_logger().info(
+            f'{label}: arrived z {tcp[2] * 1000:.1f} mm for target {xyz[2] * 1000:.1f} mm '
+            f'(dz {(tcp[2] - xyz[2]) * 1000:+.1f}), xy error '
+            f'{math.hypot(tcp[0] - xyz[0], tcp[1] - xyz[1]) * 1000:.1f} mm, joint error counts {joints}')
 
     def _contact_target(self, arm, xyz):
         """Raise a tilted contact target so the lowest rim just meets what is below.
@@ -278,24 +402,32 @@ class MotionGateway:
     def _move_straight(self, arm, xyz, label):
         """Contact moves stay on a sampled vertical line; the tool stays downward, or within
         max_tool_tilt_deg where straight down has no solution."""
+        self._wait_still(arm, label)
         model, start = self._models[arm], self.current(arm)
         points = line_points(tcp_position(model, start), xyz, self._cfg['waypoint_step_m'])
         try:
             path = solve_line(model, start, points, self._cfg['waypoint_joint_jump_rad'])
         except ValueError as error:
             raise TaskFault(f'{label}: {error}') from error
+        return self._execute_path(arm, path, label)
+
+    def _execute_path(self, arm, path, label):
+        """Check every waypoint, start from the joints read now, and run the path at contact speed."""
+        model = self._models[arm]
         for q in path[1:]:
             self._require_valid(arm, q, label)
+        path = self._fresh_start(arm, path, label)
         times = trapezoid_times(path, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'],
                                 self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])
         if not times:
-            return
+            return path[-1]
         trajectory = JointTrajectory(joint_names=list(model.names), points=[
             JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=_duration(stamp))
             for q, stamp in zip(path, times)])
         goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
                                       controller_names=[self._arms[arm]['controller']])
         self._run_action(self._execute, goal, label)
+        return path[-1]
 
     # --- taught C slots (prototype) ---
 
@@ -338,6 +470,10 @@ class MotionGateway:
             return self._b_poses['arm1']['xy']
         return tuple(self._zones['b_place_xy_m'])
 
+    def b_grasp_xy(self, arm):
+        """Where arm's tool meets the object at its taught contact pose (model world xy)."""
+        return tuple(float(value) for value in self._b(arm)['xy'])
+
     def check_b(self, arm):
         poses = self._b(arm)
         for name in ('above', 'release'):
@@ -360,8 +496,12 @@ class MotionGateway:
             self._require_valid(arm, target, label)
             self._plan_and_move(arm, target, label)
         self._confirm_joints(arm, target, label, teach['arrival_tolerance_raw'])
+        if contact:
+            xyz = tcp_position(self._models[arm], target)
+            self._report_arrival(arm, [float(value) for value in xyz], target, label)
 
     def _move_joint_line(self, arm, target, label, limit):
+        self._wait_still(arm, label)
         model = self._models[arm]
         path = joint_line(self.current(arm), target, _JOINT_LINE_STEP_RAD)
         drift = line_drift(model, path)
@@ -369,16 +509,18 @@ class MotionGateway:
             raise TaskFault(f'{label}: the joint line leaves the straight path by {drift:.4f} m (limit {limit} m)')
         for q in path[1:]:
             self._require_valid(arm, q, label)
+        path = self._fresh_start(arm, path, label)
         times = trapezoid_times(path, self._cfg['max_velocity_rad_s'] * self._speeds['contact_scale'],
                                 self._cfg['max_acceleration_rad_s2'] * self._speeds['acceleration_scale'])
         if not times:
-            return
+            return path[-1]
         trajectory = JointTrajectory(joint_names=list(model.names), points=[
             JointTrajectoryPoint(positions=[float(value) for value in q], time_from_start=_duration(stamp))
             for q, stamp in zip(path, times)])
         goal = ExecuteTrajectory.Goal(trajectory=RobotTrajectory(joint_trajectory=trajectory),
                                       controller_names=[self._arms[arm]['controller']])
         self._run_action(self._execute, goal, label)
+        return path[-1]
 
     def _confirm_joints(self, arm, target, label, tolerance_raw):
         """Like _confirm_arrival, but every joint within tolerance_raw counts of the taught pose."""

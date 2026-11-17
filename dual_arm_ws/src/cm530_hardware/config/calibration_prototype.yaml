@@ -10,7 +10,8 @@
 #                        see docs/evidence/hardware/20261111_H1 and _fk_crosscheck)
 #   min_raw, max_raw     URDF limits (j1..j3 +-1.5 rad, j4 -1.5..+1.65 rad)
 #                        converted at 1024 ticks per 300 deg, clamped to 0..1023
-#   expected_home        firmware home_A / home_C, same as calibration.yaml
+#   expected_home        board GET_HOME 2026-11-13 (user changed the firmware HOME;
+#                        no longer arm_config.h 90/567/712/825, 590/567/712/825)
 #   max_step_raw         small on purpose: Moving Speed may be 0 (full speed)
 #                        after power-up and was not checked
 #
@@ -22,14 +23,17 @@ hardware_use_allowed: true
 moving_speed_verified: true
 max_step_raw: 20
 expected_home:
-  arm1: [90, 567, 712, 825]
-  arm2: [590, 567, 712, 825]
+  arm1: [256, 512, 512, 512]
+  arm2: [256, 512, 512, 512]
 joints:
   arm1_arm_shoulder_pan_joint: {motor_id: 17, zero_raw: 192.3, direction: 1, min_raw: 0, max_raw: 486}
   arm1_arm_shoulder_lift_joint: {motor_id: 3, zero_raw: 631.35, direction: 1, min_raw: 338, max_raw: 925}
   arm1_arm_elbow_flex_joint: {motor_id: 2, zero_raw: 699.55, direction: 1, min_raw: 406, max_raw: 993}
   arm1_arm_wrist_flex_joint: {motor_id: 15, zero_raw: 512, direction: 1, min_raw: 219, max_raw: 835}
-  arm2_arm_shoulder_pan_joint: {motor_id: 12, zero_raw: 512, direction: 1, min_raw: 219, max_raw: 805}
+  # 2026-11-17 (user decision): arm2 j1 read 90 at B, where 2026-11-11 read 396, so every arm2 j1
+  # reading is taken as shifted by -306 counts (horn moved?); zero and URDF +-1.5 rad limits follow.
+  # Was zero_raw 512, min_raw 219, max_raw 805. Not measured; see docs/evidence/hardware/20261117_B_TEACH.
+  arm2_arm_shoulder_pan_joint: {motor_id: 12, zero_raw: 206, direction: 1, min_raw: 0, max_raw: 499}
   arm2_arm_shoulder_lift_joint: {motor_id: 1, zero_raw: 631.35, direction: 1, min_raw: 338, max_raw: 925}
   arm2_arm_elbow_flex_joint: {motor_id: 8, zero_raw: 699.55, direction: 1, min_raw: 406, max_raw: 993}
   arm2_arm_wrist_flex_joint: {motor_id: 16, zero_raw: 512, direction: 1, min_raw: 219, max_raw: 835}

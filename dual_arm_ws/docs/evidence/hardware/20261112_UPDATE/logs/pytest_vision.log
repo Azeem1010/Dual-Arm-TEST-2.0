@@ -1,0 +1,87 @@
+$ cd src/vision_pkg && python3 -m pytest -q -p no:cacheprovider tests
+.............................................F.FFF...................... [ 72%]
+............................                                             [100%]
+=================================== FAILURES ===================================
+____ test_no_devices_configured_skips_usb_cam_but_still_starts_vision_nodes ____
+
+tmp_path = PosixPath('/tmp/pytest-of-orin/pytest-2/test_no_devices_configured_ski0')
+
+    def test_no_devices_configured_skips_usb_cam_but_still_starts_vision_nodes(tmp_path):
+        m, actions = _setup(tmp_path)
+        nodes = _nodes(actions)
+>       assert [n.executable for n in nodes] == ['env_vision_node', 'arm1_vision_node', 'arm2_vision_node']
+E       AssertionError: assert ['usb_cam_nod..._vision_node'] == ['env_vision_..._vision_node']
+E         At index 0 diff: 'usb_cam_node_exe' != 'env_vision_node'
+E         Left contains one more item: 'arm2_vision_node'
+E         Use -v to get more diff
+
+tests/test_launch.py:97: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+  - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+  - arm2_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.1:1.0-video-index0（相機沒插好，或路徑打錯）
+  查詢可用裝置: ls /dev/v4l/by-id/
+  範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+___________________ test_nonexistent_device_path_is_reported ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-orin/pytest-2/test_nonexistent_device_path_i0')
+
+    def test_nonexistent_device_path_is_reported(tmp_path):
+        m, actions = _setup(tmp_path, arm1_cam_device='/dev/v4l/by-id/does-not-exist')
+>       assert not [n for n in _nodes(actions) if n.package == 'usb_cam']
+E       assert not [<test_launch._Node object at 0xffff674383b0>]
+
+tests/test_launch.py:123: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+  - arm1_cam: 裝置不存在 /dev/v4l/by-id/does-not-exist（相機沒插好，或路徑打錯）
+  - arm2_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.1:1.0-video-index0（相機沒插好，或路徑打錯）
+  查詢可用裝置: ls /dev/v4l/by-id/
+  範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+________ test_intrinsics_file_is_passed_as_camera_info_url_when_present ________
+
+tmp_path = PosixPath('/tmp/pytest-of-orin/pytest-2/test_intrinsics_file_is_passed0')
+
+    def test_intrinsics_file_is_passed_as_camera_info_url_when_present(tmp_path):
+        dev = tmp_path / 'cam0'
+        dev.write_text('', encoding='utf-8')
+        calib_io.intrinsics_path('arm2_cam', tmp_path).write_text('image_width: 640\n', encoding='utf-8')
+        m, actions = _setup(tmp_path, arm2_cam_device=str(dev))
+        cam = [n for n in _nodes(actions) if n.package == 'usb_cam'][0]
+>       assert cam.namespace == 'arm2_cam'
+E       AssertionError: assert 'env_cam' == 'arm2_cam'
+E         - arm2_cam
+E         + env_cam
+
+tests/test_launch.py:134: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+  - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+  查詢可用裝置: ls /dev/v4l/by-id/
+  範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+________ test_vision_node_parameters_show_debug_calib_dir_and_undistort ________
+
+tmp_path = PosixPath('/tmp/pytest-of-orin/pytest-2/test_vision_node_parameters_sh0')
+
+    def test_vision_node_parameters_show_debug_calib_dir_and_undistort(tmp_path):
+        m, actions = _setup(tmp_path, show_debug='false', undistort='true', respawn='false')
+        nodes = _nodes(actions)
+        for n in nodes:
+>           assert n.parameters[0].endswith(('env_vision.yaml', 'arm1_vision.yaml', 'arm2_vision.yaml'))
+E           AssertionError: assert False
+E            +  where False = <built-in method endswith of str object at 0xffff67394330>(('env_vision.yaml', 'arm1_vision.yaml', 'arm2_vision.yaml'))
+E            +    where <built-in method endswith of str object at 0xffff67394330> = '/home/orin/projects/dual_arm_system/dual_arm_ws/src/vision_pkg/config/usb_cam.yaml'.endswith
+
+tests/test_launch.py:142: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[vision.launch] 以下鏡頭無法啟動（已略過 usb_cam，其他節點照常啟動）:
+  - arm1_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.3:1.0-video-index0（相機沒插好，或路徑打錯）
+  - arm2_cam: 裝置不存在 /dev/v4l/by-path/platform-3610000.usb-usb-0:4.4.1:1.0-video-index0（相機沒插好，或路徑打錯）
+  查詢可用裝置: ls /dev/v4l/by-id/
+  範例: ros2 launch vision_pkg vision.launch.py env_cam_device:=/dev/v4l/by-id/<名稱> arm1_cam_device:=... arm2_cam_device:=...
+=========================== short test summary info ============================
+FAILED tests/test_launch.py::test_no_devices_configured_skips_usb_cam_but_still_starts_vision_nodes
+FAILED tests/test_launch.py::test_nonexistent_device_path_is_reported - asser...
+FAILED tests/test_launch.py::test_intrinsics_file_is_passed_as_camera_info_url_when_present
+FAILED tests/test_launch.py::test_vision_node_parameters_show_debug_calib_dir_and_undistort
+4 failed, 96 passed in 25.78s

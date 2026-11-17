@@ -11,16 +11,25 @@ class Arm2Workflow:
         self.ctx = context
 
     def _validated_b_target(self, target):
-        """The observed object in B, which must lie near where arm 1 put it down."""
+        """The observed object in B, which must lie near where arm 2 will grasp it.
+
+        With a taught B arm 2 always goes to its taught contact pose, so the object must lie
+        under that pose; b_place_xy_m is not where the taught hand-over happens (field run
+        2026-11-17: the object lay 3 mm from arm 2's taught point and 20 mm from b_place_xy_m).
+        """
         settings = self.ctx.settings
         if not target.success:
             raise TaskFault(f'B pick target invalid: {target.message}')
         values = (target.x, target.y, target.z)
         if not all(math.isfinite(value) for value in values):
             raise TaskFault('B pick target is not finite')
-        offset = math.hypot(target.x - settings.b_place[0], target.y - settings.b_place[1])
+        if settings.b_joints:
+            reference, name = self.ctx.io.b_grasp_xy(ARM), f"{ARM}'s taught B point"
+        else:
+            reference, name = settings.b_place, 'the B place point'
+        offset = math.hypot(target.x - reference[0], target.y - reference[1])
         if offset > settings.b_pick_tolerance:
-            raise TaskFault(f'B pick target {values} is {offset:.3f} m from the B place point')
+            raise TaskFault(f'B pick target {values} is {offset:.3f} m from {name}')
         if abs(target.z - settings.cap_top_z) > settings.pick_z_tolerance:
             raise TaskFault(f'B pick target height {target.z} differs from the object top')
         return (target.x, target.y)
@@ -51,8 +60,9 @@ class Arm2Workflow:
         points = (() if taught_b else (above_b, at_b)) + (() if taught else (above_c, at_c))
         for point in points:
             io.check_reachable(ARM, point)
-        if taught_b:
-            io.check_b(ARM)
+        # Taught B poses are not checked here: arm 1's object is still in the scene and the taught
+        # contact pose presses on it, so it would always collide. Transfer._preflight_next_slot
+        # checked them at the start of this cycle, with zone B empty (field review 2026-11-17).
         if taught:
             io.check_slot(ARM, slot)
 

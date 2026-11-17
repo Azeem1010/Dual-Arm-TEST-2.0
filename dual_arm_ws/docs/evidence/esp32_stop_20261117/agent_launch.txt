@@ -1,0 +1,22 @@
+== no port
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-17-14-03-12-191230-AGX-Orin-44481
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [launch.user]: 沒有設定 esp32_port：不啟動 micro-ROS agent，吸盤要另外接上
+== bad setup
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-17-14-03-13-277936-AGX-Orin-44496
+[INFO] [launch]: Default logging verbosity is set to INFO
+[ERROR] [launch]: Caught exception in launch (see debug for traceback): micro-ROS agent setup /nope.bash not found (ORIN_DEPLOYMENT 6.1)
+== missing port, SIGINT after 4 s
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-17-14-03-14-344168-AGX-Orin-44500
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [micro_ros_agent-1]: process started with pid [44504]
+[micro_ros_agent-1] [35m[1794895395.236113][m info     | [34mTermiosAgentLinux.cpp[m | [37minit                    [m | [33mSerial port not found.[m | device: /tmp/no_such_tty, error 2, waiting for connection...
+[micro_ros_agent-1] [35m[1794895396.237852][m info     | [34mTermiosAgentLinux.cpp[m | [37minit                    [m | [33mSerial port not found.[m | device: /tmp/no_such_tty, error 2, waiting for connection...
+[micro_ros_agent-1] [35m[1794895397.240733][m info     | [34mTermiosAgentLinux.cpp[m | [37minit                    [m | [33mSerial port not found.[m | device: /tmp/no_such_tty, error 2, waiting for connection...
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT) again, ignoring...
+[INFO] [micro_ros_agent-1]: sending signal 'SIGINT' to process[micro_ros_agent-1]
+[micro_ros_agent-1] [ros2run]: Interrupt
+[ERROR] [micro_ros_agent-1]: process has died [pid 44504, exit code -2, cmd 'bash -c source /home/orin/microros_ws/install/local_setup.bash && exec ros2 run micro_ros_agent micro_ros_agent serial --dev /tmp/no_such_tty -b 115200'].
+== agents left:
+42827

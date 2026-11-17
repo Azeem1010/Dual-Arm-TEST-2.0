@@ -241,6 +241,8 @@ source install/local_setup.bash
 
 ### 啟動順序
 
+**Prototype 由操作介面啟動時，agent 會跟著系統一起啟動和關閉**（2026-11-17）：在 `~/.ros/dual_arm_hmi/profiles.yaml` 填 `hardware.esp32_port`（agent 不在 `~/microros_ws` 時再填 `hardware.microros_setup`），而且**不要再手動另開 agent**，兩個 agent 會搶同一個序列埠。「關閉系統」會先送 0 讓泵和閥全關，再關掉 agent；「強制停止」也會送 0。以下手動步驟是給不經過介面啟動時使用的。
+
 韌體開機時只試連一次，沒有重連機制。agent 打開序列埠時會重置 ESP32（CP2102 的 DTR/RTS），所以**先接好 ESP32 再開 agent** 就會連上，不用按 EN。
 
 ```bash

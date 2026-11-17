@@ -364,7 +364,7 @@ ros2 topic pub -r 5 /dual_arm/status std_msgs/msg/String "{data: '{\"active_arm\
 - 一人只守 CM-530 電源開關，手放在開關上，這是唯一的急停。
 - 手臂先扶到 HOME 附近（照 [HOME 定位](#home-定位) 的出力前檢查）。Moving Speed 上電可能是 0（最高速），prototype 校正把每個控制週期的目標變化限制在 20 raw。
 - C 區八格清空、A 區瓶蓋放在黑框內（見 V1）。
-- ESP32 吸盤要用的話，先照 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節開 agent。吸錯手臂就對調 `src/dual_arm_coordinator/config/prototype/coordinator.yaml` 的 `esp32_modules`。
+- ESP32 吸盤：介面啟動時會自動開 micro-ROS agent（設定檔要填 `hardware.esp32_port`，見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節），不要再手動另開。「強制停止」與「關閉系統」都會讓泵和閥全關，吸住的瓶蓋會掉，按之前先確認下方沒有人手或易碎物。吸錯手臂就對調 `src/dual_arm_coordinator/config/prototype/coordinator.yaml` 的 `esp32_modules`。
 
 **啟動：** 操作介面選「實機 Prototype」→ 啟動系統；或
 

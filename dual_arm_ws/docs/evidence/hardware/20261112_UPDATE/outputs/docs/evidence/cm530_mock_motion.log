@@ -1,0 +1,168 @@
+[INFO] [launch]: All log files can be found below /home/orin/.ros/log/2026-11-12-13-11-23-566156-AGX-Orin-232428
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [cm530_mock_serial-1]: process started with pid [232434]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/4
+[INFO] [robot_state_publisher-2]: process started with pid [232455]
+[INFO] [ros2_control_node-3]: process started with pid [232456]
+[INFO] [spawner-4]: process started with pid [232457]
+[INFO] [spawner-5]: process started with pid [232458]
+[INFO] [spawner-6]: process started with pid [232459]
+[robot_state_publisher-2] [INFO] [1794460285.852613176] [robot_state_publisher]: Robot initialized
+[ros2_control_node-3] [INFO] [1794460285.868298168] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[ros2_control_node-3] [INFO] [1794460285.881992853] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-3] [INFO] [1794460285.882204729] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-3] [INFO] [1794460285.882236441] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-3] [INFO] [1794460285.882254777] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-3] [WARN] [1794460285.882467837] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-3] [INFO] [1794460286.332099636] [controller_manager]: Received robot description from topic.
+[ros2_control_node-3] [INFO] [1794460286.332368505] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-3] [INFO] [1794460286.347415790] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794460286.350227522] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-3] [INFO] [1794460286.350484007] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794460286.364216356] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794460286.364815471] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[ros2_control_node-3] [INFO] [1794460286.364862544] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794460286.569580169] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 connected on /tmp/cm530_mock_serial (motion authorized)
+[ros2_control_node-3] [INFO] [1794460286.569789453] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1794460286.570007665] [controller_manager]: Registering statistics for : DualArmSystem
+[ros2_control_node-3] [INFO] [1794460286.570238805] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[ros2_control_node-3] [INFO] [1794460286.682520233] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[ros2_control_node-3] [INFO] [1794460286.682664427] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794460286.692854823] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_seq4z2um 
+[spawner-4] [INFO] [1794460286.752019656] [spawner_joint_state_broadcaster]: Loaded joint_state_broadcaster
+[ros2_control_node-3] [INFO] [1794460286.754921534] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794460286.755304485] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[ros2_control_node-3] [INFO] [1794460286.797168008] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[ros2_control_node-3] [INFO] [1794460286.803467036] [controller_manager]: Successfully switched controllers!
+[spawner-4] [INFO] [1794460286.816051555] [spawner_joint_state_broadcaster]: Configured and activated joint_state_broadcaster
+[spawner-6] [INFO] [1794460287.037932377] [spawner_arm2_controller]: waiting for service /controller_manager/list_controllers to become available...
+[INFO] [spawner-4]: process has finished cleanly [pid 232457]
+[ros2_control_node-3] [INFO] [1794460287.293390905] [controller_manager]: Loading controller : 'arm2_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-3] [INFO] [1794460287.293552380] [controller_manager]: Loading controller 'arm2_controller'
+[ros2_control_node-3] [INFO] [1794460287.301429613] [controller_manager]: Controller 'arm2_controller' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_seq4z2um 
+[spawner-6] [INFO] [1794460287.366558652] [spawner_arm2_controller]: Loaded arm2_controller
+[ros2_control_node-3] [INFO] [1794460287.370293889] [controller_manager]: Configuring controller: 'arm2_controller'
+[ros2_control_node-3] [INFO] [1794460287.370804682] [arm2_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-3] [INFO] [1794460287.370888524] [arm2_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-3] [INFO] [1794460287.370955917] [arm2_controller]: Using 'splines' interpolation method.
+[ros2_control_node-3] [INFO] [1794460287.376483283] [arm2_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-3] [INFO] [1794460287.388386350] [arm2_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-3] [INFO] [1794460287.388483280] [arm2_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[spawner-5] [INFO] [1794460287.639660929] [spawner_arm1_controller]: waiting for service /controller_manager/list_controllers to become available...
+[INFO] [spawner-6]: process has finished cleanly [pid 232459]
+[ros2_control_node-3] [INFO] [1794460287.895330372] [controller_manager]: Loading controller : 'arm1_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[ros2_control_node-3] [INFO] [1794460287.895494055] [controller_manager]: Loading controller 'arm1_controller'
+[ros2_control_node-3] [INFO] [1794460287.896526010] [controller_manager]: Controller 'arm1_controller' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_seq4z2um 
+[spawner-5] [INFO] [1794460287.966222014] [spawner_arm1_controller]: Loaded arm1_controller
+[ros2_control_node-3] [INFO] [1794460287.969729022] [controller_manager]: Configuring controller: 'arm1_controller'
+[ros2_control_node-3] [INFO] [1794460287.970270760] [arm1_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[ros2_control_node-3] [INFO] [1794460287.970356010] [arm1_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[ros2_control_node-3] [INFO] [1794460287.970396907] [arm1_controller]: Using 'splines' interpolation method.
+[ros2_control_node-3] [INFO] [1794460287.973430658] [arm1_controller]: Action status changes will be monitored at 20.00 Hz.
+[ros2_control_node-3] [INFO] [1794460287.983903331] [arm1_controller]: Setting initial scaling factor to 1.000000
+[ros2_control_node-3] [INFO] [1794460287.984004229] [arm1_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [spawner-5]: process has finished cleanly [pid 232458]
+[ros2_control_node-3] [INFO] [1794460292.141337356] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794460292.143218414] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
+[ros2_control_node-3] [WARN] [1794460294.103726162] [controller_manager]: Controller Manager: to switch controllers you need to specify a strictness level of controller_manager_msgs::SwitchController::STRICT (2) or ::BEST_EFFORT (1). When unspecified, the default is BEST_EFFORT
+[ros2_control_node-3] [INFO] [1794460294.103848661] [controller_manager]: Activating controllers: [ arm1_controller arm2_controller ]
+[ros2_control_node-3] [INFO] [1794460294.113126399] [controller_manager]: Requested controller switch from non-realtime loop
+[ros2_control_node-3] [INFO] [1794460294.114559706] [controller_manager]: Activated controllers: [ arm1_controller arm2_controller ]
+[ros2_control_node-3] [INFO] [1794460294.114632539] [controller_manager]: Successfully switched controllers!
+[ros2_control_node-3] [INFO] [1794460294.402322861] [arm1_controller]: Received new action goal
+[ros2_control_node-3] [INFO] [1794460294.402532816] [arm1_controller]: Accepted new action goal
+[ros2_control_node-3] [INFO] [1794460297.393200430] [arm1_controller]: Goal reached, success!
+[INFO] [cm530_mock_serial-1]: process has finished cleanly [pid 232434]
+[ros2_control_node-3] [ERROR] [1794460298.473041787] [controller_manager.hardware_component.system.DualArmSystem]: READ arm1 failed: write failed on /tmp/cm530_mock_serial: Input/output error
+[ros2_control_node-3] [ERROR] [1794460298.473418081] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 fault: communication stopped; use the hardware emergency stop if needed
+[ros2_control_node-3] [ERROR] [1794460298.473730407] [controller_manager]: Deactivating following hardware components as their read cycle resulted in an error: [ DualArmSystem ]
+[ros2_control_node-3] [ERROR] [1794460298.473796904] [controller_manager]: Deactivating following controllers as their hardware components read cycle resulted in an error: [ joint_state_broadcaster arm2_controller arm1_controller ]
+[ros2_control_node-3] [ERROR] [1794460298.473991372] [controller_manager]: Not acceptable command interfaces combination: 
+[ros2_control_node-3] Start interfaces: 
+[ros2_control_node-3] [
+[ros2_control_node-3] ]
+[ros2_control_node-3] Stop interfaces: 
+[ros2_control_node-3] [
+[ros2_control_node-3]   arm2_arm_shoulder_pan_joint/position
+[ros2_control_node-3]   arm2_arm_shoulder_lift_joint/position
+[ros2_control_node-3]   arm2_arm_elbow_flex_joint/position
+[ros2_control_node-3]   arm2_arm_wrist_flex_joint/position
+[ros2_control_node-3]   arm1_arm_shoulder_pan_joint/position
+[ros2_control_node-3]   arm1_arm_shoulder_lift_joint/position
+[ros2_control_node-3]   arm1_arm_elbow_flex_joint/position
+[ros2_control_node-3]   arm1_arm_wrist_flex_joint/position
+[ros2_control_node-3] ]
+[ros2_control_node-3] Not available: 
+[ros2_control_node-3] [
+[ros2_control_node-3]  arm2_arm_shoulder_pan_joint/position
+[ros2_control_node-3]  arm2_arm_shoulder_lift_joint/position
+[ros2_control_node-3]  arm2_arm_elbow_flex_joint/position
+[ros2_control_node-3]  arm2_arm_wrist_flex_joint/position
+[ros2_control_node-3]  arm1_arm_shoulder_pan_joint/position
+[ros2_control_node-3]  arm1_arm_shoulder_lift_joint/position
+[ros2_control_node-3]  arm1_arm_elbow_flex_joint/position
+[ros2_control_node-3]  arm1_arm_wrist_flex_joint/position
+[ros2_control_node-3] ]
+[ros2_control_node-3] 
+[ros2_control_node-3] [ERROR] [1794460298.474117262] [controller_manager]: Error while attempting mode switch when deactivating controllers in read cycle!
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [ros2_control_node-3]: sending signal 'SIGINT' to process[ros2_control_node-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[ros2_control_node-3] [INFO] [1794460298.970497955] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794460298.970643717] [controller_manager]: Shutdown request received....
+[ros2_control_node-3] [INFO] [1794460298.970762280] [controller_manager]: Shutting down all controllers in the controller manager.
+[ros2_control_node-3] [INFO] [1794460298.970811849] [controller_manager]: Shutting down controller 'arm2_controller'
+[ros2_control_node-3] [INFO] [1794460298.971238928] [controller_manager]: Shutting down controller 'arm1_controller'
+[ros2_control_node-3] [INFO] [1794460298.971357651] [controller_manager]: Shutting down controller 'joint_state_broadcaster'
+[ros2_control_node-3] [INFO] [1794460298.971452756] [resource_manager]: 'shutdown' hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1794460298.971496725] [resource_manager]: Successful 'shutdown' of hardware 'DualArmSystem'
+[ros2_control_node-3] [WARN] [1794460298.971508821] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971533270] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971561014] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971575159] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971587703] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971599735] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971610743] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971622679] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/position' command interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971644792] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971659608] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971673240] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971684377] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971695321] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971705817] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_wrist_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971716953] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971746810] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971818907] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971835995] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971852412] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971864476] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971886428] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971917341] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971932829] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971945725] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971957022] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971967870] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971978974] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.971990398] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_elbow_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972001854] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_elbow_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972013247] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_lift_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972024447] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972035967] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972060191] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972072224] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_lift_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972083744] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972110016] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972126881] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_shoulder_pan_joint/velocity' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972141857] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972153281] [controller_manager]: (hardware 'DualArmSystem'): 'arm1_arm_wrist_flex_joint/raw_target' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [WARN] [1794460298.972164225] [controller_manager]: (hardware 'DualArmSystem'): 'arm2_arm_shoulder_pan_joint/raw_position' state interface not in available list. This should not happen (hint: multiple cleanup calls).
+[ros2_control_node-3] [INFO] [1794460298.972269859] [controller_manager]: Shutting down the controller manager.
+[ros2_control_node-3] [ERROR] [1794460298.972522024] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[ros2_control_node-3] [ERROR] [1794460298.972521928] [controller_manager.pal_statistics]: Exception in publisher thread: context cannot be slept with because it's invalid!. Aborting!
+[robot_state_publisher-2] [INFO] [1794460298.972468359] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ros2_control_node-3] [INFO] [1794460298.980155701] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-3] [INFO] [1794460298.980216310] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[ros2_control_node-3] [INFO] [1794460298.984910220] [controller_manager.pal_statistics]: Async messages lost 0
+[ros2_control_node-3] [INFO] [1794460298.984961677] [controller_manager.pal_statistics]: publish_async_failures_ 0
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 232455]
+[INFO] [ros2_control_node-3]: process has finished cleanly [pid 232456]
