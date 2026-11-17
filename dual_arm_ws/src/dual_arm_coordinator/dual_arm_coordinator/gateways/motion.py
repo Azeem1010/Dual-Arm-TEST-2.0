@@ -51,6 +51,8 @@ _SURFACE_CLEARANCE_M = 0.001
 _FRESH_START_LIMIT_RAD = 10 * _RAD_PER_COUNT
 # Joint-line sampling for taught slot moves; small enough that the drift check sees the path.
 _JOINT_LINE_STEP_RAD = 0.01
+# Validity requests outstanding at once; below the service's default request queue depth of 10.
+_VALIDITY_IN_FLIGHT = 8
 # Fixed transits (prototype): how far the tool may go below the lower end of its joint line.
 _FIXED_DIP_M = 0.005
 # Overlap lanes: trajectory points are filled in at this joint step before their x range is taken.
@@ -330,18 +332,25 @@ class MotionGateway:
 
     @timing.timed('check')
     def _require_valid_all(self, arm, path, label):
-        """Check every joint state of path; all requests are sent before the first answer is awaited.
+        """Check every joint state of path, keeping up to _VALIDITY_IN_FLIGHT requests outstanding.
 
-        One call at a time took about a second for a contact line (2026-11-17); the checks
-        themselves are unchanged, and the first invalid state in path order faults.
+        One call at a time took about a second for a contact line (2026-11-17). Sending them all at
+        once overflowed the service's request queue (default depth 10): on Mock Serial (2026-11-18)
+        a HOME transit's requests were dropped and the check timed out. The checks themselves are
+        unchanged, and the first invalid state in path order faults.
         """
         if not path:
             return
         if not self._validity.wait_for_service(timeout_sec=self._cfg['goal_submit_s']):
             raise TaskFault('State validity service is unavailable')
-        futures = [self._validity.call_async(self._validity_request(arm, q)) for q in path]
-        for future in futures:
-            self._raise_invalid(self._wait(future, self._cfg['goal_submit_s'], 'State validity'), label)
+        in_flight = collections.deque()
+        for q in path:
+            if len(in_flight) >= _VALIDITY_IN_FLIGHT:
+                self._raise_invalid(self._wait(in_flight.popleft(), self._cfg['goal_submit_s'], 'State validity'),
+                                    label)
+            in_flight.append(self._validity.call_async(self._validity_request(arm, q)))
+        while in_flight:
+            self._raise_invalid(self._wait(in_flight.popleft(), self._cfg['goal_submit_s'], 'State validity'), label)
 
     def _solve(self, arm, xyz, seed):
         try:

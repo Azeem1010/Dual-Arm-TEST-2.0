@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-18 Mock Serial run of the sped-up prototype
+
+Prototype launch on the CM-530 simulator: torque on, arms moved away, `go_home`, `start`. Details: evidence/mock_run_20261118/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Run 1: HOME fixed transits | FAIL | validity requests overflowed the service queue and timed out; MoveIt fallback reached HOME (run1_validity_timeout/) |
+| Fix: at most 8 validity requests outstanding; coordinator tests | PASS | 501 (coordinator_tests.txt) |
+| Run 2: HOME fixed transits (157 points per arm), both arms HOME | PASS | launch.log, key_lines.txt |
+| Run 2: task start, stop at first camera query, TIMING SUMMARY and CSV | PASS | expected without a camera |
+| After the first camera query, overlap, real arms | NOT_RUN | |
+
 ## 2026-11-17 Overlap branch merged, switched off
 
 `prototype-overlap-20261117` merged after the speed-up steps; `overlap` and `direct_transfer` are exclusive, overlap is off in the prototype file. Details: evidence/merge_overlap_20261117/README.md.

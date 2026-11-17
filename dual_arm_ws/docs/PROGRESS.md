@@ -2,7 +2,12 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: overlap branch merged, switched off (2026-11-17)
+## Latest result: Mock Serial run of the sped-up prototype (2026-11-18)
+
+- Run 1 FAIL: on Mock Serial both HOME fixed transits timed out in the validity check, because `_require_valid_all` sent all ~157 requests at once and the service queue (depth ~10) dropped most; contact moves use the same check and would have faulted on the real arms. Fixed: at most 8 requests outstanding, answers checked in path order.
+- Run 2 PASS: hardware and controllers on, arms moved away, `go_home` ran both fixed transits (157 points each) to HOME; a started task stopped at the first camera query as expected and wrote the `TIMING SUMMARY` and CSV. Coordinator 501 tests pass. Evidence: evidence/mock_run_20261118/. Not covered: everything after the first camera query, overlap, real arms.
+
+## Earlier result: overlap branch merged, switched off (2026-11-17)
 
 - Step (5) done: Dual-Arm-TEST-2.0 `prototype-overlap-20261117` (`770f960`) merged. `overlap` and `direct_transfer` cannot both be on; the prototype file keeps `direct_transfer: true` and has the `overlap` block commented out, so the section below about overlap describes code that is present but off.
 - Joined: arm 1 `run()` passes direct/reserved into the branch's `pick_a`/`place_b`; arm 2 calls `on_b_released` from both release paths; every timed path (contact, taught lines, fixed transits) goes through the branch's `_send`, so it reserves a lane when overlap is on. Details: evidence/merge_overlap_20261117/README.md.

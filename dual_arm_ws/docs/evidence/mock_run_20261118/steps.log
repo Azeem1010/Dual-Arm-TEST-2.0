@@ -1,0 +1,139 @@
+== 00:39:40 build
+build exit 0
+== 00:40:10 launch (journal /tmp/tmp.GgW2fKzJAC/journal.json)
+== 00:40:48 torque on: hardware component active, then arm controllers
+waiting for service to become available...
+requester: making request: controller_manager_msgs.srv.SetHardwareComponentState_Request(name='DualArmSystem', target_state=lifecycle_msgs.msg.State(id=3, label='active'))
+
+response:
+controller_manager_msgs.srv.SetHardwareComponentState_Response(ok=True, state=lifecycle_msgs.msg.State(id=3, label='active'))
+
+waiting for service to become available...
+requester: making request: controller_manager_msgs.srv.SwitchController_Request(activate_controllers=['arm1_controller', 'arm2_controller'], deactivate_controllers=[], strictness=2, activate_asap=False, timeout=builtin_interfaces.msg.Duration(sec=0, nanosec=0))
+
+response:
+controller_manager_msgs.srv.SwitchController_Response(ok=True, message='Successfully switched controllers!')
+
+arm2_controller         joint_trajectory_controller/JointTrajectoryController  active
+arm1_controller         joint_trajectory_controller/JointTrajectoryController  active
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster          active
+== 00:41:04 joints at start (firmware HOME on the simulator)
+A message was lost!!!
+	total count change:1
+	total count: 1---
+array('d', [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+---
+== 00:41:09 move arm1 away from HOME through its controller
+Waiting for an action server to become available...
+Sending goal:
+     trajectory:
+  header:
+    stamp:
+      sec: 0
+      nanosec: 0
+    frame_id: ''
+  joint_names:
+  - arm1_arm_shoulder_pan_joint
+  - arm1_arm_shoulder_lift_joint
+  - arm1_arm_elbow_flex_joint
+  - arm1_arm_wrist_flex_joint
+  points:
+  - positions:
+    - 0.0
+    - -0.3
+    - 0.6
+    - 0.6
+    velocities: []
+    accelerations: []
+    effort: []
+    time_from_start:
+      sec: 8
+      nanosec: 0
+multi_dof_trajectory:
+  header:
+    stamp:
+      sec: 0
+      nanosec: 0
+    frame_id: ''
+  joint_names: []
+  points: []
+path_tolerance: []
+component_path_tolerance: []
+goal_tolerance: []
+component_goal_tolerance: []
+goal_time_tolerance:
+  sec: 0
+  nanosec: 0
+
+Goal accepted with ID: 926cd3b91f5d4cde8b606c8e2986b320
+
+Result:
+    error_code: 0
+error_string: Goal successfully reached!
+
+Goal finished with status: SUCCEEDED
+== 00:41:22 move arm2 away from HOME through its controller
+Waiting for an action server to become available...
+Sending goal:
+     trajectory:
+  header:
+    stamp:
+      sec: 0
+      nanosec: 0
+    frame_id: ''
+  joint_names:
+  - arm2_arm_shoulder_pan_joint
+  - arm2_arm_shoulder_lift_joint
+  - arm2_arm_elbow_flex_joint
+  - arm2_arm_wrist_flex_joint
+  points:
+  - positions:
+    - 0.0
+    - -0.3
+    - 0.6
+    - 0.6
+    velocities: []
+    accelerations: []
+    effort: []
+    time_from_start:
+      sec: 8
+      nanosec: 0
+multi_dof_trajectory:
+  header:
+    stamp:
+      sec: 0
+      nanosec: 0
+    frame_id: ''
+  joint_names: []
+  points: []
+path_tolerance: []
+component_path_tolerance: []
+goal_tolerance: []
+component_goal_tolerance: []
+goal_time_tolerance:
+  sec: 0
+  nanosec: 0
+
+Goal accepted with ID: 76a03d9cdf7f4eeda98e25a5853ea634
+
+Result:
+    error_code: 0
+error_string: Goal successfully reached!
+
+Goal finished with status: SUCCEEDED
+== 00:41:37 go_home (operator confirmed the tools and zone B are clear)
+requester: making request: dual_arm_interfaces.srv.ConfirmStep_Request(token='', success=True, message='mock run')
+
+response:
+dual_arm_interfaces.srv.ConfirmStep_Response(accepted=True, message='Accepted; HOME is reported as at_home on /dual_arm/status')
+
+== 00:41:56 start a task (no camera: it should stop at its first zone observation, after INITIAL_HOME)
+requester: making request: std_srvs.srv.Trigger_Request()
+
+response:
+std_srvs.srv.Trigger_Response(success=True, message='Accepted; the result is reported on /dual_arm/status')
+
+== 00:43:07 stop launch
+== 00:43:27 launch still running after SIGINT, sending SIGTERM
+no leftover processes
+== 00:43:31 done
