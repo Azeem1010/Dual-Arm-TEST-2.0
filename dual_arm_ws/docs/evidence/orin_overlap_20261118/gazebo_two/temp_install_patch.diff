@@ -1,0 +1,17 @@
+# Applied to the INSTALLED copies only (install/dual_arm_coordinator), never to src/ or git.
+# Restored afterwards by copying the src/ files back; cmp against src/ matched and no
+# "TEMP local trial" marker was left in install/ or build/.
+
+--- src/dual_arm_coordinator/dual_arm_coordinator/task_config.py
++++ install/dual_arm_coordinator/lib/python3.12/site-packages/dual_arm_coordinator/task_config.py
+@@ def _check_overlap(doc):
+-    if doc['mode'] not in SLOT_TEACH_MODES:
++    if doc['mode'] not in SLOT_TEACH_MODES + ('simulation',):  # TEMP local trial 2026-11-18, not committed
+         errors.append(f'{OVERLAP_KEY} is only allowed in {SLOT_TEACH_MODES}')
+
+--- src/dual_arm_coordinator/config/sim/coordinator.yaml
++++ install/dual_arm_coordinator/share/dual_arm_coordinator/config/sim/coordinator.yaml
+@@ end of file
++overlap:   # TEMP local trial 2026-11-18, not committed
++  clearance_m: 0.025
++  wait_s: 240.0

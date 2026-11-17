@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-18（Orin）：`main` 快轉到 `47b9b5c` 並重建，`build.sh` 與模型檢查 PASS，coordinator 501、HMI 320 測試 PASS；Mock Serial 開 overlap（固定路徑）在 Orin 重跑也 PASS，但結束後殘留一個 `robot_state_publisher`（腳本的殘留檢查沒包含它，已手動關掉）。使用者選做法 2：不改 src/ 和 git，只暫時改 install 裡的副本讓模擬模式能開 overlap，跑 Gazebo 回歸 `two`，PASS：兩件放進格位 1、2，兩臂確實同時動作（arm1 去 A 取下一件時 arm2 去 B 拿上一件；arm1 放 B 時 arm2 送 C），B 區交接順序正確。跑完已把 src 原檔複製回 install（`colcon build` 沒蓋掉較新的檔案），`cmp` 一致。沒測到：互相等待 x 範圍（這次沒發生）、overlap 的 `faults`／`batch`、相機、原型的示教點與固定路徑、實機。overlap 在原型設定仍預設關，模擬模式仍不允許。見 `docs/evidence/orin_overlap_20261118/`。
+
 - 2026-11-18：Mock Serial 開 overlap 跑兩種：固定路徑、MoveIt 只規劃。兩種都 PASS：軌跡都直接送 `follow_joint_trajectory`（move_group 執行請求 0 次），兩臂回 HOME，overlap 任務啟動後在第一次看相機時如預期停下，時間記錄正常。測試期間暫時改寫的原型設定已還原，overlap 仍預設關。沒測到：兩臂同時動與互相等待 x 範圍（需要相機）、吸盤、接觸段、實機。見 `docs/evidence/mock_overlap_20261118/`。
 
 - 2026-11-18：在本機 WSL 用 Mock Serial 跑原型 launch。第一次 FAIL：碰撞檢查一次送出約 157 筆，超過服務佇列（約 10 筆）被丟掉，固定路徑逾時退回 MoveIt；接觸段用同一個檢查、沒有退回，上實機會故障。已修：同時最多 8 筆。第二次 PASS：兩臂回 HOME 都走固定路徑（各 157 點），任務在第一次看相機時如預期停下，TIMING 分段表與 CSV 正常。coordinator 501 測試 PASS。相機之後的流程（A/B/C、吸盤、接觸段）、overlap、實機仍 NOT_RUN。見 `docs/evidence/mock_run_20261118/`。

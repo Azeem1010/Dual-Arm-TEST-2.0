@@ -1,5 +1,20 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-18 Orin: build, tests and overlap without hardware
+
+`main` at `47b9b5c` on the Jetson Orin; nothing real moved. The Gazebo run used a temporary patch of the installed coordinator only (simulation mode allowed to use overlap), restored afterwards. Details: evidence/orin_overlap_20261118/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| `build.sh`: colcon build, `validate_model.py` | PASS | 15 packages; build_check/ |
+| Unit tests coordinator / HMI | PASS | 501 / 320 (unit_tests/) |
+| Mock Serial, overlap + fixed transits: HOME via joint lines to follow_joint_trajectory, task start to first camera query | PASS | mock_fixed/ |
+| Mock Serial: no leftover processes | FAIL | a `robot_state_publisher` stayed; the script's check misses it, stopped by hand |
+| Gazebo regression `two` with overlap on | PASS | gazebo_two/regress_two.json |
+| Both arms moving at the same time in Gazebo, B hand-over order kept | PASS | gazebo_two/coordinator_1.log |
+| An arm waiting for the other's lane | NOT_RUN | did not occur in `two` |
+| `faults` / `batch` with overlap, cameras, prototype config in Gazebo, real arms | NOT_RUN | |
+
 ## 2026-11-18 Mock Serial run with overlap on
 
 Prototype launch on the CM-530 simulator with overlap on, in two variants. Details: evidence/mock_overlap_20261118/README.md.

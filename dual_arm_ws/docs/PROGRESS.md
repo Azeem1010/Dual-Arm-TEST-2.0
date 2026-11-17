@@ -2,7 +2,13 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: Mock Serial run with overlap on (2026-11-18)
+## Latest result: overlap in Gazebo, runs on the Orin without hardware (2026-11-18)
+
+- Orin `main` fast-forwarded to `47b9b5c` and built (`build.sh` PASS, `validate_model.py` PASS); coordinator 501 and HMI 320 tests pass; the Mock Serial overlap run (fixed transits) repeated on the Orin, PASS as on WSL.
+- User decision (option 2): try overlap in Gazebo without changing src/ or git. Only the installed copies were patched (simulation mode allowed, `overlap` block added to the simulation config) and restored afterwards. Regression `two` PASS: both objects in slots 1 and 2, and the arms moved at the same time (arm 1 picks the next object from A while arm 2 takes the previous one from B; arm 1 places into B while arm 2 carries to C), with the B hand-over order kept. Evidence: evidence/orin_overlap_20261118/.
+- Not covered: no lane wait occurred, `faults`/`batch` with overlap, cameras, prototype taught poses and fixed transits, real arms. Overlap stays off in the prototype file and is still refused in simulation mode.
+
+## Earlier result: Mock Serial run with overlap on (2026-11-18)
 
 - First run of the overlap motion path outside unit tests, with the prototype config temporarily switched to overlap on / direct transfer off (restored after). Both variants PASS: with fixed transits the HOME joint lines (157 points) and without them the MoveIt plan-only trajectories went straight to `follow_joint_trajectory` (0 execution requests to move_group), both arms reached HOME, the overlapped task started and stopped at the first camera query, timing written. Evidence: evidence/mock_overlap_20261118/.
 - Not covered: both arms moving at once and waiting for each other's lane (needs the camera), suction, contact lines, real arms. Overlap stays off in the shipped config.
