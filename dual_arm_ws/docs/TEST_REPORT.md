@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-18 Mock Serial run with overlap on
+
+Prototype launch on the CM-530 simulator with overlap on, in two variants. Details: evidence/mock_overlap_20261118/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| overlap + fixed transits: HOME via lane-reserved joint lines to follow_joint_trajectory | PASS | fixed/ |
+| overlap without fixed transits: MoveIt plan-only, then follow_joint_trajectory | PASS | plan/ |
+| No trajectory executed through move_group in either variant | PASS | 0 execution requests |
+| Overlapped task start, stop at the first camera query, timing | PASS | expected without a camera |
+| Both arms at once with lane waits, suction, contact lines, real arms | NOT_RUN | |
+
 ## 2026-11-18 Mock Serial run of the sped-up prototype
 
 Prototype launch on the CM-530 simulator: torque on, arms moved away, `go_home`, `start`. Details: evidence/mock_run_20261118/README.md.

@@ -2,7 +2,12 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: Mock Serial run of the sped-up prototype (2026-11-18)
+## Latest result: Mock Serial run with overlap on (2026-11-18)
+
+- First run of the overlap motion path outside unit tests, with the prototype config temporarily switched to overlap on / direct transfer off (restored after). Both variants PASS: with fixed transits the HOME joint lines (157 points) and without them the MoveIt plan-only trajectories went straight to `follow_joint_trajectory` (0 execution requests to move_group), both arms reached HOME, the overlapped task started and stopped at the first camera query, timing written. Evidence: evidence/mock_overlap_20261118/.
+- Not covered: both arms moving at once and waiting for each other's lane (needs the camera), suction, contact lines, real arms. Overlap stays off in the shipped config.
+
+## Earlier result: Mock Serial run of the sped-up prototype (2026-11-18)
 
 - Run 1 FAIL: on Mock Serial both HOME fixed transits timed out in the validity check, because `_require_valid_all` sent all ~157 requests at once and the service queue (depth ~10) dropped most; contact moves use the same check and would have faulted on the real arms. Fixed: at most 8 requests outstanding, answers checked in path order.
 - Run 2 PASS: hardware and controllers on, arms moved away, `go_home` ran both fixed transits (157 points each) to HOME; a started task stopped at the first camera query as expected and wrote the `TIMING SUMMARY` and CSV. Coordinator 501 tests pass. Evidence: evidence/mock_run_20261118/. Not covered: everything after the first camera query, overlap, real arms.

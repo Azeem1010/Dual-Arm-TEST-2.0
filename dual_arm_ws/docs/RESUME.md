@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-18：Mock Serial 開 overlap 跑兩種：固定路徑、MoveIt 只規劃。兩種都 PASS：軌跡都直接送 `follow_joint_trajectory`（move_group 執行請求 0 次），兩臂回 HOME，overlap 任務啟動後在第一次看相機時如預期停下，時間記錄正常。測試期間暫時改寫的原型設定已還原，overlap 仍預設關。沒測到：兩臂同時動與互相等待 x 範圍（需要相機）、吸盤、接觸段、實機。見 `docs/evidence/mock_overlap_20261118/`。
+
 - 2026-11-18：在本機 WSL 用 Mock Serial 跑原型 launch。第一次 FAIL：碰撞檢查一次送出約 157 筆，超過服務佇列（約 10 筆）被丟掉，固定路徑逾時退回 MoveIt；接觸段用同一個檢查、沒有退回，上實機會故障。已修：同時最多 8 筆。第二次 PASS：兩臂回 HOME 都走固定路徑（各 157 點），任務在第一次看相機時如預期停下，TIMING 分段表與 CSV 正常。coordinator 501 測試 PASS。相機之後的流程（A/B/C、吸盤、接觸段）、overlap、實機仍 NOT_RUN。見 `docs/evidence/mock_run_20261118/`。
 
 - 2026-11-17：加速計畫 (5) 已完成：合入 Dual-Arm-TEST-2.0 `prototype-overlap-20261117`（`770f960`）。`overlap` 與 `direct_transfer` 不能同時開；原型設定維持 `direct_transfer: true`，`overlap` 區塊註解掉（預設關，下面那條「連續搬運」描述的程式碼已在但沒開）。arm1 `run()` 把 direct 傳進分支的 `pick_a`/`place_b`；arm2 兩條釋放 B 的路徑都會通知 overlap；所有計時路徑（接觸、示教直線、固定路徑）都經過分支的 `_send`，開 overlap 時也會預約 x 範圍。測試 PASS（coordinator 499、HMI 320、overlap 重跑 5 次），overlap 經 MoveIt／控制器與實機 NOT_RUN。加速計畫 1–5 全部完成；下一步要等 Orin：先用預設跑 2 件看 TIMING 分段表，穩定後再試 overlap（先 Mock Serial `go_home`，再實機 `cycles:=2`）。見 `docs/evidence/merge_overlap_20261117/`。

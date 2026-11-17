@@ -1,0 +1,46 @@
+113:direct_transfer: false
+122:fixed_transits: true
+153:overlap:
+154:  clearance_m: 0.025
+155:  wait_s: 240.0
+PASS config/prototype/coordinator.yaml: mode=prototype
+== 01:13:29 launch with overlap on, mode fixed (journal /tmp/tmp.l4cOgC8uM2/journal.json)
+== 01:13:59 torque on
+waiting for service to become available...
+requester: making request: controller_manager_msgs.srv.SetHardwareComponentState_Request(name='DualArmSystem', target_state=lifecycle_msgs.msg.State(id=3, label='active'))
+
+response:
+controller_manager_msgs.srv.SetHardwareComponentState_Response(ok=True, state=lifecycle_msgs.msg.State(id=3, label='active'))
+
+waiting for service to become available...
+requester: making request: controller_manager_msgs.srv.SwitchController_Request(activate_controllers=['arm1_controller', 'arm2_controller'], deactivate_controllers=[], strictness=2, activate_asap=False, timeout=builtin_interfaces.msg.Duration(sec=0, nanosec=0))
+
+response:
+controller_manager_msgs.srv.SwitchController_Response(ok=True, message='Successfully switched controllers!')
+
+== 01:14:08 move arm1 away from HOME through its controller
+    error_code: 0
+error_string: Goal successfully reached!
+Goal finished with status: SUCCEEDED
+== 01:14:19 move arm2 away from HOME through its controller
+    error_code: 0
+error_string: Goal successfully reached!
+Goal finished with status: SUCCEEDED
+== 01:14:35 go_home
+waiting for service to become available...
+requester: making request: dual_arm_interfaces.srv.ConfirmStep_Request(token='', success=True, message='mock overlap run')
+
+response:
+dual_arm_interfaces.srv.ConfirmStep_Response(accepted=True, message='Accepted; HOME is reported as at_home on /dual_arm/status')
+
+== 01:14:55 start a task (overlap run; no camera: stops at its first zone observation)
+requester: making request: std_srvs.srv.Trigger_Request()
+
+response:
+std_srvs.srv.Trigger_Response(success=True, message='Accepted; the result is reported on /dual_arm/status')
+
+== 01:16:05 stop launch
+== 01:16:25 launch still running after SIGINT, sending SIGTERM
+no leftover processes
+== 01:16:29 done
+config restored
