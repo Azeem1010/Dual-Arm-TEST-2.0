@@ -34,6 +34,11 @@ class Arm2Workflow:
             raise TaskFault(f'B pick target height {target.z} differs from the object top')
         return (target.x, target.y)
 
+    def _release_b_empty(self, view):
+        if view.b_has_object or not view.b_arm_clear:
+            raise TaskFault('Zone B is not empty and clear after pickup')
+        self.ctx.release_b(ARM, view)
+
     def run(self):
         ctx, io, settings = self.ctx, self.ctx.io, self.ctx.settings
         ctx.step(ARM, 'CHECK_ZONES')
@@ -93,14 +98,13 @@ class Arm2Workflow:
             io.move_b(ARM, 'above', contact=True)
         else:
             io.move_to(ARM, above_b, contact=True)
-        ctx.step(ARM, 'HOME_HOLDING')
-        io.move_home(ARM)
+        direct = settings.direct_transfer
+        if not direct:
+            ctx.step(ARM, 'HOME_HOLDING')
+            io.move_home(ARM)
 
-        ctx.step(ARM, 'VERIFY_B_EMPTY')
-        view = ctx.zone_view()
-        if view.b_has_object or not view.b_arm_clear:
-            raise TaskFault('Zone B is not empty and clear after pickup')
-        ctx.release_b(ARM, view)
+            ctx.step(ARM, 'VERIFY_B_EMPTY')
+            self._release_b_empty(ctx.zone_view())
 
         ctx.step(ARM, 'APPROACH_C')
         if taught:
@@ -128,6 +132,9 @@ class Arm2Workflow:
 
         ctx.step(ARM, 'VERIFY_C')
         view = ctx.zone_view()
+        if direct:
+            # Arm 2 kept B through the placement; it is HOME now, so one view checks B and C.
+            self._release_b_empty(view)
         if view.c_object_count != sum(occupied) + 1:
             raise TaskFault('C count did not increase by one')
         place = io.verify_place(slot)

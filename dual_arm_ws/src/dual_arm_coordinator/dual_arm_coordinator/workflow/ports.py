@@ -68,6 +68,9 @@ class WorkflowSettings:
     # Prototype, taught B: arm 1 lifts straight up to this height after releasing; None keeps the
     # taught joint-line lift.
     b_release_lift_z: float = None
+    # Prototype: arm 1 goes from A straight to B and arm 2 from B straight to C, without HOME in
+    # between. Arm 1 takes zone B before it leaves HOME; arm 2 gives it back once it is HOME again.
+    direct_transfer: bool = False
 
     @classmethod
     def from_config(cls, config):
@@ -83,7 +86,8 @@ class WorkflowSettings:
                    a_pick_offset=tuple(config.get('a_pick_offset_xy_m', (0.0, 0.0))),
                    a_press=float(config.get('a_press_m', 0.0)),
                    b_release_lift_z=(heights['approach_z_m'] + config['b_release_lift_extra_m']
-                                     if 'b_release_lift_extra_m' in config else None))
+                                     if 'b_release_lift_extra_m' in config else None),
+                   direct_transfer=config.get('direct_transfer', False) is True)
 
 
 class TaskIO:

@@ -24,7 +24,10 @@ arms:
     moveit_base_frame: arm2_base_link
     vision_base_frame: arm2_base
 speeds:              # slower than simulation
-  transport_scale: 0.3
+  # 2026-11-17 (user decision): transport 0.3 -> 0.6 (0.15 -> 0.3 rad/s with the URDF 0.5 rad/s).
+  # Contact moves unchanged; acceleration_scale also shapes the contact trajectories, so it stays 0.3.
+  # Watch the driver log for "exceeds max_step_raw" (20 counts per scheduler cycle).
+  transport_scale: 0.6
   contact_scale: 0.2
   acceleration_scale: 0.3
 # Field run 2026-11-13: the cup stopped about 2 mm above the cap and could not pick it, so every
@@ -103,6 +106,11 @@ a_pick_offset_xy_m: [0.002, 0.0]
 # where its cup is (xy held, j1 not turned back to the taught count) to approach_z_m plus this.
 # The taught joint-line lift pushed the object sideways.
 b_release_lift_extra_m: 0.005
+# Direct transfer (user decision 2026-11-17): arm 1 goes from above A straight to above B and arm 2
+# from above B straight to above C, without the HOME in between (the 11-17 video: about 25 s of
+# detour per object). Arm 1 takes zone B before leaving HOME; arm 2 gives it back when HOME again,
+# after the camera sees B empty. Remove this line to go through HOME again.
+direct_transfer: true
 # Zone A press (user decision 2026-11-17): the joint readings reached the A contact target
 # (dz -0.4 mm) while the cup stayed above the cap, an error the readings cannot see (estimated
 # calibration, link play). Arm 1 aims this much below contact_z_m in zone A only; first value 3 mm.

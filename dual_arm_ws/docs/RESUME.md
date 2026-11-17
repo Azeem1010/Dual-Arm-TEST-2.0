@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-17：使用者要求加快 Prototype 流程，先拿掉中途回 HOME。11-17 影片顯示一個物件約 153 秒，其中兩臂吸著瓶蓋回 HOME 再出發約多 25 秒。新增 `direct_transfer`（只限 prototype，已在 `config/prototype/coordinator.yaml` 開啟）：arm1 在 PREFLIGHT 就預約 B 區，A 上方直接到 B 上方；arm2 B 上方直接到 C 上方，回 HOME 後在 VERIFY_C 確認 B 區已清空才釋放 B。單元測試 PASS（coordinator 437、HMI 320），MoveIt 直接路徑與實機 NOT_RUN（Orin 要 pull 後重建）。同日使用者決定一般移動加快：`transport_scale` 0.3 → 0.6（0.15 → 0.3 rad/s），接觸段先不動（`contact_scale` 0.2、`acceleration_scale` 0.3 都不變，因為接觸軌跡也用加速度設定）；實機跑時注意 log 有沒有 `exceeds max_step_raw`。下一步候選：加快接觸區（兩段式下降、`settle_s`、吸盤等待）、量驅動每輪時間後再把 transport 拉到 1.0。見 `docs/evidence/direct_transfer_20261117/`。
+
 - 2026-11-17：使用者決定「強制停止」也讓 ESP32 吸盤全關（送 0，吸住的瓶蓋會掉），停止時先送一次，取消回覆後再送一次；coordinator 每次送 ESP32 命令前都會再檢查 guard。Prototype 的 micro-ROS agent 改由介面啟動（`hardware.esp32_port`、`hardware.microros_setup`，Orin 本機已填 CP2102）；「關閉系統」會先送 0 並等回音，再關掉 launch 和 agent，沒收到回音也會繼續關閉，但會記一筆 DANGER。coordinator 故障時吸盤仍維持原狀。單元測試、替身 ESP32、agent 啟停 PASS；實機 NOT_RUN（先關掉手動開的 agent）。見 `docs/evidence/esp32_stop_20261117/`。
 
 - 2026-11-15：使用者決定 Prototype 的 B 區交接也改用 11-11 H1 示教關節值（arm1 用重做的 `teach_arm1_B_2.csv`，arm2 用 `teach_arm2_B.csv`）。`config/prototype/coordinator.yaml` 新增 `b_teach`；兩臂 B 區接近、下降、抬起都到示教姿勢（`move_b`），Arm 2 仍用相機確認 B 區有一個物件。示教時壓著瓶蓋（使用者 11-15 確認），讀值就是接觸姿勢。測試與 Mock 啟動 PASS，`move_b` 尚未在 MoveIt＋控制器上跑過，實機待測（Orin 要 pull 後重建）。見 `docs/evidence/b_teach_20261115/`。

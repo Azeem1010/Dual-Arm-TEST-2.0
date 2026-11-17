@@ -401,6 +401,92 @@ class BReleaseLift(Base):
         self.assertEqual(self.calls_named('lift_vertical'), [])
 
 
+class DirectTransfer(Base):
+    """Prototype: no HOME between A and B (arm 1) or between B and C (arm 2)."""
+    settings = replace(SETTINGS, direct_transfer=True)
+
+    def motions_between(self, arm, first, last):
+        """Motions of arm after its first `first` suction call and before the next `last` one."""
+        calls = self.world.calls
+        start = next(i for i, call in enumerate(calls) if call[:3] == ('suction', arm, first))
+        end = next(i for i, call in enumerate(calls) if i > start and call[:3] == ('suction', arm, last))
+        return [call for call in calls[start:end] if call[0] in MOTIONS and call[1] == arm]
+
+    def test_one_object_still_reaches_slot_one(self):
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assertEqual(self.world.c, [True] + [False] * 7)
+        self.assertFalse(self.world.b_object)
+        self.assertEqual(self.journal.data['b_owner'], '')
+
+    def test_arm1_goes_from_a_to_b_without_home(self):
+        self.transfer.run(1)
+        moves = self.motions_between('arm1', 'grasp', 'release')
+        self.assertNotIn('move_home', [call[0] for call in moves])
+        self.assertNotIn('HOME_HOLDING', [s['state'] for s in self.world.snapshots if s['active_arm'] == 'arm1'])
+
+    def test_arm2_goes_from_b_to_c_without_home(self):
+        self.transfer.run(1)
+        moves = self.motions_between('arm2', 'grasp', 'release')
+        self.assertNotIn('move_home', [call[0] for call in moves])
+
+    def test_arm1_owns_b_before_it_moves_to_a(self):
+        self.transfer.run(1)
+        calls = self.world.calls
+        first = next(i for i, call in enumerate(calls) if call[0] == 'move_to' and call[1] == 'arm1')
+        self.assertEqual(self.world.snapshots[first]['b_owner'], 'arm1')
+
+    def test_arm2_keeps_b_until_it_is_home_and_b_is_seen_empty(self):
+        self.transfer.run(1)
+        calls, snapshots = self.world.calls, self.world.snapshots
+        placed = next(i for i, call in enumerate(calls) if call[:3] == ('suction', 'arm2', 'release'))
+        self.assertEqual(snapshots[placed]['b_owner'], 'arm2')
+        last_home = max(i for i, call in enumerate(calls) if call[:2] == ('move_home', 'arm2'))
+        zone_after = [i for i, call in enumerate(calls) if call[0] == 'zone' and i > last_home]
+        self.assertTrue(zone_after, 'B must be observed after arm 2 is HOME')
+
+    def test_object_left_in_b_faults_after_arm2_is_home(self):
+        def b_still_full(view, count):
+            # After arm 2 grasped, the camera still sees an object in B.
+            grasped = any(call[:3] == ('suction', 'arm2', 'grasp') for call in self.world.calls)
+            return replace(view, b_has_object=True) if grasped else view
+        self.world.zone_patch = b_still_full
+        self.assert_faulted('Zone B is not empty and clear after pickup')
+
+    def test_progress_never_moves_back(self):
+        """The interface groups steps into segments; the reordered checks must not step back."""
+        self.transfer.run(1)
+        order = {'arm1': ['CHECK_ZONES', 'QUERY_TARGET', 'PREFLIGHT', 'APPROACH_A', 'DESCEND_A', 'GRASP_A',
+                          'ATTACH', 'LIFT_A', 'APPROACH_B', 'DESCEND_B', 'RELEASE_B', 'DETACH', 'LIFT_B',
+                          'HOME_EMPTY', 'VERIFY_B'],
+                 'arm2': ['CHECK_ZONES', 'QUERY_B_TARGET', 'RESERVE_SLOT', 'PREFLIGHT', 'RESERVE_B', 'APPROACH_B',
+                          'DESCEND_B', 'GRASP_B', 'ATTACH', 'LIFT_B', 'APPROACH_C', 'DESCEND_C', 'RELEASE_C',
+                          'DETACH', 'LIFT_C', 'HOME_EMPTY', 'VERIFY_C']}
+        seen = {'arm1': [], 'arm2': []}
+        for snapshot in self.world.snapshots:
+            arm, _, state = snapshot['state'].partition(':')
+            arm = arm.lower()
+            if arm in seen and state in order[arm] and (not seen[arm] or seen[arm][-1] != state):
+                seen[arm].append(state)
+        for arm in seen:
+            self.assertEqual(seen[arm], [s for s in order[arm] if s in seen[arm]])
+            self.assertNotIn('HOME_HOLDING', seen[arm])
+
+    def test_taught_b_and_slots_also_skip_home(self):
+        self.settings = replace(SETTINGS, direct_transfer=True, b_joints=True, c_slot_joints=True,
+                                b_release_lift_z=SETTINGS.approach_z + 0.005)
+        self.make()
+        self.assertEqual(self.transfer.run(1), 'SUCCEEDED')
+        self.assertNotIn('move_home', [c[0] for c in self.motions_between('arm1', 'grasp', 'release')])
+        self.assertNotIn('move_home', [c[0] for c in self.motions_between('arm2', 'grasp', 'release')])
+
+    def test_default_keeps_home_in_between(self):
+        self.settings = SETTINGS
+        self.make()
+        self.transfer.run(1)
+        self.assertIn('move_home', [c[0] for c in self.motions_between('arm1', 'grasp', 'release')])
+        self.assertIn('move_home', [c[0] for c in self.motions_between('arm2', 'grasp', 'release')])
+
+
 class APress(Base):
     """Prototype: arm 1 aims a_press below contact_z in zone A only."""
     settings = replace(SETTINGS, a_press=0.003)

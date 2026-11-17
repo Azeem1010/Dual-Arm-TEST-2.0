@@ -2,7 +2,14 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: prototype field run fixes on the Orin (2026-11-17)
+## Latest result: prototype direct transfer, no HOME between zones (2026-11-17)
+
+- User decision: speed up the prototype flow, first by removing the HOME detour. The 11-17 field video (one object about 153 s) showed both arms going back HOME while holding the cap, about 25 s per object (evidence/direct_transfer_20261117/README.md).
+- New optional `direct_transfer` (prototype only, on in `config/prototype/coordinator.yaml`): arm 1 takes zone B in `PREFLIGHT` while both arms are HOME and goes above A → above B directly; arm 2 goes above B → above C directly and releases B in `VERIFY_C`, after it is HOME and the camera sees B empty. Simulation and strict hardware unchanged.
+- Same day, user decision: prototype `transport_scale` 0.3 → 0.6 (planned moves 0.15 → 0.3 rad/s). Contact moves unchanged: `contact_scale` 0.2 and `acceleration_scale` 0.3 (the contact trajectories also use it). Watch the driver log for `exceeds max_step_raw`; the scheduler cycle time was not measured.
+- Coordinator 437 and HMI 320 tests pass; prototype config PASS. The direct MoveIt paths, the faster transport and the real arms are NOT_RUN.
+
+## Earlier result: prototype field run fixes on the Orin (2026-11-17)
 
 Field runs on the real arms in prototype mode, fixes made between runs on user request. Coordinator 425 tests pass; each change below was loaded on the Orin but most were exercised only once or twice, so treat them as NOT_RUN beyond that. Logs: `~/.ros/dual_arm_hmi/logs/20261117_*` on the Orin (not in the repo).
 

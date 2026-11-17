@@ -1,5 +1,17 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-17 Prototype direct transfer (no HOME between zones)
+
+Arm 1 goes A → B and arm 2 B → C without HOME in between (`direct_transfer`, prototype only). Details: evidence/direct_transfer_20261117/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Unit tests coordinator / HMI | PASS | 437 / 320 |
+| Prototype config validation | PASS | prototype_config_check.txt |
+| `transport_scale` 0.6: config validation / coordinator tests | PASS | prototype_config_check_speed.txt, coordinator_tests_speed.txt (437) |
+| Direct paths through MoveIt and the controllers | NOT_RUN | |
+| Real arms | NOT_RUN | |
+
 ## 2026-11-17 ESP32 suction on the stop and shutdown buttons
 
 強制停止 sends suction 0; 關閉系統 (prototype) sends 0, then stops the launch with the micro-ROS agent it now starts. Details: evidence/esp32_stop_20261117/README.md.

@@ -79,7 +79,11 @@ MAX_A_PRESS_M = 0.008
 # turned j1 back while the cup still touched the object and pushed it).
 B_LIFT_KEY = 'b_release_lift_extra_m'
 MAX_B_LIFT_EXTRA_M = 0.03
-OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY)
+# Optional: arm 1 goes from A straight to B and arm 2 from B straight to C, without HOME in
+# between (prototype only, user decision 2026-11-17: the video showed about 25 s of detour).
+DIRECT_KEY = 'direct_transfer'
+OPTIONAL_KEYS = (SLOT_TEACH_KEY, B_TEACH_KEY, AUTO_RESUME_KEY, A_OFFSET_KEY, DESCENT_KEY, A_PRESS_KEY, B_LIFT_KEY,
+                 DIRECT_KEY)
 
 
 class TaskConfigError(ValueError):
@@ -310,6 +314,15 @@ def _check_b_lift(doc):
     return errors
 
 
+def _check_direct(doc):
+    errors = []
+    if doc['mode'] not in SLOT_TEACH_MODES:
+        errors.append(f'{DIRECT_KEY} is only allowed in {SLOT_TEACH_MODES}')
+    if type(doc[DIRECT_KEY]) is not bool:
+        errors.append(f'{DIRECT_KEY} must be true or false')
+    return errors
+
+
 def max_resumes(doc):
     """How often a run may resume itself after a fault; 0 when the configuration does not allow it."""
     return doc[AUTO_RESUME_KEY]['max_resumes'] if AUTO_RESUME_KEY in doc else 0
@@ -340,6 +353,8 @@ def validate(doc):
             errors += _check_a_press(doc)
         if B_LIFT_KEY in present:
             errors += _check_b_lift(doc)
+        if DIRECT_KEY in present:
+            errors += _check_direct(doc)
     if errors:
         raise TaskConfigError('; '.join(errors))
     return doc

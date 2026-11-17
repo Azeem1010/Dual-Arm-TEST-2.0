@@ -48,6 +48,11 @@ class Arm1Workflow:
             io.check_reachable(ARM, point)
         if taught:
             io.check_b(ARM)
+        direct = settings.direct_transfer
+        if direct:
+            # Without HOME between A and B, B is taken now, while both arms are still HOME (the
+            # CHECK_ZONES view). Done inside PREFLIGHT so the progress display never steps back.
+            ctx.acquire_b(ARM, view)
 
         ctx.step(ARM, 'APPROACH_A')
         io.move_to(ARM, above_a)
@@ -62,14 +67,15 @@ class Arm1Workflow:
         io.attach(ARM)
         ctx.step(ARM, 'LIFT_A')
         io.move_to(ARM, above_a, contact=True)
-        ctx.step(ARM, 'HOME_HOLDING')
-        io.move_home(ARM)
+        if not direct:
+            ctx.step(ARM, 'HOME_HOLDING')
+            io.move_home(ARM)
 
-        ctx.step(ARM, 'RESERVE_B')
-        view = ctx.zone_view()
-        if view.b_has_object or not view.b_arm_clear:
-            raise TaskFault('Zone B is not empty and clear before reservation')
-        ctx.acquire_b(ARM, view)
+            ctx.step(ARM, 'RESERVE_B')
+            view = ctx.zone_view()
+            if view.b_has_object or not view.b_arm_clear:
+                raise TaskFault('Zone B is not empty and clear before reservation')
+            ctx.acquire_b(ARM, view)
 
         ctx.step(ARM, 'APPROACH_B')
         if taught:
