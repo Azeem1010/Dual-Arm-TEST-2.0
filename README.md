@@ -22,6 +22,7 @@
 | 中斷後續接 | [RESUME.md](dual_arm_ws/docs/RESUME.md) |
 | 換到另一台電腦時給 AI 的 prompt | [HANDOFF_PROMPT_NEXT_COMPUTER.md](dual_arm_ws/docs/HANDOFF_PROMPT_NEXT_COMPUTER.md) |
 | HOME 姿態與馬達數值換算 | [HOME_POSES.md](dual_arm_ws/docs/HOME_POSES.md) |
+| CM-530 韌體（指令、燒錄、測試） | [CM530_ROS_BRIDGE README](dual_arm_ws/third_party/CM530_ROS_BRIDGE/README.md) |
 | CAD 檔案與限制 | [cad/README.md](dual_arm_ws/cad/README.md) |
 
 最快的開始方式（完整步驟見[安裝與使用指南](dual_arm_ws/README.md)）：
@@ -36,13 +37,14 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 |---|---|
 | 建置專案、Gazebo 模擬、RViz | ✅ 可用 |
 | 兩物體 A→B→C 搬運（coordinator） | ✅ 模擬可用，含故障停止與人工復歸；區域與格位判斷用 Gazebo 真實座標 |
-| CM-530 驅動、軟體安全監控 | 🟡 嚴格實機模式只測過 Mock Serial 與 MoveIt mock；驅動已在實機運作模式下帶動實機（估計校正） |
+| CM-530 韌體第 18 版 | 🟡 2026-11-18 完成並通過所有不需硬體的測試，**尚未燒錄**。每筆 AX 同時寫入 Moving Speed，主機連線改成 1 Mbps（協定 6），目的是消除手臂卡頓與前後擺動。新驅動只接受第 18 版，板子還是第 17 版時會連線失敗 |
+| CM-530 驅動、軟體安全監控 | 🟡 嚴格實機模式只測過 Mock Serial 與 MoveIt mock；驅動已在實機運作模式下帶動實機（估計校正，當時是第 17 版韌體）。2026-11-18 起每筆 AX 依軌跡速度帶 Moving Speed，Mock Serial 端對端 PASS |
 | 八物體完整搬運 | 🟡 模擬可放滿 8 格（格位 8 用傾斜吸盤）；實機運作模式 2026-11-17 跑到 C 格 8（FULL），2026-11-18 12:55 一輪 9 次取件成功 8 次 |
 | 視覺自動定位 | 🟡 模擬中取料點可由視覺決定。實機由環境相機（env_scene）判斷 A/B/C，手臂鏡頭只監控並輪流開；實機運作模式已用它找 A 區瓶蓋、確認 B 區與 C 格占用；env_scene 用上游 6b3d5c1（2026-11-13 現場尺量的 C 格位置），操作介面顯示它的框線影像 |
 | ESP32 吸盤 | 🟡 實機運作模式的搬運流程已在使用（吸取自動確認，韌體沒有真空感測）。2026-11-13 E0 實測：重燒韌體（腳位 12/13/25/26），指令 1、2 是 arm1、3、4 是 arm2，約 1 秒吸穩。2026-11-18 起 agent 隨系統啟動，3 秒後自動用 RTS 重開 ESP32，不必再按 EN；「強制停止」「關閉系統」會讓吸盤全關 |
 | 操作介面 | 🟡 模擬可啟停系統、開始、取消、強制停止、回 HOME、復歸；「實機運作模式」可上扭力、解除鎖定、回 HOME、開始，已在 Orin 使用；嚴格實機模式只接通強制停止 |
 | 實機運作模式（Prototype） | 🟡 2026-11-13 起用估計校正讓實機跑完整流程（不要求精準，結果不算校正證據），介面選「實機運作模式」或 `hardware_prototype.launch.py`。B 區與 C 格用示教關節值（2026-11-18 重新示教）、A→B、B→C 不經 HOME、固定關節路徑、故障後自動續跑；每輪的分段時間記在 `~/.ros/dual_arm/timing/`。兩臂同時動作（overlap）已合入但預設關。見 [實機測試手冊](dual_arm_ws/docs/HARDWARE_TEST_GUIDE.md#prototype-模式) |
-| Orin 部署 | 🟡 2026-11-18 Orin 的 `main` 在 `47b9b5c` 重建，測試與 Mock Serial PASS，之後的現場修正（`60b91ca`、`24e4c8f`）在 Orin 上直接修改並執行；嚴格模式的實機步驟只做到 H1 |
+| Orin 部署 | 🟡 2026-11-18 Orin 的 `main` 在 `47b9b5c` 重建，測試與 Mock Serial PASS，之後的現場修正（`60b91ca`、`24e4c8f`）在 Orin 上直接修改並執行；嚴格模式的實機步驟只做到 H1。Orin 還沒更新到第 18 版韌體對應的程式（要拉取、重建、燒錄、設 latency timer） |
 | 實機校正 | ❌ 未完成，需要現場量測 |
 
 **嚴格實機控制預設關閉**，必須完成實測校正才能開啟，任務節點也會拒絕以嚴格實機模式（`mode: hardware`）啟動。實機運作模式是使用者 2026-11-13 決定的例外：用估計值跑完整流程，CM-530 電源開關是唯一急停，結果不能當成校正或 H 階段的證據。

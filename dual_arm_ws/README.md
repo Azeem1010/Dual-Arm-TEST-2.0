@@ -11,12 +11,13 @@
 | 建置專案 | 可用 | Windows（WSL2）已實測 |
 | Gazebo 模擬與 RViz | 可用 | |
 | 模擬 A→B→C 搬運 | 可用 | 兩個物體已驗證，含故障停止與人工復歸。區域與格位用 Gazebo 的真實座標 |
-| CM-530 驅動程式、安全監控 | 部分實測 | 嚴格模式只用韌體原始碼的 Mock Serial 與 MoveIt mock 測試；實機運作模式下已帶動實機（估計校正，不算驗收） |
+| CM-530 韌體第 18 版 | 完成，尚未燒錄 | 每筆 AX 同時寫入 Moving Speed、主機連線 1 Mbps、協定 6；建置與主機測試 PASS。燒錄步驟見 6 節「韌體第 18 版」 |
+| CM-530 驅動程式、安全監控 | 部分實測 | 嚴格模式只用韌體原始碼的 Mock Serial 與 MoveIt mock 測試；實機運作模式下已帶動實機（估計校正，不算驗收，當時是第 17 版韌體）。2026-11-18 起每筆 AX 依軌跡速度帶 Moving Speed，Mock Serial 端對端 PASS |
 | 八個物體完整搬運 | 部分 | 模擬可放滿 8 格（格位 8 用傾斜吸盤）；實機運作模式 2026-11-17 跑到 C 格 8，2026-11-18 一輪 9 次取件成功 8 次 |
 | 視覺自動定位 | 部分 | 模擬中 Arm 1 取料點可由視覺決定；實機由環境相機（env_scene）判斷 A/B/C，實機運作模式已在使用；實體相機尚未正式校正 |
 | ESP32 吸盤 | 實機運作模式使用中 | 2026-11-13 E0 確認指令對應（1、2 arm1，3、4 arm2）與約 1 秒吸穩，韌體腳位 12/13/25/26。韌體沒有真空感測，吸取結果要人工確認（實機運作模式自動確認）。2026-11-18 起 agent 隨系統啟動，3 秒後自動用 RTS 重開 ESP32，不用再按 EN |
 | 操作介面 | 模擬、實機運作模式可用 | 啟動／關閉系統、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸，見 5 節「用操作介面」。「實機運作模式」另有上扭力，已在 Orin 使用；嚴格實機模式只接通強制停止 |
-| Jetson Orin | 部分實測 | 2026-11-10 起在 AGX Orin 安裝、建置；2026-11-18 在 `47b9b5c` 重建，coordinator 501、HMI 320 測試與 Mock Serial PASS；實機運作模式在 Orin 上執行，嚴格模式的實機動作仍未放行 |
+| Jetson Orin | 部分實測 | 2026-11-10 起在 AGX Orin 安裝、建置；2026-11-18 在 `47b9b5c` 重建，coordinator 501、HMI 320 測試與 Mock Serial PASS；實機運作模式在 Orin 上執行，嚴格模式的實機動作仍未放行。第 18 版韌體對應的程式還沒在 Orin 上建置 |
 
 **嚴格實機控制預設是關閉的。** 模擬成功不代表實機可以直接動作，詳見「6. 連接實機」。實機運作模式用估計值，是使用者 2026-11-13 決定的例外，結果不算校正證據。
 
@@ -232,16 +233,39 @@ pkill -f 'gz sim'
 ### 安全規則
 
 1. **先裝好硬體急停。** 韌體沒有軟體 STOP，程式當掉時馬達會維持最後的目標。
-2. **第一次動作前，先確認馬達的 Moving Speed。** 韌體不會設定速度，值為 0 時馬達會以最高速運動。
+2. **確認板子是第 18 版韌體。** 第 18 版每次寫入目標都會一起寫入 Moving Speed（HOME、HOLD 用 100，約 67°/s），不會再用最高速衝。第 17 版不設定速度，值為 0 時馬達會以最高速運動；新驅動也不接受第 17 版。
 3. 扭力關閉時手臂會往下掉，要用手扶住。
 4. 不要把模擬用的 HOME 假設值（`runtime.json`）抄到實機校正檔，模擬的速度比例也不能用在實機。
 5. 啟動 `enable_motion:=true` 時會一起帶起 `safety_supervisor`。急停心跳遺失或 coordinator 失效時，它會停用手臂控制器並鎖定，要呼叫 `/safety/reset` 才能解除。這是軟體互鎖，不能取代實體急停，而且實機的心跳來源還沒做。
 
 **要到現場測試，請照 [實機測試手冊](docs/HARDWARE_TEST_GUIDE.md) 的順序做。** 下面只是個別指令的說明。**2026-11-10 的 H1 已確認 A 區在手臂右方、Arm 1 的 j1 方向 +1；Arm 2 的方向、j2 的方向與各軸零點還沒確認，要先完成手冊的 H1。**
 
+### 韌體第 18 版
+
+手臂原本會一頓一頓、前後擺動，推定原因是第 17 版韌體從不寫 AX-12A 的 Moving Speed：值為 0 時，驅動每送一小步，馬達就用全速走完再停下來等。第 18 版的改動：
+
+| 項目 | 第 17 版 | 第 18 版 |
+|---|---|---|
+| 寫入馬達 | 只有目標位置 | 目標位置加 Moving Speed，同一個封包 |
+| AX 指令 | 4 個位置 | 4 個位置，可再帶 4 個速度（1～1023，0 拒絕） |
+| HOME、HOLD 的速度 | 沿用馬達當下的值（可能是全速） | 一律 100（約 67°/s） |
+| 主機連線 | 57600 | 1 Mbps |
+| 協定 | 5 | 6 |
+| HOME | 256,512,512,512 | 相同 |
+
+驅動會依軌跡算每個關節的速度：取「指令速度 × 1.2」和「剩餘誤差在 0.25 秒內追上」的較大者，限制在 20～300（約 13～200°/s）。
+
+**換成第 18 版要一起做三件事**，少一件都會連不上：
+
+1. 燒錄 `third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/CM530.hex`（Flash 起點 0x08003000，用既有 bootloader）。燒錄要由現場人員決定。
+2. Orin 上拉取最新程式並重新建置（`bash scripts/build.sh`），驅動和 `cm530_probe` 才會是 1 Mbps、協定 6。
+3. Orin 上把 FTDI 的 latency timer 設成 1 ms（udev 規則見 [ORIN_DEPLOYMENT.md](docs/ORIN_DEPLOYMENT.md) 的「控制板韌體第 18 版與 USB latency」）。預設 16 ms 會讓每個控制週期多等最多約 64 ms。
+
+燒錄後先跑下面的唯讀檢查，確認 `VERSION,6` 和 HOME `256,512,512,512`。要退回第 17 版時，燒回 `17 ROS to CM530 ver. dual arm/CM530.hex`，程式也要用 git 取回對應版本。韌體的完整說明見 [CM530_ROS_BRIDGE README](third_party/CM530_ROS_BRIDGE/README.md)。
+
 ### 第一次連線：只讀不動
 
-在 Windows 上可以先用韌體附的終端確認通訊，不需要 ROS。在 `third_party/CM530_ROS_BRIDGE/17 ROS to CM530 ver. dual arm/` 資料夾開 PowerShell，並把 `COM4` 換成實際的埠：
+在 Windows 上可以先用韌體附的終端確認通訊，不需要 ROS。終端預設 1 Mbps、協定 6，只能連第 18 版的板子。在 `third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/` 資料夾開 PowerShell，並把 `COM4` 換成實際的埠：
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -260,7 +284,7 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<你的控制
 
 ### 量測校正值
 
-照[實機測試手冊](docs/HARDWARE_TEST_GUIDE.md)的 H2 量測（只用直尺和手機照片；韌體附的 [HOME_CALIBRATION_TEST.md](third_party/CM530_ROS_BRIDGE/17%20ROS%20to%20CM530%20ver.%20dual%20arm/HOME_CALIBRATION_TEST.md) 是背景說明），通過檢查後才把結果填進 `src/cm530_hardware/config/calibration.yaml`。**任何欄位留空，驅動都會拒絕啟動**，這是刻意的設計。
+照[實機測試手冊](docs/HARDWARE_TEST_GUIDE.md)的 H2 量測（只用直尺和手機照片；韌體附的 [HOME_CALIBRATION_TEST.md](third_party/CM530_ROS_BRIDGE/18%20ROS%20to%20CM530%20ver.%20dual%20arm/HOME_CALIBRATION_TEST.md) 是背景說明），通過檢查後才把結果填進 `src/cm530_hardware/config/calibration.yaml`。**任何欄位留空，驅動都會拒絕啟動**，這是刻意的設計。
 
 量測前可以先填 `src/dual_arm_coordinator/config/hardware/calibration_worksheet.template.yaml` 的複本，再離線檢查。這個工具只回報候選值，不會寫入任何校正檔：
 
@@ -307,7 +331,7 @@ ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-i
 | 條件 | 設定 |
 |---|---|
 | 校正通過 | `status: PASS`、`evidence_kind: physical`、`hardware_use_allowed: true` |
-| 已確認速度 | `moving_speed_verified: true` |
+| 已確認速度 | `moving_speed_verified: true`（第 18 版每筆 AX 都帶速度，這個欄位仍要依實測填寫） |
 | 單次最大步距 | 實測的 `max_step_raw` |
 | 明確開啟 | `enable_motion:=true` |
 | 到位判斷 | `controllers_file:=` 指向填好實測容差的控制器設定，範本是 `src/dual_arm_controllers/config/controllers_hardware.template.yaml`，留空的範本會被拒絕 |
@@ -330,7 +354,7 @@ ros2 service call /safety/reset std_srvs/srv/Trigger '{}'
 | 模擬搬運速度 | `src/dual_arm_coordinator/config/sim/runtime.json`、`config/sim/coordinator.yaml` | 搬運 1.0、接觸 0.5、加速度 1.0，只限模擬，不可用在實機 |
 | 模擬 HOME 姿態 | 同上，說明見 [HOME_POSES.md](docs/HOME_POSES.md) | 改完執行 `bash scripts/build.sh` |
 | 實機校正 | `src/cm530_hardware/config/calibration.yaml` | 只能填實測值 |
-| 實機運作模式 | `src/dual_arm_coordinator/config/prototype/coordinator.yaml`、`src/cm530_hardware/config/calibration_prototype.yaml`、`src/dual_arm_controllers/config/controllers_prototype.yaml` | 估計值（檔頭 `PROTOTYPE ESTIMATE`），速度 transport 0.6、contact 0.2；改完重建 `dual_arm_coordinator` |
+| 實機運作模式 | `src/dual_arm_coordinator/config/prototype/coordinator.yaml`、`src/cm530_hardware/config/calibration_prototype.yaml`、`src/dual_arm_controllers/config/controllers_prototype.yaml` | 估計值（檔頭 `PROTOTYPE ESTIMATE`），速度 transport 1.0（0.5 rad/s）、contact 0.2、acceleration 0.6（2026-11-18 隨第 18 版調高，原本 0.6／0.2／0.3）；改完重建 `dual_arm_coordinator` |
 | CAD 模型 | 見 [cad/README.md](cad/README.md) | 一般使用不需要 SolidWorks |
 
 C 區是八個 25×25 mm 的白色齊平格位，表面高度 14 mm，10 mm 高的物體放穩後中心高度為 19 mm。
