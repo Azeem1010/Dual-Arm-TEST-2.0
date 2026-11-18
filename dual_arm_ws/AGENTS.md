@@ -35,7 +35,7 @@
 
 **來源與紀錄：**
 
-- `third_party/` 不可修改，需要整合時複製到 `src/`。上游都是 git submodule，版本鎖定在 `docs/sources.lock.json`；`moveit2` 只是本機除錯用，沒有納入版本控制。
+- `third_party/` 不可修改，需要整合時複製到 `src/`。例外（使用者 2026-11-18 決定）：`third_party/CM530_ROS_BRIDGE` 是我們自己的韌體 repo，可以新增版本目錄（例如 `18 ROS to CM530 ver. dual arm/`），在該 repo 提交並 push 後，再更新主 repo 的 submodule 指標與 `docs/sources.lock.json`；舊版本目錄不修改。上游都是 git submodule，版本鎖定在 `docs/sources.lock.json`；`moveit2` 只是本機除錯用，沒有納入版本控制。
 - 指令的原始輸出放在 `docs/evidence/`，保留失敗紀錄，不要覆蓋成成功。
 - 改了模型、launch、world 或校正，要重跑受影響的檢查。
 - 修改 C/C++ 時，套用 `C:/Users/39165/.codex/skills` 的 Trail of Bits 技能，並跑 sanitizer。
@@ -68,8 +68,8 @@ python3 scripts/test_cm530_mock.py        # CM-530 整合測試，不需硬體
 | 從 Git Bash 呼叫 `wsl.exe bash -lc '...$VAR...'` | 變數會先被展開，指令會靜默出錯；寫成腳本再執行 |
 | 已有模擬在執行 | 先用 `pgrep -af 'gz sim'` 確認，不要重複啟動 |
 | Gazebo 關不掉 | 已知問題，launch 結束後可能要對殘留的 `gz sim` 送 SIGTERM |
-| `tests/test_bridge.c` 有 11 項失敗 | 上游測試仍預期 HOME=512，實際韌體是 90／590 |
-| `CM530_ROS_BRIDGE` 規格書寫 HOME 是 512 | 規格書過時，以 `arm_config.h` 和板上 `GET_HOME` 為準 |
+| 第 17 版 `tests/test_bridge.c` 有 11 項失敗 | 第 17 版的測試仍預期 HOME=512；第 18 版的測試已對齊 256／512／512／512，全部通過 |
+| CM-530 韌體版本 | 目前是第 18 版（協定 6、1 Mbps、AX 帶 Moving Speed）。驅動只接受 `VERSION,6`；板子還是第 17 版時會連線失敗，要先燒錄第 18 版。HOME 以 `arm_config.h` 和板上 `GET_HOME` 為準 |
 | CAD 的 q=0 | 不是手臂伸直；伸直對應 q=(0, −35, −55, 0)° |
 
 ## 專案慣例

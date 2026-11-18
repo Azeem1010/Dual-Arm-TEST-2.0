@@ -1,0 +1,79 @@
+﻿arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/main.o APP/src/main.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/bridge.o APP/src/bridge.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/ax12.o APP/src/ax12.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/arm_led.o APP/src/arm_led.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/stm32f10x_it.o APP/src/stm32f10x_it.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/dxl_hal.o APP/src/dxl_hal.c
+make : APP/src/dxl_hal.c: In function 'dxl_hal_open':
+At line:1 char:421
++ ...  dual arm'; make -B TCHAIN_PREFIX=arm-none-eabi- "COMPILE_OPTS=-mcpu= ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (APP/src/dxl_hal...'dxl_hal_open'::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+APP/src/dxl_hal.c:13:9: warning: implicit declaration of function 'USART1_Configuration' [-Wimplicit-function-declarati
+on]
+   13 |         USART1_Configuration(baudrate);
+      |         ^~~~~~~~~~~~~~~~~~~~
+APP/src/dxl_hal.c: In function 'dxl_hal_close':
+APP/src/dxl_hal.c:22:9: warning: implicit declaration of function 'DisableUSART1' [-Wimplicit-function-declaration]
+   22 |         DisableUSART1();
+      |         ^~~~~~~~~~~~~
+APP/src/dxl_hal.c: In function 'dxl_hal_clear':
+APP/src/dxl_hal.c:29:9: warning: implicit declaration of function 'ClearBuffer256' [-Wimplicit-function-declaration]
+   29 |         ClearBuffer256();
+      |         ^~~~~~~~~~~~~~
+APP/src/dxl_hal.c: In function 'dxl_hal_tx':
+APP/src/dxl_hal.c:41:17: warning: implicit declaration of function 'TxDByte_DXL' [-Wimplicit-function-declaration]
+   41 |                 TxDByte_DXL(pPacket[i]);
+      |                 ^~~~~~~~~~~
+APP/src/dxl_hal.c: In function 'dxl_hal_rx':
+APP/src/dxl_hal.c:56:21: warning: implicit declaration of function 'CheckNewArrive' [-Wimplicit-function-declaration]
+   56 |                 if (CheckNewArrive())
+      |                     ^~~~~~~~~~~~~~
+APP/src/dxl_hal.c:57:39: warning: implicit declaration of function 'RxDByte_DXL' [-Wimplicit-function-declaration]
+   57 |                         pPacket[i] =  RxDByte_DXL();
+      |                                       ^~~~~~~~~~~
+APP/src/dxl_hal.c: In function 'dxl_hal_set_timeout':
+APP/src/dxl_hal.c:71:5: warning: implicit declaration of function 'StartDiscount' [-Wimplicit-function-declaration]
+   71 |     StartDiscount(DXL_RX_TIMEOUT_MS);
+      |     ^~~~~~~~~~~~~
+APP/src/dxl_hal.c: In function 'dxl_hal_timeout':
+APP/src/dxl_hal.c:79:16: warning: implicit declaration of function 'CheckTimeOut' [-Wimplicit-function-declaration]
+   79 |         return CheckTimeOut();
+      |                ^~~~~~~~~~~~
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o APP/src/dynamixel.o APP/src/dynamixel.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_adc.o stm32f10x_lib/src/stm32f10x_adc.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_bkp.o stm32f10x_lib/src/stm32f10x_bkp.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_exti.o stm32f10x_lib/src/stm32f10x_exti.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_flash.o stm32f10x_lib/src/stm32f10x_flash.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_gpio.o stm32f10x_lib/src/stm32f10x_gpio.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_lib.o stm32f10x_lib/src/stm32f10x_lib.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_nvic.o stm32f10x_lib/src/stm32f10x_nvic.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_pwr.o stm32f10x_lib/src/stm32f10x_pwr.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_rcc.o stm32f10x_lib/src/stm32f10x_rcc.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_systick.o stm32f10x_lib/src/stm32f10x_systick.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_tim.o stm32f10x_lib/src/stm32f10x_tim.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_tim1.o stm32f10x_lib/src/stm32f10x_tim1.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_usart.o stm32f10x_lib/src/stm32f10x_usart.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -c   -o stm32f10x_lib/src/cortexm3_macro.o stm32f10x_lib/src/cortexm3_macro.s
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_can.o stm32f10x_lib/src/stm32f10x_can.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_dma.o stm32f10x_lib/src/stm32f10x_dma.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_i2c.o stm32f10x_lib/src/stm32f10x_i2c.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_iwdg.o stm32f10x_lib/src/stm32f10x_iwdg.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_rtc.o stm32f10x_lib/src/stm32f10x_rtc.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_spi.o stm32f10x_lib/src/stm32f10x_spi.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_wwdg.o stm32f10x_lib/src/stm32f10x_wwdg.c
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Wall -g -Os -fno-common -fno-strict-aliasing -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc     -c -o stm32f10x_lib/src/stm32f10x_vector.o stm32f10x_lib/src/stm32f10x_vector.c
+stm32f10x_lib/src/stm32f10x_vector.c:59:3: warning: taking address of expression of type 'void'
+   59 |   &_estack,            // The initial stack pointer
+      |   ^
+stm32f10x_lib/src/stm32f10x_vector.c:132:3: warning: initialization of 'void (*)(void)' from 'short unsigned int' makes
+ pointer from integer without a cast [-Wint-conversion]
+  132 |   (unsigned short)0xF108F85F //this is a workaround for boot in RAM mode.
+      |   ^
+stm32f10x_lib/src/stm32f10x_vector.c:132:3: note: (near initialization for 'g_pfnVectors[76]')
+arm-none-eabi-ar cr stm32f10x_lib/libstm32.a stm32f10x_lib/src/stm32f10x_adc.o stm32f10x_lib/src/stm32f10x_bkp.o stm32f10x_lib/src/stm32f10x_exti.o stm32f10x_lib/src/stm32f10x_flash.o stm32f10x_lib/src/stm32f10x_gpio.o stm32f10x_lib/src/stm32f10x_lib.o stm32f10x_lib/src/stm32f10x_nvic.o stm32f10x_lib/src/stm32f10x_pwr.o stm32f10x_lib/src/stm32f10x_rcc.o stm32f10x_lib/src/stm32f10x_systick.o stm32f10x_lib/src/stm32f10x_tim.o stm32f10x_lib/src/stm32f10x_tim1.o stm32f10x_lib/src/stm32f10x_usart.o stm32f10x_lib/src/cortexm3_macro.o stm32f10x_lib/src/stm32f10x_can.o stm32f10x_lib/src/stm32f10x_dma.o stm32f10x_lib/src/stm32f10x_i2c.o stm32f10x_lib/src/stm32f10x_iwdg.o stm32f10x_lib/src/stm32f10x_rtc.o stm32f10x_lib/src/stm32f10x_spi.o stm32f10x_lib/src/stm32f10x_wwdg.o stm32f10x_lib/src/stm32f10x_vector.o
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -nostartfiles -Wl,--gc-sections,-Map=CM530.elf.map,-cref,-u,Reset_Handler,-e,Reset_Handler -I. -Istm32f10x_lib/inc -IHW/inc -IAPP/inc  -Lstm32f10x_lib -T stm32.ld APP/src/main.o APP/src/bridge.o APP/src/ax12.o APP/src/arm_led.o APP/src/stm32f10x_it.o APP/src/dxl_hal.o APP/src/dynamixel.o  stm32f10x_lib/libstm32.a --output CM530.elf
+arm-none-eabi-objcopy -O ihex CM530.elf CM530.hex
+arm-none-eabi-objcopy -O binary CM530.elf CM530.bin

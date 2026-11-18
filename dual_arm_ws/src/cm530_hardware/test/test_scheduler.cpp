@@ -2,10 +2,12 @@
 
 #include <chrono>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <optional>
 #include <thread>
 
+#include "cm530_hardware/calibration.hpp"
 #include "cm530_hardware/scheduler.hpp"
 #include "loop_transport.hpp"
 
@@ -17,6 +19,8 @@ using cm530_hardware::Link;
 using cm530_hardware::RawPose;
 using cm530_hardware::Scheduler;
 using cm530_hardware::SchedulerOptions;
+using cm530_hardware::SpeedOptions;
+using cm530_hardware::moving_speed;
 using cm530_test::FirmwareSim;
 using cm530_test::LoopTransport;
 using cm530_test::MotorFault;
@@ -204,4 +208,42 @@ TEST_F(SchedulerTest, RefusedTargetIsNeverReportedAsAcknowledged)
   ASSERT_TRUE(eventually([&] {return scheduler->faulted();}));
   scheduler->stop();
   EXPECT_TRUE(sample(*scheduler, Arm::kArm2)->acked_target == kCenter);
+}
+
+TEST(MovingSpeed, FollowsCommandedVelocityWithLead)
+{
+  const SpeedOptions options;
+  // 0.5 rad/s is about 97.7 counts/s; with gain 1.2 that is ceil(117.3 / 2.27) = 52.
+  EXPECT_EQ(moving_speed(0.5 / cm530_hardware::kRadiansPerCount, 0, options), 52);
+  // Direction does not matter.
+  EXPECT_EQ(moving_speed(-0.5 / cm530_hardware::kRadiansPerCount, 0, options), 52);
+}
+
+TEST(MovingSpeed, ClosesARemainingErrorAndNeverSendsZero)
+{
+  SpeedOptions options;
+  // At rest the floor still lets the last counts arrive; 0 is never produced.
+  EXPECT_EQ(moving_speed(0.0, 0, options), options.min_speed);
+  // 50 counts behind in 0.25 s is 200 counts/s, ceil(200 / 2.27) = 89.
+  EXPECT_EQ(moving_speed(0.0, -50, options), 89);
+  EXPECT_EQ(moving_speed(1e9, 0, options), options.max_speed);
+  EXPECT_EQ(moving_speed(std::numeric_limits<double>::quiet_NaN(), 0, options), options.min_speed);
+  EXPECT_EQ(moving_speed(std::numeric_limits<double>::infinity(), 0, options), options.min_speed);
+  options.min_speed = 1;
+  EXPECT_EQ(moving_speed(0.0, 0, options), 1);
+}
+
+TEST_F(SchedulerTest, EveryAxCarriesTheComputedMovingSpeed)
+{
+  auto scheduler = make(true);
+  scheduler->start();
+  const RawPose target{514, 512, 512, 512};
+  // Joint 1 commanded at 200 counts/s: ceil(240 / 2.27) = 106. Joint 2 at rest: floor 20.
+  const cm530_hardware::JointVelocity velocity{200.0, 0.0, 0.0, 0.0};
+  ASSERT_TRUE(eventually([&] {return scheduler->submit(Arm::kArm1, target, velocity);}));
+  ASSERT_TRUE(eventually([&] {return sim.motor(17).goal == 514;}));
+  scheduler->stop();
+  EXPECT_EQ(sim.motor(17).speed, 106);
+  EXPECT_EQ(sim.motor(3).speed, 20);
+  EXPECT_FALSE(scheduler->faulted());
 }

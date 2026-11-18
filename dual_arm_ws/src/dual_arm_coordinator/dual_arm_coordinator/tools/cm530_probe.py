@@ -16,7 +16,7 @@ import time
 
 ALLOWED_COMMANDS = ('VERSION', 'PING', 'GET_HOME,arm1', 'GET_HOME,arm2', 'READ,arm1', 'READ,arm2')
 _POSE = r',(\d{1,4}),(\d{1,4}),(\d{1,4}),(\d{1,4})'
-_REPLIES = {'VERSION': r'VERSION,5\Z', 'PING': r'PONG\Z', 'GET_HOME,arm1': rf'HOME,arm1{_POSE}\Z',
+_REPLIES = {'VERSION': r'VERSION,6\Z', 'PING': r'PONG\Z', 'GET_HOME,arm1': rf'HOME,arm1{_POSE}\Z',
             'GET_HOME,arm2': rf'HOME,arm2{_POSE}\Z', 'READ,arm1': rf'POS,arm1{_POSE}\Z', 'READ,arm2': rf'POS,arm2{_POSE}\Z'}
 _FIRMWARE_LINE_BYTES = 96
 _STARTUP_LISTEN_S = 0.2
@@ -27,7 +27,7 @@ class ProbeError(RuntimeError):
 
 
 class SerialPort:
-    """Exclusive raw access to a serial device at the board's fixed 57600 8N1."""
+    """Exclusive raw access to a serial device at firmware v18's fixed 1 Mbps 8N1."""
 
     def __init__(self, path):
         self._fd = os.open(path, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
@@ -38,7 +38,7 @@ class SerialPort:
             attributes[1] = 0
             attributes[2] = termios.CS8 | termios.CREAD | termios.CLOCAL
             attributes[3] = 0
-            attributes[4] = attributes[5] = termios.B57600
+            attributes[4] = attributes[5] = termios.B1000000
             termios.tcsetattr(self._fd, termios.TCSANOW, attributes)
         except Exception:
             os.close(self._fd)
@@ -96,7 +96,7 @@ class Probe:
             line = self._read_line(deadline)
             if line is None:
                 return
-            if line != 'READY,5':
+            if line != 'READY,6':
                 raise ProbeError(f'Unexpected startup line: {line}')
 
     def send(self, command):

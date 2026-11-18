@@ -46,6 +46,7 @@ private:
   std::chrono::milliseconds command_timeout_{500};
   std::chrono::milliseconds startup_listen_{200};
   std::chrono::milliseconds feedback_stale_{1000};
+  SpeedOptions speed_options_{};
 
   std::optional<Calibration> calibration_;
   std::unique_ptr<Link> link_;
@@ -59,6 +60,9 @@ private:
   std::array<std::string, kJointCount> raw_target_state_;
   std::array<std::string, kJointCount> position_command_;
   std::array<double, kJointCount> last_rad_{};
+  // Previous position command, for the commanded velocity behind each AX speed.
+  std::array<double, kJointCount> last_command_{};
+  bool have_last_command_{false};
   std::array<std::chrono::steady_clock::time_point, kArmCount> last_stamp_{};
   bool fault_logged_{false};
 };

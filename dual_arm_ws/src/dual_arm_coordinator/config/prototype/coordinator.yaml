@@ -27,9 +27,13 @@ speeds:              # slower than simulation
   # 2026-11-17 (user decision): transport 0.3 -> 0.6 (0.15 -> 0.3 rad/s with the URDF 0.5 rad/s).
   # Contact moves unchanged; acceleration_scale also shapes the contact trajectories, so it stays 0.3.
   # Watch the driver log for "exceeds max_step_raw" (20 counts per scheduler cycle).
-  transport_scale: 0.6
+  # 2026-11-18 with firmware v18 (each AX carries a Moving Speed, so steps no longer run at
+  # full speed and stop): transport 0.6 -> 1.0 (0.3 -> 0.5 rad/s, the URDF limit) and
+  # acceleration 0.3 -> 0.6 (0.3 -> 0.6 rad/s2). Not yet run on the arms; if contacts misbehave,
+  # put acceleration_scale back to 0.3 first. Contact speed unchanged.
+  transport_scale: 1.0
   contact_scale: 0.2
-  acceleration_scale: 0.3
+  acceleration_scale: 0.6
 # Field run 2026-11-13: the cup stopped about 2 mm above the cap and could not pick it, so every
 # height is 2 mm lower than simulation (0.014 / 0.0243 / 0.0253 / 0.054). Lowering the surface
 # with the contact keeps the "cap top <= contact" check; the cap height is unchanged.

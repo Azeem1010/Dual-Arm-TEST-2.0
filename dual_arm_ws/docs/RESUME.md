@@ -11,6 +11,8 @@
 
 ## 最新狀態（優先於以下全部內容）
 
+- 2026-11-18 晚（開發電腦，無硬體）：手臂卡頓與前後擺動的推定原因是第 17 版韌體從不寫 Moving Speed，每一小步可能用全速走完再停。新增韌體第 18 版（`third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/`，第 17 版不動）：位置和速度一起寫、AX 可帶四個速度（1～1023，0 拒絕）、HOME／HOLD 用預設速度 100、主機連線 1 Mbps、協定 6、HOME 改成板上實際值 256,512,512,512。驅動只接受協定 6，每筆 AX 依指令速度（×1.2）或剩餘誤差（0.25 秒追上）算速度，限制在 20～300。原型速度提高：搬運 0.3→0.5 rad/s、加速度 0.3→0.6 rad/s²。韌體建置與主機測試、驅動測試（含 ASan/UBSan）、coordinator 508、Mock Serial 端對端都 PASS。**還沒做：燒錄第 18 版（要現場人員決定）、Orin 上設 FTDI latency timer 1 ms、實機確認卡頓與擺動是否改善**。板子仍是第 17 版時，新驅動會連線失敗。見 `docs/evidence/v18_speed_20261118/`。
+
 - 2026-11-18 下午（Orin 現場，`60b91ca`、`24e4c8f`）：arm1 持物到 B 上方時 j2 下垂 5.6 count 而故障，新增 `b_teach.above_arrival_tolerance_raw: 6`；arm2 到 C7 上方差 5.3 count，新增 `c_slot_teach.above_arrival_tolerance_raw: 6`（接觸姿勢仍 4）。下降補正的路徑在模型中會碰撞時跳過、保留已到高度，不再故障（使用者決定）。arm2 的 B 與 C1～C8 重新示教；C8 新值 j2 830 在模型中 link_2 撞底座（816 起），改回 11-11 值。ESP32 在 agent 啟動 3 秒後自動用 RTS 重開（`esp32_reset_delay_s`），agent 部分實機 PASS，從介面完整啟動未確認。介面名稱「實機 Prototype」改為「實機運作模式」，舊設定仍可讀。12:55 一輪 9 次取件成功 8 次；A 區一顆瓶蓋（x −125、y 0 mm）連續 3 次吸不起，懷疑瓶蓋或座位，未確認。arm1 匯流排偶發 DXL_CORRUPT/TIMEOUT，懷疑線材，未查。
 - 2026-11-18 晚（開發電腦）：`prototype-field-20261118b` 快轉合入 `main` 並推送；WSL 上 coordinator 508、HMI 322 測試 PASS；兩份 README、HARDWARE_TEST_GUIDE、ORIN_DEPLOYMENT、UI_PLAN、ROS_INTERFACES、TEST_REPORT、交接 prompt 已對照程式更新。下一步：從介面完整啟動確認 ESP32 自動重開、查 arm1 線材、用 TIMING 分段表找最慢的步驟，穩定後再試 overlap。
 

@@ -12,9 +12,6 @@ namespace cm530_hardware
 namespace
 {
 
-// AX-12A: 300 degrees over 1023 counts, identical to dual_arm_coordinator/home_pose.py.
-constexpr double kRadiansPerCount = (300.0 * std::numbers::pi / 180.0) / 1023.0;
-
 template<typename T>
 T require(const YAML::Node & parent, const std::string & key, const std::string & context)
 {

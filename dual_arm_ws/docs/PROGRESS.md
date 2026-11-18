@@ -2,7 +2,15 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: prototype field fixes on the Orin, afternoon (2026-11-18)
+## Latest result: firmware v18 with Moving Speed, 1 Mbps, faster prototype (2026-11-18, evening)
+
+- Cause addressed: v17 never wrote AX-12A Moving Speed, so each small AX step could run at full speed and then stop, which matches the stutter and the fore-aft sway on the arms (user report and two videos; the videos could not quantify it).
+- New firmware `third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/` (v17 untouched): goal and Moving Speed in one SYNC_WRITE; `AX` takes four optional speeds 1..1023 (0 refused), default 100 for a position-only AX, HOME and HOLD; host link 1 Mbps; protocol 6; HOME = the board's 2026-11-13 `GET_HOME` (256,512,512,512 both arms). User decision: the firmware repo may get new version directories (AGENTS.md exception).
+- Driver: 1 Mbps, protocol 6 only; every AX carries per-joint speeds from the commanded velocity (gain 1.2) or the remaining error (closed in 0.25 s), clamped 20..300. `cm530_probe` updated. ORIN_DEPLOYMENT has the flashing note and a udev rule for FTDI latency timer 1 ms.
+- Prototype speeds: transport_scale 1.0 (0.5 rad/s, was 0.3) and acceleration_scale 0.6 (0.6 rad/s2, was 0.3); URDF and simulation unchanged. Correction to the discussion before this change: the prototype moved at 0.3 rad/s and 0.3 rad/s2, not 0.5 and 1.0.
+- PASS without hardware: firmware build and host tests (incl. ASan/UBSan), driver gtests (45, and under ASan/UBSan), coordinator 508, Mock Serial end to end with the v18 parser. Not done: flashing v18, the 1 Mbps link on the board, latency timer, and the effect on stutter, sway and cycle time on the real arms (all NOT_RUN). Evidence: evidence/v18_speed_20261118/.
+
+## Earlier result: prototype field fixes on the Orin, afternoon (2026-11-18)
 
 - B above arrival: arm 1 holding a cap reached the taught B above pose with j2 5.6 counts low (load sag) and faulted. New optional `b_teach.above_arrival_tolerance_raw` (user: 6); B contact and C keep 4.
 - Descent correction: when the re-aimed contact line would collide in the model (far zone A cap, arm1 link_2/base), it is skipped and the reached height kept instead of faulting (user decision). Other faults still stop.

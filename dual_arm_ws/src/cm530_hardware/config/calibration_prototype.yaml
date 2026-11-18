@@ -14,6 +14,8 @@
 #                        no longer arm_config.h 90/567/712/825, 590/567/712/825)
 #   max_step_raw         small on purpose: Moving Speed may be 0 (full speed)
 #                        after power-up and was not checked
+#                        (firmware v18, 2026-11-18: every AX now carries a Moving
+#                        Speed, so this is only the safety latch; left at 20)
 #
 # The status and authorization flags below only satisfy the driver's gate; they
 # are not a calibration result.

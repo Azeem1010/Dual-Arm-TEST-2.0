@@ -119,6 +119,27 @@ ls -l /dev/v4l/by-path/
 
 先前的紀錄中，控制板是 `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0`，請以實際結果為準。兩顆手臂相機同型號且沒有序號，`/dev/v4l/by-id/` 無法區分，所以改用 `/dev/v4l/by-path/`。`src/vision_pkg/config/cameras.yaml` 已填入 2026-11-11 實測的三條 by-path（上游 64f28a0：環境 USB 埠 4.3、手臂1 4.4.3、手臂2 4.4.1）。by-path 綁定實體 USB 插孔，線不可互換；換插孔要重查並修改（用操作介面啟動時也可以填 `~/.ros/dual_arm_hmi/profiles.yaml` 的 `hardware.*_cam_device`）。三顆接在同一個 USB 2.0 hub 時頻寬不足（兩顆手臂相機只支援未壓縮 YUYV）。2026-11-12 起改為：任務判斷只用環境相機（`env_scene`），兩顆手臂相機只做監控，由 `arm_camera_switch` 跟著動作中的手臂輪流開，同一時間最多一顆串流；實機視覺用 `ros2 launch dual_arm_bringup vision_hardware.launch.py` 啟動（操作介面的實機模式也改用它）。env_scene 的框線影像預設發布到 `/vision/env/debug_image` 給操作介面；要在 Orin 桌面另開 OpenCV 視窗加 `show_debug:=true`。現場驗證步驟見 HARDWARE_TEST_GUIDE 的 V1。實機用 ROS domain 0，模擬用 43，終端機要 `unset ROS_DOMAIN_ID`。手眼相機 1 的 `rotate: 180` 來自 2026-11-06 的實測，要重新確認。
 
+### 控制板韌體第 18 版與 USB latency（2026-11-18）
+
+驅動、`cm530_probe` 和第 18 版的 `manual_position_terminal.py` 都是 **1 Mbps、協定 6**。板子還是第 17 版（57600、協定 5）時連不上，要先燒錄 `third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/CM530.hex`（Flash 起點 0x08003000，用既有 bootloader 流程）。燒錄要現場人員決定。第 17 版保留在原目錄，可以燒回；燒回後要用 git 取回第 17 版對應的驅動。`docs/evidence/hardware/20261111_H1/pose_guide.py` 是 57600、協定 5 的舊工具，只能用在第 17 版。
+
+FT232R 預設 latency timer 是 16 ms，CM-530 的回覆很短，幾乎每次都要等滿，一個控制週期（兩臂各 AX＋READ）最多多出約 64 ms。ROBOTIS 建議高鮑率時設成 1 ms。在 Orin 上加一條 udev 規則（會套用到所有 FTDI 轉接器）：
+
+```bash
+echo 'ACTION=="add", SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"' | sudo tee /etc/udev/rules.d/99-ftdi-latency.rules
+sudo udevadm control --reload-rules
+```
+
+重新插拔控制板後確認（`ttyUSB0` 換成 by-id 指向的裝置）：
+
+```bash
+cat /sys/bus/usb-serial/devices/ttyUSB0/latency_timer
+```
+
+應該是 `1`。
+
+燒錄第 18 版後先跑 H0（`cm530_probe`）。如果 1 Mbps 偶爾出現通訊錯誤，退回 115200 要同時改韌體 `main.c` 的 `Baudrate_PC`、驅動 `posix_serial.cpp` 和 `cm530_probe.py` 的鮑率。
+
 ## 4. H0、H1：只讀與手動確認
 
 ### H0 唯讀連線
@@ -129,7 +150,7 @@ ls -l /dev/v4l/by-path/
 ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
 ```
 
-確認 `home` 是 arm1 `[90,567,712,825]`、arm2 `[590,567,712,825]`。任何錯誤都會立刻停止，不要反覆重跑，先查原因。
+確認 `home` 兩臂都是 `[256,512,512,512]`（第 18 版的 `arm_config.h`；第 17 版原始碼是 arm1 `[90,567,712,825]`、arm2 `[590,567,712,825]`，但板上 2026-11-13 已經是 256／512／512／512）。任何錯誤都會立刻停止，不要反覆重跑，先查原因。
 
 ### H1 手動確認方向
 

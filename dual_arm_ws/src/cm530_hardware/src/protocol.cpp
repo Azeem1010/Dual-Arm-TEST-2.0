@@ -80,6 +80,12 @@ std::string format_command(const Command & command)
     case CommandKind::kHold:
       return std::format("HOLD,{}\n", arm);
     case CommandKind::kAx:
+      if (command.speed) {
+        const RawSpeed & speed = *command.speed;
+        return std::format(
+          "AX,{},{},{},{},{},{},{},{},{}\n", arm, command.pose[0], command.pose[1], command.pose[2],
+          command.pose[3], speed[0], speed[1], speed[2], speed[3]);
+      }
       return std::format(
         "AX,{},{},{},{},{}\n", arm, command.pose[0], command.pose[1], command.pose[2],
         command.pose[3]);
@@ -102,7 +108,7 @@ Reply classify_reply(const Command & command, std::string_view line)
     case CommandKind::kPing:
       return match_exact(line, "PONG");
     case CommandKind::kVersion:
-      return match_exact(line, "VERSION,5");
+      return match_exact(line, "VERSION,6");
     case CommandKind::kGetHome:
       return match_pose(line, "HOME", command.arm);
     case CommandKind::kRead:

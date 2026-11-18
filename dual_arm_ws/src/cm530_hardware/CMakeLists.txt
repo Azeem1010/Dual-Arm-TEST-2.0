@@ -42,8 +42,8 @@ pluginlib_export_plugin_description_file(hardware_interface cm530_hardware_plugi
 install(TARGETS cm530_hardware LIBRARY DESTINATION lib)
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
-# The mock compiles the unmodified v17 firmware, so tests exercise the real parser.
-set(CM530_FIRMWARE "${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/CM530_ROS_BRIDGE/17 ROS to CM530 ver. dual arm")
+# The mock compiles the unmodified v18 firmware, so tests exercise the real parser.
+set(CM530_FIRMWARE "${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm")
 if(EXISTS "${CM530_FIRMWARE}/APP/src/bridge.c")
   set(CM530_FIRMWARE_SOURCES
     "${CM530_FIRMWARE}/APP/src/bridge.c"

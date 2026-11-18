@@ -1,6 +1,6 @@
 #pragma once
 
-// Runs the unmodified v17 bridge.c, ax12.c and dynamixel.c against a simulated
+// Runs the unmodified v18 bridge.c, ax12.c and dynamixel.c against a simulated
 // AX-12A bus. Only the physical HAL is simulated. The firmware uses globals, so
 // there is exactly one instance per process.
 
@@ -16,6 +16,7 @@ struct Motor
 {
   double present{512.0};
   int goal{512};
+  int speed{0};  // Moving Speed register; 0 is the uncontrolled maximum
   bool torque{false};
   MotorFault fault{MotorFault::kNone};
 };
@@ -33,7 +34,8 @@ public:
   Motor motor(int id) const;
   void set_present(int id, int raw);
   void set_fault(int id, MotorFault fault);
-  // Counts per second toward the goal; zero moves instantly.
+  // Top speed in counts per second; zero moves instantly. A nonzero Moving Speed
+  // limits a motor further, as on an AX-12A.
   void set_motor_rate(double counts_per_second);
   int goal_writes() const;
   int torque_writes() const;

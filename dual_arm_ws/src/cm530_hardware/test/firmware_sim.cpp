@@ -60,7 +60,9 @@ void advance_motors()
       continue;
     }
     const double error = motor.goal - motor.present;
-    const double step = std::min(std::abs(error), s.rate * dt);
+    // AX-12A Moving Speed: about 2.27 counts per second per unit.
+    const double rate = motor.speed > 0 ? std::min(s.rate, motor.speed * 0.111 * 6.0 * 1023.0 / 300.0) : s.rate;
+    const double step = std::min(std::abs(error), rate * dt);
     motor.present += std::copysign(step, error);
   }
 }
@@ -77,8 +79,9 @@ void apply_sync_write(const unsigned char * packet)
     if (found == s.motors.end()) {
       std::abort();
     }
-    if (address == 30 && width == 2) {
+    if (address == 30 && width == 4) {
       found->second.goal = entry[1] + 256 * entry[2];
+      found->second.speed = entry[3] + 256 * entry[4];
     } else if (address == 24 && width == 1) {
       found->second.torque = entry[1] != 0;
     } else {

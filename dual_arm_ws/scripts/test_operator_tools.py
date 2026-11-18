@@ -77,8 +77,8 @@ class Harness:
                 time.sleep(0.05)
             code, report = self.run_tool('probe', [tool('dual_arm_coordinator', 'cm530_probe'), '--port', str(port)])
             self.check('probe_reads_the_board', code == 0 and report.get('status') == 'PASS', report.get('error'))
-            self.check('probe_reports_firmware_home', report.get('home', {}).get('arm1') == [90, 567, 712, 825] and
-                       report.get('home', {}).get('arm2') == [590, 567, 712, 825], report.get('home'))
+            self.check('probe_reports_firmware_home', report.get('home', {}).get('arm1') == [256, 512, 512, 512] and
+                       report.get('home', {}).get('arm2') == [256, 512, 512, 512], report.get('home'))
             sent = {item['tx'] for item in report.get('exchanges', [])}
             self.check('probe_sent_only_read_only_commands', sent == ALLOWED, sorted(sent))
         finally:

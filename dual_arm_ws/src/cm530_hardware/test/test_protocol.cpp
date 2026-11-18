@@ -5,6 +5,7 @@
 using cm530_hardware::Arm;
 using cm530_hardware::Command;
 using cm530_hardware::RawPose;
+using cm530_hardware::RawSpeed;
 using cm530_hardware::ReplyStatus;
 using cm530_hardware::classify_reply;
 using cm530_hardware::format_command;
@@ -22,6 +23,9 @@ TEST(Protocol, FormatsExactBytes)
   EXPECT_EQ(format_command(Command::read(Arm::kArm1)), "READ,arm1\n");
   EXPECT_EQ(format_command(Command::hold(Arm::kArm2)), "HOLD,arm2\n");
   EXPECT_EQ(format_command(Command::ax(Arm::kArm1, kPose)), "AX,arm1,90,567,712,825\n");
+  EXPECT_EQ(
+    format_command(Command::ax(Arm::kArm2, kPose, RawSpeed{1, 87, 300, 1023})),
+    "AX,arm2,90,567,712,825,1,87,300,1023\n");
   EXPECT_EQ(format_command(Command::torque_enable(Arm::kArm2, true)), "TORQUE,arm2,1\n");
   EXPECT_EQ(format_command(Command::torque_enable(Arm::kArm1, false)), "TORQUE,arm1,0\n");
 }
@@ -29,7 +33,7 @@ TEST(Protocol, FormatsExactBytes)
 TEST(Protocol, AcceptsExactReplies)
 {
   EXPECT_EQ(classify_reply(Command::ping(), "PONG").status, ReplyStatus::kOk);
-  EXPECT_EQ(classify_reply(Command::version(), "VERSION,5").status, ReplyStatus::kOk);
+  EXPECT_EQ(classify_reply(Command::version(), "VERSION,6").status, ReplyStatus::kOk);
   EXPECT_EQ(classify_reply(Command::ax(Arm::kArm1, kPose), "OK,AX,arm1").status, ReplyStatus::kOk);
   EXPECT_EQ(classify_reply(Command::hold(Arm::kArm2), "OK,HOLD,arm2").status, ReplyStatus::kOk);
   EXPECT_EQ(classify_reply(Command::torque_enable(Arm::kArm1, true), "OK,TORQUE,arm1,1").status, ReplyStatus::kOk);
@@ -48,6 +52,8 @@ TEST(Protocol, RejectsAnythingElse)
     EXPECT_EQ(classify_reply(ax, line).status, ReplyStatus::kMismatch) << line;
   }
   EXPECT_EQ(classify_reply(Command::version(), "VERSION,4").status, ReplyStatus::kMismatch);
+  // A v17 board (protocol 5) must be refused: it would ignore Moving Speed.
+  EXPECT_EQ(classify_reply(Command::version(), "VERSION,5").status, ReplyStatus::kMismatch);
   EXPECT_EQ(classify_reply(Command::torque_enable(Arm::kArm1, true), "OK,TORQUE,arm1,0").status, ReplyStatus::kMismatch);
   const auto read = Command::read(Arm::kArm1);
   for (const char * line : {
@@ -63,6 +69,6 @@ TEST(Protocol, SeparatesErrorsAndRestarts)
 {
   const auto read = Command::read(Arm::kArm1);
   EXPECT_EQ(classify_reply(read, "ERR,DXL_TIMEOUT,arm1,3").status, ReplyStatus::kDeviceError);
-  EXPECT_EQ(classify_reply(read, "READY,5").status, ReplyStatus::kRestarted);
+  EXPECT_EQ(classify_reply(read, "READY,6").status, ReplyStatus::kRestarted);
   EXPECT_EQ(classify_reply(read, "READY").status, ReplyStatus::kRestarted);
 }

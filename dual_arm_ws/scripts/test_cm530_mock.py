@@ -35,7 +35,7 @@ ARM2 = [name.replace('arm1_', 'arm2_') for name in ARM1]
 TARGET = [0.2, -0.15, 0.1, 0.25]
 # calibration_mock.yaml: zero_raw 512, direction 1 on every joint; same formula as Calibration::rad_to_raw.
 TARGET_RAW = [round(512 + value / (math.radians(300.0) / 1023.0)) for value in TARGET]
-report = {'status': 'NOT_RUN', 'scope': 'Mock serial with v17 firmware parser; no hardware', 'phases': {}}
+report = {'status': 'NOT_RUN', 'scope': 'Mock serial with v18 firmware parser; no hardware', 'phases': {}}
 
 
 class Launch:

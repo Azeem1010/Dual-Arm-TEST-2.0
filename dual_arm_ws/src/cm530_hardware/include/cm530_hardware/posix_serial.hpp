@@ -7,7 +7,7 @@
 namespace cm530_hardware
 {
 
-// 57600 8N1 raw port, held exclusively so only one process can own the CM-530.
+// 1 Mbps 8N1 raw port (firmware v18), held exclusively so only one process can own the CM-530.
 class PosixSerial final : public Transport
 {
 public:

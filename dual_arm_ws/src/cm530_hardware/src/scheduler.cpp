@@ -1,11 +1,24 @@
 #include "cm530_hardware/scheduler.hpp"
 
+#include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <format>
 #include <utility>
 
 namespace cm530_hardware
 {
+
+std::uint16_t moving_speed(double command_counts_per_s, int error_counts, const SpeedOptions & options) noexcept
+{
+  const double command = std::isfinite(command_counts_per_s) ? std::abs(command_counts_per_s) : 0.0;
+  const double wanted = std::max(
+    options.gain * command, std::abs(error_counts) / options.catch_up_s);
+  const double units = std::ceil(wanted / kCountsPerSecondPerSpeedUnit);
+  const double clamped = std::clamp(
+    units, static_cast<double>(options.min_speed), static_cast<double>(options.max_speed));
+  return static_cast<std::uint16_t>(clamped);
+}
 
 Scheduler::Scheduler(
   Link & link, SchedulerOptions options, const std::array<RawPose, kArmCount> & initial,
@@ -36,13 +49,14 @@ void Scheduler::stop()
   }
 }
 
-bool Scheduler::submit(Arm arm, const RawPose & target) noexcept
+bool Scheduler::submit(Arm arm, const RawPose & target, const JointVelocity & velocity) noexcept
 {
   const std::unique_lock lock(mutex_, std::try_to_lock);
   if (!lock.owns_lock()) {
     return false;
   }
   targets_[static_cast<std::size_t>(arm)] = target;
+  velocities_[static_cast<std::size_t>(arm)] = velocity;
   return true;
 }
 
@@ -76,9 +90,13 @@ bool Scheduler::cycle_arm(Arm arm)
   const auto index = static_cast<std::size_t>(arm);
   if (options_.enable_motion) {
     std::optional<RawPose> target;
+    JointVelocity velocity{};
+    RawPose present{};
     {
       const std::scoped_lock lock(mutex_);
       target = targets_[index];
+      velocity = velocities_[index];
+      present = samples_[index].raw;
     }
     if (target && *target != last_sent_[index]) {
       for (std::size_t joint = 0; joint < kJointsPerArm; ++joint) {
@@ -90,7 +108,12 @@ bool Scheduler::cycle_arm(Arm arm)
           return false;
         }
       }
-      const LinkResult sent = link_.transact(Command::ax(arm, *target));
+      RawSpeed speed{};
+      for (std::size_t joint = 0; joint < kJointsPerArm; ++joint) {
+        speed[joint] = moving_speed(
+          velocity[joint], int{(*target)[joint]} - int{present[joint]}, options_.speed);
+      }
+      const LinkResult sent = link_.transact(Command::ax(arm, *target, speed));
       if (!sent.ok()) {
         latch(std::format("AX {} failed: {}", arm_name(arm), sent.detail));
         return false;

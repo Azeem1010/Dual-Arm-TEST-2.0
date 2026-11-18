@@ -17,7 +17,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 URDF = (PACKAGE.parent / 'dual_arm_description' / 'urdf' / 'dual_arm_cad.urdf.xacro').read_text(encoding='utf-8')
 TEMPLATE = PACKAGE / 'config' / 'hardware' / 'calibration_worksheet.template.yaml'
 CONFIG = yaml.safe_load((PACKAGE / 'config' / 'sim' / 'coordinator.yaml').read_text(encoding='utf-8'))
-REPLIES = {'VERSION': 'VERSION,5', 'PING': 'PONG', 'GET_HOME,arm1': 'HOME,arm1,90,567,712,825',
+REPLIES = {'VERSION': 'VERSION,6', 'PING': 'PONG', 'GET_HOME,arm1': 'HOME,arm1,90,567,712,825',
            'GET_HOME,arm2': 'HOME,arm2,590,567,712,825', 'READ,arm1': 'POS,arm1,500,501,502,503', 'READ,arm2': 'POS,arm2,510,511,512,513'}
 
 
@@ -102,9 +102,11 @@ class CM530Probe(unittest.TestCase):
 
     def test_wrong_version_stops(self):
         self.assertEqual(self.run_with(FakePort({**REPLIES, 'VERSION': 'VERSION,4'}))['status'], 'FAIL')
+        # A v17 board (protocol 5) ignores Moving Speed, so it fails too.
+        self.assertEqual(self.run_with(FakePort({**REPLIES, 'VERSION': 'VERSION,5'}))['status'], 'FAIL')
 
     def test_boot_message_is_tolerated(self):
-        self.assertEqual(self.run_with(FakePort(boot=b'READY,5\r\n'))['status'], 'PASS')
+        self.assertEqual(self.run_with(FakePort(boot=b'READY,6\r\n'))['status'], 'PASS')
 
     def test_unexpected_startup_line_stops(self):
         report = self.run_with(FakePort(boot=b'OK,AX,arm1\r\n'))

@@ -1,4 +1,4 @@
-// Every test here talks to the real v17 parser and AX-12 driver code.
+// Every test here talks to the real v18 parser and AX-12 driver code.
 
 #include <gtest/gtest.h>
 
@@ -37,7 +37,7 @@ protected:
 
 TEST_F(LinkTest, BootsWithTorqueOffAndReady)
 {
-  EXPECT_EQ(boot_output, "READY,5\r\n");
+  EXPECT_EQ(boot_output, "READY,6\r\n");
   EXPECT_FALSE(sim.motor(17).torque);
 }
 
@@ -105,10 +105,10 @@ TEST_F(LinkTest, ReadsFirmwareHomePresets)
 {
   const auto arm1 = link->transact(Command::get_home(Arm::kArm1));
   ASSERT_TRUE(arm1.ok());
-  EXPECT_EQ(arm1.pose, (RawPose{90, 567, 712, 825}));
+  EXPECT_EQ(arm1.pose, (RawPose{256, 512, 512, 512}));
   const auto arm2 = link->transact(Command::get_home(Arm::kArm2));
   ASSERT_TRUE(arm2.ok());
-  EXPECT_EQ(arm2.pose, (RawPose{590, 567, 712, 825}));
+  EXPECT_EQ(arm2.pose, (RawPose{256, 512, 512, 512}));
   EXPECT_EQ(sim.goal_writes(), 0);
 }
 
@@ -177,7 +177,7 @@ TEST_F(LinkTest, WrongOrRestartRepliesLatch)
   EXPECT_FALSE(link->healthy());
 
   SetUp();
-  loop->override_next_reply("READY,5\r\n");
+  loop->override_next_reply("READY,6\r\n");
   EXPECT_EQ(link->transact(Command::read(Arm::kArm1)).status, LinkStatus::kRestarted);
   EXPECT_FALSE(link->healthy());
 

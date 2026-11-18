@@ -58,7 +58,9 @@ PosixSerial::PosixSerial(const std::string & path)
   settings.c_cflag |= CS8 | CLOCAL | CREAD;
   settings.c_cc[VMIN] = 0;
   settings.c_cc[VTIME] = 0;
-  if (::cfsetispeed(&settings, B57600) != 0 || ::cfsetospeed(&settings, B57600) != 0 ||
+  // Firmware v18 runs the PC link at 1 Mbps (exact divisor on both the STM32
+  // USART3 and the board's FT232R).
+  if (::cfsetispeed(&settings, B1000000) != 0 || ::cfsetospeed(&settings, B1000000) != 0 ||
     ::tcsetattr(fd_, TCSANOW, &settings) != 0)
   {
     fail("cannot configure");

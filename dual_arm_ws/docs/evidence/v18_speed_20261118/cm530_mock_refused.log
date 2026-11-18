@@ -1,0 +1,249 @@
+[INFO] [launch]: All log files can be found below /home/user/.ros/log/2026-11-18-20-56-47-717772-DESKTOP-HBTEAAO-1348
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [cm530_mock_serial-1]: process started with pid [1365]
+[cm530_mock_serial-1] CM-530 mock serial ready on /tmp/cm530_mock_serial -> /dev/pts/2
+[INFO] [robot_state_publisher-2]: process started with pid [1367]
+[INFO] [ros2_control_node-3]: process started with pid [1368]
+[INFO] [spawner-4]: process started with pid [1369]
+[INFO] [spawner-5]: process started with pid [1370]
+[INFO] [spawner-6]: process started with pid [1371]
+[robot_state_publisher-2] [INFO] [1795006612.508106299] [robot_state_publisher]: Robot initialized
+[ros2_control_node-3] [INFO] [1795006613.260012662] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[ros2_control_node-3] [INFO] [1795006613.745373730] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[ros2_control_node-3] [INFO] [1795006613.745634277] [controller_manager]: update rate is 100 Hz
+[ros2_control_node-3] [INFO] [1795006613.745649111] [controller_manager]: Overruns handling is : enabled
+[ros2_control_node-3] [INFO] [1795006613.745653267] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[ros2_control_node-3] [WARN] [1795006613.745782629] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[ros2_control_node-3] [INFO] [1795006613.756503398] [controller_manager]: Received robot description from topic.
+[ros2_control_node-3] [INFO] [1795006613.756867033] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[ros2_control_node-3] [INFO] [1795006613.914574662] [controller_manager]: Loading hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1795006613.996729636] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[ros2_control_node-3] [INFO] [1795006613.996879292] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[ros2_control_node-3] [INFO] [1795006614.006523108] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[ros2_control_node-3] [INFO] [1795006614.006715217] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[ros2_control_node-3] [INFO] [1795006614.006732022] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[ros2_control_node-3] [ERROR] [1795006614.015539808] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: calibration status is NOT_RUN, not PASS
+[ros2_control_node-3] [ERROR] [1795006614.015658754] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: hardware_use_allowed is false
+[ros2_control_node-3] [ERROR] [1795006614.015667986] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: moving_speed_verified is false
+[ros2_control_node-3] [ERROR] [1795006614.015673813] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: max_step_raw is not set
+[ros2_control_node-3] [ERROR] [1795006614.015679630] [controller_manager.hardware_component.system.DualArmSystem]: Motion refused: evidence_kind none cannot authorize this port
+[ros2_control_node-3] [ERROR] [1795006614.015702605] [resource_manager]: Failed to 'configure' hardware 'DualArmSystem'
+[ros2_control_node-3] terminate called after throwing an instance of 'std::runtime_error'
+[ros2_control_node-3]   what():  Failed to set the initial state of the component : DualArmSystem to inactive
+[ros2_control_node-3] Stack trace (most recent call last) in thread 1415:
+[ros2_control_node-3] #17   Object "", at 0xffffffffffffffff, in 
+[ros2_control_node-3] #16   Source "../sysdeps/unix/sysv/linux/x86_64/clone3.S", line 78, in clone3 [0x7428edd29e8b]
+[ros2_control_node-3] #15   Source "./nptl/pthread_create.c", line 447, in start_thread [0x7428edc9cb63]
+[ros2_control_node-3] #14   Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7428ee0ecdb3, in 
+[ros2_control_node-3] #13   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0x7428ee541d36, in rclcpp::executors::MultiThreadedExecutor::run(unsigned long)
+[ros2_control_node-3] #12   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0x7428ee5177f9, in rclcpp::Executor::execute_any_executable(rclcpp::AnyExecutable&)
+[ros2_control_node-3] #11   Object "/opt/ros/jazzy/lib/librclcpp.so", at 0x7428ee5170ca, in rclcpp::Executor::execute_subscription(std::shared_ptr<rclcpp::SubscriptionBase>)
+[ros2_control_node-3] #10   Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7428ee8af364, in 
+[ros2_control_node-3] #9    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7428ee812a9f, in controller_manager::ControllerManager::robot_description_callback(std_msgs::msg::String_<std::allocator<void> > const&)
+[ros2_control_node-3] #8    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7428ee81c40b, in controller_manager::ControllerManager::set_initial_hardware_components_state()
+[ros2_control_node-3] #7    Object "/opt/ros/jazzy/lib/libcontroller_manager.so", at 0x7428ee7d86d2, in 
+[ros2_control_node-3] #6    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7428ee0bb390, in __cxa_throw
+[ros2_control_node-3] #5    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7428ee0a5a54, in std::terminate()
+[ros2_control_node-3] #4    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7428ee0bb0d9, in 
+[ros2_control_node-3] #3    Object "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33", at 0x7428ee0a5ff4, in 
+[ros2_control_node-3] #2    Source "./stdlib/abort.c", line 79, in abort [0x7428edc288fe]
+[ros2_control_node-3] #1    Source "../sysdeps/posix/raise.c", line 26, in raise [0x7428edc4527d]
+[ros2_control_node-3] #0  | Source "./nptl/pthread_kill.c", line 89, in __pthread_kill_internal
+[ros2_control_node-3]     | Source "./nptl/pthread_kill.c", line 78, in __pthread_kill_implementation
+[ros2_control_node-3]       Source "./nptl/pthread_kill.c", line 44, in __pthread_kill [0x7428edc9ebec]
+[ros2_control_node-3] Aborted (Signal sent by tkill() 1368 1000)
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [spawner-6]: sending signal 'SIGINT' to process[spawner-6]
+[INFO] [spawner-5]: sending signal 'SIGINT' to process[spawner-5]
+[INFO] [spawner-4]: sending signal 'SIGINT' to process[spawner-4]
+[INFO] [ros2_control_node-3]: sending signal 'SIGINT' to process[ros2_control_node-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [cm530_mock_serial-1]: sending signal 'SIGINT' to process[cm530_mock_serial-1]
+[spawner-4] Traceback (most recent call last):
+[spawner-4]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-4]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-4]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-4]     return next(matches).load()
+[spawner-4]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[spawner-4]     module = import_module(match.group('module'))
+[spawner-4]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[spawner-4]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-4]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-4]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/__init__.py", line 15, in <module>
+[spawner-4]     from .controller_manager_services import (
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/controller_manager_services.py", line 39, in <module>
+[spawner-4]     from ros2param.api import call_set_parameters
+[INFO] [cm530_mock_serial-1]: process has finished cleanly [pid 1365]
+[spawner-6] Traceback (most recent call last):
+[spawner-6]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-6]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-6]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-6]     return next(matches).load()
+[spawner-6]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[spawner-6]     module = import_module(match.group('module'))
+[robot_state_publisher-2] [INFO] [1795006614.460823201] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2param/api/__init__.py", line 21, in <module>
+[spawner-4]     from rclpy.parameter_client import AsyncParameterClient
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/parameter_client.py", line 28, in <module>
+[spawner-4]     from rclpy.node import Node
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 80, in <module>
+[spawner-4]     from rclpy.time_source import TimeSource
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/time_source.py", line 25, in <module>
+[spawner-6]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[spawner-4]     import rosgraph_msgs.msg
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/__init__.py", line 9, in <module>
+[spawner-4]     from rosgraph_msgs.msg._type_hash import TypeHash  # noqa: F401
+[spawner-4]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-4]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/_type_hash.py", line 18, in <module>
+[spawner-4]     import numpy  # noqa: E402, I100
+[spawner-4]     ^^^^^^^^^^^^
+[spawner-4]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 157, in <module>
+[spawner-4]     from . import random
+[spawner-4]   File "/usr/lib/python3/dist-packages/numpy/random/__init__.py", line 180, in <module>
+[spawner-4]     from . import _pickle
+[spawner-4]   File "/usr/lib/python3/dist-packages/numpy/random/_pickle.py", line 1, in <module>
+[spawner-4]     from .mtrand import RandomState
+[spawner-4]   File "numpy/random/mtrand.pyx", line 1, in init numpy.random.mtrand
+[spawner-6]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-6]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-6]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/__init__.py", line 15, in <module>
+[spawner-6]     from .controller_manager_services import (
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/controller_manager_services.py", line 39, in <module>
+[spawner-6]     from ros2param.api import call_set_parameters
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2param/api/__init__.py", line 21, in <module>
+[spawner-6]     from rclpy.parameter_client import AsyncParameterClient
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/parameter_client.py", line 28, in <module>
+[spawner-6]     from rclpy.node import Node
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 80, in <module>
+[spawner-6]     from rclpy.time_source import TimeSource
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/time_source.py", line 25, in <module>
+[spawner-6]     import rosgraph_msgs.msg
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/__init__.py", line 9, in <module>
+[spawner-6]     from rosgraph_msgs.msg._type_hash import TypeHash  # noqa: F401
+[spawner-6]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-6]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/_type_hash.py", line 18, in <module>
+[spawner-6]     import numpy  # noqa: E402, I100
+[spawner-6]     ^^^^^^^^^^^^
+[spawner-6]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 157, in <module>
+[spawner-6]     from . import random
+[spawner-6]   File "/usr/lib/python3/dist-packages/numpy/random/__init__.py", line 180, in <module>
+[spawner-6]     from . import _pickle
+[spawner-6]   File "/usr/lib/python3/dist-packages/numpy/random/_pickle.py", line 1, in <module>
+[spawner-6]     from .mtrand import RandomState
+[spawner-6]   File "numpy/random/mtrand.pyx", line 1, in init numpy.random.mtrand
+[spawner-5] Traceback (most recent call last):
+[spawner-5]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 33, in <module>
+[spawner-5]     sys.exit(load_entry_point('controller-manager==4.48.1', 'console_scripts', 'spawner')())
+[spawner-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/opt/ros/jazzy/lib/controller_manager/spawner", line 25, in importlib_load_entry_point
+[spawner-5]     return next(matches).load()
+[spawner-5]            ^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[spawner-5]     module = import_module(match.group('module'))
+[spawner-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[spawner-5]     return _bootstrap._gcd_import(name[level:], package, level)
+[spawner-5]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[spawner-5]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/__init__.py", line 15, in <module>
+[spawner-5]     from .controller_manager_services import (
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/controller_manager/controller_manager_services.py", line 39, in <module>
+[spawner-5]     from ros2param.api import call_set_parameters
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2param/api/__init__.py", line 21, in <module>
+[spawner-5]     from rclpy.parameter_client import AsyncParameterClient
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/parameter_client.py", line 28, in <module>
+[spawner-5]     from rclpy.node import Node
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 80, in <module>
+[spawner-5]     from rclpy.time_source import TimeSource
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/time_source.py", line 25, in <module>
+[spawner-5]     import rosgraph_msgs.msg
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/__init__.py", line 9, in <module>
+[spawner-5]     from rosgraph_msgs.msg._type_hash import TypeHash  # noqa: F401
+[spawner-5]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[spawner-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rosgraph_msgs/msg/_type_hash.py", line 18, in <module>
+[spawner-5]     import numpy  # noqa: E402, I100
+[spawner-5]     ^^^^^^^^^^^^
+[spawner-5]   File "/usr/lib/python3/dist-packages/numpy/__init__.py", line 130, in <module>
+[spawner-5]     from numpy.__config__ import show as show_config
+[spawner-5]   File "/usr/lib/python3/dist-packages/numpy/__config__.py", line 4, in <module>
+[spawner-5]     from numpy.core._multiarray_umath import (
+[spawner-5]   File "/usr/lib/python3/dist-packages/numpy/core/__init__.py", line 104, in <module>
+[spawner-5]     from . import _internal
+[spawner-5]   File "/usr/lib/python3/dist-packages/numpy/core/_internal.py", line 15, in <module>
+[spawner-5]     import ctypes
+[spawner-5]   File "/usr/lib/python3.12/ctypes/__init__.py", line 8, in <module>
+[spawner-5]     from _ctypes import Union, Structure, Array
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1322, in _find_and_load_unlocked
+[spawner-5]   File "<frozen importlib._bootstrap>", line 1262, in _find_spec
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 1528, in find_spec
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 1502, in _get_spec
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 1601, in find_spec
+[spawner-5]   File "<frozen importlib._bootstrap_external>", line 147, in _path_stat
+[spawner-5] KeyboardInterrupt
+[ERROR] [spawner-5]: process has died [pid 1370, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner arm1_controller --controller-manager-timeout 60 --inactive --ros-args'].
+[spawner-6]   File "bit_generator.pyx", line 40, in init numpy.random.bit_generator
+[spawner-4]   File "bit_generator.pyx", line 40, in init numpy.random.bit_generator
+[spawner-6]   File "/usr/lib/python3.12/secrets.py", line 17, in <module>
+[spawner-6]     from hmac import compare_digest
+[spawner-6]   File "/usr/lib/python3.12/hmac.py", line 8, in <module>
+[spawner-4]   File "/usr/lib/python3.12/secrets.py", line 17, in <module>
+[spawner-4]     from hmac import compare_digest
+[spawner-4]   File "/usr/lib/python3.12/hmac.py", line 8, in <module>
+[spawner-4]     import _hashlib as _hashopenssl
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1322, in _find_and_load_unlocked
+[spawner-4]   File "<frozen importlib._bootstrap>", line 1262, in _find_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1528, in find_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1502, in _get_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 1601, in find_spec
+[spawner-4]   File "<frozen importlib._bootstrap_external>", line 147, in _path_stat
+[spawner-4] KeyboardInterrupt
+[spawner-6]     import _hashlib as _hashopenssl
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1322, in _find_and_load_unlocked
+[spawner-6]   File "<frozen importlib._bootstrap>", line 1262, in _find_spec
+[spawner-6]   File "<frozen importlib._bootstrap_external>", line 1528, in find_spec
+[spawner-6]   File "<frozen importlib._bootstrap_external>", line 1502, in _get_spec
+[spawner-6]   File "<frozen importlib._bootstrap_external>", line 1601, in find_spec
+[spawner-6]   File "<frozen importlib._bootstrap_external>", line 147, in _path_stat
+[spawner-6] KeyboardInterrupt
+[ERROR] [spawner-6]: process has died [pid 1371, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner arm2_controller --controller-manager-timeout 60 --inactive --ros-args'].
+[ERROR] [spawner-4]: process has died [pid 1369, exit code -2, cmd '/opt/ros/jazzy/lib/controller_manager/spawner joint_state_broadcaster --controller-manager-timeout 60 --ros-args'].
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 1367]
+[ERROR] [ros2_control_node-3]: process has died [pid 1368, exit code -6, cmd '/opt/ros/jazzy/lib/controller_manager/ros2_control_node --ros-args --params-file /mnt/e/dual_arm_system/dual_arm_ws/src/cm530_hardware/test/fixtures/controllers_mock.yaml --params-file /tmp/launch_params_jzfzatx3 -r ~/robot_description:=/robot_description'].

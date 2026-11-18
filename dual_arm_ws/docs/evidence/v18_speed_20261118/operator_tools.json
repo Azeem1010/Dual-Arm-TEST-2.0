@@ -1,0 +1,64 @@
+{
+  "status": "FAIL",
+  "scope": "Operator tools on mock serial and MoveIt mock; no hardware",
+  "checks": {
+    "probe_reads_the_board": {
+      "status": "PASS",
+      "detail": null
+    },
+    "probe_reports_firmware_home": {
+      "status": "PASS",
+      "detail": {
+        "arm1": [
+          256,
+          512,
+          512,
+          512
+        ],
+        "arm2": [
+          256,
+          512,
+          512,
+          512
+        ]
+      }
+    },
+    "probe_sent_only_read_only_commands": {
+      "status": "PASS",
+      "detail": [
+        "GET_HOME,arm1",
+        "GET_HOME,arm2",
+        "PING",
+        "READ,arm1",
+        "READ,arm2",
+        "VERSION"
+      ]
+    },
+    "probe_reports_a_missing_port": {
+      "status": "PASS",
+      "detail": "Cannot open /tmp/v18_tools/absent exclusively: [Errno 2] No such file or directory: '/tmp/v18_tools/absent'"
+    },
+    "shipped_worksheet_template_is_refused": {
+      "status": "PASS",
+      "detail": "acceptance.max_fit_ticks must be a measured finite number"
+    }
+  },
+  "outputs": {
+    "probe": {
+      "exit": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"exchanges\": [\n    {\n      \"tx\": \"VERSION\",\n      \"rx\": \"VERSION,6\"\n    },\n    {\n      \"tx\": \"PING\",\n      \"rx\": \"PONG\"\n    },\n    {\n      \"tx\": \"GET_HOME,arm1\",\n      \"rx\": \"HOME,arm1,256,512,512,512\"\n    },\n    {\n      \"tx\": \"READ,arm1\",\n      \"rx\": \"POS,arm1,512,512,512,512\"\n    },\n    {\n      \"tx\": \"GET_HOME,arm2\",\n      \"rx\": \"HOME,arm2,256,512,512,512\"\n    },\n    {\n      \"tx\": \"READ,arm2\",\n      \"rx\": \"POS,arm2,512,512,512,512\"\n    }\n  ],\n  \"home\": {\n    \"arm1\": [\n      256,\n      512,\n      512,\n      512\n    ],\n    \"arm2\": [\n      256,\n      512,\n      512,\n      512\n    ]\n  },\n  \"position\": {\n    \"arm1\": [\n      512,\n      512,\n      512,\n      512\n    ],\n    \"arm2\": [\n      512,\n      512,\n      512,\n      512\n    ]\n  }\n}\n",
+      "stderr": ""
+    },
+    "probe_missing_port": {
+      "exit": 1,
+      "stdout": "{\"status\": \"FAIL\", \"error\": \"Cannot open /tmp/v18_tools/absent exclusively: [Errno 2] No such file or directory: '/tmp/v18_tools/absent'\"}\n",
+      "stderr": ""
+    },
+    "sheet_template": {
+      "exit": 1,
+      "stdout": "{\"status\": \"FAIL\", \"written_to_calibration\": false, \"error\": \"acceptance.max_fit_ticks must be a measured finite number\"}\n",
+      "stderr": ""
+    }
+  },
+  "error": "'arm1_arm_shoulder_pan_joint'\nTraceback (most recent call last):\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_operator_tools.py\", line 165, in main\n    harness.run()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_operator_tools.py\", line 157, in run\n    self.manual()\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_operator_tools.py\", line 100, in manual\n    before = self.arm1()\n             ^^^^^^^^^^^\n  File \"/mnt/e/dual_arm_system/dual_arm_ws/scripts/test_operator_tools.py\", line 68, in arm1\n    return [self.joints[name] for name in ARM1]\n            ~~~~~~~~~~~^^^^^^\nKeyError: 'arm1_arm_shoulder_pan_joint'\n"
+}

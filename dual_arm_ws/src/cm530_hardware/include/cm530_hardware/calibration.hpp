@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstddef>
+#include <numbers>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -11,6 +12,9 @@
 
 namespace cm530_hardware
 {
+
+// AX-12A: 300 degrees over 1023 counts, identical to dual_arm_coordinator/home_pose.py.
+inline constexpr double kRadiansPerCount = (300.0 * std::numbers::pi / 180.0) / 1023.0;
 
 struct JointCalibration
 {

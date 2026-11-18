@@ -1,5 +1,19 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-18 firmware v18 / protocol 6 (Moving Speed, 1 Mbps) and faster prototype, no hardware
+
+Details and logs: evidence/v18_speed_20261118/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Firmware v18 ARM build and `verify_firmware.py` | PASS | arm-none-eabi-gcc 14.2; SHA256SUMS updated |
+| Firmware C harness incl. speed test, plain and ASan+UBSan; Python terminal 26 | PASS | WSL gcc 13 |
+| cm530_hardware colcon test (45) and gtests under ASan+UBSan | PASS | first run failed the v17 HOME expectation, fixed |
+| coordinator pytest | PASS | 508 |
+| `scripts/test_cm530_mock.py` (7 phases, v18 parser) | PASS | copies in the evidence folder; top-level logs restored |
+| `scripts/test_operator_tools.py` probe and worksheet checks | PASS | manual/console phases need the T2 simulation: FAIL here, NOT_RUN properly |
+| Flash v18, 1 Mbps on the board, speed control on the arms, FTDI latency 1 ms | NOT_RUN | |
+
 ## 2026-11-18 prototype field fixes on the Orin (afternoon) and WSL recheck
 
 Changes made on the Orin between field runs (`60b91ca`, `24e4c8f`), then fetched to the development PC and rechecked there. Prototype results never count as calibration or H stage evidence. Details: PROGRESS.md (2026-11-18 afternoon), evidence/esp32_auto_reset_20261118/, evidence/hardware/20261118_B_TEACH/, evidence/hardware/20261118_C_TEACH/.

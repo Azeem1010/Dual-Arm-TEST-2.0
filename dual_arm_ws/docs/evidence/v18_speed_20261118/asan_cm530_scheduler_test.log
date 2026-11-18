@@ -1,0 +1,36 @@
+Running main() from /opt/ros/jazzy/src/gtest_vendor/src/gtest_main.cc
+[==========] Running 12 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 10 tests from SchedulerTest
+[ RUN      ] SchedulerTest.ReadOnlyModeNeverWritesTargets
+[       OK ] SchedulerTest.ReadOnlyModeNeverWritesTargets (2 ms)
+[ RUN      ] SchedulerTest.SendsChangedTargetsOnceAndFollowsFeedback
+[       OK ] SchedulerTest.SendsChangedTargetsOnceAndFollowsFeedback (23 ms)
+[ RUN      ] SchedulerTest.OversizedStepFaultsWithoutWriting
+[       OK ] SchedulerTest.OversizedStepFaultsWithoutWriting (2 ms)
+[ RUN      ] SchedulerTest.MotorFaultStopsAllTraffic
+[       OK ] SchedulerTest.MotorFaultStopsAllTraffic (22 ms)
+[ RUN      ] SchedulerTest.LostReplyFaultsWithoutRetry
+[       OK ] SchedulerTest.LostReplyFaultsWithoutRetry (63 ms)
+[ RUN      ] SchedulerTest.StopJoinsPromptlyAndIsRepeatable
+[       OK ] SchedulerTest.StopJoinsPromptlyAndIsRepeatable (0 ms)
+[ RUN      ] SchedulerTest.ReadOnlyModeReportsNoAcknowledgedTarget
+[       OK ] SchedulerTest.ReadOnlyModeReportsNoAcknowledgedTarget (1 ms)
+[ RUN      ] SchedulerTest.AcknowledgedTargetFollowsOkAx
+[       OK ] SchedulerTest.AcknowledgedTargetFollowsOkAx (1 ms)
+[ RUN      ] SchedulerTest.RefusedTargetIsNeverReportedAsAcknowledged
+[       OK ] SchedulerTest.RefusedTargetIsNeverReportedAsAcknowledged (1 ms)
+[ RUN      ] SchedulerTest.EveryAxCarriesTheComputedMovingSpeed
+[       OK ] SchedulerTest.EveryAxCarriesTheComputedMovingSpeed (2 ms)
+[----------] 10 tests from SchedulerTest (126 ms total)
+
+[----------] 2 tests from MovingSpeed
+[ RUN      ] MovingSpeed.FollowsCommandedVelocityWithLead
+[       OK ] MovingSpeed.FollowsCommandedVelocityWithLead (0 ms)
+[ RUN      ] MovingSpeed.ClosesARemainingErrorAndNeverSendsZero
+[       OK ] MovingSpeed.ClosesARemainingErrorAndNeverSendsZero (0 ms)
+[----------] 2 tests from MovingSpeed (3 ms total)
+
+[----------] Global test environment tear-down
+[==========] 12 tests from 2 test suites ran. (132 ms total)
+[  PASSED  ] 12 tests.

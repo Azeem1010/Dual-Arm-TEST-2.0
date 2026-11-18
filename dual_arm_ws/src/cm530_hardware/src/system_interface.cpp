@@ -16,7 +16,7 @@ namespace cm530_hardware
 namespace
 {
 
-// AX-12A counts as the v17 firmware reported them, for display only. raw_target is
+// AX-12A counts as the v18 firmware reported them, for display only. raw_target is
 // NaN until the firmware has acknowledged an AX for that arm.
 constexpr const char * kRawPositionInterface = "raw_position";
 constexpr const char * kRawTargetInterface = "raw_target";
@@ -47,6 +47,20 @@ std::chrono::milliseconds optional_ms(
   return std::chrono::milliseconds{value};
 }
 
+double optional_double(
+  const hardware_interface::HardwareInfo & info, const std::string & name, double fallback)
+{
+  const auto found = info.hardware_parameters.find(name);
+  if (found == info.hardware_parameters.end()) {
+    return fallback;
+  }
+  const double value = std::stod(found->second);
+  if (!std::isfinite(value) || value <= 0.0) {
+    throw std::runtime_error(std::format("{} must be positive", name));
+  }
+  return value;
+}
+
 }  // namespace
 
 CM530SystemInterface::CallbackReturn CM530SystemInterface::on_init(
@@ -62,6 +76,17 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_init(
     command_timeout_ = optional_ms(info_, "command_timeout_ms", command_timeout_);
     startup_listen_ = optional_ms(info_, "startup_listen_ms", startup_listen_);
     feedback_stale_ = optional_ms(info_, "feedback_stale_ms", feedback_stale_);
+    speed_options_.gain = optional_double(info_, "speed_gain", speed_options_.gain);
+    speed_options_.catch_up_s =
+      std::chrono::duration<double>(optional_ms(info_, "speed_catch_up_ms", std::chrono::milliseconds{250})).count();
+    speed_options_.min_speed = static_cast<int>(optional_double(info_, "speed_min", speed_options_.min_speed));
+    speed_options_.max_speed = static_cast<int>(optional_double(info_, "speed_max", speed_options_.max_speed));
+    if (speed_options_.min_speed < kMinSpeed || speed_options_.max_speed > kMaxSpeed ||
+      speed_options_.min_speed > speed_options_.max_speed)
+    {
+      throw std::runtime_error(
+        std::format("speed_min and speed_max must satisfy {} <= min <= max <= {}", kMinSpeed, kMaxSpeed));
+    }
   } catch (const std::exception & error) {
     RCLCPP_ERROR(get_logger(), "Invalid hardware parameters: %s", error.what());
     return CallbackReturn::ERROR;
@@ -223,11 +248,13 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_activate(const rcl
     set_command(position_command_[index], last_rad_[index]);
   }
   fault_logged_ = false;
+  have_last_command_ = false;
   const auto now = std::chrono::steady_clock::now();
   last_stamp_.fill(now);
   SchedulerOptions options;
   options.enable_motion = enable_motion_;
   options.max_step_raw = calibration_->max_step_raw();
+  options.speed = speed_options_;
   scheduler_ = std::make_unique<Scheduler>(*link_, options, latest_raw_, acked_target_);
   scheduler_->start();
   return CallbackReturn::SUCCESS;
@@ -330,14 +357,17 @@ CM530SystemInterface::ReturnType CM530SystemInterface::read(
 }
 
 CM530SystemInterface::ReturnType CM530SystemInterface::write(
-  const rclcpp::Time &, const rclcpp::Duration &)
+  const rclcpp::Time &, const rclcpp::Duration & period)
 {
   if (!scheduler_ || !enable_motion_) {
     return ReturnType::OK;
   }
+  const double dt = period.seconds();
+  const bool have_velocity = have_last_command_ && std::isfinite(dt) && dt > 0.0;
   for (const Arm arm : kArms) {
     const auto arm_index = static_cast<std::size_t>(arm);
     RawPose target{};
+    JointVelocity velocity{};
     for (std::size_t joint = 0; joint < kJointsPerArm; ++joint) {
       const std::size_t index = arm_index * kJointsPerArm + joint;
       const double command = get_command<double>(position_command_[index]);
@@ -347,10 +377,17 @@ CM530SystemInterface::ReturnType CM530SystemInterface::write(
         return ReturnType::ERROR;
       }
       target[joint] = *raw;
+      // Counts per second from the unrounded commands, which a 1-2 count step
+      // per cycle would quantize badly.
+      if (have_velocity) {
+        velocity[joint] = std::abs(command - last_command_[index]) / dt / kRadiansPerCount;
+      }
+      last_command_[index] = command;
     }
     // A busy lock only delays the target to the next control cycle.
-    static_cast<void>(scheduler_->submit(arm, target));
+    static_cast<void>(scheduler_->submit(arm, target, velocity));
   }
+  have_last_command_ = true;
   return ReturnType::OK;
 }
 
