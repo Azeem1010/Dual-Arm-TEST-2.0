@@ -68,9 +68,9 @@ def test_prototype_is_hardware_but_not_blocked():
     snapshot = ready(mode=Mode.HARDWARE_PROTOTYPE)
     assert evaluate_actions(snapshot)[Action.START_TASK].enabled
     assert evaluate_actions(replace(fault(arms_at_home=False), mode=Mode.HARDWARE_PROTOTYPE), True)[Action.GO_HOME].enabled
-    assert banner(snapshot).title == '實機 PROTOTYPE' and 'CM-530' in banner(snapshot).next_step
+    assert banner(snapshot).title == '實機運作模式' and 'CM-530' in banner(snapshot).next_step
     cell = status_cells(snapshot)[0]
-    assert cell.value == '實機 Prototype' and cell.level is Level.HARDWARE
+    assert cell.value == '實機運作模式' and cell.level is Level.HARDWARE
 
 
 def test_go_home_needs_confirmation_and_is_refused_on_hardware():

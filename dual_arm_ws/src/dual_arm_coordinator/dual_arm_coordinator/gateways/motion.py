@@ -64,6 +64,10 @@ def _duration(seconds):
     return Duration(sec=whole, nanosec=int((seconds - whole) * 1e9))
 
 
+class InvalidState(TaskFault):
+    """A checked joint state collides; raised before anything of that path is sent."""
+
+
 class MotionGateway:
     def __init__(self, node, config, urdf_text, homes, guard, callback_group=None, slot_joints=None, b_joints=None):
         if config['target_frame'] != 'world':
@@ -324,7 +328,7 @@ class MotionGateway:
     def _raise_invalid(response, label):
         if not response.valid:
             pairs = sorted({f'{c.contact_body_1}/{c.contact_body_2}' for c in response.contacts})
-            raise TaskFault(f'{label}: state is invalid {pairs}')
+            raise InvalidState(f'{label}: state is invalid {pairs}')
 
     @timing.timed('check')
     def _require_valid(self, arm, q, label):
@@ -521,7 +525,15 @@ class MotionGateway:
             aim = (xyz[0], xyz[1], xyz[2] - extra)
             logger.warning(f'{label}: {arm} stopped {short * 1000:.1f} mm above the target; '
                            f'descending again to {extra * 1000:.1f} mm below it')
-            commanded = self._move_straight(arm, aim, f'{label} correction')
+            try:
+                commanded = self._move_straight(arm, aim, f'{label} correction')
+            except InvalidState as error:
+                # Every waypoint is checked before the path is sent, so the arm has not moved. A far
+                # zone A cap folds the arm deep enough that the extra descent hits the model's base
+                # (field run 2026-11-18); keep the height reached and let the suction try (user decision).
+                logger.warning(f'{label}: correction skipped, it would collide ({error}); '
+                               f'staying {short * 1000:.1f} mm above the target')
+                return commanded
         return commanded
 
     def _fresh_start(self, arm, path, label):
@@ -688,18 +700,22 @@ class MotionGateway:
         if pose not in ('above', 'contact'):
             raise TaskFault(f'Unknown B pose {pose}')
         target = self._b(arm)['release' if pose == 'contact' else 'above']
-        self._move_taught(arm, target, f'{arm} B {pose}', contact, self._b_teach)
+        teach = self._b_teach
+        # A held object pulls the shoulder down at 'above' (field run 2026-11-18, j2 +5.6 counts).
+        tolerance = (teach['arrival_tolerance_raw'] if pose == 'contact'
+                     else teach.get('above_arrival_tolerance_raw', teach['arrival_tolerance_raw']))
+        self._move_taught(arm, target, f'{arm} B {pose}', contact, teach, tolerance)
         if contact:
             # Taught poses carry no extra lift, so a later held move starts from the cap top.
             self._contact_lift[arm] = 0.0
 
-    def _move_taught(self, arm, target, label, contact, teach):
+    def _move_taught(self, arm, target, label, contact, teach, tolerance_raw=None):
         if contact:
             self._move_joint_line(arm, target, label, teach['max_line_drift_m'])
         else:
             self._require_valid(arm, target, label)
             self._plan_and_move(arm, target, label)
-        self._confirm_joints(arm, target, label, teach['arrival_tolerance_raw'])
+        self._confirm_joints(arm, target, label, tolerance_raw or teach['arrival_tolerance_raw'])
         if contact:
             xyz = tcp_position(self._models[arm], target)
             self._report_arrival(arm, [float(value) for value in xyz], target, label)

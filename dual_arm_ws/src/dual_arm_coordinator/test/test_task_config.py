@@ -528,6 +528,15 @@ class BTeach(unittest.TestCase):
         self.assert_refused(self.with_teach(arrival_tolerance_raw=21), 'b_teach.arrival_tolerance_raw must be')
         self.assert_refused(self.with_teach(max_line_drift_m=0.02), 'b_teach.max_line_drift_m must be within')
 
+    def test_above_arrival_tolerance_is_optional_and_bounded(self):
+        task_config.validate(self.with_teach(above_arrival_tolerance_raw=6))
+        self.assert_refused(self.with_teach(above_arrival_tolerance_raw=21),
+                            'b_teach.above_arrival_tolerance_raw must be an integer in 1..20')
+        self.assert_refused(self.with_teach(above_arrival_tolerance_raw=6.0),
+                            'b_teach.above_arrival_tolerance_raw must be an integer in 1..20')
+        self.assert_refused(self.with_teach(above_arrival_tolerance_raw=3),
+                            'must not be below arrival_tolerance_raw')
+
 
 class CommandLine(unittest.TestCase):
     def run_main(self, *args):

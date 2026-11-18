@@ -2,7 +2,17 @@
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: overlap in Gazebo, runs on the Orin without hardware (2026-11-18)
+## Latest result: prototype field fixes on the Orin, afternoon (2026-11-18)
+
+- B above arrival: arm 1 holding a cap reached the taught B above pose with j2 5.6 counts low (load sag) and faulted. New optional `b_teach.above_arrival_tolerance_raw` (user: 6); B contact and C keep 4.
+- Descent correction: when the re-aimed contact line would collide in the model (far zone A cap, arm1 link_2/base), it is skipped and the reached height kept instead of faulting (user decision). Other faults still stop.
+- Re-taught (torque off, hand-guided, last READ): arm2 B `94, 704, 764, 689` and all 8 arm2 C slots. Model distance of the C slots to the camera grid fell from 8.1 to 4.8 mm on average. Evidence: evidence/hardware/20261118_B_TEACH/, 20261118_C_TEACH/. NOT_RUN as a full cycle when recorded; later runs that day used them.
+- ESP32 restarted automatically through RTS (= EN) 3 s after the agent starts in `hardware_prototype.launch.py` (`esp32_reset_delay_s`, 0 = off). Agent part PASS on the real board; from the UI not yet confirmed. Evidence: evidence/esp32_auto_reset_20261118/.
+- HMI wording: 實機 Prototype → 實機運作模式, 搬運件數（模擬／Prototype）→ 搬運件數; saved settings and a running launch under the old name still load.
+- Field diagnosis: one zone A cap (x −125, y 0 mm) failed three picks in a row while the suction held a cap by hand and the 12:55 run picked 8 of 9; the cap or its seat is suspected, not confirmed.
+- Not done: TEST_REPORT.md and RESUME.md; the arm1 bus still shows intermittent DXL_CORRUPT/TIMEOUT (cable suspected, not checked).
+
+## Earlier result: overlap in Gazebo, runs on the Orin without hardware (2026-11-18)
 
 - Orin `main` fast-forwarded to `47b9b5c` and built (`build.sh` PASS, `validate_model.py` PASS); coordinator 501 and HMI 320 tests pass; the Mock Serial overlap run (fixed transits) repeated on the Orin, PASS as on WSL.
 - User decision (option 2): try overlap in Gazebo without changing src/ or git. Only the installed copies were patched (simulation mode allowed, `overlap` block added to the simulation config) and restored afterwards. Regression `two` PASS: both objects in slots 1 and 2, and the arms moved at the same time (arm 1 picks the next object from A while arm 2 takes the previous one from B; arm 1 places into B while arm 2 carries to C), with the B hand-over order kept. Evidence: evidence/orin_overlap_20261118/.

@@ -68,18 +68,18 @@ zones:
 # still names the slots for the cameras. Report: scripts/teach_to_slots.py.
 c_slot_teach:
   arm: arm2
-  source: docs/evidence/hardware/20261111_H1/teach_arm2_C_1..8.csv (last READ)
-  # 2026-11-17: j1 shifted by -306 with the arm2 j1 zero (B re-taught at j1 90, was 396);
-  # j2..j4 unchanged. Was 572/635/560/608/549/587/540/576.
-  raw:                         # j1, j2, j3, j4; C1 and C2 were unsteady while taught
-    - [266, 630, 926, 602]
-    - [329, 636, 906, 600]
-    - [254, 645, 885, 596]
-    - [302, 666, 838, 629]
-    - [243, 701, 767, 664]
-    - [281, 721, 724, 694]
-    - [234, 779, 602, 758]
-    - [270, 803, 557, 760]
+  source: docs/evidence/hardware/20261118_C_TEACH/teach_arm2_C_1..8.csv (last READ)
+  # 2026-11-18 14:00-14:10 all 8 re-taught (user request), same procedure. Before: 11-11 readings with
+  # j1 -306 (266/329/254/302/243/281/234/270, j2..j4 as taught 11-11).
+  raw:                         # j1, j2, j3, j4
+    - [272, 638, 919, 617]
+    - [333, 652, 889, 618]
+    - [260, 662, 867, 614]
+    - [310, 678, 831, 618]
+    - [250, 715, 740, 693]
+    - [282, 733, 715, 696]
+    - [240, 768, 633, 725]
+    - [276, 830, 511, 788]
   release_lift_m: 0.0          # raise the release pose if the cup presses too hard
   arrival_tolerance_raw: 4
   max_line_drift_m: 0.003      # model drift of the vertical joint line is 0.7..1.8 mm
@@ -91,12 +91,15 @@ c_slot_teach:
 # confirms that B holds one object within b_pick_tolerance_m of arm2's taught contact point
 # (not b_place_xy_m, which is not where the taught hand-over happens; 2026-11-17).
 b_teach:
-  source: docs/evidence/hardware/20261111_H1/teach_arm1_B_2.csv, 20261117_B_TEACH/teach_arm2_B_2.csv (last READ)
+  source: docs/evidence/hardware/20261111_H1/teach_arm1_B_2.csv, 20261118_B_TEACH/teach_arm2_B.csv (last READ)
   raw:                         # j1, j2, j3, j4
     arm1: [350, 731, 702, 697]
-    arm2: [95, 707, 757, 700]    # 2026-11-17 16:13 re-taught (teach_arm2_B_2.csv); earlier 14:20 90, 700, 779, 683; 11-11 396, 703, 756, 700
+    arm2: [94, 704, 764, 689]    # 2026-11-18 12:53 re-taught (20261118_B_TEACH/teach_arm2_B.csv); 11-17 16:13 95, 707, 757, 700; 14:20 90, 700, 779, 683; 11-11 396, 703, 756, 700
   contact_lift_m: 0.0          # raise both contact poses if the cup presses too hard
   arrival_tolerance_raw: 4
+  # 2026-11-18 (user: 6 counts): arm 1 holding a cap reached B above with j2 5.6 counts low (shoulder
+  # sag under load, +7..8 counts on every held lift) and faulted. Only the above pose; contact keeps 4.
+  above_arrival_tolerance_raw: 6
   max_line_drift_m: 0.003
 # Zone A pick correction (user decision 2026-11-17): added to the camera's cap position before
 # arm 1 picks; the zone A bounds still check the camera's value. +x points from A towards B.

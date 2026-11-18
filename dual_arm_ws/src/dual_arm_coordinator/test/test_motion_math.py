@@ -250,11 +250,15 @@ class SlotPoses(unittest.TestCase):
                 np.testing.assert_allclose(above, [*pose['xy'], pose['above_z']], atol=1e-5)
                 self.assertGreaterEqual(pose['above_z'] - pose['release_z'], MIN_SLOT_CLEARANCE_M)
 
-    def test_slot_eight_approaches_lower_instead_of_tilting_further(self):
-        heights = [pose['above_z'] for pose in self.poses]
-        self.assertEqual(heights[:7], [self.approach_z] * 7)
-        self.assertAlmostEqual(heights[7], self.approach_z - SLOT_APPROACH_STEP_M)
-        self.assertLessEqual(tool_tilt_deg(self.model, self.poses[7]['above']), 9.0 + 1e-6)
+    def test_a_slot_approaches_lower_only_instead_of_tilting_further(self):
+        # With the 11-11 teach slot 8 came in 2 mm lower; the 2026-11-18 re-teach reaches approach_z_m
+        # everywhere. Either way: approach_z_m or whole steps below it, never past the tilt limit.
+        for slot, pose in enumerate(self.poses, start=1):
+            with self.subTest(slot=slot):
+                steps = (self.approach_z - pose['above_z']) / SLOT_APPROACH_STEP_M
+                self.assertGreaterEqual(steps, -1e-9)
+                self.assertAlmostEqual(steps, round(steps), places=6)
+                self.assertLessEqual(tool_tilt_deg(self.model, pose['above']), 9.0 + 1e-6)
 
     def test_vertical_joint_lines_stay_within_the_configured_drift(self):
         for slot, pose in enumerate(self.poses, start=1):

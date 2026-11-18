@@ -145,7 +145,7 @@ def _prototype_plan(profiles, journal_path, cycles, environ):
     if hardware.get('show_debug') is True:
         words.append('show_debug:=true')
     return LaunchPlan(tuple(words), environment=(('ROS_DOMAIN_ID', domain_for(Mode.HARDWARE_PROTOTYPE, profiles, environ)),),
-                      notice='PROTOTYPE：估計校正，CM-530 電源開關是唯一急停')
+                      notice='實機運作模式：估計校正，CM-530 電源開關是唯一急停')
 
 
 def workspace_from_prefix(prefix):

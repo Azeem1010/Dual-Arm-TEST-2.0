@@ -8,19 +8,22 @@ prototype config. None of this is calibration evidence.
 
 The CM-530 power switch is the only emergency stop: one person keeps a hand on
 it. With esp32_port set, the ESP32 micro-ROS agent starts and stops with this
-launch (ORIN_DEPLOYMENT 6.1); opening the port resets the board, so its relays
-start off. Then: torque on, /safety/reset, start the task.
+launch (ORIN_DEPLOYMENT 6.1). The board only finds the agent while it boots, so a
+few seconds after the agent starts esp32_reset.py restarts it through RTS (= EN;
+user request 2026-11-18); its relays start off. Then: torque on, /safety/reset,
+start the task.
 """
 import shlex
 from pathlib import Path
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, LogInfo, OpaqueFunction
+from launch.actions import (DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, LogInfo, OpaqueFunction,
+                            TimerAction)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
-from launch_ros.substitutions import FindPackageShare
+from launch_ros.substitutions import FindPackagePrefix, FindPackageShare
 
 
 def micro_ros_agent(context):
@@ -33,7 +36,15 @@ def micro_ros_agent(context):
         raise RuntimeError(f'micro-ROS agent setup {setup} not found (ORIN_DEPLOYMENT 6.1)')
     command = (f'source {shlex.quote(str(setup))} && exec ros2 run micro_ros_agent micro_ros_agent '
                f'serial --dev {shlex.quote(port)} -b 115200')
-    return [ExecuteProcess(cmd=['bash', '-c', command], name='micro_ros_agent', output='screen')]
+    actions = [ExecuteProcess(cmd=['bash', '-c', command], name='micro_ros_agent', output='screen')]
+    delay = float(LaunchConfiguration('esp32_reset_delay_s').perform(context))
+    if delay > 0:
+        # Pressing EN by hand after every start (2026-11-17/18) is replaced by an RTS pulse once the
+        # agent has opened the port; the board connects about 2 s later.
+        reset = str(Path(FindPackagePrefix('dual_arm_bringup').perform(context)) / 'lib' / 'dual_arm_bringup' / 'esp32_reset.py')
+        actions.append(TimerAction(period=delay, actions=[
+            ExecuteProcess(cmd=['python3', reset, port], name='esp32_reset', output='screen')]))
+    return actions
 
 
 def generate_launch_description():
@@ -83,6 +94,8 @@ def generate_launch_description():
                               description='環境相機另開 OpenCV 辨識框視窗（需要桌面 DISPLAY）'),
         DeclareLaunchArgument('esp32_port', default_value='',
                               description='ESP32 吸盤序列埠（/dev/serial/by-id/...）；空 = 不啟動 micro-ROS agent'),
+        DeclareLaunchArgument('esp32_reset_delay_s', default_value='3.0',
+                              description='agent 啟動後幾秒自動重開 ESP32（RTS = EN）；0 = 不自動重開，要手動按 EN'),
         DeclareLaunchArgument('microros_setup', default_value='~/microros_ws/install/local_setup.bash',
                               description='micro-ROS agent 工作區的 local_setup.bash'),
         DeclareLaunchArgument('cycles', default_value='1', description='搬運幾件（1～8）'),

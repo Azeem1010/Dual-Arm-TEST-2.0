@@ -10,7 +10,7 @@ import time
 
 from ..launcher.profiles import build_plan, domain_for, journal_settings, new_journal_path
 from ..launcher.process import gazebo_processes
-from ..model.state import Action, CommandFeedback, EventRecord, Level, Mode, Phase
+from ..model.state import Action, CommandFeedback, EventRecord, Level, Mode, Phase, mode_from_name
 from .base import DataSource
 
 LAUNCH_ACTIONS = frozenset({Action.START_SYSTEM, Action.SHUTDOWN, Action.RESET_SIMULATION})
@@ -72,7 +72,7 @@ class LiveSource(DataSource):
         self._command, self._batch, self._base = None, 0, None
         self._workspace, self._store, self._clock = workspace, settings_store, clock
         self._settings = settings_store.load()
-        self._selected = Mode(self._settings.get('mode', Mode.SIMULATION.value))
+        self._selected = mode_from_name(self._settings.get('mode', Mode.SIMULATION.value))
         self._cycles = int(self._settings.get('cycles', 1))
         self._feedback, self._events = None, []
         self._restart_mode, self._shutdown_requested = None, False
@@ -352,7 +352,7 @@ class LiveSource(DataSource):
         if running and phase is Phase.STARTING and self._clock() - status.started_at > limit:
             warning = f'啟動超過 {int(limit)} 秒仍未就緒。紀錄檔：{status.log_path}'
         if mode is Mode.UNKNOWN:
-            mode = Mode(status.mode) if managed and status.mode else self._selected
+            mode = mode_from_name(status.mode) if managed and status.mode else self._selected
         if phase is Phase.STOPPED:
             mode = self._selected
         self._follow_launch(status, phase)
@@ -366,7 +366,7 @@ class LiveSource(DataSource):
 
 def _mode_named(value):
     try:
-        return Mode(value)
+        return mode_from_name(value)
     except ValueError:
         return None
 

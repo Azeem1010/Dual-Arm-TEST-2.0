@@ -56,6 +56,9 @@ _SLOT_TEACH_SHAPE = dict.fromkeys(('arm', 'source', 'raw', 'release_lift_m', 'ar
 # (prototype only, user decision 2026-11-15).
 B_TEACH_KEY = 'b_teach'
 _B_TEACH_SHAPE = dict.fromkeys(('source', 'raw', 'contact_lift_m', 'arrival_tolerance_raw', 'max_line_drift_m'))
+# Optional in b_teach: a looser arrival check for the 'above' pose only (user decision 2026-11-18,
+# 6 counts): a held object pulls the shoulder down there; the contact pose keeps arrival_tolerance_raw.
+B_ABOVE_TOLERANCE_KEY = 'above_arrival_tolerance_raw'
 # Optional: after a fault, go HOME, recover and continue by itself, at most max_resumes times per start
 # (prototype only, user decision 2026-11-17).
 AUTO_RESUME_KEY = 'auto_resume'
@@ -246,7 +249,10 @@ def _check_teach_limits(teach, key, lift_key):
 def _check_b_teach(doc):
     """The taught B hand-over: one pose of four integer AX-12 counts for each arm."""
     teach = doc[B_TEACH_KEY]
-    errors = _shape_errors(teach, _B_TEACH_SHAPE, f'{B_TEACH_KEY}.')
+    if not isinstance(teach, dict):
+        return [f'{B_TEACH_KEY} must be a mapping']
+    errors = _shape_errors({key: value for key, value in teach.items() if key != B_ABOVE_TOLERANCE_KEY},
+                           _B_TEACH_SHAPE, f'{B_TEACH_KEY}.')
     if errors:
         return errors
     errors = _unmeasured(teach, f'{B_TEACH_KEY}.')
@@ -265,7 +271,14 @@ def _check_b_teach(doc):
             if not (isinstance(pose, list) and len(pose) == 4
                     and all(type(count) is int and 0 <= count <= 1023 for count in pose)):
                 errors.append(f'{B_TEACH_KEY}.raw.{arm} must be four integer counts in 0..1023')
-    return errors + _check_teach_limits(teach, B_TEACH_KEY, 'contact_lift_m')
+    errors += _check_teach_limits(teach, B_TEACH_KEY, 'contact_lift_m')
+    if B_ABOVE_TOLERANCE_KEY in teach:
+        above, contact = teach[B_ABOVE_TOLERANCE_KEY], teach['arrival_tolerance_raw']
+        if type(above) is not int or not 1 <= above <= 20:
+            errors.append(f'{B_TEACH_KEY}.{B_ABOVE_TOLERANCE_KEY} must be an integer in 1..20')
+        elif type(contact) is int and above < contact:
+            errors.append(f'{B_TEACH_KEY}.{B_ABOVE_TOLERANCE_KEY} must not be below arrival_tolerance_raw')
+    return errors
 
 
 def _check_auto_resume(doc):

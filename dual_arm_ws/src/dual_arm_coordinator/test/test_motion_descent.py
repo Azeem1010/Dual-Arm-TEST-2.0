@@ -1,7 +1,7 @@
 """MotionGateway._correct_descent: re-aim a contact descent that stopped short (field 2026-11-17)."""
 import unittest
 
-from dual_arm_coordinator.gateways.motion import MotionGateway
+from dual_arm_coordinator.gateways.motion import InvalidState, MotionGateway
 from dual_arm_coordinator.workflow.ports import TaskFault
 
 TARGET = (-0.14, -0.03, 0.0223)
@@ -70,6 +70,27 @@ class Descent(unittest.TestCase):
             gateway._correct_descent('arm1', TARGET, 'arm1 A')
         self.assertTrue(all(aim >= TARGET[2] - 0.005 - 1e-12 for aim in arm.aims))
         self.assertIn('above the target', str(caught.exception))
+
+    def test_a_colliding_correction_is_skipped_and_the_height_kept(self):
+        # Field run 2026-11-18: the re-aim at a far zone A cap hit arm1 link_2/base in the model.
+        gateway, arm = self.make(sag=0.003, start_short=0.003)
+
+        def collide(_arm, xyz, label):
+            arm.aims.append(xyz[2])
+            raise InvalidState(f"{label}: state is invalid ['arm1_cad_link_2/arm1_base_link']")
+        gateway._move_straight = collide
+        self.assertIsNone(gateway._correct_descent('arm1', TARGET, 'arm1 A'))
+        self.assertEqual(len(arm.aims), 1)
+        self.assertIn('correction skipped', gateway._node.logger.lines[-1])
+
+    def test_other_faults_during_a_correction_still_stop(self):
+        gateway, arm = self.make(sag=0.003, start_short=0.003)
+
+        def fail(_arm, _xyz, label):
+            raise TaskFault(f'{label}: controller aborted')
+        gateway._move_straight = fail
+        with self.assertRaises(TaskFault):
+            gateway._correct_descent('arm1', TARGET, 'arm1 A')
 
     def test_attempts_are_limited(self):
         gateway, arm = self.make(sag=0.0045, start_short=0.0045)

@@ -554,3 +554,16 @@ def test_interface_events_are_capped(parts):
     for _ in range(live_source.EVENT_LIMIT + 20):
         source.invoke(Action.STOP)
     assert len(source.snapshot().events) == live_source.EVENT_LIMIT
+
+
+def test_a_mode_saved_under_its_old_name_still_loads(monkeypatch):
+    # 2026-11-18: 實機 Prototype is shown as 實機運作模式; settings.json written before keeps the old name.
+    monkeypatch.setattr(live_source, 'gazebo_processes', lambda partition=None: [])
+    store = Store({'mode': '實機 Prototype', 'cycles': 8})
+    source = LiveSource(Ros(), Launcher(), PROFILES, '/ws', store, clock=lambda: 100.0)
+    assert source._selected is Mode.HARDWARE_PROTOTYPE
+
+
+def test_a_running_system_started_under_the_old_mode_name_is_adopted():
+    assert live_source._mode_named('實機 Prototype') is Mode.HARDWARE_PROTOTYPE
+    assert live_source._mode_named('no such mode') is None

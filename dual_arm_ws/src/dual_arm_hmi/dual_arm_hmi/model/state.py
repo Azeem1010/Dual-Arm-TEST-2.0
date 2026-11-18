@@ -34,7 +34,8 @@ class Mode(Enum):
     HARDWARE_READ_ONLY = '實機唯讀'
     HARDWARE_MOTION = '實機動作'
     # Real arms on estimated settings (2026-11-13); runs the task, never calibration evidence.
-    HARDWARE_PROTOTYPE = '實機 Prototype'
+    # Shown as 實機運作模式 since 2026-11-18 (user request); settings saved before load through LEGACY_MODE_NAMES.
+    HARDWARE_PROTOTYPE = '實機運作模式'
 
     @property
     def is_hardware(self):
@@ -566,7 +567,7 @@ def _attention_banner(s):
     if s.mode.hardware_locked and s.phase is Phase.READY and s.hardware_blocked_reason:
         return Banner(Level.WARN, '實機 BLOCKED', s.hardware_blocked_reason, '需先完成 H6 前置條件')
     if s.mode is Mode.HARDWARE_PROTOTYPE:
-        return Banner(Level.WARN, '實機 PROTOTYPE', '估計校正、沒有急停心跳、吸盤自動確認，結果不算校正證據',
+        return Banner(Level.WARN, '實機運作模式', '估計校正、沒有急停心跳、吸盤自動確認，結果不算校正證據',
                       '一人手放在 CM-530 電源開關（唯一急停）')
     return None
 
@@ -592,3 +593,11 @@ def banner(s):
         result = (Banner(Level.INFO, '任務執行中', detail, '需要停止時請按實體急停或用終端機') if s.busy
                   else Banner(Level.INFO, '監看中', detail, '任務操作請用終端機'))
     return _without_unwired_buttons(s, result)
+
+
+# Mode names saved by earlier versions (settings.json keeps the displayed name).
+LEGACY_MODE_NAMES = {'實機 Prototype': Mode.HARDWARE_PROTOTYPE}
+
+
+def mode_from_name(name):
+    return LEGACY_MODE_NAMES.get(name) or Mode(name)
