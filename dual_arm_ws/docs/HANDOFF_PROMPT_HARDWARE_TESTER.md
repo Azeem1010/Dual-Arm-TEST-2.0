@@ -17,7 +17,7 @@
 
 專案：https://github.com/xian1022/dual_arm_system（main 分支，工作區 dual_arm_ws/）
 之前現場的結果在 dual_arm_ws/docs/evidence/hardware/README.md（最上面一節最新）。2026-11-11 為止：SETUP、P0、H0 PASS；H1 兩支手臂的方向、伸直、HOME、板寬、C 格位與示教都已取得，只剩 Moving Speed 沒讀（畫圓法可選）；V0 已用 by-path 完成相機對應；2026-11-13 E0 吸盤 PASS；2026-11-17～18 用實機運作模式（估計校正，不算校正資料）在實機跑過完整搬運。已完成的項目不必重做。兩支手臂上次結束時扭力是關的，上電前要扶好。
-硬體：兩支 PhantomX Pincher（每支 4 顆 AX-12A，共 8 顆）、一片 CM-530（韌體 v17）、ESP32 吸盤（micro-ROS）、三顆 USB 相機。最終目標是把瓶蓋 A→B→C 搬運，但這次只做到取得校正資料為止。
+硬體：兩支 PhantomX Pincher（每支 4 顆 AX-12A，共 8 顆）、一片 CM-530（韌體第 18 版：協定 6、1 Mbps、AX 帶 Moving Speed；尚未燒錄時板上是第 17 版，新驅動連不上）、ESP32 吸盤（micro-ROS）、三顆 USB 相機。最終目標是把瓶蓋 A→B→C 搬運，但這次只做到取得校正資料為止。
 馬達 ID：arm1 的 j1～j4 = 17、3、2、15；arm2 = 12、1、8、16。
 
 ## 門檻（現場成員可填）
@@ -88,7 +88,7 @@
 | E0 ESP32 吸盤通電 | 2026-11-13 已做（PASS） | 接線或韌體改了才重做；先建置 micro_ros_agent（ORIN_DEPLOYMENT.md 6.1），開 agent 後按 EN 或執行 `esp32_reset.py` |
 | H2 校正量測 | 收資料 | 門檻有填才判定；沒填就記 BLOCKED，資料照樣交回 |
 | HOME 定位 | 需要時做 | 例如兩支手臂回 HOME 調整相機；照手冊「HOME 定位」，一次一支 |
-| H3 單軸微動 | 測試人員決定要做就做 | Moving Speed 為 0 或沒讀時，照手冊先扶到起始姿勢再上扭力 |
+| H3 單軸微動 | 測試人員決定要做就做 | 第 18 版會一起寫入速度；板子還是第 17 版（Moving Speed 可能是 0）時，照手冊先扶到起始姿勢再上扭力 |
 | H4～H8 | BLOCKED | 程式還沒完成（D8、coordinator 拒絕實機模式），不是權限問題 |
 
 H1 做完後，把 H1 的資料整理好、存進紀錄，再問測試人員要往哪個階段走。有新的方向結果和模擬不同時，提醒他後面的量測可能要等模型修正，由他決定要不要先繼續。
@@ -112,7 +112,7 @@ P0
 
 H0
 - 控制板的 /dev/serial/by-id/ 完整路徑
-- cm530_probe 完整輸出：status、韌體版本、home.arm1、home.arm2（預期 [90,567,712,825]、[590,567,712,825]）、8 個 position
+- cm530_probe 完整輸出：status、韌體版本、home.arm1、home.arm2（預期兩臂都是 [256,512,512,512]）、8 個 position
 - 手推手臂時 position 是否改變
 
 H1（照 HARDWARE_TEST_GUIDE.md「2026-11-10 之後還要補的項目」那張表，逐項交回）
@@ -123,7 +123,7 @@ H1（照 HARDWARE_TEST_GUIDE.md「2026-11-10 之後還要補的項目」那張�
 - 泡棉板短邊的直接量測（F1、F2 各一次）
 - C 區 8 個格位中心在 F2、L 上的讀值，以及格位編號怎麼對應（有標記就拍照；沒有就記下離使用者最近、靠 B 區的是哪一格）
 - 示教 READ：arm2 吸盤對準每個 C 格中心、離表面約 5 mm；arm1、arm2 各對準 B 區中央一次。這些只是量測資料，不可填進任何實機設定
-- 8 顆馬達的 Moving Speed（register 32），用 RoboPlus 或 DYNAMIXEL Wizard 讀，讀前關掉其他占用序列埠的程式。0 代表最高速
+- 只有板子還是第 17 版時：8 顆馬達的 Moving Speed（register 32），用 RoboPlus 或 DYNAMIXEL Wizard 讀，讀前關掉其他占用序列埠的程式。0 代表最高速。第 18 版不需要
 - 馬達 ID 15 線材狀態：手動轉動時 READ 是否連續變化
 - 所有長度都寫明是在哪條膠帶上、從哪一點量到哪一點
 

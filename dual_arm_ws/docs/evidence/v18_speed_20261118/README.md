@@ -46,3 +46,12 @@ The first colcon test run failed `LinkTest.ReadsFirmwareHomePresets` (still expe
 - FTDI latency timer 1 ms on the Orin (udev rule in ORIN_DEPLOYMENT.md): NOT_RUN.
 - Real cycle time, stutter and sway after the change: NOT_RUN.
 - `docs/evidence/hardware/20261111_H1/pose_guide.py` still speaks v17 (57600) and was not changed (evidence).
+
+## Alignment pass (same day, later)
+
+Comments, the HMI demo counts (`fake_source.py`), the formal `calibration.yaml` `expected_home` (the board's
+2026-11-13 `GET_HOME`, 256,512,512,512) and the operating docs (HARDWARE_TEST_GUIDE H0/H1/HOME, ORIN_DEPLOYMENT,
+REQUIREMENTS, HOME_POSES, TEST_PLAN, RESUME, handoff prompts; notes on SOURCE_AUDIT and FUTURE_ROADMAP) now
+describe v18. `run_alignment_tests.sh`: cm530_hardware 45 PASS, HMI 322 PASS, coordinator test_tools 32 PASS.
+The first HMI run failed `test_hardware_motion_shows_both_counts` (still expected the old demo count 90); fixed.
+Simulation HOME (`runtime.json`) still derives from the old v17 values and was not changed.

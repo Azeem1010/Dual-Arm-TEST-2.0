@@ -8,14 +8,14 @@ RADIANS_PER_COUNT = math.radians(300.0) / 1023.0
 NEAR_LIMIT_RAD = math.radians(5.0)
 # Target minus actual above this is highlighted; the arms only move one joint step at a time.
 LARGE_ERROR_DEG = 2.0
-# AX/HOME/POS values are AX-12A raw positions 0..1023 (v17 interface spec 1.3).
+# AX/HOME/POS values are AX-12A raw positions 0..1023 (CM-530 interface spec 1.3).
 PROTOCOL_RAW_RANGE = (0, 1023)
 
 JOINT_LABELS = ('j1 底座', 'j2 肩', 'j3 肘', 'j4 腕')
 _JOINT_SUFFIXES = ('shoulder_pan', 'shoulder_lift', 'elbow_flex', 'wrist_flex')
 ARMS = ('arm1', 'arm2')
 JOINT_NAMES = tuple(f'{arm}_arm_{suffix}_joint' for arm in ARMS for suffix in _JOINT_SUFFIXES)
-# Motor IDs per joint, v17 interface spec 1.2; also in cm530_hardware/config/calibration.yaml.
+# Motor IDs per joint, CM-530 interface spec 1.2; also in cm530_hardware/config/calibration.yaml.
 MOTOR_IDS = dict(zip(JOINT_NAMES, (17, 3, 2, 15, 12, 1, 8, 16)))
 EMPTY = '—'
 

@@ -250,6 +250,6 @@ def test_hardware_read_only_shows_firmware_counts_but_no_target(app):
 def test_hardware_motion_shows_both_counts(app):
     window = open_window(app, 'hw_blocked', (1920, 1080))
     cells = window.motor_panel.rows['arm1_arm_shoulder_pan_joint'][1]
-    assert cells['raw'].text() == '90' and cells['raw_target'].text() == '90'
+    assert cells['raw'].text() == '256' and cells['raw_target'].text() == '256'
     assert cells['motor_id'].text() == '17'
     window.close()

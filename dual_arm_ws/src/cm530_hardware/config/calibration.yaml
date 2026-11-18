@@ -6,16 +6,20 @@
 #
 # Motion additionally requires status: PASS, evidence_kind: physical,
 # hardware_use_allowed: true, moving_speed_verified: true and a measured
-# max_step_raw. The firmware never writes Moving Speed (register 32), so confirm
-# its value on the motors before setting moving_speed_verified.
+# max_step_raw. Firmware v18 (protocol 6, which the driver requires) writes Moving
+# Speed with every goal; set moving_speed_verified only after the arms have been
+# seen moving at the commanded speeds on v18.
+#
+# expected_home: the board's GET_HOME on 2026-11-13 (both arms 256,512,512,512,
+# also the HOME in v18 arm_config.h); the v17 source used to say 90/590,567,712,825.
 status: NOT_RUN
 evidence_kind: none
 hardware_use_allowed: false
 moving_speed_verified: false
 max_step_raw: null
 expected_home:
-  arm1: [90, 567, 712, 825]
-  arm2: [590, 567, 712, 825]
+  arm1: [256, 512, 512, 512]
+  arm2: [256, 512, 512, 512]
 joints:
   arm1_arm_shoulder_pan_joint: {motor_id: 17, zero_raw: null, direction: null, min_raw: null, max_raw: null}
   arm1_arm_shoulder_lift_joint: {motor_id: 3, zero_raw: null, direction: null, min_raw: null, max_raw: null}

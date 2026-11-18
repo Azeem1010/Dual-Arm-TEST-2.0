@@ -56,9 +56,9 @@ https://github.com/xian1022/CM530_ROS_BRIDGE/blob/main/docs/images/dual-arm-flow
 - Arm 1：17、3、2、15
 - Arm 2：12、1、8、16
 
-Serial：57600 baud、8N1。
+Serial：1,000,000 baud、8N1（韌體第 18 版、協定 6；第 17 版是 57600、協定 5）。
 
-必須依實際第 17 版韌體確認指令、ID 與回傳格式，不能虛構控制協定。
+必須依實際的第 18 版韌體（`third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/`）確認指令、ID 與回傳格式，不能虛構控制協定。第 18 版的 AX 會帶每軸 Moving Speed，HOME 與 HOLD 用預設速度 100。
 
 ### 4. OpenCV 三相機 ROS 2
 

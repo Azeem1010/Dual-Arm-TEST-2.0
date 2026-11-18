@@ -8,7 +8,7 @@
 你要在一台新的電腦上接手 ROS 2 Jazzy 雙機械手臂專案。請用繁體中文回報。使用者和組員會在現場操作實體手臂，你協助他們。
 
 專案：https://github.com/xian1022/dual_arm_system （main 分支，工作區在 dual_arm_ws/）
-硬體：兩支 PhantomX Pincher、一片 CM-530（韌體 v17，協定 5）、8 顆 AX-12A、ESP32 吸盤、三顆相機。目標是把瓶蓋 A→B→C 搬運。
+硬體：兩支 PhantomX Pincher、一片 CM-530（韌體第 18 版，協定 6、1 Mbps，AX 帶 Moving Speed；2026-11-18 完成，燒錄前板上仍是第 17 版）、8 顆 AX-12A、ESP32 吸盤、三顆相機。目標是把瓶蓋 A→B→C 搬運。
 
 ## 第一步：確認環境（只讀，不動硬體）
 
@@ -82,7 +82,7 @@ B. 不需要實機的開發，建議順序
 - kinematics.yaml 是 position_only_ik: true，要用本地 CadKinematics 的朝下 IK，不能用 MoveIt 的姿態目標。
 - TCP 是 arm1_tcp，MoveIt 基座是 arm1_base_link，視覺輸出 arm1_base，必須經 TF。
 - 實機不可使用 SRDF 的 home named state，那是模擬值。實機 HOME 由 calibration.yaml 換算。
-- CM-530 開機時扭力是關的，重置會立刻關扭力，手臂會掉。韌體沒有 STOP 也沒有 watchdog。第 17 版韌體無法寫入或讀取 Moving Speed，值 0 代表最高速。
+- CM-530 開機時扭力是關的，重置會立刻關扭力，手臂會掉。韌體沒有 STOP 也沒有 watchdog。第 17 版韌體不寫 Moving Speed（值 0 代表最高速）；第 18 版每次寫入目標都會一起寫入速度，HOME／HOLD 用 100。
 - ESP32 沒有真空感測，/suction_status 只是命令回音。coordinator 故障時不要自動送 0，持有中的物件會掉落；只有操作員按「強制停止」或「關閉系統」才送 0（使用者 2026-11-17 決定）。
 - 模擬速度 1.0／0.5／1.0 不能用在實機，實機由 0.05 起步。
 - 改 C/C++ 要跑 ASan/UBSan、TSan（docs/evidence/wp8/wp8.sh sanitize）。

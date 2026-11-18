@@ -32,7 +32,7 @@ _CALL_TIMEOUT_S = 3.0
 _CONTROLLERS_MAX_AGE_S = 3.0
 _STATUS_MAX_AGE_S = 1.5
 _COMMAND_MAX_AGE_S = 1.0
-# A failed READ must not leave the last counts on screen (v17 spec 6.2), so they expire quickly.
+# A failed READ must not leave the last counts on screen (CM-530 interface spec 6.2), so they expire quickly.
 _COUNTS_MAX_AGE_S = 1.0
 _CONNECTED_MAX_AGE_S = 2.0
 _ANNOTATION_MAX_AGE_S = 1.0

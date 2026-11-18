@@ -166,7 +166,7 @@ for arm in (1,2):
         ET.SubElement(joint,'command_interface',name='position')
         ET.SubElement(ET.SubElement(joint,'state_interface',name='position'),'param',name='initial_value').text='0.0'
         ET.SubElement(joint,'state_interface',name='velocity')
-        # AX-12A counts exactly as the v17 firmware reported them; hardware only.
+        # AX-12A counts exactly as the firmware reported them; hardware only.
         counts = ET.SubElement(joint,'xacro:if',value="${'$(arg mode)' == 'hardware'}")
         for name in ('raw_position','raw_target'):
             ET.SubElement(counts,'state_interface',name=name)

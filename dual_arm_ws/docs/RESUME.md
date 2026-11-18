@@ -112,8 +112,8 @@
 ## 已知來源與工具
 
 - 照片：已複製為 [reference/physical_camera_mount.png](reference/physical_camera_mount.png)（2026-11-10 核對 MD5 與原暫存檔相同），cad/README.md 引用的是這份。
-- 韌體來源：`third_party/CM530_ROS_BRIDGE/17 ROS to CM530 ver. dual arm/APP/inc/arm_config.h`。
-- home_A=[90,567,712,825]、home_C=[590,567,712,825]；原始位置值不是 URDF rad。CAD 零位 raw offset / 方向尚缺，已透過非同步問題詢問使用者。
+- 韌體來源：`third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/APP/inc/arm_config.h`（第 18 版，協定 6，1 Mbps）。
+- home_A=home_C=[256,512,512,512]（2026-11-13 起；第 17 版原始碼原本是 [90,567,712,825]、[590,567,712,825]）；原始位置值不是 URDF rad。CAD 零位 raw offset / 方向尚缺，已透過非同步問題詢問使用者。
 - SolidWorks COM `SldWorks.Application` 註冊存在，尚未驗證自動化能否啟動。沒有授權修改來源 checkout；工作副本應置於 `cad/`，匯出與生成器改指向工作副本。
 - CAD 主組合：`third_party/dual_arm_3d/雙臂_交付/完成_雙臂總組合.sldasm`；STEP：同目錄 `雙臂總組合.STEP`。
 - 末端主零件 arm1 component_010、011、019；arm2 component_231、232、240。尚不能僅憑名稱假定哪個是鏡頭支架，需檢視幾何。

@@ -154,7 +154,7 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
 
 ### H1 手動確認方向
 
-全程扭力關閉，不發任何動作命令。使用韌體附的 `manual_position_terminal.py`，步驟在 `third_party/CM530_ROS_BRIDGE/17 ROS to CM530 ver. dual arm/HOME_CALIBRATION_TEST.md` 第 3、4 節。不要輸入 `demo`、`HOME`、`AX`、`HOLD`。
+全程扭力關閉，不發任何動作命令。使用韌體附的 `manual_position_terminal.py`，步驟在 `third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm/HOME_CALIBRATION_TEST.md` 第 3、4 節（終端預設 1 Mbps，只能連第 18 版）。不要輸入 `demo`、`HOME`、`AX`、`HOLD`。
 
 1. 扶住手臂，送 `TORQUE,arm1,0`，用 `READ,arm1` 記下基準值。
 2. 站在底座後方，面向手臂前方，把底座往**手臂自身右方**轉一小段，再 `READ,arm1`。
@@ -163,7 +163,7 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
 5. 用同樣方式確認 j2 上抬時讀值的增減（D1）。從 j2 往場地側前傾約 30° 的姿勢開始，並記錄是往場地側還是往底座後方轉；2026-11-10 那次起點太接近垂直，方向無法判斷。
 6. arm2 重複相同步驟。
 
-同時確認：實體急停可用、馬達 ID 15 的線材、Moving Speed。第 17 版韌體無法讀取 Moving Speed，要用其他工具，例如 RoboPlus 或 DYNAMIXEL Wizard，且使用時要先關閉其他占用序列埠的程式。
+同時確認：實體急停可用、馬達 ID 15 的線材。第 18 版每次寫入目標都會一起寫入 Moving Speed，不必另外讀取；只有板子還是第 17 版時，才要用 RoboPlus 或 DYNAMIXEL Wizard 讀，且要先關閉其他占用序列埠的程式。
 
 如果結果和目前的模擬配置（A 區在手臂右方、j1 方向 +1，見 COORDINATE_FRAMES.md）不符，要先修正模擬配置與 `runtime.json`，並依 [TEST_PLAN.md](TEST_PLAN.md) 第 4 節重跑檢查。
 

@@ -171,7 +171,7 @@ ls -l /dev/serial/by-id/
 
 ## H0 唯讀連線
 
-**目的：** 確認電腦能和 CM-530 通訊，韌體是 v17。只會送 `VERSION`、`PING`、`GET_HOME`、`READ`。
+**目的：** 確認電腦能和 CM-530 通訊，韌體是第 18 版（1 Mbps、協定 6）。只會送 `VERSION`、`PING`、`GET_HOME`、`READ`。板子還是第 17 版時這一步會失敗，先燒錄第 18 版（見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md)「控制板韌體第 18 版與 USB latency」）。
 
 ```bash
 ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
@@ -180,8 +180,8 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
 | 看什麼 | 應該是 |
 |---|---|
 | `status` | `PASS` |
-| `home.arm1` | `[90,567,712,825]` |
-| `home.arm2` | `[590,567,712,825]` |
+| `home.arm1` | `[256,512,512,512]` |
+| `home.arm2` | `[256,512,512,512]` |
 | `position` | 8 個數字都有，用手輕推手臂時會改變 |
 
 **通過：** 上表都符合。把輸出存檔。
@@ -195,9 +195,9 @@ ros2 run dual_arm_coordinator cm530_probe --port /dev/serial/by-id/<控制板>
 全程不發動作命令，並用韌體附的終端：
 
 ```bash
-cd "third_party/CM530_ROS_BRIDGE/17 ROS to CM530 ver. dual arm"
+cd "third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm"
 python3 -m pip install -r requirements.txt
-python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板> --baud 57600
+python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板>
 ```
 
 指令打在程式的提示符號後面，每次一筆，等回覆再送下一筆。Windows 也可以做，步驟相同，埠改成 `COM4` 這類名稱。
@@ -227,7 +227,7 @@ python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板> --baud 
 
 | 項目 | 方法 | 記錄 |
 |---|---|---|
-| Moving Speed | 關掉終端，用 RoboPlus 或 DYNAMIXEL Wizard 讀 8 顆馬達的 register 32。**值為 0 代表最高速** | 8 個數值 |
+| Moving Speed | 第 18 版每次寫入目標都會一起寫入速度，不必另外讀。只有板子還是第 17 版時，才要用 RoboPlus 或 DYNAMIXEL Wizard 讀 8 顆馬達的 register 32（0 代表最高速） | 第 18 版：不需要 |
 | 馬達 ID 15 的線材 | 目視，手動轉動時 READ 要連續變化 | 正常／異常 |
 | 底座實際位置 | 畫圓法（3.1 節）求軸心，再讀到 A、B、C 三區邊界的距離 | 工作表、`fit_axis_circle` 報告與照片 |
 
@@ -247,7 +247,7 @@ python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板> --baud 
 | C 區 8 個格位 | 每格中心在 F2、L 上的讀值；格位上若有編號標記拍照，沒有就記錄「離使用者最近、靠 B 區」的是哪一格 | 模擬假設格位 1、2 最靠近使用者，要確認 |
 | C 區格位示教 | Arm 2 扭力關閉，用手把吸盤對準每格中心、離表面約 5 mm，`READ,arm2` | 直接得到關節目標，不受軸心量測誤差影響 |
 | B 區交接點示教 | 兩支手臂各一次，吸盤對準 B 區中央 | 同上 |
-| Moving Speed、馬達 ID 15 線材 | 上表 | 上次未做 |
+| 馬達 ID 15 線材（Moving Speed 在第 18 版不必讀） | 上表 | 上次未做 |
 
 示教時手臂扭力是關的，要一直扶著。示教的 READ 只是量測資料，**不可以直接填進 `calibration.yaml` 或任何實機設定**，由開發端換算、和校正結果核對後才使用。
 
@@ -279,10 +279,10 @@ python3 manual_position_terminal.py --port /dev/serial/by-id/<控制板> --baud 
 
    ```bash
    python3 docs/evidence/hardware/20261111_H1/pose_guide.py --port /dev/serial/by-id/<控制板> \
-     --arm arm1 --target 90,567,712,825 --tol 20 --log home_arm1_<時間>.csv
+     --arm arm1 --target 256,512,512,512 --tol 20 --log home_arm1_<時間>.csv
    ```
 
-   四軸都顯示 `OK` 後保持姿勢，按 Ctrl+C。arm2 的目標是 `590,567,712,825`。也可以在韌體終端反覆 `READ,arm1` 對照。
+   四軸都顯示 `OK` 後保持姿勢，按 Ctrl+C。arm2 的目標也是 `256,512,512,512`（板上 HOME，2026-11-13 起）。也可以在韌體終端反覆 `READ,arm1` 對照。
 3. 繼續扶著，重新開韌體終端（H1 的指令），輸入 `HOME,arm1`，等 `OK` 回覆。扭力是關的，這一步只寫入目標，手臂不會動。
 4. 輸入 `TORQUE,arm1,1`。手臂會小幅移到 HOME 並保持住，手可以慢慢放開。**突然大幅跳動、抖個不停或有異音，立刻按急停。**
 5. `READ,arm1`，記錄讀值和 HOME 的差（到位誤差）。
@@ -382,7 +382,7 @@ ros2 topic pub -r 5 /dual_arm/status std_msgs/msg/String "{data: '{\"active_arm\
 **前置：**
 
 - 一人只守 CM-530 電源開關，手放在開關上，這是唯一的急停。
-- 手臂先扶到 HOME 附近（照 [HOME 定位](#home-定位) 的出力前檢查）。Moving Speed 上電可能是 0（最高速），prototype 校正把每個控制週期的目標變化限制在 20 raw。
+- 手臂先扶到 HOME 附近（照 [HOME 定位](#home-定位) 的出力前檢查）。第 18 版每筆 AX 都帶速度，不會再全速衝；prototype 校正仍把每個控制週期的目標變化限制在 20 raw，當作安全閘門。
 - C 區八格清空、A 區瓶蓋放在黑框內（見 V1）。
 - ESP32 吸盤：介面啟動時會自動開 micro-ROS agent（設定檔要填 `hardware.esp32_port`，見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節），不要再手動另開；agent 啟動 3 秒後會自動用 RTS 重開 ESP32，不用按 EN（2026-11-18，`esp32_reset_delay_s`）。「強制停止」與「關閉系統」都會讓泵和閥全關，吸住的瓶蓋會掉，按之前先確認下方沒有人手或易碎物。吸錯手臂就對調 `src/dual_arm_coordinator/config/prototype/coordinator.yaml` 的 `esp32_modules`。
 

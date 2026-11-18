@@ -1,5 +1,8 @@
 # Source audit — 2026-11-08
 
+> 2026-11-18：本文件查核的是第 17 版（協定 5）。目前韌體是第 18 版（協定 6、1 Mbps、AX 帶 Moving Speed、HOME 256,512,512,512），說明見 `third_party/CM530_ROS_BRIDGE/README.md` 與 `docs/evidence/v18_speed_20261118/`。下文第 34 行「韌體從不寫 Moving Speed」只適用於第 17 版。
+
+
 Exact commits: sources.lock.json. Four requested repositories cloned into third_party. Integration copies live in src; no firmware edits made.
 
 | Source | Finding |

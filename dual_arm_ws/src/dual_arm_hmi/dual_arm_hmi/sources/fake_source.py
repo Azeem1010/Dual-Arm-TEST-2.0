@@ -30,8 +30,8 @@ STEP_PERIOD_S = 1.2
 
 _PREFILLED = (True, True) + (False,) * 6
 _HOME_POSE = (0.10, -0.60, 0.95, 0.40, -0.10, -0.60, 0.95, 1.44)
-# Demonstration counts around the v17 board HOME (arm_config.h home_A / home_C).
-_HOME_RAW = (90, 567, 712, 825, 590, 567, 712, 825)
+# Demonstration counts around the board HOME (v18 arm_config.h home_A / home_C).
+_HOME_RAW = (256, 512, 512, 512, 256, 512, 512, 512)
 _DEMO_RAW_SPAN = 200
 _READY_ZONES = ZoneView(a_has_object=True, b_has_object=False, b_arm_clear=True, c_count=2)
 _CAL_PASS = {name: CameraStatus(fps=15.0, age_s=0.04, calibration='PASS') for name in CAMERAS}
