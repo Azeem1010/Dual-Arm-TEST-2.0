@@ -20,7 +20,7 @@
 4. 只有在沒有 build/ 時才安裝與建置：sudo bash scripts/install_jazzy.sh（需要使用者同意）、bash scripts/build.sh。不要把別台電腦的 build/、install/、log/ 複製過來。
 5. 建立基準，全部不需要硬體，結果回報給使用者：
    (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)
-   應為 285 passed。操作介面：(cd src/dual_arm_hmi && QT_QPA_PLATFORM=offscreen python3 -m pytest -q -p no:cacheprovider test)，應為 293 passed。
+   2026-11-18（`24e4c8f`）為 508 passed。操作介面：(cd src/dual_arm_hmi && QT_QPA_PLATFORM=offscreen python3 -m pytest -q -p no:cacheprovider test)，為 322 passed。之後有新增測試時數字會變大，有 failed 才要回報。兩者都要先 source install/setup.bash。
    python3 scripts/test_cm530_mock.py
    這支會覆寫 docs/evidence/ 的舊紀錄，跑完先把結果另存，再用 git restore 還原舊檔。
 
@@ -34,15 +34,15 @@
 
 文件可能過時。以程式碼和 docs/evidence/ 的最新紀錄為準。
 
-## 目前狀態（2026-11-11）
+## 目前狀態（2026-11-18）
 
-- 模擬：coordinator 在 Gazebo 完成兩物體 A→B→C、故障停止與人工復歸。區域和格位用 Gazebo 真值，只有 arm1 取料點可由視覺決定。
-- cm530_hardware、安全監控、ESP32 後端只用 Mock 或替身節點驗證。實機全部 NOT_RUN，所有實機步驟都還沒執行過。
-- config/calibration.yaml 刻意全為 null，coordinator_node 會拒絕實機模式。
-- 2026-11-10 H1（arm1）已確認 A 區在手臂右方、j1 方向 +1，模擬已依此修改。arm2 的 H1、j2 的方向與零點仍待手冊的 H1 解決（D1）。
-- 模型只有 cap_3～6 與部分格位可達，模擬編號的格位 1 搆不到，八件搬運是已知 FAIL（D3）。使用者 2026-11-11 提供的實物編號和模擬差 180°（1、2 在最靠近手臂 2 的一排），改編號併入階段 C，現場量測後和場地尺寸一起改。
-- 操作介面（dual_arm_hmi）階段 0～3 在模擬可用：啟停系統、開始、取消、強制停止、回 HOME、復歸。實機模式只接通強制停止，實機預設用 ROS domain 0（`hardware.ros_domain_id`）、模擬用 43。
+- 模擬：coordinator 在 Gazebo 完成 A→B→C、故障停止與人工復歸，可放滿 8 格（格位 8 用傾斜吸盤）。場地、格位編號已依 2026-11-11 實測（階段 C）。區域和格位用 Gazebo 真值，只有 arm1 取料點可由視覺決定。
+- 實機運作模式（Prototype，使用者 2026-11-13 決定的例外）：`hardware_prototype.launch.py` 或介面「實機運作模式」，用估計校正（檔頭 `PROTOTYPE ESTIMATE`）、環境相機 env_scene 判斷 A/B/C、ESP32 吸盤自動確認，CM-530 電源開關是唯一急停。B 區與 C 格用示教關節值（2026-11-18 重新示教，C8 維持 11-11 值），A→B、B→C 不經 HOME（`direct_transfer`）、固定關節路徑、故障後自動續跑最多 3 次；兩臂同時動作（`overlap`）已合入但預設關。2026-11-17～18 在實機跑過多輪（11-18 一輪 9 次取件成功 8 次）。結果不算任何 H 階段 PASS 或校正證據。
+- 嚴格實機模式：config/calibration.yaml 刻意全為 null，coordinator_node 會拒絕 `mode: hardware`；H2 以後全部 NOT_RUN，急停心跳（D8）沒做。
+- H1：A 區在手臂右方、兩臂 j1 方向 +1，模擬已依此修改；各軸零點仍未量（D1）。arm2 j1 讀值 11-17 起整體偏 −306（原因未確認，原型校正已跟著改）。
+- 操作介面（dual_arm_hmi）：模擬可啟停系統、開始、取消、強制停止、回 HOME、復歸；實機運作模式另有上扭力並一起啟動 ESP32 agent（3 秒後自動用 RTS 重開 ESP32）；嚴格實機模式只接通強制停止。實機預設用 ROS domain 0（`hardware.ros_domain_id`）、模擬用 43。
 - safety_supervisor 鎖定時會把手動啟動的控制器再停掉（C32，只驗證 Mock），約有 0.3 秒空窗，所以手動切換依然禁止。
+- 已知問題：arm1 匯流排偶發 DXL_CORRUPT/TIMEOUT（懷疑線材）；A 區某些位置的瓶蓋吸不起來。最新細節看 docs/PROGRESS.md 最上面。
 
 ## 絕對禁止
 
@@ -53,7 +53,7 @@
 
 下面這些在任何情況都不可以：
 
-- 在 calibration.yaml、homography 或實機 controllers 檔填入估計值、模擬值或別的專案的數值。量測值只能由現場量到的結果而來。
+- 在 calibration.yaml、homography 或實機 controllers 檔填入估計值、模擬值或別的專案的數值。量測值只能由現場量到的結果而來。唯一例外是實機運作模式的 `*_prototype.yaml` 與 `dual_arm_coordinator/config/prototype/`（規則見 AGENTS.md）。
 - 為了通過檢查而放寬關節限位、容差、碰撞規則，或修改測試使其通過。
 - 把 hardware_use_allowed、moving_speed_verified 設為 true，除非使用者提供了對應的實測紀錄並要求你填。
 - 序列逾時後自動重送。AX 命令一律不重送。

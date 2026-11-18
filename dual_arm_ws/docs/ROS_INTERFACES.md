@@ -78,7 +78,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/safety/status` | `std_msgs/msg/String`（JSON） | 安全鎖定狀態、原因，以及實際查證的 `controllers_stopped` | transient_local、depth 1；5 Hz |
 
 | `/suction_command` | `std_msgs/msg/Int32` | ROS→ESP32，僅實機。`0` 全關，`1`／`2` 模組 1 吸取／釋放，`3`／`4` 模組 2。coordinator 與操作介面（強制停止、關閉系統送 `0`）都會發布 | E0 已接真正的 ESP32（2026-11-13） |
-| `/suction_status` | `std_msgs/msg/Int32` | ESP32→ROS，命令回音，不是真空感測 | 尚未接真正的 ESP32 |
+| `/suction_status` | `std_msgs/msg/Int32` | ESP32→ROS，命令回音，不是真空感測 | E0 與實機運作模式已接真正的 ESP32（2026-11-13、11-17～18） |
 
 depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位以 [vision_interfaces/msg](../src/vision_interfaces/msg) 為準，依 `AGENTS.md` 不可改動。
 
@@ -165,7 +165,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | `hardware.launch.py enable_motion:=true` | 上述 + inactive 的 arm controller；`use_moveit` 預設時加 `move_group`；非 Mock 時加 `safety_supervisor`。`controllers_file` 的容差必須是實測值 | 相機、吸盤、相機 TF |
 | `vision.launch.py` | 環境相機與 `arm_camera:=arm1` 或 `arm2` 指定的最多一顆手臂鏡頭（預設 none）、對應的視覺節點（`vision_nodes:=false` 可省略），需要時加 `image_rotate_node` | 手臂與 MoveIt；兩顆手臂鏡頭同時 |
 | `vision_hardware.launch.py` | 環境相機、`env_scene_node`、`env_scene_bridge`、`arm_camera_switch`（手臂鏡頭輪流） | 手臂視覺節點、`calibration_status`、直接啟動的手臂鏡頭 |
-| `hardware_prototype.launch.py` | `hardware.launch.py`（prototype 校正與 controllers、`enable_motion:=true`、`require_estop:=false`）+ `vision_hardware.launch.py` + `coordinator_node`（`config/prototype`、`observation_source:=env_scene`、`require_safety:=false`） | 急停心跳；結果不算校正證據 |
+| `hardware_prototype.launch.py` | `hardware.launch.py`（prototype 校正與 controllers、`enable_motion:=true`、`require_estop:=false`）+ `vision_hardware.launch.py` + `coordinator_node`（`config/prototype`、`observation_source:=env_scene`、`require_safety:=false`）；`esp32_port` 有值時加 micro-ROS agent，`esp32_reset_delay_s`（預設 3.0，0 = 關）後執行 `esp32_reset.py` 用 RTS 重開 ESP32（2026-11-18） | 急停心跳；結果不算校正證據 |
 
 ## 已知缺口
 
@@ -175,7 +175,7 @@ depth 取自程式碼；DDS graph 查詢回報的 depth 都是 0。訊息欄位�
 | 2 | Coordinator 只有在 `observation_source:=vision_pick` 時才檢查 `/vision/calibration_status`，且只檢查 arm1 | 區域與格位的校正閘門還沒有實際使用 |
 | 3 | 已解決（上游 4a40f30）：`usb_cam` 的 `frame_id` 改為 `*_camera_optical_frame`，與 `dual_arm_vision_adapter/config/hardware/*.yaml` 一致 | — |
 | 4 | 上游 4a40f30 只把 `header.frame_id` 改成 `armN_base_link`，座標數值的計算沒變，仍是 `armN_base` 軸向（與 `armN_base_link` 差 +90° yaw 與 z 0.014）。`vision` gateway 不看 `header.frame_id`，用 `coordinator.yaml` 的 `vision_base_frame: armN_base` 經 TF 轉換；模擬有 static TF，實機 TF 尚未發布，需要量測值 | 不可依 `header.frame_id` 直接當 `armN_base_link` 使用；需與上游確認座標是否要真的改成 `armN_base_link` 軸向。軸向見 [COORDINATE_FRAMES.md](COORDINATE_FRAMES.md) |
-| 5 | 已部分解決（WP12）：`gripper` gateway 有 `esp32` 後端，協定依 ray000518/micro-ros（`/suction_command`、`/suction_status`），只用替身節點驗證；ESP32 只回命令回音，沒有真空感測（D5） | 吸取結果仍要人工 token 確認；`/gripper/*` 只存在於模擬 |
+| 5 | 已部分解決（WP12）：`gripper` gateway 有 `esp32` 後端，協定依 ray000518/micro-ros（`/suction_command`、`/suction_status`），E0（2026-11-13）與實機運作模式已用真正的 ESP32；ESP32 只回命令回音，沒有真空感測（D5） | 吸取結果仍要人工 token 確認；`/gripper/*` 只存在於模擬 |
 | 6 | Coordinator 會同步 PlanningScene，但場景沒有平台、泡棉、相機支架，碰撞模型仍是保守方塊（WP11） | 路徑碰撞驗證不完整 |
 | 7 | 相機 static TF 只在 `sim.launch.py` 發布 | 實機沒有相機 TF |
 | 8 | `demo_pick_place.launch.py` 不含視覺節點；`calibration.launch.py` 只有狀態監看 | 含視覺的流程目前由測試腳本分開啟動 |

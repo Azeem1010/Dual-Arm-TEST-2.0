@@ -1,4 +1,4 @@
-# 續接工作紀錄 — 2026-11-09
+# 續接工作紀錄 — 2026-11-18
 
 ## 使用者最新要求（取代先前保留錯誤 CAD 的限制）
 
@@ -10,6 +10,9 @@
 6. 持續更新本檔，額度或對話中斷後可直接續接。
 
 ## 最新狀態（優先於以下全部內容）
+
+- 2026-11-18 下午（Orin 現場，`60b91ca`、`24e4c8f`）：arm1 持物到 B 上方時 j2 下垂 5.6 count 而故障，新增 `b_teach.above_arrival_tolerance_raw: 6`；arm2 到 C7 上方差 5.3 count，新增 `c_slot_teach.above_arrival_tolerance_raw: 6`（接觸姿勢仍 4）。下降補正的路徑在模型中會碰撞時跳過、保留已到高度，不再故障（使用者決定）。arm2 的 B 與 C1～C8 重新示教；C8 新值 j2 830 在模型中 link_2 撞底座（816 起），改回 11-11 值。ESP32 在 agent 啟動 3 秒後自動用 RTS 重開（`esp32_reset_delay_s`），agent 部分實機 PASS，從介面完整啟動未確認。介面名稱「實機 Prototype」改為「實機運作模式」，舊設定仍可讀。12:55 一輪 9 次取件成功 8 次；A 區一顆瓶蓋（x −125、y 0 mm）連續 3 次吸不起，懷疑瓶蓋或座位，未確認。arm1 匯流排偶發 DXL_CORRUPT/TIMEOUT，懷疑線材，未查。
+- 2026-11-18 晚（開發電腦）：`prototype-field-20261118b` 快轉合入 `main` 並推送；WSL 上 coordinator 508、HMI 322 測試 PASS；兩份 README、HARDWARE_TEST_GUIDE、ORIN_DEPLOYMENT、UI_PLAN、ROS_INTERFACES、TEST_REPORT、交接 prompt 已對照程式更新。下一步：從介面完整啟動確認 ESP32 自動重開、查 arm1 線材、用 TIMING 分段表找最慢的步驟，穩定後再試 overlap。
 
 - 2026-11-18（Orin）：`main` 快轉到 `47b9b5c` 並重建，`build.sh` 與模型檢查 PASS，coordinator 501、HMI 320 測試 PASS；Mock Serial 開 overlap（固定路徑）在 Orin 重跑也 PASS，但結束後殘留一個 `robot_state_publisher`（腳本的殘留檢查沒包含它，已手動關掉）。使用者選做法 2：不改 src/ 和 git，只暫時改 install 裡的副本讓模擬模式能開 overlap，跑 Gazebo 回歸 `two`，PASS：兩件放進格位 1、2，兩臂確實同時動作（arm1 去 A 取下一件時 arm2 去 B 拿上一件；arm1 放 B 時 arm2 送 C），B 區交接順序正確。跑完已把 src 原檔複製回 install（`colcon build` 沒蓋掉較新的檔案），`cmp` 一致。沒測到：互相等待 x 範圍（這次沒發生）、overlap 的 `faults`／`batch`、相機、原型的示教點與固定路徑、實機。overlap 在原型設定仍預設關，模擬模式仍不允許。見 `docs/evidence/orin_overlap_20261118/`。
 

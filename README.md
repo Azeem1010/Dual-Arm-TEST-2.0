@@ -36,16 +36,16 @@ git clone --recurse-submodules https://github.com/xian1022/dual_arm_system.git
 |---|---|
 | 建置專案、Gazebo 模擬、RViz | ✅ 可用 |
 | 兩物體 A→B→C 搬運（coordinator） | ✅ 模擬可用，含故障停止與人工復歸；區域與格位判斷用 Gazebo 真實座標 |
-| CM-530 驅動、軟體安全監控 | 🟡 只測過 Mock Serial 與 MoveIt mock，還沒接實機 |
-| 八物體完整搬運 | ❌ 未完成，目前模型只搆得到 4 個物件、7 個 C 格 |
-| 視覺自動定位 | 🟡 模擬中取料點可由視覺決定。實機改由環境相機（env_scene）判斷 A/B/C，手臂鏡頭只監控並輪流開；程式已完成，env_scene 用上游 6b3d5c1（2026-11-13 現場尺量的 C 格位置），等 Orin 驗證；2026-11-13 起操作介面顯示 env_scene 的框線影像 |
-| ESP32 吸盤 | 🟡 2026-11-13 E0 在 Orin 實測：重燒韌體（腳位 12/13/25/26），指令 1、2 是 arm1、3、4 是 arm2，約 1 秒吸穩；斷電後要重開 agent 才會重連；還沒在搬運流程中使用，見 [E0 紀錄](dual_arm_ws/docs/evidence/hardware/20261113_E0/record.md) |
-| 操作介面 | 🟡 模擬中可啟停系統、開始、取消、強制停止、回 HOME、復歸；嚴格實機模式只接通強制停止，尚未在 Orin 開過 |
-| 實機 Prototype | 🟡 2026-11-13 新增：用估計校正讓實機跑完整流程（不要求精準），介面選「實機 Prototype」或 `hardware_prototype.launch.py`；只測過 Mock Serial，結果不算校正證據，見 [實機測試手冊](dual_arm_ws/docs/HARDWARE_TEST_GUIDE.md#prototype-模式) |
-| Orin 部署 | 🟡 2026-11-10 已在 Orin 安裝、建置並通過離線測試與 Mock；唯讀連線 PASS，手動方向確認只做完 Arm 1 |
+| CM-530 驅動、軟體安全監控 | 🟡 嚴格實機模式只測過 Mock Serial 與 MoveIt mock；驅動已在實機運作模式下帶動實機（估計校正） |
+| 八物體完整搬運 | 🟡 模擬可放滿 8 格（格位 8 用傾斜吸盤）；實機運作模式 2026-11-17 跑到 C 格 8（FULL），2026-11-18 12:55 一輪 9 次取件成功 8 次 |
+| 視覺自動定位 | 🟡 模擬中取料點可由視覺決定。實機由環境相機（env_scene）判斷 A/B/C，手臂鏡頭只監控並輪流開；實機運作模式已用它找 A 區瓶蓋、確認 B 區與 C 格占用；env_scene 用上游 6b3d5c1（2026-11-13 現場尺量的 C 格位置），操作介面顯示它的框線影像 |
+| ESP32 吸盤 | 🟡 實機運作模式的搬運流程已在使用（吸取自動確認，韌體沒有真空感測）。2026-11-13 E0 實測：重燒韌體（腳位 12/13/25/26），指令 1、2 是 arm1、3、4 是 arm2，約 1 秒吸穩。2026-11-18 起 agent 隨系統啟動，3 秒後自動用 RTS 重開 ESP32，不必再按 EN；「強制停止」「關閉系統」會讓吸盤全關 |
+| 操作介面 | 🟡 模擬可啟停系統、開始、取消、強制停止、回 HOME、復歸；「實機運作模式」可上扭力、解除鎖定、回 HOME、開始，已在 Orin 使用；嚴格實機模式只接通強制停止 |
+| 實機運作模式（Prototype） | 🟡 2026-11-13 起用估計校正讓實機跑完整流程（不要求精準，結果不算校正證據），介面選「實機運作模式」或 `hardware_prototype.launch.py`。B 區與 C 格用示教關節值（2026-11-18 重新示教）、A→B、B→C 不經 HOME、固定關節路徑、故障後自動續跑；每輪的分段時間記在 `~/.ros/dual_arm/timing/`。兩臂同時動作（overlap）已合入但預設關。見 [實機測試手冊](dual_arm_ws/docs/HARDWARE_TEST_GUIDE.md#prototype-模式) |
+| Orin 部署 | 🟡 2026-11-18 Orin 的 `main` 在 `47b9b5c` 重建，測試與 Mock Serial PASS，之後的現場修正（`60b91ca`、`24e4c8f`）在 Orin 上直接修改並執行；嚴格模式的實機步驟只做到 H1 |
 | 實機校正 | ❌ 未完成，需要現場量測 |
 
-**實機控制預設關閉**，必須完成實測校正才能開啟。任務節點目前也會拒絕以實機模式啟動。
+**嚴格實機控制預設關閉**，必須完成實測校正才能開啟，任務節點也會拒絕以嚴格實機模式（`mode: hardware`）啟動。實機運作模式是使用者 2026-11-13 決定的例外：用估計值跑完整流程，CM-530 電源開關是唯一急停，結果不能當成校正或 H 階段的證據。
 
 ## 工作區配置
 
@@ -137,7 +137,20 @@ flowchart TD
     IDLE --> START
 ```
 
-每一步開始前都會檢查取消與急停（`guard()`），watchdog 每 0.1 秒發布 `/dual_arm/permit`；安全監控失效時 `safety_supervisor` 會停用控制器。每一步的狀態都先寫入 journal 再動作，所以中斷後能知道手臂停在哪一步、手上有沒有東西。
+每一步開始前都會檢查取消與急停（`guard()`），watchdog 每 0.1 秒發布 `/dual_arm/permit`；安全監控失效時 `safety_supervisor` 會停用控制器。每一步的狀態都先寫入 journal 再動作，所以中斷後能知道手臂停在哪一步、手上有沒有東西。每一步的耗時（規劃、移動、到位、等相機、吸盤等待）會記成 `TIMING` 紀錄，任務結束印出 `TIMING SUMMARY`，CSV 寫在 journal 旁的 `timing/`。
+
+### 實機運作模式和上圖的差異
+
+實機運作模式（`config/prototype/coordinator.yaml`）在上圖的流程上加了幾個開關，模擬與嚴格實機模式不受影響：
+
+| 設定 | 效果 |
+|---|---|
+| `b_teach`、`c_slot_teach` | B 區交接與 C 格放置直接到示教的關節值，不經 IK；接近點在示教點正上方，下降與抬起走關節直線 |
+| `direct_transfer` | Arm 1 從 A 上方直接到 B 上方、Arm 2 從 B 上方直接到 C 上方，不再持物回 HOME；B 區互鎖在 PREFLIGHT 就取得，Arm 2 回 HOME 且相機看到 B 區已空才釋放 |
+| `fixed_transits` | 非接觸移動（HOME、A/B/C 上方）先走關節直線，逐點通過碰撞檢查才執行，否則退回 MoveIt 規劃 |
+| `a_pick_offset_xy_m`、`a_press_m`、`descent_correction` | A 區取料點偏移、多壓 6 mm；下降不足時再補一次（模型會碰撞時改為保留已到高度） |
+| `auto_resume` | 故障後兩臂回 HOME、自動復歸並繼續剩下的件數，每次啟動最多 3 次；取消、急停或可能持物時不會續跑 |
+| `overlap`（預設關） | 連續搬運：Arm 2 送 C 時 Arm 1 去 A 取下一件，兩臂同時動作，以 x 範圍預約避免碰撞；和 `direct_transfer` 不能同時開，只在 Mock Serial 與 Gazebo 試過 |
 
 ### 模擬畫面
 
@@ -163,7 +176,7 @@ flowchart TD
     RC --> HW[CM-530 驅動]
     HW --> MOTOR[八顆 AX-12A]
     GRIP --> SIMG[Gazebo 吸附]
-    GRIP -.E0 實測過指令與吸放.-> ESP[ESP32 micro-ROS]
+    GRIP -.實機運作模式.-> ESP[ESP32 micro-ROS]
 ```
 
 ## 三相機畫面
@@ -178,9 +191,9 @@ flowchart TD
 
 ![操作介面：Arm 1 帶著物件下降到 B 區](dual_arm_ws/docs/images/ui_working.png)
 
-*2026-11-11 在 Gazebo 模擬中實際擷取：Arm 1 持物下降到 B 區，B 區互鎖由 Arm 1 佔用，Arm 2 禁止進入。*
+*2026-11-12 在 Gazebo 模擬中實際擷取（階段 C 後重拍）：Arm 1 持物下降到 B 區，B 區互鎖由 Arm 1 佔用，Arm 2 禁止進入。*
 
-用 `ros2 run dual_arm_hmi hmi` 開啟，可以啟動與關閉模擬、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸；實機模式目前只接通強制停止。用法見[安裝與使用指南第 5 節](dual_arm_ws/README.md)，規格見 [UI_PLAN.md](dual_arm_ws/docs/UI_PLAN.md)。畫面說明：模擬相機在介面使用的 `~/.ros/dual_arm_calib/sim` 沒有產生校正，三格都標「校正 FAIL」；區域狀態只是視覺參考，任務決策用 Gazebo 真值（右上「決策來源」）。環境相機在目前配置開機時找不到場地，顯示 `ZONES MISSING`。C 區格位圖用的是模擬的編號，和實物差 180°，階段 C 一起改。事件紀錄的故障會置頂。
+用 `ros2 run dual_arm_hmi hmi` 開啟，可以啟動與關閉模擬、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸。「實機運作模式」另外開放上扭力，啟動時一起帶起 ESP32 的 micro-ROS agent；嚴格實機模式只接通強制停止。用法見[安裝與使用指南第 5 節](dual_arm_ws/README.md)，規格見 [UI_PLAN.md](dual_arm_ws/docs/UI_PLAN.md)。畫面說明：模擬相機在介面使用的 `~/.ros/dual_arm_calib/sim` 沒有產生校正，三格都標「校正 FAIL」；區域狀態只是視覺參考，任務決策用 Gazebo 真值（右上「決策來源」）。環境相機在目前配置開機時找不到場地，顯示 `ZONES MISSING`。C 區格位圖依實物編號，1 號在左上（2026-11-12 階段 C）。事件紀錄的故障會置頂。
 
 ## 模擬與實機
 

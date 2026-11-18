@@ -206,14 +206,14 @@ src/dual_arm_hmi/
 | Mock Serial | `hardware.launch.py use_mock_serial:=true` | 否，用來測啟動步驟 |
 | 實機唯讀 | `hardware.launch.py` 加 `vision_hardware.launch.py`（環境相機決策、手臂鏡頭輪流監控，2026-11-12） | 否 |
 | 實機動作 | 同上加 `enable_motion:=true`，選實測的 controllers 檔 | `BLOCKED`（沒有 coordinator，介面只接通強制停止） |
-| 實機 Prototype | `hardware_prototype.launch.py`：估計校正、無急停心跳、環境相機、coordinator（2026-11-13）；介面依 URDF 中的 `calibration_prototype` 辨識，開放上扭力（`/controller_manager/set_hardware_component_state`）、解除鎖定、回 HOME、開始任務，頂部顯示 PROTOTYPE 提示 | 可以（不算校正證據） |
+| 實機運作模式（2026-11-18 前叫「實機 Prototype」） | `hardware_prototype.launch.py`：估計校正、無急停心跳、環境相機、coordinator（2026-11-13）；填了 `hardware.esp32_port` 時一起啟動 micro-ROS agent，3 秒後自動用 RTS 重開 ESP32（2026-11-18）。介面依 URDF 中的 `calibration_prototype` 辨識，開放上扭力（`/controller_manager/set_hardware_component_state`）、解除鎖定、回 HOME、開始任務，頂部顯示「實機運作模式」提示。舊名存下的 `settings.json` 與執行中的 launch 仍可讀（`LEGACY_MODE_NAMES`） | 可以（不算校正證據） |
 
 - `safety_supervisor` 在模擬要設 `require_estop:=false`，否則沒有心跳會一直鎖定。
 - 各模式獨立於 UI 執行，UI 當掉時系統不跟著結束，重開可接回。
 - 模擬、Mock、Mock Serial 的 `ROS_DOMAIN_ID`、`GZ_PARTITION` 和 `scripts/start_sim.sh` 一致（43）。
 - 實機改用 `hardware.ros_domain_id`（預設 0，不受環境變數影響），和模擬相同或不是 0～101 的整數時拒絕啟動，避免模擬的回授與影像混進實機。選擇模式時監看節點跟著換到該模式的 domain，系統執行中不換；接回先前的系統時用該系統的 domain。
 - 就緒以 `list_controllers` 為準，spawner 可能誤報失敗（ROS_INTERFACES 缺口 10）。
-- `cycles` 是介面上的啟動選項（模擬），`prefilled_slots` 在設定檔，任務中都不能改。
+- `cycles` 是介面上的啟動選項「搬運件數」（模擬與實機運作模式），`prefilled_slots` 在設定檔，任務中都不能改。
 - 設定檔：套件內 `config/profiles.yaml`，使用者覆寫放 `~/.ros/dual_arm_hmi/profiles.yaml`。實機的 `port`、`controllers_file` 沒填時拒絕啟動並說明原因。三顆相機路徑填 `hardware.env_cam_device`、`arm1_cam_device`、`arm2_cam_device`；沒填的改用 `vision_pkg` 的 `config/cameras.yaml`，事件紀錄會提醒，兩處都空的相機不啟動。
 - 工作階段記錄在 `~/.ros/dual_arm_hmi/session.json`，每次啟動的紀錄檔在 `~/.ros/dual_arm_hmi/logs/`。
 - 啟動的每個程序都帶 `DUAL_ARM_HMI_SESSION` 標記；關閉時依序送 SIGINT、SIGTERM、SIGKILL，再清除同一個 `GZ_PARTITION` 的 Gazebo 與帶標記的殘留程序。

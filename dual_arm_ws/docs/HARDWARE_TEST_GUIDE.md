@@ -1,6 +1,6 @@
 # 實機測試手冊
 
-更新：2026-11-11。給現場操作的人照順序做。團隊成員都是同等層級：本手冊裡要「決定」的事，由現場做完安全檢查的成員決定，決定和理由寫進當天的紀錄，不需要另外找人授權。P0、H0、H1 已在 2026-11-10～11 實機執行過（[evidence/hardware/](evidence/hardware/README.md)），**其餘步驟都還沒有在實機上執行過（`NOT_RUN`）**，指令依目前的程式撰寫，遇到和手冊不符的情況要停下來記錄，不要自己改數值繼續。
+更新：2026-11-18。給現場操作的人照順序做。團隊成員都是同等層級：本手冊裡要「決定」的事，由現場做完安全檢查的成員決定，決定和理由寫進當天的紀錄，不需要另外找人授權。P0、H0、H1、V0、E0 已在 2026-11-10～13 實機執行過，Prototype 模式（實機運作模式）2026-11-17～18 在實機上跑過多輪（[evidence/hardware/](evidence/hardware/README.md)、[PROGRESS.md](PROGRESS.md)）；**H2 以後的嚴格模式步驟都還沒有在實機上執行過（`NOT_RUN`）**，指令依目前的程式撰寫，遇到和手冊不符的情況要停下來記錄，不要自己改數值繼續。
 
 Orin 的安裝與 ESP32 agent 的建置見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md)，各級的驗收定位見 [TEST_PLAN.md](TEST_PLAN.md) 第 6 節。
 
@@ -17,7 +17,7 @@ Orin 的安裝與 ESP32 agent 的建置見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.
 | [V0](#v0-相機檢查) | 三顆相機接線與畫面方向 | 否 | 可以 |
 | [V1](#v1-手臂鏡頭輪流與環境相機) | 手臂鏡頭輪流、頻寬、環境相機判斷 | 否 | 可以（env_scene 6b3d5c1） |
 | [E0](#e0-esp32-吸盤通電檢查) | 吸盤命令與時間 | 否，吸盤會作動 | 可以 |
-| [Prototype](#prototype-模式) | 用估計值跑完整流程（偵測、規劃、A 取、B 交接、C 放） | **會** | 可以（2026-11-13 使用者決定；不算任何階段 PASS） |
+| [Prototype](#prototype-模式) | 用估計值跑完整流程（偵測、規劃、A 取、B 交接、C 放） | **會** | 可以（2026-11-13 使用者決定；2026-11-17～18 已實機運作；不算任何階段 PASS） |
 | [H2](#h2-校正量測) | 量測校正值 | 由人手扳 | 要先訂門檻（D6） |
 | [H3](#h3-單軸微動) | 單軸 ±10 raw，確認方向與穩態誤差 | **會** | H1 完成後；和 H2 互相驗證 |
 | [H4](#h4-ros-關節空間小幅運動) | 透過 ROS 小幅動作 | **會** | 要先決定心跳來源（D8） |
@@ -355,21 +355,39 @@ ros2 topic pub -r 5 /dual_arm/status std_msgs/msg/String "{data: '{\"active_arm\
 
 **和嚴格模式差在哪：** 馬達校正、controllers 容差、coordinator 設定都用估計值（檔頭標 `PROTOTYPE ESTIMATE`）；不要求急停心跳（D8 沒做）；吸盤結果自動確認。位置可能偏好幾公分、吸不起來都屬預期。**結果不算任何 H 階段 PASS，也不能當校正證據。**
 
-**C 格用示教關節值（2026-11-13）：** Arm 2 放置時直接到 `coordinator.yaml` 的 `c_slot_teach.raw`（11-11 H1 示教，壓著瓶蓋），不經 IK。第一次跑時先看 Arm 2 到格子上方是否對準，再看下壓高度。壓太深就加大 `release_lift_m`；某格偏了，扭力關閉扶到正確位置讀 raw，改該格那一行，再用 `python3 scripts/teach_to_slots.py --from-config` 檢查（不加這個選項時讀 11-11 的 CSV）。改完要重建 `dual_arm_coordinator`。
+**C 格用示教關節值（2026-11-13，2026-11-18 重新示教）：** Arm 2 放置時直接到 `coordinator.yaml` 的 `c_slot_teach.raw`（C1～C7 是 11-18 重新示教，C8 維持 11-11 值，因為新值在模型中 link_2 會撞底座；都是壓著瓶蓋示教），不經 IK。第一次跑時先看 Arm 2 到格子上方是否對準，再看下壓高度。壓太深就加大 `release_lift_m`；某格偏了，扭力關閉扶到正確位置讀 raw，改該格那一行，再用 `python3 scripts/teach_to_slots.py --from-config` 檢查（不加這個選項時讀 11-11 的 CSV）。改完要重建 `dual_arm_coordinator`。
 
-**B 區用示教關節值（2026-11-15）：** Arm 1 放下、Arm 2 吸起都直接到 `coordinator.yaml` 的 `b_teach.raw`（11-11 H1 示教，壓著瓶蓋；arm1 用重做那筆），不經 IK。Arm 2 仍要相機看到 B 區有一個物件才會動。第一次跑時兩臂各自先看到 B 區上方是否在中央，再看下壓高度。壓太深就加大 `contact_lift_m`。兩臂對不準時，扭力關閉扶到正確位置讀 raw，改 `b_teach.raw` 該臂那一行，用 `python3 scripts/teach_to_slots.py --from-config` 檢查，再重建 `dual_arm_coordinator`。
+**B 區用示教關節值（2026-11-15）：** Arm 1 放下、Arm 2 吸起都直接到 `coordinator.yaml` 的 `b_teach.raw`（arm1 是 11-11 H1 重做那筆，arm2 是 11-18 重新示教，都壓著瓶蓋），不經 IK。Arm 2 仍要相機看到 B 區有一個物件、且在 arm2 示教接觸點 `b_pick_tolerance_m`（10 mm）內才會動。第一次跑時兩臂各自先看到 B 區上方是否在中央，再看下壓高度。壓太深就加大 `contact_lift_m`。兩臂對不準時，扭力關閉扶到正確位置讀 raw，改 `b_teach.raw` 該臂那一行，用 `python3 scripts/teach_to_slots.py --from-config` 檢查，再重建 `dual_arm_coordinator`。
+
+**到位容差：** 示教點的接觸姿勢要求每軸差 4 count 內（`arrival_tolerance_raw`）；B 區與 C 格的上方點放寬到 6 count（`above_arrival_tolerance_raw`，2026-11-18：Arm 1 持物時肩關節下垂約 5.6 count、Arm 2 到 C7 上方差 5.3 count 而故障）。
+
+**加速與自動續跑（2026-11-17）：** 下列開關都在 `config/prototype/coordinator.yaml`，刪掉該行（區塊）後重建就回到原本的做法。
+
+| 設定 | 現在的值 | 作用 |
+|---|---|---|
+| `direct_transfer` | 開 | A 上方直接到 B 上方、B 上方直接到 C 上方，不持物回 HOME |
+| `fixed_transits` | 開 | HOME 與各區上方之間走關節直線；任一點碰撞檢查不過或吸盤低於兩端 5 mm 以上，就退回 MoveIt。log 出現 `fixed joint path refused` 代表退回 |
+| `grasp_settle_s` | 1.2 s | 吸取後等多久再抬起；放開仍等 `vacuum_settle_s` 2.0 s。吸取後瓶蓋掉落就調高 |
+| `a_pick_offset_xy_m`、`a_press_m` | 往 B 2 mm、多壓 6 mm | A 區取料修正 |
+| `descent_correction` | 容差 2 mm、最多再降 5 mm、2 次 | 讀值顯示下降不足時再降；補降路徑在模型中會碰撞時跳過，保留已到的高度（2026-11-18） |
+| `auto_resume.max_resumes` | 3 | 故障後兩臂回 HOME、自動復歸、繼續剩下的件數；取消、強制停止、可能持物、回 HOME 或復歸失敗時不續跑 |
+| `overlap` | 關（註解掉） | 兩臂同時動作；要試時先把 `direct_transfer` 改成 false，兩者不能同時開。只在 Mock Serial 與 Gazebo 跑過 |
+
+速度：`transport_scale` 0.6、`contact_scale` 0.2、`acceleration_scale` 0.3。驅動 log 出現 `exceeds max_step_raw` 代表一個控制週期的目標變化超過 20 raw。
+
+**時間紀錄：** 每一步一行 `TIMING`，任務結束一段 `TIMING SUMMARY`，CSV 在 `~/.ros/dual_arm/timing/`。要找哪一步最慢就看這裡。
 
 **前置：**
 
 - 一人只守 CM-530 電源開關，手放在開關上，這是唯一的急停。
 - 手臂先扶到 HOME 附近（照 [HOME 定位](#home-定位) 的出力前檢查）。Moving Speed 上電可能是 0（最高速），prototype 校正把每個控制週期的目標變化限制在 20 raw。
 - C 區八格清空、A 區瓶蓋放在黑框內（見 V1）。
-- ESP32 吸盤：介面啟動時會自動開 micro-ROS agent（設定檔要填 `hardware.esp32_port`，見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節），不要再手動另開。「強制停止」與「關閉系統」都會讓泵和閥全關，吸住的瓶蓋會掉，按之前先確認下方沒有人手或易碎物。吸錯手臂就對調 `src/dual_arm_coordinator/config/prototype/coordinator.yaml` 的 `esp32_modules`。
+- ESP32 吸盤：介面啟動時會自動開 micro-ROS agent（設定檔要填 `hardware.esp32_port`，見 [ORIN_DEPLOYMENT.md](ORIN_DEPLOYMENT.md) 第 6.1 節），不要再手動另開；agent 啟動 3 秒後會自動用 RTS 重開 ESP32，不用按 EN（2026-11-18，`esp32_reset_delay_s`）。「強制停止」與「關閉系統」都會讓泵和閥全關，吸住的瓶蓋會掉，按之前先確認下方沒有人手或易碎物。吸錯手臂就對調 `src/dual_arm_coordinator/config/prototype/coordinator.yaml` 的 `esp32_modules`。
 
-**啟動：** 操作介面選「實機 Prototype」→ 啟動系統；或
+**啟動：** 操作介面選「實機運作模式」（2026-11-18 前叫「實機 Prototype」）→ 啟動系統；或
 
 ```bash
-ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-id/<控制板> cycles:=1
+ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-id/<控制板> esp32_port:=/dev/serial/by-id/<ESP32> cycles:=1
 ```
 
 接著在介面依序按：**上扭力**（CM-530 開始出力，手臂保持原姿態）→ **解除鎖定**（啟動手臂控制器）→ **回 HOME**（勾選已清空）→ **開始任務**。用終端機的話：

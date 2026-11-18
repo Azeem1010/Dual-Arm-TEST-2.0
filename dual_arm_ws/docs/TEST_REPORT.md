@@ -1,5 +1,19 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-18 prototype field fixes on the Orin (afternoon) and WSL recheck
+
+Changes made on the Orin between field runs (`60b91ca`, `24e4c8f`), then fetched to the development PC and rechecked there. Prototype results never count as calibration or H stage evidence. Details: PROGRESS.md (2026-11-18 afternoon), evidence/esp32_auto_reset_20261118/, evidence/hardware/20261118_B_TEACH/, evidence/hardware/20261118_C_TEACH/.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| ESP32 restart through RTS after the agent starts (agent part of `hardware_prototype.launch.py`, real board) | PASS | session about 4.7 s after the agent; `/suction_command 2` echoed |
+| Same, started from the operator UI's 啟動系統 | NOT_RUN | |
+| arm2 B and C1–C8 re-taught (torque off, hand-guided) | PASS as readings | model: C slots 4.8 mm from the camera grid on average (was 8.1) |
+| Re-taught C8 in the model | FAIL | `/check_state_validity`: arm2 link_2/base from j2 816; C8 kept at its 11-11 value (user decision) |
+| Re-taught B and C1–C7 through full cycles | NOT_RUN as recorded | later runs that day used them; no separate record |
+| Unit tests on WSL at `24e4c8f`: coordinator / HMI | PASS | 508 / 322 (2026-11-18, development PC, against the existing install tree) |
+| arm1 bus DXL_CORRUPT/TIMEOUT | FAIL (intermittent) | cable suspected, not checked |
+
 ## 2026-11-18 Orin: build, tests and overlap without hardware
 
 `main` at `47b9b5c` on the Jetson Orin; nothing real moved. The Gazebo run used a temporary patch of the installed coordinator only (simulation mode allowed to use overlap), restored afterwards. Details: evidence/orin_overlap_20261118/README.md.

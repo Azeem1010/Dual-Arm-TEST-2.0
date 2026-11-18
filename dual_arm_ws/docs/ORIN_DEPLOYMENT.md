@@ -1,6 +1,6 @@
 # Jetson AGX Orin 部署與實機放行
 
-更新：2026-11-11。**2026-11-10 在 Orin 實際執行過安裝、建置、離線測試、Mock、P0、H0（唯讀連線）與 arm1 的 H1（evidence/hardware/）；其餘步驟與所有馬達動作都還沒執行（`NOT_RUN`）。** 指令依目前的程式撰寫，實際操作時請記錄結果，放到 `docs/evidence/`。
+更新：2026-11-18。**2026-11-10～13 在 Orin 實際執行過安裝、建置、離線測試、Mock、P0、H0（唯讀連線）、兩臂的 H1（部分項目）、V0 與 E0；2026-11-17～18 用實機運作模式（Prototype，估計校正）在實機上跑過多輪 A→B→C（evidence/hardware/、PROGRESS.md）。嚴格模式（H2 以後）的步驟與馬達動作都還沒執行（`NOT_RUN`）。** 指令依目前的程式撰寫，實際操作時請記錄結果，放到 `docs/evidence/`。
 
 **現場照順序操作請用 [HARDWARE_TEST_GUIDE.md](HARDWARE_TEST_GUIDE.md)。** 本文件是部署細節與 ESP32 的補充。安裝步驟與基本連線另見 [README.md](../README.md) 第 4、6 節，驗收標準見 [TEST_PLAN.md](TEST_PLAN.md) 第 6 節。
 
@@ -15,14 +15,16 @@
 
 ## 2. 目前還不能在實機做的事
 
+下表是嚴格實機模式（`mode: hardware`、`hardware.launch.py enable_motion:=true`）。實機運作模式（`hardware_prototype.launch.py`）是使用者 2026-11-13 決定的例外，用估計值、不要求急停心跳，可以跑完整流程，但結果不算這些項目的 PASS。
+
 | 項目 | 狀態 | 需要什麼 |
 |---|---|---|
-| Coordinator 自動搬運 | `BLOCKED`，節點會拒絕以實機設定啟動 | 視覺 gateway 完成區域判斷（D7）、實機 TF、實機設定 |
+| Coordinator 自動搬運 | `BLOCKED`，節點會拒絕以嚴格實機設定啟動 | 實機 TF、實測設定、急停心跳（D8） |
 | 手臂動作 | `BLOCKED` | 完成第 5 節的校正與全部放行條件 |
 | 控制器長時間啟用 | `BLOCKED` | `/safety/estop` 的實機心跳來源。沒有心跳時 `safety_supervisor` 會保持控制器停用 |
-| 操作介面的實機操作 | 只接通強制停止 | 上扭力、解除鎖定、吸盤確認在介面階段 5；介面也還沒在 Orin 開過視窗（UI_PLAN 第 13 節） |
-| ESP32 吸盤 | `NOT_RUN` | 後端已完成並以替身節點驗證，尚未接真正的 ESP32，見第 6.1 節。韌體沒有真空感測，吸附結果仍要人工確認 |
-| A 區左右、j1 與 j2 方向 | arm1：A 在右、j1 +1 `PASS`（2026-11-10，D0 已決定）；arm1 j2 與 arm2 全部 `BLOCKED` | 第 4 節的手動確認（D1），項目見 HARDWARE_TEST_GUIDE.md「2026-11-10 之後還要補的項目」 |
+| 操作介面的實機操作 | 嚴格模式只接通強制停止 | 實機運作模式已可上扭力、解除鎖定、回 HOME、開始，並在 Orin 使用；嚴格模式的吸盤人工確認還沒做 |
+| ESP32 吸盤 | 嚴格模式 `NOT_RUN` | E0（2026-11-13）實測指令與時間 PASS，實機運作模式的搬運已在使用（自動確認）；韌體沒有真空感測，嚴格模式要人工確認，見第 6.1 節 |
+| A 區左右、j1 與 j2 方向 | arm1：A 在右、j1 +1 `PASS`（2026-11-10，D0 已決定）；arm2 j1 也是 +1、兩臂 j2 往使用者前傾讀值變大（2026-11-11 H1 讀值，和模擬一致）；各軸零點與 Moving Speed 仍 `BLOCKED` | 第 4 節的手動確認（D1），項目見 HARDWARE_TEST_GUIDE.md「2026-11-10 之後還要補的項目」 |
 
 ## 3. 安裝
 
@@ -243,7 +245,11 @@ source install/local_setup.bash
 
 **Prototype 由操作介面啟動時，agent 會跟著系統一起啟動和關閉**（2026-11-17）：在 `~/.ros/dual_arm_hmi/profiles.yaml` 填 `hardware.esp32_port`（agent 不在 `~/microros_ws` 時再填 `hardware.microros_setup`），而且**不要再手動另開 agent**，兩個 agent 會搶同一個序列埠。「關閉系統」會先送 0 讓泵和閥全關，再關掉 agent；「強制停止」也會送 0。以下手動步驟是給不經過介面啟動時使用的。
 
-韌體開機時只試連一次，沒有重連機制。agent 打開序列埠時會重置 ESP32（CP2102 的 DTR/RTS），所以**先接好 ESP32 再開 agent** 就會連上，不用按 EN。
+韌體開機時只試連一次，沒有重連機制，所以 ESP32 要在 agent 開著之後才開機。2026-11-17～18 現場只開 agent 時 ESP32 不一定會被重置（實測 15 秒內沒有連線），都要再按 EN。**2026-11-18 起 `hardware_prototype.launch.py` 會在 agent 啟動 `esp32_reset_delay_s`（預設 3 秒）後執行 `esp32_reset.py`**：RTS 拉一下 0.1 秒（= 按 EN），DTR 保持 off（正常開機，不進燒錄模式），約 2 秒後連上（`docs/evidence/esp32_auto_reset_20261118/`；只測了 agent 部分，從介面整個啟動還沒確認）。設 `esp32_reset_delay_s:=0` 則不自動重開。手動開 agent 時，開好後按一次 EN，或執行：
+
+```bash
+python3 install/dual_arm_bringup/lib/dual_arm_bringup/esp32_reset.py /dev/serial/by-id/<ESP32>
+```
 
 ```bash
 source ~/microros_ws/install/local_setup.bash
@@ -252,7 +258,7 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/serial/by-id/<ESP32> 
 
 確認連上：`ros2 topic info -v /suction_status` 要看到 `suction_controller_node` 是 publisher。
 
-**ESP32 斷電、USB 拔插或線材脫落後，不會自己連回來**（E0 實測，2026-11-13），要重開 agent，或在 agent 開著時按 EN。Coordinator 這時會報 `the suction controller is not connected`。ESP32 的 USB 線要固定好。
+**ESP32 斷電、USB 拔插或線材脫落後，不會自己連回來**（E0 實測，2026-11-13），要重開系統（會再自動重開 ESP32），或在 agent 開著時按 EN／執行上面的 `esp32_reset.py`。Coordinator 這時會報 `the suction controller is not connected`。ESP32 的 USB 線要固定好。
 
 ### 第一次通電前要確認
 
@@ -274,7 +280,7 @@ ros2 topic pub --once /suction_command std_msgs/msg/Int32 "{data: 1}"
 ros2 topic pub --once /suction_command std_msgs/msg/Int32 "{data: 2}"
 ```
 
-`1`、`2` 是模組 1 的吸取、釋放，`3`、`4` 是模組 2，`0` 是全部關閉。**`0` 會停泵，持有中的物件會掉落。** 發生故障時系統不會自動送 `0`，要由人現場處理。
+`1`、`2` 是模組 1 的吸取、釋放，`3`、`4` 是模組 2，`0` 是全部關閉。**`0` 會停泵，持有中的物件會掉落。** coordinator 故障時系統不會自動送 `0`，要由人現場處理；只有操作員按「強制停止」或「關閉系統」才會送 `0`（使用者 2026-11-17 決定）。
 
 ## 7. 發生狀況時
 

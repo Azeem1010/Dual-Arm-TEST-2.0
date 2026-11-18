@@ -1,4 +1,4 @@
-# Development status — 2026-11-15
+# Development status — 2026-11-18
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
@@ -11,7 +11,8 @@ Current status by work package is in MODIFICATION_PLAN.md section 6. Each sectio
 - HMI wording: 實機 Prototype → 實機運作模式, 搬運件數（模擬／Prototype）→ 搬運件數; saved settings and a running launch under the old name still load.
 - 15:25: C8 back to its 11-11 value (user decision). The re-taught C8 has j2 830; the running `/check_state_validity` reports arm2 link_2/base collision from j2 816 (814 valid), raising the tool 1–10 mm does not help, the old C8 is valid. Optional `c_slot_teach.above_arrival_tolerance_raw` (user: 6) after arm 2 reached slot 7 above 5.3 counts off.
 - Field diagnosis: one zone A cap (x −125, y 0 mm) failed three picks in a row while the suction held a cap by hand and the 12:55 run picked 8 of 9; the cap or its seat is suspected, not confirmed.
-- Not done: TEST_REPORT.md and RESUME.md; the arm1 bus still shows intermittent DXL_CORRUPT/TIMEOUT (cable suspected, not checked).
+- Not done: the arm1 bus still shows intermittent DXL_CORRUPT/TIMEOUT (cable suspected, not checked).
+- Same evening on the development PC: `prototype-field-20261118b` fast-forwarded into `main` and pushed; coordinator 508 and HMI 322 tests pass on WSL. TEST_REPORT.md, RESUME.md, both READMEs, HARDWARE_TEST_GUIDE (prototype settings table), ORIN_DEPLOYMENT (ESP32 auto restart, prototype vs strict), UI_PLAN, ROS_INTERFACES and the handoff prompts brought in line with the code.
 
 ## Earlier result: overlap in Gazebo, runs on the Orin without hardware (2026-11-18)
 

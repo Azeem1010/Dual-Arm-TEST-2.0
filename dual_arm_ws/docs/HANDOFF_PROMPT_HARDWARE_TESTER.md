@@ -16,7 +16,7 @@
 團隊成員都是同等層級。測試人員就是現場的決定者：他做完安全檢查並明確要求，你就照做，不要要求他再去找別人授權。你的責任是把風險說清楚、確認安全檢查做了、把決定和理由記進紀錄。
 
 專案：https://github.com/xian1022/dual_arm_system（main 分支，工作區 dual_arm_ws/）
-之前現場的結果在 dual_arm_ws/docs/evidence/hardware/README.md（最上面一節最新）。2026-11-11 為止：SETUP、P0、H0 PASS；H1 兩支手臂的方向、伸直、HOME、板寬、C 格位與示教都已取得，只剩 Moving Speed 沒讀（畫圓法可選）；V0 已用 by-path 完成相機對應。已完成的項目不必重做。兩支手臂上次結束時扭力是關的，上電前要扶好。
+之前現場的結果在 dual_arm_ws/docs/evidence/hardware/README.md（最上面一節最新）。2026-11-11 為止：SETUP、P0、H0 PASS；H1 兩支手臂的方向、伸直、HOME、板寬、C 格位與示教都已取得，只剩 Moving Speed 沒讀（畫圓法可選）；V0 已用 by-path 完成相機對應；2026-11-13 E0 吸盤 PASS；2026-11-17～18 用實機運作模式（估計校正，不算校正資料）在實機跑過完整搬運。已完成的項目不必重做。兩支手臂上次結束時扭力是關的，上電前要扶好。
 硬體：兩支 PhantomX Pincher（每支 4 顆 AX-12A，共 8 顆）、一片 CM-530（韌體 v17）、ESP32 吸盤（micro-ROS）、三顆 USB 相機。最終目標是把瓶蓋 A→B→C 搬運，但這次只做到取得校正資料為止。
 馬達 ID：arm1 的 j1～j4 = 17、3、2、15；arm2 = 12、1、8、16。
 
@@ -56,8 +56,8 @@
    source /opt/ros/jazzy/setup.bash
    source install/setup.bash
 6. 離線基準測試，全部不需要硬體。結果要記錄：
-   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 預期 293 passed
-   (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)           # 預期 293 passed（需 QT_QPA_PLATFORM=offscreen 或桌面）
+   (cd src/dual_arm_coordinator && python3 -m pytest -q -p no:cacheprovider test)   # 2026-11-18 為 508 passed
+   (cd src/dual_arm_hmi && python3 -m pytest -q -p no:cacheprovider test)           # 2026-11-18 為 322 passed（需 QT_QPA_PLATFORM=offscreen 或桌面）
    (cd src/vision_pkg && python3 -m pytest -q -p no:cacheprovider tests)           # 預期 100 passed
    colcon test --packages-select cm530_hardware && colcon test-result --verbose     # 預期 42 項全過
    python3 scripts/test_cm530_mock.py                                               # 預期 7 個階段 PASS
@@ -85,7 +85,7 @@
 | H0 唯讀連線 | 要做 | cm530_probe |
 | H1 扭力關閉手動確認方向 | 要做，最重要 | 兩支手臂都要 |
 | V0 相機檢查 | 要做 | 只確認對應與方向，不做校正 |
-| E0 ESP32 吸盤通電 | 要做 | 先建置 micro_ros_agent（ORIN_DEPLOYMENT.md 6.1），先開 agent 再按 EN |
+| E0 ESP32 吸盤通電 | 2026-11-13 已做（PASS） | 接線或韌體改了才重做；先建置 micro_ros_agent（ORIN_DEPLOYMENT.md 6.1），開 agent 後按 EN 或執行 `esp32_reset.py` |
 | H2 校正量測 | 收資料 | 門檻有填才判定；沒填就記 BLOCKED，資料照樣交回 |
 | HOME 定位 | 需要時做 | 例如兩支手臂回 HOME 調整相機；照手冊「HOME 定位」，一次一支 |
 | H3 單軸微動 | 測試人員決定要做就做 | Moving Speed 為 0 或沒讀時，照手冊先扶到起始姿勢再上扭力 |

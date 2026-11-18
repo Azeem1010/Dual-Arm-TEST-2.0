@@ -11,14 +11,14 @@
 | 建置專案 | 可用 | Windows（WSL2）已實測 |
 | Gazebo 模擬與 RViz | 可用 | |
 | 模擬 A→B→C 搬運 | 可用 | 兩個物體已驗證，含故障停止與人工復歸。區域與格位用 Gazebo 的真實座標 |
-| CM-530 驅動程式、安全監控 | 僅模擬測試 | 已用韌體原始碼的 Mock Serial 與 MoveIt mock 測試，**還沒接過實機** |
-| 八個物體完整搬運 | 未完成 | 目前模型只搆得到 4 個瓶蓋、7 個 C 格 |
-| 視覺自動定位 | 部分 | 模擬中 Arm 1 取料點可由視覺決定；區域與格位還沒接，實體相機尚未校正 |
-| ESP32 吸盤 | E0 實測 | 2026-11-13 在 Orin 確認指令對應（1、2 arm1，3、4 arm2）與約 1 秒吸穩，韌體腳位改為 12/13/25/26。韌體沒有真空感測，吸取結果要人工確認（Prototype 自動確認）；斷電後要重開 agent |
-| 操作介面 | 模擬可用 | 啟動／關閉系統、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸，見 5 節「用操作介面」。實機模式只接通強制停止，上扭力與吸盤確認還沒做；還沒在 Orin 開過視窗 |
-| Jetson Orin | 部分實測 | 2026-11-10 已在 AGX Orin 安裝、建置，離線測試、Mock 與 CM-530 唯讀連線都 PASS；實機動作仍未放行 |
+| CM-530 驅動程式、安全監控 | 部分實測 | 嚴格模式只用韌體原始碼的 Mock Serial 與 MoveIt mock 測試；實機運作模式下已帶動實機（估計校正，不算驗收） |
+| 八個物體完整搬運 | 部分 | 模擬可放滿 8 格（格位 8 用傾斜吸盤）；實機運作模式 2026-11-17 跑到 C 格 8，2026-11-18 一輪 9 次取件成功 8 次 |
+| 視覺自動定位 | 部分 | 模擬中 Arm 1 取料點可由視覺決定；實機由環境相機（env_scene）判斷 A/B/C，實機運作模式已在使用；實體相機尚未正式校正 |
+| ESP32 吸盤 | 實機運作模式使用中 | 2026-11-13 E0 確認指令對應（1、2 arm1，3、4 arm2）與約 1 秒吸穩，韌體腳位 12/13/25/26。韌體沒有真空感測，吸取結果要人工確認（實機運作模式自動確認）。2026-11-18 起 agent 隨系統啟動，3 秒後自動用 RTS 重開 ESP32，不用再按 EN |
+| 操作介面 | 模擬、實機運作模式可用 | 啟動／關閉系統、開始工作、取消、強制停止、解除鎖定、回 HOME、復歸，見 5 節「用操作介面」。「實機運作模式」另有上扭力，已在 Orin 使用；嚴格實機模式只接通強制停止 |
+| Jetson Orin | 部分實測 | 2026-11-10 起在 AGX Orin 安裝、建置；2026-11-18 在 `47b9b5c` 重建，coordinator 501、HMI 320 測試與 Mock Serial PASS；實機運作模式在 Orin 上執行，嚴格模式的實機動作仍未放行 |
 
-**實機控制預設是關閉的。** 模擬成功不代表實機可以直接動作，詳見「6. 連接實機」。
+**嚴格實機控制預設是關閉的。** 模擬成功不代表實機可以直接動作，詳見「6. 連接實機」。實機運作模式用估計值，是使用者 2026-11-13 決定的例外，結果不算校正證據。
 
 完整進度在 [docs/PROGRESS.md](docs/PROGRESS.md)。
 
@@ -206,6 +206,7 @@ ros2 run dual_arm_hmi hmi
 
 在右側選「模擬」後按「啟動系統」，就緒後按「開始工作」。按「強制停止」（或 F12）會停用手臂控制器並取消任務，這是軟體停止，不會切斷馬達電源。停止後依序按「解除鎖定」、勾選「我已確認吸盤與 B 區都已清空」、「回 HOME」、再勾選一次後「復歸」，就能再開始。模擬中吸盤上還有瓶蓋時無法清空，介面會提示改按「重置模擬」。
 
+- 實機（Orin）：選「實機運作模式」→ 啟動系統，再依序按上扭力、解除鎖定、回 HOME、開始工作，見[實機測試手冊](docs/HARDWARE_TEST_GUIDE.md#prototype-模式)。
 - 只看不操作：`ros2 run dual_arm_hmi hmi --monitor`，可以同時開第二個；監看實機加 `--hardware`。
 - 不接 ROS 看畫面：`ros2 run dual_arm_hmi hmi --fake`。
 - 設定檔在 `src/dual_arm_hmi/config/profiles.yaml`，要改時複製到 `~/.ros/dual_arm_hmi/profiles.yaml`。實機要填控制板與相機的 by-id 路徑；實機預設用 ROS domain 0（`hardware.ros_domain_id`，不能和模擬相同），模擬用 43。
@@ -289,13 +290,15 @@ ros2 launch dual_arm_bringup hardware.launch.py port:=/dev/serial/by-id/<你的�
 ros2 launch dual_arm_bringup hardware.launch.py use_mock_serial:=true calibration_file:=$PWD/src/cm530_hardware/test/fixtures/calibration_mock.yaml
 ```
 
-### 實機 Prototype（估計值，先跑完整流程）
+### 實機運作模式（Prototype，估計值，先跑完整流程）
 
-2026-11-13 起可以用估計的校正讓實機跑完 A → B → C 整個流程，不要求精準，結果不算校正證據。CM-530 電源開關是唯一急停，要有人守著。步驟見 [實機測試手冊的 Prototype 模式](docs/HARDWARE_TEST_GUIDE.md#prototype-模式)：
+2026-11-13 起可以用估計的校正讓實機跑完 A → B → C 整個流程，不要求精準，結果不算校正證據。CM-530 電源開關是唯一急停，要有人守著。介面上的名稱 2026-11-18 起是「實機運作模式」（舊名「實機 Prototype」存下的設定仍可讀）。步驟見 [實機測試手冊的 Prototype 模式](docs/HARDWARE_TEST_GUIDE.md#prototype-模式)：
 
 ```bash
-ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-id/<你的控制板> cycles:=1
+ros2 launch dual_arm_bringup hardware_prototype.launch.py port:=/dev/serial/by-id/<你的控制板> esp32_port:=/dev/serial/by-id/<ESP32> cycles:=1
 ```
+
+`esp32_port` 有填時會一起啟動 micro-ROS agent，`esp32_reset_delay_s`（預設 3 秒，0 = 關）後自動重開 ESP32。設定都在 `src/dual_arm_coordinator/config/prototype/coordinator.yaml`：B 區與 C 格示教值（`b_teach`、`c_slot_teach`）、不經 HOME 直接搬運（`direct_transfer`）、固定關節路徑（`fixed_transits`）、故障後自動續跑（`auto_resume`）、兩臂同時動作（`overlap`，預設關）。每輪各步驟的耗時記在 `~/.ros/dual_arm/timing/*.csv`。
 
 ### 允許馬達動作
 
@@ -318,7 +321,7 @@ ros2 service call /safety/reset std_srvs/srv/Trigger '{}'
 
 `/safety/reset` 會自動啟動控制器。**不要手動執行 `switch_controllers --activate`**，鎖定時手動啟動的控制器會被安全監控再停掉。目前沒有實機心跳來源，這一步要先決定 D8。
 
-`dual_arm_coordinator` 目前會拒絕實機模式，因為實機 TF、視覺的區域判斷與實測設定都還沒完成。ESP32 吸盤的接線與啟動順序見 [ORIN_DEPLOYMENT.md](docs/ORIN_DEPLOYMENT.md) 第 6.1 節。
+`dual_arm_coordinator` 目前會拒絕嚴格實機模式（`mode: hardware`），因為實機 TF、實測設定與急停心跳都還沒完成；實機運作模式（`mode: prototype`）不受這條限制。ESP32 吸盤的接線與啟動順序見 [ORIN_DEPLOYMENT.md](docs/ORIN_DEPLOYMENT.md) 第 6.1 節。
 
 ## 7. 常用設定
 
@@ -327,6 +330,7 @@ ros2 service call /safety/reset std_srvs/srv/Trigger '{}'
 | 模擬搬運速度 | `src/dual_arm_coordinator/config/sim/runtime.json`、`config/sim/coordinator.yaml` | 搬運 1.0、接觸 0.5、加速度 1.0，只限模擬，不可用在實機 |
 | 模擬 HOME 姿態 | 同上，說明見 [HOME_POSES.md](docs/HOME_POSES.md) | 改完執行 `bash scripts/build.sh` |
 | 實機校正 | `src/cm530_hardware/config/calibration.yaml` | 只能填實測值 |
+| 實機運作模式 | `src/dual_arm_coordinator/config/prototype/coordinator.yaml`、`src/cm530_hardware/config/calibration_prototype.yaml`、`src/dual_arm_controllers/config/controllers_prototype.yaml` | 估計值（檔頭 `PROTOTYPE ESTIMATE`），速度 transport 0.6、contact 0.2；改完重建 `dual_arm_coordinator` |
 | CAD 模型 | 見 [cad/README.md](cad/README.md) | 一般使用不需要 SolidWorks |
 
 C 區是八個 25×25 mm 的白色齊平格位，表面高度 14 mm，10 mm 高的物體放穩後中心高度為 19 mm。
