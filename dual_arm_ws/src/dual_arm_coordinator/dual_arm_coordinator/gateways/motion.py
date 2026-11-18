@@ -64,6 +64,14 @@ def _duration(seconds):
     return Duration(sec=whole, nanosec=int((seconds - whole) * 1e9))
 
 
+def _arrival_tolerance(teach, contact):
+    """Counts allowed at a taught pose: 'above' may be looser, as the shoulder sags there (field runs
+    2026-11-18: arm 1 holding a cap at B above, j2 5.6 counts; arm 2 at slot 7 above, 5.3)."""
+    if contact:
+        return teach['arrival_tolerance_raw']
+    return teach.get('above_arrival_tolerance_raw', teach['arrival_tolerance_raw'])
+
+
 class InvalidState(TaskFault):
     """A checked joint state collides; raised before anything of that path is sent."""
 
@@ -671,7 +679,8 @@ class MotionGateway:
         """pose 'above' or 'release'. A contact move is a joint-space line from the current
         joints, refused when the tool would leave the straight TCP segment by more than
         max_line_drift_m; otherwise MoveIt plans to the joints."""
-        self._move_taught(arm, self._slot(arm, slot)[pose], f'{arm} slot {slot} {pose}', contact, self._teach)
+        self._move_taught(arm, self._slot(arm, slot)[pose], f'{arm} slot {slot} {pose}', contact, self._teach,
+                          _arrival_tolerance(self._teach, pose == 'release'))
 
     # --- taught B hand-over (prototype) ---
 
@@ -700,11 +709,8 @@ class MotionGateway:
         if pose not in ('above', 'contact'):
             raise TaskFault(f'Unknown B pose {pose}')
         target = self._b(arm)['release' if pose == 'contact' else 'above']
-        teach = self._b_teach
-        # A held object pulls the shoulder down at 'above' (field run 2026-11-18, j2 +5.6 counts).
-        tolerance = (teach['arrival_tolerance_raw'] if pose == 'contact'
-                     else teach.get('above_arrival_tolerance_raw', teach['arrival_tolerance_raw']))
-        self._move_taught(arm, target, f'{arm} B {pose}', contact, teach, tolerance)
+        self._move_taught(arm, target, f'{arm} B {pose}', contact, self._b_teach,
+                          _arrival_tolerance(self._b_teach, pose == 'contact'))
         if contact:
             # Taught poses carry no extra lift, so a later held move starts from the cap top.
             self._contact_lift[arm] = 0.0

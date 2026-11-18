@@ -232,6 +232,12 @@ class SlotTeach(unittest.TestCase):
         self.assert_refused(self.with_teach(release_lift_m=0.03), 'release_lift_m must be within [0, 0.02]')
         self.assert_refused(self.with_teach(arrival_tolerance_raw=0), 'arrival_tolerance_raw must be an integer')
         self.assert_refused(self.with_teach(arrival_tolerance_raw=2.5), 'arrival_tolerance_raw must be an integer')
+
+    def test_slot_above_arrival_tolerance_is_optional_and_bounded(self):
+        task_config.validate(self.with_teach(above_arrival_tolerance_raw=6))
+        self.assert_refused(self.with_teach(above_arrival_tolerance_raw=21),
+                            'c_slot_teach.above_arrival_tolerance_raw must be an integer in 1..20')
+        self.assert_refused(self.with_teach(above_arrival_tolerance_raw=3), 'must not be below arrival_tolerance_raw')
         self.assert_refused(self.with_teach(max_line_drift_m=0), 'max_line_drift_m must be within (0, 0.01]')
 
 

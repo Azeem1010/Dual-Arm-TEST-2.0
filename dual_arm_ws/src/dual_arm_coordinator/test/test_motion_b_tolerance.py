@@ -15,6 +15,18 @@ def gateway(teach):
     return g
 
 
+class CAboveTolerance(unittest.TestCase):
+    def test_slot_above_uses_the_looser_value_and_release_keeps_its_own(self):
+        g = MotionGateway.__new__(MotionGateway)
+        g._teach = {'arrival_tolerance_raw': 4, 'above_arrival_tolerance_raw': 6}
+        g._slot = lambda arm, slot: {'above': 'ABOVE', 'release': 'RELEASE'}
+        checked = []
+        g._move_taught = lambda arm, target, label, contact, t, tolerance=None: checked.append((target, tolerance))
+        g.move_slot('arm2', 7, 'above')
+        g.move_slot('arm2', 7, 'release', contact=True)
+        self.assertEqual(checked, [('ABOVE', 6), ('RELEASE', 4)])
+
+
 class BAboveTolerance(unittest.TestCase):
     def test_above_uses_the_looser_value_and_contact_keeps_its_own(self):
         g = gateway({'arrival_tolerance_raw': 4, 'above_arrival_tolerance_raw': 6})

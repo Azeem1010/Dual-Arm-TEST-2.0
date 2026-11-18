@@ -9,6 +9,7 @@ Current status by work package is in MODIFICATION_PLAN.md section 6. Each sectio
 - Re-taught (torque off, hand-guided, last READ): arm2 B `94, 704, 764, 689` and all 8 arm2 C slots. Model distance of the C slots to the camera grid fell from 8.1 to 4.8 mm on average. Evidence: evidence/hardware/20261118_B_TEACH/, 20261118_C_TEACH/. NOT_RUN as a full cycle when recorded; later runs that day used them.
 - ESP32 restarted automatically through RTS (= EN) 3 s after the agent starts in `hardware_prototype.launch.py` (`esp32_reset_delay_s`, 0 = off). Agent part PASS on the real board; from the UI not yet confirmed. Evidence: evidence/esp32_auto_reset_20261118/.
 - HMI wording: 實機 Prototype → 實機運作模式, 搬運件數（模擬／Prototype）→ 搬運件數; saved settings and a running launch under the old name still load.
+- 15:25: C8 back to its 11-11 value (user decision). The re-taught C8 has j2 830; the running `/check_state_validity` reports arm2 link_2/base collision from j2 816 (814 valid), raising the tool 1–10 mm does not help, the old C8 is valid. Optional `c_slot_teach.above_arrival_tolerance_raw` (user: 6) after arm 2 reached slot 7 above 5.3 counts off.
 - Field diagnosis: one zone A cap (x −125, y 0 mm) failed three picks in a row while the suction held a cap by hand and the 12:55 run picked 8 of 9; the cap or its seat is suspected, not confirmed.
 - Not done: TEST_REPORT.md and RESUME.md; the arm1 bus still shows intermittent DXL_CORRUPT/TIMEOUT (cable suspected, not checked).
 

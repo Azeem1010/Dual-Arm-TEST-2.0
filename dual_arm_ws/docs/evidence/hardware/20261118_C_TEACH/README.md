@@ -32,3 +32,10 @@ C8 上方點現在可以在 52 mm（舊值要降到 50 mm），`test_motion_math
 
 - 新姿勢還沒在實機上跑過；放下時若壓太用力，加大 `c_slot_teach.release_lift_m`。
 - arm2 扭力在示教後仍是關的。
+
+## 15:25 C8 改回舊值（使用者決定）
+
+實機運作時 `arm2 slot 8 release: state is invalid ['arm2_cad_link_2/arm2_base_link']`，自動接續 3 次都失敗。
+用運作中的 `/check_state_validity` 掃描：j2 ≥ 816 count 時模型的 link_2 與底座重疊（814 以下 valid），新 C8 的 j2 是 830，抬高 1～10 mm 仍 invalid；舊 C8 `270, 803, 557, 760` valid。
+實機示教時沒有碰撞，是模型碰撞外形較保守。C8 改回 11-11 值（j1 −306），C1～C7 維持新值。
+同時 `c_slot_teach.above_arrival_tolerance_raw: 6`（arm2 到第 7 格上方差 5.3 count 而停）。
