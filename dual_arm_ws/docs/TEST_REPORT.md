@@ -1,5 +1,20 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-19 Orin field diagnosis: sway and missed picks (prototype, firmware v18)
+
+Details: evidence/diag_20261119/README.md. Prototype results never count as calibration or H stage evidence.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| FT232R latency timer 1 ms through udev rule, READ round trip 2.0 ms median (was 16.0), 0 bad | PASS | rtt_latency16.txt, rtt_latency1.txt |
+| Sway removed by latency 1 ms | FAIL | user report, run 13:38 (run_1338_latency1/) |
+| Sway located in the bag: about 4 Hz, only on HOME-outward moves (lift p2p 20-26 vs 3-10 counts) | PASS as analysis | sway_analysis_1344/segments.txt; cause is a judgement, not verified by a change |
+| Sway with speed back to 0.3/0.3 | NOT_RUN | |
+| Compliance slope/margin/punch in firmware | NOT_RUN | needs firmware v19 and an on-site decision to flash |
+| Missed picks: position dependence over 71 picks | PASS as analysis | zone_a_picks_20261118_19.txt |
+| Cap swap and cup offset measurement at (-143, -50) mm | NOT_RUN | |
+| arm1 bus DXL_CORRUPT/TIMEOUT | FAIL (intermittent) | morning only; cable still not checked |
+
 ## 2026-11-18 firmware v18 / protocol 6 (Moving Speed, 1 Mbps) and faster prototype, no hardware
 
 Details and logs: evidence/v18_speed_20261118/README.md.

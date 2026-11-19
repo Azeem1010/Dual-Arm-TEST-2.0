@@ -1,0 +1,8 @@
+# 2026-11-19 after: /etc/udev/rules.d/99-ftdi-latency.rules installed, udevadm trigger --action=add --subsystem-match=usb-serial
+ACTION=="add", SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"
+# cat /sys/bus/usb-serial/devices/ttyUSB0/latency_timer
+1
+# python3 -I rtt.py <FTDI by-id>  (read-only, arms at HOME)
+VERSION (1.3523499947041273, b'VERSION,6')
+READ,arm1 n 200 bad 0 min 1.6 med 2.0 p90 2.0 max 2.5 ms last b'POS,arm1,254,512,511,513'
+READ,arm2 n 200 bad 0 min 1.7 med 2.0 p90 2.0 max 3.0 ms last b'POS,arm2,255,512,512,512'

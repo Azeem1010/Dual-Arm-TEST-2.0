@@ -1,0 +1,102 @@
+[INFO] [1795066597.187466692] [controller_manager]: Using Steady (Monotonic) clock for triggering controller manager cycles.
+[INFO] [1795066597.206323183] [controller_manager]: Subscribing to '/robot_description' topic for robot description.
+[INFO] [1795066597.206545880] [controller_manager]: update rate is 100 Hz
+[INFO] [1795066597.206578233] [controller_manager]: Overruns handling is : enabled
+[INFO] [1795066597.206596154] [controller_manager]: Spawning controller_manager RT thread with scheduler priority: 50
+[WARN] [1795066597.207393627] [controller_manager]: Could not enable FIFO RT scheduling policy: with error number <1>(Operation not permitted). See [https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html] for details on how to enable realtime scheduling.
+[INFO] [1795066597.749169417] [controller_manager]: Received robot description from topic.
+[INFO] [1795066597.749416116] [controller_manager]: Enforcing command limits is disabled. Command limits from URDF will be ignored.
+[INFO] [1795066597.773757889] [controller_manager]: Loading hardware 'DualArmSystem' 
+[INFO] [1795066597.777667555] [controller_manager]: Loaded hardware 'DualArmSystem' from plugin 'cm530_hardware/CM530SystemInterface'
+[INFO] [1795066597.777945230] [controller_manager]: Initialize hardware 'DualArmSystem' 
+[INFO] [1795066597.810142592] [controller_manager]: Successful initialization of hardware 'DualArmSystem'
+[INFO] [1795066597.810794779] [controller_manager]: Setting component 'DualArmSystem' to 'inactive' state.
+[INFO] [1795066597.810896159] [resource_manager]: 'configure' hardware 'DualArmSystem' 
+[INFO] [1795066598.038304850] [controller_manager.hardware_component.system.DualArmSystem]: CM-530 connected on /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH01R3LJ-if00-port0 (motion authorized)
+[INFO] [1795066598.038449656] [resource_manager]: Successful 'configure' of hardware 'DualArmSystem'
+[INFO] [1795066598.038742596] [controller_manager]: Registering statistics for : DualArmSystem
+[INFO] [1795066598.039078097] [controller_manager]: Resource Manager has been successfully initialized. Starting Controller Manager services...
+[INFO] [1795066598.176012296] [controller_manager]: Loading controller : 'joint_state_broadcaster' of type 'joint_state_broadcaster/JointStateBroadcaster'
+[INFO] [1795066598.176125036] [controller_manager]: Loading controller 'joint_state_broadcaster'
+[INFO] [1795066598.182310668] [controller_manager]: Controller 'joint_state_broadcaster' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers_prototype.yaml --params-file /tmp/launch_params_tzi366s4 
+[INFO] [1795066598.244231561] [controller_manager]: Configuring controller: 'joint_state_broadcaster'
+[INFO] [1795066598.244577879] [joint_state_broadcaster]: 'joints' or 'interfaces' parameter is empty. All available state interfaces will be published
+[INFO] [1795066598.276349271] [controller_manager]: Activating controllers: [ joint_state_broadcaster ]
+[INFO] [1795066598.283161712] [controller_manager]: Successfully switched controllers!
+[INFO] [1795066599.087672179] [controller_manager]: Loading controller : 'arm2_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[INFO] [1795066599.087779639] [controller_manager]: Loading controller 'arm2_controller'
+[INFO] [1795066599.094429642] [controller_manager]: Controller 'arm2_controller' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers_prototype.yaml --params-file /tmp/launch_params_tzi366s4 
+[INFO] [1795066599.195427058] [controller_manager]: Configuring controller: 'arm2_controller'
+[INFO] [1795066599.195914406] [arm2_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[INFO] [1795066599.195998921] [arm2_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[INFO] [1795066599.196066412] [arm2_controller]: Using 'splines' interpolation method.
+[INFO] [1795066599.202202089] [arm2_controller]: Action status changes will be monitored at 20.00 Hz.
+[INFO] [1795066599.227289941] [arm2_controller]: Setting initial scaling factor to 1.000000
+[INFO] [1795066599.227387769] [arm2_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [1795066599.768027234] [controller_manager]: Loading controller : 'arm1_controller' of type 'joint_trajectory_controller/JointTrajectoryController'
+[INFO] [1795066599.768160488] [controller_manager]: Loading controller 'arm1_controller'
+[INFO] [1795066599.768889318] [controller_manager]: Controller 'arm1_controller' node arguments: --ros-args --params-file /home/orin/projects/dual_arm_system/dual_arm_ws/install/dual_arm_controllers/share/dual_arm_controllers/config/controllers_prototype.yaml --params-file /tmp/launch_params_tzi366s4 
+[INFO] [1795066599.840162403] [controller_manager]: Configuring controller: 'arm1_controller'
+[INFO] [1795066599.840607926] [arm1_controller]: No specific joint names are used for command interfaces. Using 'joints' parameter.
+[INFO] [1795066599.840683897] [arm1_controller]: Command interfaces are [position] and state interfaces are [position velocity].
+[INFO] [1795066599.840719706] [arm1_controller]: Using 'splines' interpolation method.
+[INFO] [1795066599.845743882] [arm1_controller]: Action status changes will be monitored at 20.00 Hz.
+[INFO] [1795066599.865660320] [arm1_controller]: Setting initial scaling factor to 1.000000
+[INFO] [1795066599.865765092] [arm1_controller]: No scaling interface set. This controller will not read speed scaling from the hardware.
+[INFO] [1795066603.379882614] [resource_manager]: 'activate' hardware 'DualArmSystem' 
+[INFO] [1795066603.391592505] [resource_manager]: Successful 'activate' of hardware 'DualArmSystem'
+[INFO] [1795066603.443772446] [controller_manager]: Activating controllers: [ arm1_controller arm2_controller ]
+[INFO] [1795066603.444112076] [controller_manager]: Switch controller timeout is set to 0, using default 1s!
+[INFO] [1795066603.452905462] [controller_manager]: Requested controller switch from non-realtime loop
+[INFO] [1795066603.453989539] [controller_manager]: Successfully switched controllers!
+[INFO] [1795066609.156258437] [arm1_controller]: Received new action goal
+[INFO] [1795066609.156439340] [arm1_controller]: Accepted new action goal
+[INFO] [1795066609.422968271] [arm1_controller]: Goal reached, success!
+[INFO] [1795066609.565508749] [arm2_controller]: Received new action goal
+[INFO] [1795066609.565620529] [arm2_controller]: Accepted new action goal
+[INFO] [1795066609.752903325] [arm2_controller]: Goal reached, success!
+[INFO] [1795066615.354968778] [arm1_controller]: Received new action goal
+[INFO] [1795066615.355079278] [arm1_controller]: Accepted new action goal
+[INFO] [1795066619.192967450] [arm1_controller]: Goal reached, success!
+[INFO] [1795066621.235208462] [arm1_controller]: Received new action goal
+[INFO] [1795066621.235301330] [arm1_controller]: Accepted new action goal
+[INFO] [1795066624.182966651] [arm1_controller]: Goal reached, success!
+[INFO] [1795066625.476108171] [arm1_controller]: Received new action goal
+[INFO] [1795066625.476223471] [arm1_controller]: Accepted new action goal
+[INFO] [1795066626.232974790] [arm1_controller]: Goal reached, success!
+[INFO] [1795066627.585460499] [arm1_controller]: Received new action goal
+[INFO] [1795066627.585543703] [arm1_controller]: Accepted new action goal
+[INFO] [1795066629.232953730] [arm1_controller]: Goal reached, success!
+[INFO] [1795066632.385142073] [arm1_controller]: Received new action goal
+[INFO] [1795066632.385270302] [arm1_controller]: Accepted new action goal
+[INFO] [1795066635.452931219] [arm1_controller]: Goal reached, success!
+[INFO] [1795066637.155663434] [arm1_controller]: Received new action goal
+[INFO] [1795066637.155808048] [arm1_controller]: Accepted new action goal
+[INFO] [1795066640.092998383] [arm1_controller]: Goal reached, success!
+[INFO] [1795066641.425845181] [arm1_controller]: Received new action goal
+[INFO] [1795066641.425975331] [arm1_controller]: Accepted new action goal
+[INFO] [1795066645.692980130] [arm1_controller]: Goal reached, success!
+[INFO] [1795066649.266477697] [arm1_controller]: Received new action goal
+[INFO] [1795066649.266654152] [arm1_controller]: Accepted new action goal
+[INFO] [1795066652.152978866] [arm1_controller]: Goal reached, success!
+[INFO] [1795066653.917762488] [arm1_controller]: Received new action goal
+[INFO] [1795066653.917919326] [arm1_controller]: Accepted new action goal
+[INFO] [1795066657.162939865] [arm1_controller]: Goal reached, success!
+[INFO] [1795066662.155238740] [arm2_controller]: Received new action goal
+[INFO] [1795066662.155359001] [arm2_controller]: Accepted new action goal
+[INFO] [1795066665.582931737] [arm2_controller]: Goal reached, success!
+[INFO] [1795066666.845819279] [arm2_controller]: Received new action goal
+[INFO] [1795066666.845936083] [arm2_controller]: Accepted new action goal
+[INFO] [1795066669.372901046] [arm2_controller]: Goal reached, success!
+[INFO] [1795066671.015945694] [arm2_controller]: Received new action goal
+[INFO] [1795066671.016025313] [arm2_controller]: Accepted new action goal
+[INFO] [1795066673.582908096] [arm2_controller]: Goal reached, success!
+[INFO] [1795066675.095404188] [arm2_controller]: Received new action goal
+[INFO] [1795066675.095547938] [arm2_controller]: Accepted new action goal
+[INFO] [1795066677.422913580] [arm2_controller]: Goal reached, success!
+[INFO] [1795066678.665304585] [arm2_controller]: Received new action goal
+[INFO] [1795066678.665429870] [arm2_controller]: Accepted new action goal
+[INFO] [1795066680.832952665] [arm2_controller]: Goal reached, success!
+[INFO] [1795066683.775092720] [arm2_controller]: Received new action goal
+[INFO] [1795066683.775183572] [arm2_controller]: Accepted new action goal
+[INFO] [1795066685.962905601] [arm2_controller]: Goal reached, success!

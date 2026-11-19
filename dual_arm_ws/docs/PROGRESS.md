@@ -1,6 +1,19 @@
-# Development status — 2026-11-18
+# Development status — 2026-11-19
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
+
+## Latest result: field diagnosis of arm sway and missed picks, FTDI latency 1 ms on the Orin (2026-11-19)
+
+Details, numbers and next steps: [evidence/diag_20261119/README.md](evidence/diag_20261119/README.md).
+
+- FTDI latency: the FT232R latency timer was still 16 ms (the ORIN_DEPLOYMENT udev rule had not been installed), READ round trip 16.0 ms median. Installed `/etc/udev/rules.d/99-ftdi-latency.rules`: latency_timer 1, round trip 2.0 ms median (max 3.0), 0 bad, `/joint_states` about 91 Hz. PASS for the link. **It did not remove the sway** (user, run 13:38), but the rule is kept.
+- Sway, bag analysis (13:44 run, 426 s): servo-level oscillation at about 4 Hz, seen in the encoders, **only on moves leaving HOME outward** (arm1 HOME to A above, arm2 HOME to B above): lift p2p 20-26 counts on all 7 such segments, 3-10 on the other 15. B to HOME moves the same joints by similar amounts and stays smooth, so it depends on direction (gravity in the direction of motion), not on size. Judgement: gravity overruns the speed-limited servo, and the compliance registers (slope/margin/punch) stay at factory defaults because v18 never writes them; the 11-18 speed increase (0.3 to 0.5 rad/s, 0.3 to 0.6 rad/s2) most likely made it larger. Not verified by a change yet.
+- Missed picks depend on the zone A position (71 picks, 11-18 and 11-19 logs): y < -40 mm 5 OK / 8 FAIL, x < -185 mm 3 OK / 6 FAIL, elsewhere about 31 OK / 6 FAIL. The camera repeats a cap within 0.7 mm, so the error is a regional bias (estimated calibration), not noise; caps are 25 mm (cup radius 9 mm, geometric margin about 3.5 mm; the first analysis wrongly used the old 20 mm value and stated 1 mm) and failed picks arrive 2-3 mm off from the joints alone, and the single global `a_pick_offset_xy_m` cannot correct it.
+- Proposed, none done: (1) speed back to 0.3/0.3 (`transport_scale` 0.6, `acceleration_scale` 0.3) and record a bag to compare; (2) firmware v19 writing compliance slope/margin and punch at torque-on (on-site decision to flash); (3) on site: swap a failing cap, measure the cup offset at (-143, -50) mm, then a region-based offset or recalibration.
+- Also today: arm1 bus DXL_CORRUPT (ID 15, 3) and DXL_TIMEOUT (ID 17) in the morning, none later; one ESP32 "no suction controller reply" stop.
+- Cap size: prototype `cap_radius_m` 0.01 to 0.0125 and env_scene `cap_diameter_mm` 20 to 25 (real caps are 25 mm; simulation keeps 20 mm), changed after the logged runs; runs with the new value NOT_RUN.
+- The 121 MB bag mcap is not in git (`.gitignore` `docs/evidence/**/*.mcap`); only its `metadata.yaml`.
+- ROS graph snapshot of the running Orin system (25 nodes, 73 topics, 207 services, 4 actions) in [ros_graph/](ros_graph/README.md): a focus diagram of the 18 main nodes, cleaned and full SVGs, the generator script and an rqt perspective. Seen in it: `/dual_arm_hmi_monitor` subscribes to `/arm2_cam/image_raw`, `/view_*/image_raw` and `/vision/arm1|arm2/debug_image` with no publisher at that time (arm2 camera not running). Documentation only, no check.
 
 ## Latest result: firmware v18 with Moving Speed, 1 Mbps, faster prototype (2026-11-18, evening)
 

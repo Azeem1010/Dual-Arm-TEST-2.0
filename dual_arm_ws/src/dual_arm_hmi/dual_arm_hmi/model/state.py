@@ -567,8 +567,7 @@ def _attention_banner(s):
     if s.mode.hardware_locked and s.phase is Phase.READY and s.hardware_blocked_reason:
         return Banner(Level.WARN, '實機 BLOCKED', s.hardware_blocked_reason, '需先完成 H6 前置條件')
     if s.mode is Mode.HARDWARE_PROTOTYPE:
-        return Banner(Level.WARN, '實機運作模式', '估計校正、沒有急停心跳、吸盤自動確認，結果不算校正證據',
-                      '一人手放在 CM-530 電源開關（唯一急停）')
+        return Banner(Level.WARN, '實機運作模式', '', '一人手放在 CM-530 電源開關（唯一急停）')
     return None
 
 
