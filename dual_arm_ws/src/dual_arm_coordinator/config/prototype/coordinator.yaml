@@ -31,9 +31,12 @@ speeds:              # slower than simulation
   # full speed and stop): transport 0.6 -> 1.0 (0.3 -> 0.5 rad/s, the URDF limit) and
   # acceleration 0.3 -> 0.6 (0.3 -> 0.6 rad/s2). Not yet run on the arms; if contacts misbehave,
   # put acceleration_scale back to 0.3 first. Contact speed unchanged.
+  # 2026-11-19 (user decision, sway test round 1): acceleration 0.6 -> 0.3 (0.3 rad/s2), transport
+  # kept at 1.0, to see whether the 11-18 acceleration increase drives the HOME-outward sway
+  # (docs/evidence/diag_20261119/README.md). Not yet run on the arms.
   transport_scale: 1.0
   contact_scale: 0.2
-  acceleration_scale: 0.6
+  acceleration_scale: 0.3
 # Field run 2026-11-13: the cup stopped about 2 mm above the cap and could not pick it, so every
 # height is 2 mm lower than simulation (0.014 / 0.0243 / 0.0253 / 0.054). Lowering the surface
 # with the contact keeps the "cap top <= contact" check; the cap height is unchanged.
