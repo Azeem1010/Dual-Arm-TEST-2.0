@@ -65,3 +65,19 @@ Also seen today: arm1 bus DXL_CORRUPT (ID 15, 3) and DXL_TIMEOUT (ID 17) earlier
 2. Firmware v19 (new directory in CM530_ROS_BRIDGE): write configurable Compliance Slope/Margin and Punch at torque-on, compare a few values on site. Needs an on-site decision to flash.
 3. Raise `speed_gain` (driver param, not set in the xacro; needs `dual_arm_cad.urdf.xacro` and `scripts/generate_cad_robot.py`). Uncertain effect.
 4. Picks on site: swap a failing-region cap with one that succeeds in the middle; lower the cup at (-143, -50) mm and measure the offset of the cup centre from the cap centre (size and direction). Then a region-based offset or recalibration.
+
+## 4. Gravity torque along arm1 HOME to A above (added 2026-11-19, development PC, no hardware)
+
+Files: `gravity_torque/gravity.py` (planar model, run with `py -3 gravity.py` or `python3`), output `gravity_torque/gravity_home_to_A.txt`.
+
+- Model: the URDF `dual_arm_cad` joint offsets (lift to elbow 0.0536/0.0766 m, elbow to wrist 0.0935 m, wrist to TCP 0.071 m). The URDF masses are placeholders (0.08 kg at each joint origin), so the masses are estimates: AX-12A 54.6 g at the elbow and wrist axes, brackets and suction end in three sets (light / nominal / heavy). Suction tube and cables are not modelled.
+- HOME (raw 512 on every joint; lift -119.35, elbow -187.55, wrist 0 counts from the calibration zero) is the arm **straight up**: gravity torque on lift and elbow is zero there.
+- Path: lift -119 to +112, elbow -188 to -96 counts (from `arm1_home_to_A_series.txt`), wrist 0 to 290 counts (tool pointing down at the end; matches the 290 count wrist travel in `segments.txt`).
+- Result: the gravity torque points in the direction of motion on the whole outward path for all three mass sets. Lift 0 to +0.20..+0.30 N m at A above (13-20 % of the 1.5 N m stall torque; ROBOTIS advises at most 1/5), elbow up to +0.08..+0.13 N m. Going back to HOME, gravity works against the motion. The sign comes from the geometry; the size is only as good as the mass estimate (about +/-30 %).
+
+What this changes in section 2:
+
+- It supports "gravity in the direction of motion" for HOME-outward moves. In `arm1_home_to_A_series.txt` the first part (about 0-2.1 s, arm near vertical, small torque) shows the lift lagging and stalling, then catching up; the later part (larger torque) swings about +/-10 counts with overshoot, and after the stop the lift rests about 3 counts beyond the goal in the gravity direction.
+- On the way out the motor load changes from driving (against gear friction) to braking (against gravity), so the gears change flank inside the move. The AX-12A potentiometer is on the output shaft, so backlash IS visible in `/joint_states`; the statement in section 2 that the encoder view excludes backlash does not hold. Judgement, not measured: Present Load is not read by v18.
+- Catch-up jumps reach about 200-270 counts/s (for example 1.63 to 1.66 s), 2-3 times the Moving Speed of about 42 units (about 95 counts/s): gravity moves the joint faster than the speed limit.
+- Ideas, none done: in v19, try a stiffer Compliance Slope (16) first and keep Punch 32 (the load is braking, not stalling); read Present Load (40-41) to see where the flank changes. A HOME tilted a few degrees forward would keep the lift loaded on one flank from the start; HOME is used by the firmware HOME command and `expected_home`, so this needs a user decision.
