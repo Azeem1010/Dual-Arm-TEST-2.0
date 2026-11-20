@@ -183,8 +183,9 @@ class Homes(unittest.TestCase):
     def test_measured_calibration_is_converted(self):
         with tempfile.TemporaryDirectory() as folder:
             homes = load_homes(HARDWARE, calibration_path=self.calibration_file(folder))
-        self.assertEqual(homes['arm1'], convert_home([90, 567, 712, 825], [512] * 4, [1] * 4))
-        self.assertEqual(homes['arm2'], convert_home([590, 567, 712, 825], [512] * 4, [1] * 4))
+        # expected_home of the shipped calibration.yaml: firmware v18 HOME on both arms (1f24a25)
+        self.assertEqual(homes['arm1'], convert_home([256, 512, 512, 512], [512] * 4, [1] * 4))
+        self.assertEqual(homes['arm2'], convert_home([256, 512, 512, 512], [512] * 4, [1] * 4))
 
     def test_calibration_must_be_physical_and_authorized(self):
         for change in (dict(status='NOT_RUN'), dict(evidence_kind='none'), dict(hardware_use_allowed=False)):

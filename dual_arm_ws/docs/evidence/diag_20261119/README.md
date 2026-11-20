@@ -81,3 +81,33 @@ What this changes in section 2:
 - On the way out the motor load changes from driving (against gear friction) to braking (against gravity), so the gears change flank inside the move. The AX-12A potentiometer is on the output shaft, so backlash IS visible in `/joint_states`; the statement in section 2 that the encoder view excludes backlash does not hold. Judgement, not measured: Present Load is not read by v18.
 - Catch-up jumps reach about 200-270 counts/s (for example 1.63 to 1.66 s), 2-3 times the Moving Speed of about 42 units (about 95 counts/s): gravity moves the joint faster than the speed limit.
 - Ideas, none done: in v19, try a stiffer Compliance Slope (16) first and keep Punch 32 (the load is braking, not stalling); read Present Load (40-41) to see where the flank changes. A HOME tilted a few degrees forward would keep the lift loaded on one flank from the start; HOME is used by the firmware HOME command and `expected_home`, so this needs a user decision.
+
+## 5. arm2 gravity torque and the measured sway (added 2026-11-20, development PC, no hardware)
+
+Files: `gravity_torque/gravity_arm2.py` (same planar model; arm2 uses the same lift/elbow/wrist zeros), output `gravity_torque/gravity_arm2.txt`. B contact and C release poses are the taught counts in `config/prototype/coordinator.yaml`; each "above" pose raises the wrist by approach_z - contact/release_z with the tool down. Model B above is raw (668, 760, 730); the travel in `segments.txt` (144 / 253 / 217 from HOME) gives about (656, 765, 729).
+
+| arm2 move | lift gravity load (nominal) | lift travel / p2p in `segments.txt` |
+|---|---|---|
+| HOME -> B above | 0 -> +0.19 N m, assists the motion, **starts at zero load** | 144 / 21.0-21.7 (sways like arm1) |
+| B above -> C6 / C7 / C8 above | +0.19 -> +0.21..0.25, assists, starts loaded | 38 / 4.1, 76 / 4.5, 137 / 10.3 |
+| B above -> C1..C4 above | +0.19 -> +0.11..0.17, opposes | not in the 13:44 bag |
+| C above -> HOME | +0.21..0.25 -> 0, opposes | 181-277 / 8.4-12.0 |
+
+No path crosses zero gravity torque in the middle of a move; zero is only at HOME. All three mass sets give the same labels.
+
+What this changes in section 4: "gravity in the direction of motion" alone does not cause the sway, because B above -> C6/C7 is also an assisting move and stays at 4-5 counts. The moves that sway (arm1 HOME -> A, arm2 HOME -> B) are the ones that **start from HOME, where the lift carries no gravity load**. Holding a tilted arm already rests the gears on the flank that also brakes an assisting move, so a move from a loaded rest does not change flank; a move from HOME does, once the tilt builds up load. Judgement, not measured. It points the same way as the earlier ideas: a forward-tilted ready pose (lift loaded before the transport starts) or a stiffer Compliance Slope. B above -> C8 (10.3 counts, the largest lift travel after HOME moves) is the borderline case.
+
+## 6. Failing coordinator test `Homes::test_measured_calibration_is_converted` (2026-11-20)
+
+Command (WSL, ROS Jazzy and `install/setup.bash` sourced): a temporary detached worktree per commit, then `python3 -m pytest -q -p no:cacheprovider test/test_motion_math.py::Homes` in `src/dual_arm_coordinator`.
+
+| commit | result |
+|---|---|
+| 6e5cf20 (acceleration 0.3) | FAIL: 1 failed, 6 passed |
+| 926232c | FAIL: 1 failed, 6 passed |
+| 1f24a25 (align configs with firmware v18) | FAIL: 1 failed, 6 passed |
+| dcba30e (parent of 1f24a25) | PASS: 7 passed |
+
+Cause: 1f24a25 changed `expected_home` in `cm530_hardware/config/calibration.yaml` to the v18 HOME 256/512/512/512; the test copies that file and still expects the v17 HOME (90/590, 567, 712, 825) at line 186-187. The test is stale, the code is not wrong, and the acceleration change in 6e5cf20 is unrelated.
+
+Fixed 2026-11-20 (user decision): the test now expects 256/512/512/512 on both arms. `python3 -m pytest -q -p no:cacheprovider test` in `src/dual_arm_coordinator` (WSL, same environment): PASS, 508 passed in 58.14 s.
