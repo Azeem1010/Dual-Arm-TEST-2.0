@@ -23,19 +23,24 @@ from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectoryPoint
 
 ROOT = Path(__file__).resolve().parents[1]
-EVIDENCE = ROOT / 'docs/evidence'
+# CM530_MOCK_EVIDENCE writes a new run into its own folder instead of over the recorded one.
+EVIDENCE = Path(os.environ.get('CM530_MOCK_EVIDENCE', ROOT / 'docs/evidence'))
 FIXTURES = ROOT / 'src/cm530_hardware/test/fixtures'
 MOCK_CAL = str(FIXTURES / 'calibration_mock.yaml')
 REFUSED_CAL = str(FIXTURES / 'calibration_not_authorized.yaml')
 CONTROLLERS = str(FIXTURES / 'controllers_mock.yaml')
 NARROW_CAL = str(FIXTURES / 'calibration_mock_narrow.yaml')
+# Not factory values, so the read-back after COMP proves the write reached the (simulated) motors.
+MOTOR_SETTINGS = str(FIXTURES / 'motor_settings_mock.yaml')
+COMPLIANCE_SET = ('arm1 compliance set: margin 1,1,1,1 slope 32,16,16,32 punch 32,32,32,32',
+                  'arm2 compliance set: margin 1,1,1,1 slope 32,16,16,32 punch 32,64,32,32')
 CONTROLLERS_TEMPLATE = str(ROOT / 'src/dual_arm_controllers/config/controllers_hardware.template.yaml')
 ARM1 = [f'arm1_arm_{name}' for name in ('shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_flex_joint', 'wrist_flex_joint')]
 ARM2 = [name.replace('arm1_', 'arm2_') for name in ARM1]
 TARGET = [0.2, -0.15, 0.1, 0.25]
 # calibration_mock.yaml: zero_raw 512, direction 1 on every joint; same formula as Calibration::rad_to_raw.
 TARGET_RAW = [round(512 + value / (math.radians(300.0) / 1023.0)) for value in TARGET]
-report = {'status': 'NOT_RUN', 'scope': 'Mock serial with v18 firmware parser; no hardware', 'phases': {}}
+report = {'status': 'NOT_RUN', 'scope': 'Mock serial with v19 firmware parser; no hardware', 'phases': {}}
 
 
 class Launch:
@@ -98,6 +103,7 @@ class Probe(Node):
         self.states = {}
         self.stamp = 0.0
         self.counts = {}
+        self.loads = {}
         self.create_subscription(JointState, '/joint_states', self.on_state, qos_profile_sensor_data)
         self.create_subscription(DynamicJointState, '/dynamic_joint_states', self.on_counts, qos_profile_sensor_data)
         self.client = ActionClient(self, FollowJointTrajectory, '/arm1_controller/follow_joint_trajectory')
@@ -111,6 +117,8 @@ class Probe(Node):
             values = dict(zip(item.interface_names, item.values))
             if 'raw_position' in values:
                 self.counts[name] = (values['raw_position'], values.get('raw_target', math.nan))
+            if 'raw_load' in values:
+                self.loads[name] = values['raw_load']
 
     def wait_counts(self, timeout=30):
         deadline = time.monotonic() + timeout
@@ -118,6 +126,14 @@ class Probe(Node):
         while time.monotonic() < deadline and len(self.counts) != 8:
             rclpy.spin_once(self, timeout_sec=0.1)
         return len(self.counts) == 8
+
+    def wait_loads(self, timeout=30):
+        """Every joint publishes a finite raw_load (the mock motors report 0)."""
+        deadline = time.monotonic() + timeout
+        self.loads = {}
+        while time.monotonic() < deadline and len(self.loads) != 8:
+            rclpy.spin_once(self, timeout_sec=0.1)
+        return len(self.loads) == 8 and all(math.isfinite(value) for value in self.loads.values())
 
     def spin_for(self, seconds):
         deadline = time.monotonic() + seconds
@@ -236,7 +252,7 @@ def rest_pose_outside_limits(_):
 
 def motion_and_fault(probe):
     launch = Launch('motion', f'calibration_file:={MOCK_CAL}', 'enable_motion:=true',
-                    f'controllers_file:={CONTROLLERS}', 'use_moveit:=false')
+                    f'controllers_file:={CONTROLLERS}', 'use_moveit:=false', f'motor_settings_file:={MOTOR_SETTINGS}')
     try:
         ready, controllers = wait_cli(
             lambda text: 'arm1_controller' in text and 'arm2_controller' in text and text.count('inactive') >= 2,
@@ -255,6 +271,12 @@ def motion_and_fault(probe):
             return False, f'controller activation failed: {output}'
         if not probe.wait_states():
             return False, 'no joint states after activation'
+        # v19: COMP was written and read back before torque, and every joint publishes raw_load.
+        compliance = {line: line in launch.text() for line in COMPLIANCE_SET}
+        if not all(compliance.values()):
+            return False, {'compliance_set_logged': compliance}
+        if not probe.wait_loads():
+            return False, 'no raw_load state after activation'
         error_code = probe.move_arm1()
         probe.spin_for(1.0)
         reached = [abs(probe.states[name] - value) for name, value in zip(ARM1, TARGET)]

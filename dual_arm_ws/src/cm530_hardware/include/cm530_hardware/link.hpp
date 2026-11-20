@@ -19,6 +19,9 @@ struct LinkResult
   LinkStatus status{LinkStatus::kDown};
   std::optional<RawPose> pose{};
   std::string detail{};
+  std::optional<RawLoad> load{};
+  std::optional<Compliance> compliance{};
+  std::optional<Diagnostics> diagnostics{};
 
   bool ok() const noexcept { return status == LinkStatus::kOk; }
 };

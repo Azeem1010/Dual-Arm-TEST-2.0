@@ -111,3 +111,7 @@ Command (WSL, ROS Jazzy and `install/setup.bash` sourced): a temporary detached 
 Cause: 1f24a25 changed `expected_home` in `cm530_hardware/config/calibration.yaml` to the v18 HOME 256/512/512/512; the test copies that file and still expects the v17 HOME (90/590, 567, 712, 825) at line 186-187. The test is stale, the code is not wrong, and the acceleration change in 6e5cf20 is unrelated.
 
 Fixed 2026-11-20 (user decision): the test now expects 256/512/512/512 on both arms. `python3 -m pytest -q -p no:cacheprovider test` in `src/dual_arm_coordinator` (WSL, same environment): PASS, 508 passed in 58.14 s.
+
+## 7. Follow-up: firmware v19 built (2026-11-20, no hardware)
+
+Next step 2 above and the v19 ideas of section 4 are implemented but not flashed: [fw_v19_20261120](../fw_v19_20261120/README.md). READ now carries Present Load (published as `raw_load`), COMP/GET_COMP set and read back compliance and punch at every activation from `cm530_hardware/config/motor_settings_prototype.yaml` (factory values for now), DIAG reads voltage and temperature. The driver accepts only v19, so the board must be flashed before the next run on the arms.

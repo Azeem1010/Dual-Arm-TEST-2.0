@@ -58,7 +58,7 @@ Live graph 只證明端點存在且型別相符，不代表資料內容正確，
 | `/view_{isometric,top,front,side}/image_raw` | `sensor_msgs/msg/Image` | 僅模擬，觀察用 | 960×720、2 Hz |
 | `/clock` | `rosgraph_msgs/msg/Clock` | 僅模擬 | |
 | `/joint_states` | `sensor_msgs/msg/JointState` | 八軸回授 | |
-| `/dynamic_joint_states` | `control_msgs/msg/DynamicJointState` | `joint_state_broadcaster` 發出所有狀態介面；實機 CM-530 另有 `raw_position`（最近一次成功 `READ` 的 Present Position，0–1023）與 `raw_target`（最近一次回 `OK,AX` 的目標；未確認前為 NaN）。訂閱者：`dual_arm_hmi` | 只有實機與 Mock Serial 有計數；模擬與 mock 沒有這兩個介面 |
+| `/dynamic_joint_states` | `control_msgs/msg/DynamicJointState` | `joint_state_broadcaster` 發出所有狀態介面；實機 CM-530 另有 `raw_position`（最近一次成功 `READ` 的 Present Position，0–1023）、`raw_target`（最近一次回 `OK,AX` 的目標；未確認前為 NaN）與 `raw_load`（同一次 `READ` 的 Present Load，有號：CCW 為正、CW 為負，±1023 約為最大扭力；馬達自己的估計，未校正；韌體第 19 版起）。訂閱者：`dual_arm_hmi` | 只有實機與 Mock Serial 有計數；模擬與 mock 沒有這三個介面 |
 | `/gripper/arm{1,2}/command` | `std_msgs/msg/String` | ROS→Gazebo，僅模擬 | reliable |
 | `/gripper/arm{1,2}/state` | `std_msgs/msg/String` | Gazebo→ROS，僅模擬 | reliable |
 | `/ground_truth/cap_{1..8}` | `tf2_msgs/msg/TFMessage` | 僅模擬，瓶蓋真值 | |

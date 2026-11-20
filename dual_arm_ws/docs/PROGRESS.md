@@ -1,8 +1,18 @@
-# Development status — 2026-11-19
+# Development status — 2026-11-20
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: field diagnosis of arm sway and missed picks, FTDI latency 1 ms on the Orin (2026-11-19)
+## Latest result: firmware v19 / protocol 7 with Present Load and settable compliance (2026-11-20, no hardware)
+
+Details: [evidence/fw_v19_20261120/README.md](evidence/fw_v19_20261120/README.md).
+
+- Same day, analysis only: the gravity model for arm2 ([diag_20261119](evidence/diag_20261119/README.md) section 5) shows that no move crosses zero gravity torque mid-way; the swaying moves are the ones that start from HOME at zero lift load, so the judgement is now "gear flank change when leaving the unloaded HOME" plus soft factory compliance. The failing coordinator test `Homes::test_measured_calibration_is_converted` was stale since 1f24a25 (v18 HOME), fixed; 509 pass.
+- Firmware v19 (`third_party/CM530_ROS_BRIDGE/19 ROS to CM530 ver. dual arm/`, v18 untouched): READ returns Present Load with the positions; new COMP (Compliance Margin/Slope and Punch, CW = CCW, whole command refused on any bad value), GET_COMP (read back, `DXL_ASYM` when CW and CCW differ) and DIAG (voltage, temperature); protocol 7. The firmware never writes compliance by itself.
+- Driver: protocol 7 only; `raw_load` state interface (signed, CCW positive); optional `motor_settings_file` (all 8 joints, strict): COMP then GET_COMP compared before torque at every activation, any difference refuses activation; GET_COMP and DIAG logged at configure. Prototype launch passes `motor_settings_prototype.yaml` with factory values (margin 1, slope 32, punch 32) on every joint. `cm530_probe` reads GET_COMP and DIAG too (never COMP).
+- PASS without hardware: firmware ARM build and verify, C harness plain and ASan/UBSan, two mutants caught, Python terminal 27; driver gtest 51 plain, ASan/UBSan, TSan; Mock Serial end to end incl. COMP read-back and `raw_load`; t1 (coordinator 509, HMI 322, vision 104, HOME collision). NOT_RUN: Gazebo regression `two` (change limited to hardware mode), flashing v19 and everything on the board.
+- **The driver now refuses the v18 board: v19 must be flashed (on-site decision) before the arms can run again**, including round 1 of the sway test.
+
+## Earlier result: field diagnosis of arm sway and missed picks, FTDI latency 1 ms on the Orin (2026-11-19)
 
 Details, numbers and next steps: [evidence/diag_20261119/README.md](evidence/diag_20261119/README.md).
 

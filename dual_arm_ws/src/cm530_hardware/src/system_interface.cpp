@@ -16,10 +16,23 @@ namespace cm530_hardware
 namespace
 {
 
-// AX-12A counts as the v18 firmware reported them, for display only. raw_target is
-// NaN until the firmware has acknowledged an AX for that arm.
+// AX-12A counts as the v19 firmware reported them, for display only. raw_target is
+// NaN until the firmware has acknowledged an AX for that arm. raw_load is the
+// Present Load from the same READ, signed (CCW positive), 1023 = maximum torque.
 constexpr const char * kRawPositionInterface = "raw_position";
 constexpr const char * kRawTargetInterface = "raw_target";
+constexpr const char * kRawLoadInterface = "raw_load";
+
+std::string join(const std::array<std::uint16_t, kJointsPerArm> & values)
+{
+  return std::format("{},{},{},{}", values[0], values[1], values[2], values[3]);
+}
+
+std::string describe(const Compliance & compliance)
+{
+  return std::format(
+    "margin {} slope {} punch {}", join(compliance.margin), join(compliance.slope), join(compliance.punch));
+}
 
 bool parse_bool(const std::string & text, const std::string & name)
 {
@@ -72,6 +85,12 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_init(
   try {
     port_ = info_.hardware_parameters.at("port");
     calibration_file_ = info_.hardware_parameters.at("calibration_file");
+    // Optional: empty or absent leaves every motor at its power-up compliance.
+    if (const auto found = info_.hardware_parameters.find("motor_settings_file");
+      found != info_.hardware_parameters.end())
+    {
+      motor_settings_file_ = found->second;
+    }
     enable_motion_ = parse_bool(info_.hardware_parameters.at("enable_motion"), "enable_motion");
     command_timeout_ = optional_ms(info_, "command_timeout_ms", command_timeout_);
     startup_listen_ = optional_ms(info_, "startup_listen_ms", startup_listen_);
@@ -107,21 +126,23 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_init(
     const bool interfaces_ok =
       joint.command_interfaces.size() == 1 &&
       joint.command_interfaces[0].name == hardware_interface::HW_IF_POSITION &&
-      joint.state_interfaces.size() == 4 &&
+      joint.state_interfaces.size() == 5 &&
       joint.state_interfaces[0].name == hardware_interface::HW_IF_POSITION &&
       joint.state_interfaces[1].name == hardware_interface::HW_IF_VELOCITY &&
       joint.state_interfaces[2].name == kRawPositionInterface &&
-      joint.state_interfaces[3].name == kRawTargetInterface;
+      joint.state_interfaces[3].name == kRawTargetInterface &&
+      joint.state_interfaces[4].name == kRawLoadInterface;
     if (!interfaces_ok) {
       RCLCPP_ERROR(
-        get_logger(), "Joint '%s' needs position command and position, velocity, %s, %s state",
-        joint.name.c_str(), kRawPositionInterface, kRawTargetInterface);
+        get_logger(), "Joint '%s' needs position command and position, velocity, %s, %s, %s state",
+        joint.name.c_str(), kRawPositionInterface, kRawTargetInterface, kRawLoadInterface);
       return CallbackReturn::ERROR;
     }
     position_state_[index] = joint.name + "/" + hardware_interface::HW_IF_POSITION;
     velocity_state_[index] = joint.name + "/" + hardware_interface::HW_IF_VELOCITY;
     raw_position_state_[index] = joint.name + "/" + kRawPositionInterface;
     raw_target_state_[index] = joint.name + "/" + kRawTargetInterface;
+    raw_load_state_[index] = joint.name + "/" + kRawLoadInterface;
     position_command_[index] = joint.name + "/" + hardware_interface::HW_IF_POSITION;
   }
   return CallbackReturn::SUCCESS;
@@ -148,6 +169,7 @@ void CM530SystemInterface::publish_positions(
     set_state(position_state_[index], last_rad_[index]);
     set_state(velocity_state_[index], 0.0);
     set_state(raw_position_state_[index], static_cast<double>(raw));
+    set_state(raw_load_state_[index], static_cast<double>(signed_load(latest_load_[arm][joint])));
     set_state(
       raw_target_state_[index],
       targets[arm] ? static_cast<double>((*targets[arm])[joint]) : std::numeric_limits<double>::quiet_NaN());
@@ -158,6 +180,10 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_configure(const rc
 {
   try {
     calibration_ = Calibration::from_file(calibration_file_);
+    motor_settings_.reset();
+    if (!motor_settings_file_.empty()) {
+      motor_settings_ = MotorSettings::from_file(motor_settings_file_);
+    }
     if (enable_motion_) {
       const auto blockers = calibration_->motion_blockers(is_pseudo_terminal(port_));
       if (!blockers.empty()) {
@@ -190,11 +216,25 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_configure(const rc
       return CallbackReturn::ERROR;
     }
     const LinkResult read = link_->transact(Command::read(arm));
-    if (!require_ok(read, "READ " + name) || !read.pose) {
+    if (!require_ok(read, "READ " + name) || !read.pose || !read.load) {
       release_link();
       return CallbackReturn::ERROR;
     }
     latest_raw_[static_cast<std::size_t>(arm)] = *read.pose;
+    latest_load_[static_cast<std::size_t>(arm)] = *read.load;
+    // Reads only: what the motors hold now, and their supply and temperature.
+    const LinkResult compliance = link_->transact(Command::get_compliance(arm));
+    const LinkResult diag = link_->transact(Command::diag(arm));
+    if (!require_ok(compliance, "GET_COMP " + name) || !compliance.compliance ||
+      !require_ok(diag, "DIAG " + name) || !diag.diagnostics)
+    {
+      release_link();
+      return CallbackReturn::ERROR;
+    }
+    RCLCPP_INFO(
+      get_logger(), "%s compliance now: %s; voltage %s (0.1 V), temperature %s C", name.c_str(),
+      describe(*compliance.compliance).c_str(), join(diag.diagnostics->voltage).c_str(),
+      join(diag.diagnostics->temperature).c_str());
   }
   acked_target_ = {};
   publish_positions(latest_raw_, acked_target_);
@@ -213,10 +253,11 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_activate(const rcl
   for (const Arm arm : kArms) {
     const std::string name{arm_name(arm)};
     const LinkResult read = link_->transact(Command::read(arm));
-    if (!require_ok(read, "READ " + name) || !read.pose) {
+    if (!require_ok(read, "READ " + name) || !read.pose || !read.load) {
       return CallbackReturn::ERROR;
     }
     latest_raw_[static_cast<std::size_t>(arm)] = *read.pose;
+    latest_load_[static_cast<std::size_t>(arm)] = *read.load;
   }
   if (enable_motion_) {
     // Limits are never widened to fit: the first write would fault anyway, so
@@ -230,6 +271,28 @@ CM530SystemInterface::CallbackReturn CM530SystemInterface::on_activate(const rcl
     }
     if (!inside_limits) {
       return CallbackReturn::ERROR;
+    }
+    // Compliance before torque, read back before trusting it. The registers are
+    // RAM, so this runs at every activation; a motor power cycle resets them.
+    if (motor_settings_) {
+      for (const Arm arm : kArms) {
+        const std::string name{arm_name(arm)};
+        const Compliance & wanted = motor_settings_->arms[static_cast<std::size_t>(arm)];
+        if (!require_ok(link_->transact(Command::set_compliance(arm, wanted)), "COMP " + name)) {
+          return CallbackReturn::ERROR;
+        }
+        const LinkResult check = link_->transact(Command::get_compliance(arm));
+        if (!require_ok(check, "GET_COMP " + name) || !check.compliance) {
+          return CallbackReturn::ERROR;
+        }
+        if (*check.compliance != wanted) {
+          RCLCPP_ERROR(
+            get_logger(), "Activation refused: %s compliance reads %s, wanted %s", name.c_str(),
+            describe(*check.compliance).c_str(), describe(wanted).c_str());
+          return CallbackReturn::ERROR;
+        }
+        RCLCPP_INFO(get_logger(), "%s compliance set: %s", name.c_str(), describe(wanted).c_str());
+      }
     }
     for (const Arm arm : kArms) {
       const std::string name{arm_name(arm)};
@@ -347,6 +410,7 @@ CM530SystemInterface::ReturnType CM530SystemInterface::read(
       set_state(velocity_state_[index], (position - last_rad_[index]) / dt);
       last_rad_[index] = position;
       set_state(raw_position_state_[index], static_cast<double>(samples[arm].raw[joint]));
+      set_state(raw_load_state_[index], static_cast<double>(signed_load(samples[arm].load[joint])));
       set_state(
         raw_target_state_[index],
         samples[arm].acked_target ? static_cast<double>((*samples[arm].acked_target)[joint]) :

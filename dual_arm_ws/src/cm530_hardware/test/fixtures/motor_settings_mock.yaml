@@ -1,0 +1,12 @@
+# Mock Serial only (scripts/test_cm530_mock.py): not factory values, so the read-back
+# after COMP proves the write reached the simulated motors. Not for real motors.
+schema_version: 1
+joints:
+  arm1_arm_shoulder_pan_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm1_arm_shoulder_lift_joint: {compliance_margin: 1, compliance_slope: 16, punch: 32}
+  arm1_arm_elbow_flex_joint: {compliance_margin: 1, compliance_slope: 16, punch: 32}
+  arm1_arm_wrist_flex_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm2_arm_shoulder_pan_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm2_arm_shoulder_lift_joint: {compliance_margin: 1, compliance_slope: 16, punch: 64}
+  arm2_arm_elbow_flex_joint: {compliance_margin: 1, compliance_slope: 16, punch: 32}
+  arm2_arm_wrist_flex_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}

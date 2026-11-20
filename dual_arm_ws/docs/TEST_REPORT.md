@@ -1,5 +1,29 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-20 firmware v19 / protocol 7 (Present Load, COMP, GET_COMP, DIAG), no hardware
+
+Details and raw output: evidence/fw_v19_20261120/README.md.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Firmware v19 ARM build and `verify_firmware.py` | PASS | arm-none-eabi-gcc 14.2; BIN 13860 bytes; SHA256SUMS updated |
+| Firmware C harness incl. new `comp` test, plain and ASan+UBSan; LED harness | PASS | firmware_host_tests.txt |
+| Mutation check (punch floor, CCW slope comparison) | PASS (both mutants caught) | firmware_mutation_check.txt |
+| Python terminal self-test | PASS (27) | |
+| Driver gtest 51, plain / ASan+UBSan / TSan | PASS | driver_gtest_sanitizers.txt; TSan run under `setarch -R` |
+| Mock Serial end to end with the v19 parser, COMP read-back on both arms, `raw_load` on 8 joints | PASS | mock_integration/ |
+| `cm530_probe` tests | PASS (33 in test_tools.py) | |
+| t1 after the xacro change (coordinator 509, HMI 322, vision 104, HOME collision) | PASS | t1/summary.tsv |
+| Gazebo regression `two` | NOT_RUN | change limited to the hardware branch of `<ros2_control>` |
+| Flash v19; COMP/GET_COMP/load/DIAG on the board; slope 16 against the sway | NOT_RUN | on-site decision to flash |
+
+## 2026-11-20 analysis: arm2 gravity torque, stale Homes test (no hardware)
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| arm2 gravity torque along HOME/B/C paths compared with the 13:44 sway segments | PASS as analysis | diag_20261119 section 5; judgement, not measured |
+| `Homes::test_measured_calibration_is_converted` bisected (dcba30e PASS, 1f24a25 FAIL) and the stale expectation fixed | PASS, coordinator 508 | diag_20261119 section 6 |
+
 ## 2026-11-19 Orin field diagnosis: sway and missed picks (prototype, firmware v18)
 
 Details: evidence/diag_20261119/README.md. Prototype results never count as calibration or H stage evidence.

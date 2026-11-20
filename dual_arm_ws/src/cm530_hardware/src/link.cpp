@@ -11,7 +11,7 @@ namespace
 {
 
 constexpr std::size_t kMaxBuffered = 256;
-constexpr std::size_t kFirmwareLineBytes = 96;  // BRIDGE_LINE_SIZE in the v18 firmware
+constexpr std::size_t kFirmwareLineBytes = 96;  // BRIDGE_LINE_SIZE in the v19 firmware
 
 bool is_eol(char value) noexcept
 {
@@ -97,7 +97,7 @@ LinkResult Link::handshake(std::chrono::milliseconds listen)
     const auto deadline = std::chrono::steady_clock::now() + listen;
     while (true) {
       if (auto line = pop_line()) {
-        if (*line == "READY,6") {
+        if (*line == std::format("READY,{}", kProtocolVersion)) {
           break;
         }
         return fail(LinkStatus::kMismatch, std::format("unexpected startup line: {}", *line));
@@ -143,7 +143,7 @@ LinkResult Link::transact(const Command & command)
         Reply reply = classify_reply(command, *line);
         switch (reply.status) {
           case ReplyStatus::kOk:
-            return {LinkStatus::kOk, reply.pose, std::move(*line)};
+            return {LinkStatus::kOk, reply.pose, std::move(*line), reply.load, reply.compliance, reply.diagnostics};
           case ReplyStatus::kDeviceError:
             if (line->starts_with("ERR,OVERFLOW")) {
               return fail(LinkStatus::kDeviceError, std::move(*line));

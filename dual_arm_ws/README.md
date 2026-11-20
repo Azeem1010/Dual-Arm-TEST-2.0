@@ -11,7 +11,7 @@
 | 建置專案 | 可用 | Windows（WSL2）已實測 |
 | Gazebo 模擬與 RViz | 可用 | |
 | 模擬 A→B→C 搬運 | 可用 | 兩個物體已驗證，含故障停止與人工復歸。區域與格位用 Gazebo 的真實座標 |
-| CM-530 韌體第 18 版 | 完成，尚未燒錄 | 每筆 AX 同時寫入 Moving Speed、主機連線 1 Mbps、協定 6；建置與主機測試 PASS。燒錄步驟見 6 節「韌體第 18 版」 |
+| CM-530 韌體第 19 版 | 完成，尚未燒錄 | 第 18 版（板上目前的版本）加上：`READ` 帶馬達負載、`COMP` 寫入 compliance／punch 並讀回、`DIAG` 讀電壓溫度；協定 7。建置、主機測試與 Mock Serial PASS。**驅動已改成只接受第 19 版**，燒錄前實機連不上；步驟見 6 節「韌體第 19 版」 |
 | CM-530 驅動程式、安全監控 | 部分實測 | 嚴格模式只用韌體原始碼的 Mock Serial 與 MoveIt mock 測試；實機運作模式下已帶動實機（估計校正，不算驗收，當時是第 17 版韌體）。2026-11-18 起每筆 AX 依軌跡速度帶 Moving Speed，Mock Serial 端對端 PASS |
 | 八個物體完整搬運 | 部分 | 模擬可放滿 8 格（格位 8 用傾斜吸盤）；實機運作模式 2026-11-17 跑到 C 格 8，2026-11-18 一輪 9 次取件成功 8 次 |
 | 視覺自動定位 | 部分 | 模擬中 Arm 1 取料點可由視覺決定；實機由環境相機（env_scene）判斷 A/B/C，實機運作模式已在使用；實體相機尚未正式校正 |
@@ -239,6 +239,26 @@ pkill -f 'gz sim'
 5. 啟動 `enable_motion:=true` 時會一起帶起 `safety_supervisor`。急停心跳遺失或 coordinator 失效時，它會停用手臂控制器並鎖定，要呼叫 `/safety/reset` 才能解除。這是軟體互鎖，不能取代實體急停，而且實機的心跳來源還沒做。
 
 **要到現場測試，請照 [實機測試手冊](docs/HARDWARE_TEST_GUIDE.md) 的順序做。** 下面只是個別指令的說明。**2026-11-10 的 H1 已確認 A 區在手臂右方、Arm 1 的 j1 方向 +1；Arm 2 的方向、j2 的方向與各軸零點還沒確認，要先完成手冊的 H1。**
+
+### 韌體第 19 版
+
+2026-11-19 的晃動診斷懷疑：手臂離開 HOME 時齒輪換邊，加上 AX-12A 出廠的 compliance（slope 32）偏軟。第 18 版不寫 compliance，也讀不到負載，所以沒辦法調整比較，也看不到負載在哪裡換方向。第 19 版（協定 7）只加功能，第 18 版的行為不變：
+
+| 項目 | 第 19 版 |
+|---|---|
+| `READ` | 多回四個 Present Load（0～1023 大小，+1024 = CW）；驅動發布成 `/dynamic_joint_states` 的 `raw_load`（有號，CCW 為正） |
+| `COMP`、`GET_COMP` | 寫入／讀回每軸的 Compliance Margin、Slope、Punch。驅動有設定檔時，每次啟用都在上扭力前寫入並讀回比對，不一致就拒絕啟用 |
+| `DIAG` | 電壓與溫度；驅動在連線時寫進 log |
+| 開機 | 不寫 compliance；沒有設定檔時馬達維持上電值（出廠 margin 1、slope 32、punch 32） |
+
+實機運作模式用 `cm530_hardware/config/motor_settings_prototype.yaml`（`motor_settings_file` 參數，空字串 = 不寫入）。目前每軸都是出廠值，所以燒錄後的行為和第 18 版相同；要比較晃動時一次只改一項，第一步是 lift、elbow 的 `compliance_slope` 32 → 16。
+
+**換成第 19 版要一起做兩件事**，少一件都會連不上：
+
+1. 燒錄 `third_party/CM530_ROS_BRIDGE/19 ROS to CM530 ver. dual arm/CM530.hex`（Flash 起點 0x08003000，用既有 bootloader）。燒錄要由現場人員決定。
+2. Orin 上拉取最新程式並重新建置，驅動和 `cm530_probe` 才會是協定 7。
+
+燒錄後先跑下面的唯讀檢查，確認 `VERSION,7`、HOME `256,512,512,512`，以及 `compliance` 是出廠值。要退回第 18 版時，燒回 `18 ROS to CM530 ver. dual arm/CM530.hex`，程式也要用 git 取回對應版本。
 
 ### 韌體第 18 版
 

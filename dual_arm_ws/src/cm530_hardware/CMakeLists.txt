@@ -22,6 +22,7 @@ endif()
 add_library(cm530_core STATIC
   src/calibration.cpp
   src/link.cpp
+  src/motor_settings.cpp
   src/posix_serial.cpp
   src/protocol.cpp
   src/scheduler.cpp)
@@ -42,8 +43,8 @@ pluginlib_export_plugin_description_file(hardware_interface cm530_hardware_plugi
 install(TARGETS cm530_hardware LIBRARY DESTINATION lib)
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
-# The mock compiles the unmodified v18 firmware, so tests exercise the real parser.
-set(CM530_FIRMWARE "${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/CM530_ROS_BRIDGE/18 ROS to CM530 ver. dual arm")
+# The mock compiles the unmodified v19 firmware, so tests exercise the real parser.
+set(CM530_FIRMWARE "${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/CM530_ROS_BRIDGE/19 ROS to CM530 ver. dual arm")
 if(EXISTS "${CM530_FIRMWARE}/APP/src/bridge.c")
   set(CM530_FIRMWARE_SOURCES
     "${CM530_FIRMWARE}/APP/src/bridge.c"
@@ -68,6 +69,9 @@ if(BUILD_TESTING)
   ament_add_gtest(cm530_calibration_test test/test_calibration.cpp
     ENV CM530_TEMPLATE=${CMAKE_CURRENT_SOURCE_DIR}/config/calibration.yaml)
   target_link_libraries(cm530_calibration_test cm530_core)
+  ament_add_gtest(cm530_motor_settings_test test/test_motor_settings.cpp
+    ENV CM530_MOTOR_SETTINGS=${CMAKE_CURRENT_SOURCE_DIR}/config/motor_settings_prototype.yaml)
+  target_link_libraries(cm530_motor_settings_test cm530_core)
   if(TARGET cm530_firmware_sim)
     ament_add_gtest(cm530_link_test test/test_link.cpp)
     target_link_libraries(cm530_link_test cm530_core cm530_firmware_sim)

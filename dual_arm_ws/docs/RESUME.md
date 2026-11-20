@@ -1,4 +1,4 @@
-# 續接工作紀錄 — 2026-11-19
+# 續接工作紀錄 — 2026-11-20
 
 ## 使用者最新要求（取代先前保留錯誤 CAD 的限制）
 
@@ -10,6 +10,12 @@
 6. 持續更新本檔，額度或對話中斷後可直接續接。
 
 ## 最新狀態（優先於以下全部內容）
+
+- 2026-11-20（開發電腦，無硬體）：
+  - 分析：arm2 重力力矩（`docs/evidence/diag_20261119/README.md` 第 5 節）顯示所有路徑中途都不會經過重力為 0 的點；會晃的是從 HOME（lift 無負載）出發的移動，判斷改為「離開 HOME 時齒輪換邊，加上出廠 compliance 偏軟」，仍是推論。1f24a25 之後過時的 Homes 測試已修正（第 6 節）。
+  - 韌體第 19 版（協定 7）：`READ` 帶 Present Load、新增 `COMP`／`GET_COMP`／`DIAG`；開機不寫 compliance。驅動只接受協定 7，發布 `raw_load`，有 `motor_settings_file` 時每次啟用在上扭力前寫入並讀回比對。Prototype 用 `cm530_hardware/config/motor_settings_prototype.yaml`，目前全部是出廠值。韌體建置、主機測試（含 sanitizer、突變測試）、驅動 gtest（一般、ASan/UBSan、TSan）、Mock Serial 端對端、t1 都 PASS。見 `docs/evidence/fw_v19_20261120/`。
+  - **沒做**：燒錄第 19 版（現場決定）、實機驗收、Gazebo 回歸 `two`。**驅動已不接受板上的第 18 版，下次上實機前一定要先燒錄第 19 版**，再跑晃動第 1 輪（加速度 0.3、出廠 compliance），之後才改 lift／elbow 的 slope 為 16 比較。
+  - 韌體 repo 的 commit／push、主 repo 的 submodule 指標與 `docs/sources.lock.json` 要一起更新（commit 時做）。
 
 - 2026-11-19（Orin 現場，韌體第 18 版，Prototype）：診斷「手臂晃動變大」與「部分瓶蓋吸不起」，細節見 `docs/evidence/diag_20261119/README.md`。
   - FTDI latency timer 原本仍是 16 ms，已裝 `/etc/udev/rules.d/99-ftdi-latency.rules` 改成 1 ms，READ 往返 16.0 → 2.0 ms（PASS），但晃動沒有改善（使用者確認），規則保留。

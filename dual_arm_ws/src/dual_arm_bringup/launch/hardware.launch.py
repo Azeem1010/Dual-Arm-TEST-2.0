@@ -57,6 +57,7 @@ def setup(context):
     require_estop = require_bool(context, 'require_estop')
     controllers_file = LaunchConfiguration('controllers_file').perform(context)
     calibration = LaunchConfiguration('calibration_file').perform(context)
+    motor_settings = LaunchConfiguration('motor_settings_file').perform(context).strip()
     port = MOCK_PORT if use_mock else LaunchConfiguration('port').perform(context)
     if enable_motion and not controllers_file:
         raise RuntimeError('enable_motion:=true requires controllers_file with measured goal tolerances')
@@ -66,7 +67,9 @@ def setup(context):
     description = ParameterValue(Command([
         'xacro ', share('dual_arm_description'), '/urdf/dual_arm_cad.urdf.xacro mode:=hardware',
         ' port:=', port, ' calibration_file:=', calibration,
-        ' enable_motion:=', 'true' if enable_motion else 'false']), value_type=str)
+        ' enable_motion:=', 'true' if enable_motion else 'false',
+        # Firmware v19 COMP at activation; empty leaves the motors at their power-up compliance.
+        *([' motor_settings_file:=', motor_settings] if motor_settings else [])]), value_type=str)
 
     control_params = [controllers_file or share('dual_arm_controllers') + '/config/controllers.yaml']
     if enable_motion:
@@ -117,6 +120,8 @@ def generate_launch_description():
         DeclareLaunchArgument('calibration_file',
                               default_value=share('cm530_hardware') + '/config/calibration.yaml'),
         DeclareLaunchArgument('enable_motion', default_value='false'),
+        DeclareLaunchArgument('motor_settings_file', default_value='',
+                              description='馬達 compliance／punch 設定檔（韌體 v19）；空 = 不寫入，維持馬達上電值'),
         DeclareLaunchArgument('controllers_file', default_value=''),
         DeclareLaunchArgument('use_mock_serial', default_value='false'),
         DeclareLaunchArgument('use_moveit', default_value='true'),

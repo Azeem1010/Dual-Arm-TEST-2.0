@@ -1,4 +1,4 @@
-"""Read-only check of a CM-530 board; never sends motion, HOLD or torque commands.
+"""Read-only check of a CM-530 board; never sends motion, HOLD, torque or COMP commands.
 
 Only one process may own the port, so stop the ROS driver first. Any error ends the
 probe without retrying, because the protocol cannot match a late reply to a request.
@@ -14,10 +14,16 @@ import sys
 import termios
 import time
 
-ALLOWED_COMMANDS = ('VERSION', 'PING', 'GET_HOME,arm1', 'GET_HOME,arm2', 'READ,arm1', 'READ,arm2')
+# Firmware v19 / protocol 7. GET_COMP and DIAG only read registers; COMP (a write) is never allowed.
+ALLOWED_COMMANDS = ('VERSION', 'PING', 'GET_HOME,arm1', 'GET_HOME,arm2', 'READ,arm1', 'READ,arm2',
+                    'GET_COMP,arm1', 'GET_COMP,arm2', 'DIAG,arm1', 'DIAG,arm2')
 _POSE = r',(\d{1,4}),(\d{1,4}),(\d{1,4}),(\d{1,4})'
-_REPLIES = {'VERSION': r'VERSION,6\Z', 'PING': r'PONG\Z', 'GET_HOME,arm1': rf'HOME,arm1{_POSE}\Z',
-            'GET_HOME,arm2': rf'HOME,arm2{_POSE}\Z', 'READ,arm1': rf'POS,arm1{_POSE}\Z', 'READ,arm2': rf'POS,arm2{_POSE}\Z'}
+_REPLIES = {'VERSION': r'VERSION,7\Z', 'PING': r'PONG\Z'}
+for _arm in ('arm1', 'arm2'):
+    _REPLIES[f'GET_HOME,{_arm}'] = rf'HOME,{_arm}{_POSE}\Z'
+    _REPLIES[f'READ,{_arm}'] = rf'POS,{_arm}{_POSE * 2}\Z'          # positions, then Present Load
+    _REPLIES[f'GET_COMP,{_arm}'] = rf'COMP,{_arm}{_POSE * 3}\Z'     # margin, slope, punch
+    _REPLIES[f'DIAG,{_arm}'] = rf'DIAG,{_arm}{_POSE * 2}\Z'         # voltage (0.1 V), temperature (C)
 _FIRMWARE_LINE_BYTES = 96
 _STARTUP_LISTEN_S = 0.2
 
@@ -27,7 +33,7 @@ class ProbeError(RuntimeError):
 
 
 class SerialPort:
-    """Exclusive raw access to a serial device at firmware v18's fixed 1 Mbps 8N1."""
+    """Exclusive raw access to a serial device at the firmware's fixed 1 Mbps 8N1 (v18 and later)."""
 
     def __init__(self, path):
         self._fd = os.open(path, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
@@ -96,7 +102,7 @@ class Probe:
             line = self._read_line(deadline)
             if line is None:
                 return
-            if line != 'READY,6':
+            if line != 'READY,7':
                 raise ProbeError(f'Unexpected startup line: {line}')
 
     def send(self, command):
@@ -115,14 +121,20 @@ class Probe:
 
 def run_probe(port, timeout):
     probe = Probe(port, timeout)
-    report = {'status': 'FAIL', 'exchanges': probe.exchanges, 'home': {}, 'position': {}}
+    report = {'status': 'FAIL', 'exchanges': probe.exchanges, 'home': {}, 'position': {}, 'load': {},
+              'compliance': {}, 'voltage_0_1v': {}, 'temperature_c': {}}
     try:
         probe.prepare()
         probe.send('VERSION')
         probe.send('PING')
         for arm in ('arm1', 'arm2'):
             report['home'][arm] = probe.send(f'GET_HOME,{arm}')
-            report['position'][arm] = probe.send(f'READ,{arm}')
+            read = probe.send(f'READ,{arm}')
+            report['position'][arm], report['load'][arm] = read[:4], read[4:]
+            comp = probe.send(f'GET_COMP,{arm}')
+            report['compliance'][arm] = {'margin': comp[:4], 'slope': comp[4:8], 'punch': comp[8:]}
+            diag = probe.send(f'DIAG,{arm}')
+            report['voltage_0_1v'][arm], report['temperature_c'][arm] = diag[:4], diag[4:]
         report['status'] = 'PASS'
     except ProbeError as error:
         report['error'] = str(error)

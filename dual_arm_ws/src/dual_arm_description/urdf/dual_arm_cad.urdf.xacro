@@ -3,6 +3,7 @@
   <xacro:arg name="port" default="/dev/ttyUSB0" />
   <xacro:arg name="calibration_file" default="" />
   <xacro:arg name="enable_motion" default="false" />
+  <xacro:arg name="motor_settings_file" default="" />
   <link name="world" />
   <link name="arm1_base_link">
     <inertial>
@@ -2685,6 +2686,7 @@
         <param name="port">$(arg port)</param>
         <param name="calibration_file">$(arg calibration_file)</param>
         <param name="enable_motion">$(arg enable_motion)</param>
+        <param name="motor_settings_file">$(arg motor_settings_file)</param>
       </xacro:if>
       <xacro:if value="${'$(arg mode)' not in ('sim', 'hardware')}">
         <plugin>mock_components/GenericSystem</plugin>
@@ -2699,6 +2701,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm1_arm_shoulder_lift_joint">
@@ -2710,6 +2713,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm1_arm_elbow_flex_joint">
@@ -2721,6 +2725,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm1_arm_wrist_flex_joint">
@@ -2732,6 +2737,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm2_arm_shoulder_pan_joint">
@@ -2743,6 +2749,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm2_arm_shoulder_lift_joint">
@@ -2754,6 +2761,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm2_arm_elbow_flex_joint">
@@ -2765,6 +2773,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
     <joint name="arm2_arm_wrist_flex_joint">
@@ -2776,6 +2785,7 @@
       <xacro:if value="${'$(arg mode)' == 'hardware'}">
         <state_interface name="raw_position" />
         <state_interface name="raw_target" />
+        <state_interface name="raw_load" />
       </xacro:if>
     </joint>
   </ros2_control>

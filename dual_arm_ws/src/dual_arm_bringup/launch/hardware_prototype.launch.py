@@ -54,6 +54,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(PathJoinSubstitution([bringup, 'launch', 'hardware.launch.py'])),
         launch_arguments={
             'port': arg('port'), 'use_mock_serial': arg('use_mock_serial'), 'calibration_file': arg('calibration_file'),
+            'motor_settings_file': arg('motor_settings_file'),
             'enable_motion': 'true', 'require_estop': 'false',
             # 2026-11-17: a holding AX-12 hunts by up to 4 counts (0.02 rad) at rest, and a loaded joint
             # creeps between planning and execution; the 0.01 rad default aborted HOME moves.
@@ -82,6 +83,10 @@ def generate_launch_description():
                               default_value=PathJoinSubstitution([FindPackageShare('cm530_hardware'), 'config',
                                                                   'calibration_prototype.yaml']),
                               description='馬達校正檔；預設是 prototype 估計值'),
+        DeclareLaunchArgument('motor_settings_file',
+                              default_value=PathJoinSubstitution([FindPackageShare('cm530_hardware'), 'config',
+                                                                  'motor_settings_prototype.yaml']),
+                              description='馬達 compliance／punch（韌體 v19，每次啟用時寫入並讀回）；空 = 不寫入'),
         DeclareLaunchArgument('home_calibration_file', default_value=arg('calibration_file'),
                               description='coordinator 算 HOME 用的校正檔；預設同 calibration_file（Mock 測試才分開）'),
         DeclareLaunchArgument('use_mock_serial', default_value='false',

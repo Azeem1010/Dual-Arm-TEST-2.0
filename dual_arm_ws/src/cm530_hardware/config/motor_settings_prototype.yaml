@@ -1,0 +1,23 @@
+# PROTOTYPE ESTIMATE (2026-11-13): not measured, not calibration evidence.
+#
+# AX-12A Compliance Margin/Slope and Punch per joint, written by the driver with the
+# firmware v19 COMP command at every activation and read back with GET_COMP before
+# torque is enabled (a mismatch refuses activation). Used only by
+# dual_arm_bringup/hardware_prototype.launch.py (motor_settings_file).
+#
+# 2026-11-20: every joint at the AX-12A factory values (margin 1, slope 32, punch 32),
+# so v19 first behaves exactly like v18. Sway test plan (docs/evidence/diag_20261119):
+# change one thing at a time, first compliance_slope 32 -> 16 on both lifts and elbows.
+# Ranges: margin 0..254, slope 2/4/8/16/32/64/128 (smaller = stiffer), punch 32..1023.
+# These are RAM registers: a motor power cycle restores the factory values until the
+# next activation.
+schema_version: 1
+joints:
+  arm1_arm_shoulder_pan_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm1_arm_shoulder_lift_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm1_arm_elbow_flex_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm1_arm_wrist_flex_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm2_arm_shoulder_pan_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm2_arm_shoulder_lift_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm2_arm_elbow_flex_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}
+  arm2_arm_wrist_flex_joint: {compliance_margin: 1, compliance_slope: 32, punch: 32}

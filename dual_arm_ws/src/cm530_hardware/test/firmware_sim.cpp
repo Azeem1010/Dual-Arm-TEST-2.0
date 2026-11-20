@@ -1,6 +1,7 @@
 #include "firmware_sim.hpp"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
@@ -35,6 +36,8 @@ struct State
   int polls{0};
   int goal_writes{0};
   int torque_writes{0};
+  int compliance_writes{0};
+  std::map<int, bool> ignore_compliance;
   double rate{0.0};
   std::chrono::steady_clock::time_point last_update{std::chrono::steady_clock::now()};
 };
@@ -79,26 +82,72 @@ void apply_sync_write(const unsigned char * packet)
     if (found == s.motors.end()) {
       std::abort();
     }
+    Motor & motor = found->second;
+    const bool ignored = s.ignore_compliance[entry[0]];
     if (address == 30 && width == 4) {
-      found->second.goal = entry[1] + 256 * entry[2];
-      found->second.speed = entry[3] + 256 * entry[4];
+      motor.goal = entry[1] + 256 * entry[2];
+      motor.speed = entry[3] + 256 * entry[4];
     } else if (address == 24 && width == 1) {
-      found->second.torque = entry[1] != 0;
+      motor.torque = entry[1] != 0;
+    } else if (address == 26 && width == 4) {
+      if (!ignored) {
+        motor.margin_cw = entry[1];
+        motor.margin_ccw = entry[2];
+        motor.slope_cw = entry[3];
+        motor.slope_ccw = entry[4];
+      }
+    } else if (address == 48 && width == 2) {
+      if (!ignored) {
+        motor.punch = entry[1] + 256 * entry[2];
+      }
     } else {
       std::abort();
     }
   }
-  (address == 30 ? s.goal_writes : s.torque_writes)++;
+  if (address == 30) {
+    s.goal_writes++;
+  } else if (address == 24) {
+    s.torque_writes++;
+  } else {
+    s.compliance_writes++;
+  }
 }
 
-void queue_status(int id, const Motor & motor)
+// Register file up to address 49 as an AX-12A would report it.
+std::array<int, 50> registers(const Motor & motor)
+{
+  std::array<int, 50> r{};
+  const int position = static_cast<int>(std::lround(motor.present));
+  r[24] = motor.torque ? 1 : 0;
+  r[26] = motor.margin_cw;
+  r[27] = motor.margin_ccw;
+  r[28] = motor.slope_cw;
+  r[29] = motor.slope_ccw;
+  r[30] = motor.goal & 0xFF;
+  r[31] = motor.goal >> 8;
+  r[32] = motor.speed & 0xFF;
+  r[33] = motor.speed >> 8;
+  r[36] = position & 0xFF;
+  r[37] = position >> 8;
+  r[40] = motor.load & 0xFF;
+  r[41] = motor.load >> 8;
+  r[42] = motor.voltage;
+  r[43] = motor.temperature;
+  r[48] = motor.punch & 0xFF;
+  r[49] = motor.punch >> 8;
+  return r;
+}
+
+void queue_status(int id, const Motor & motor, int address, int length)
 {
   State & s = state();
-  const int value = static_cast<int>(std::lround(motor.present));
+  const auto r = registers(motor);
   std::vector<unsigned char> reply{
-    0xFF, 0xFF, static_cast<unsigned char>(id), 4,
-    static_cast<unsigned char>(motor.fault == MotorFault::kOverheat ? kOverheatBit : 0),
-    static_cast<unsigned char>(value & 0xFF), static_cast<unsigned char>(value >> 8)};
+    0xFF, 0xFF, static_cast<unsigned char>(id), static_cast<unsigned char>(length + 2),
+    static_cast<unsigned char>(motor.fault == MotorFault::kOverheat ? kOverheatBit : 0)};
+  for (int offset = 0; offset < length; ++offset) {
+    reply.push_back(static_cast<unsigned char>(r[static_cast<std::size_t>(address + offset)]));
+  }
   unsigned char sum = 0;
   for (std::size_t index = 2; index < reply.size(); ++index) {
     sum = static_cast<unsigned char>(sum + reply[index]);
@@ -129,6 +178,8 @@ std::string FirmwareSim::reset_and_boot()
   s.rate = 0.0;
   s.goal_writes = 0;
   s.torque_writes = 0;
+  s.compliance_writes = 0;
+  s.ignore_compliance.clear();
   s.output.clear();
   dxl_initialize(0, 1);
   BridgeInit();
@@ -180,6 +231,34 @@ int FirmwareSim::goal_writes() const
   State & s = state();
   const std::scoped_lock lock(s.mutex);
   return s.goal_writes;
+}
+
+void FirmwareSim::set_load(int id, int raw)
+{
+  State & s = state();
+  const std::scoped_lock lock(s.mutex);
+  s.motors.at(id).load = raw;
+}
+
+void FirmwareSim::set_slope_cw(int id, int slope)
+{
+  State & s = state();
+  const std::scoped_lock lock(s.mutex);
+  s.motors.at(id).slope_cw = slope;
+}
+
+void FirmwareSim::set_ignore_compliance(int id, bool ignore)
+{
+  State & s = state();
+  const std::scoped_lock lock(s.mutex);
+  s.ignore_compliance[id] = ignore;
+}
+
+int FirmwareSim::compliance_writes() const
+{
+  State & s = state();
+  const std::scoped_lock lock(s.mutex);
+  return s.compliance_writes;
 }
 
 int FirmwareSim::torque_writes() const
@@ -243,12 +322,14 @@ int dxl_hal_tx(unsigned char * packet, int count)
   if (packet[4] == cm530_test::kInstSyncWrite) {
     cm530_test::apply_sync_write(packet);
   } else if (packet[4] == cm530_test::kInstRead) {
-    if (packet[5] != 36 || packet[6] != 2) {
+    const int address = packet[5];
+    const int length = packet[6];
+    if (!((address == 36 && length == 6) || (address == 26 && length == 24) || (address == 42 && length == 2))) {
       std::abort();
     }
     const auto found = s.motors.find(packet[2]);
     if (found != s.motors.end() && found->second.fault != cm530_test::MotorFault::kNoReply) {
-      cm530_test::queue_status(packet[2], found->second);
+      cm530_test::queue_status(packet[2], found->second, address, length);
     }
   } else {
     std::abort();

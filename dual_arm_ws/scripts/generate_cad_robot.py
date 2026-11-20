@@ -62,6 +62,7 @@ ET.SubElement(robot,'xacro:arg',name='mode',default='mock')
 ET.SubElement(robot,'xacro:arg',name='port',default='/dev/ttyUSB0')
 ET.SubElement(robot,'xacro:arg',name='calibration_file',default='')
 ET.SubElement(robot,'xacro:arg',name='enable_motion',default='false')
+ET.SubElement(robot,'xacro:arg',name='motor_settings_file',default='')
 ET.SubElement(robot,'link',name='world')
 axis_report = {}
 tip_offsets = {}
@@ -157,7 +158,7 @@ hardware = ET.SubElement(control,'hardware')
 ET.SubElement(ET.SubElement(hardware,'xacro:if',value="${'$(arg mode)' == 'sim'}"),'plugin').text='gz_ros2_control/GazeboSimSystem'
 cm530 = ET.SubElement(hardware,'xacro:if',value="${'$(arg mode)' == 'hardware'}")
 ET.SubElement(cm530,'plugin').text='cm530_hardware/CM530SystemInterface'
-for name in ('port','calibration_file','enable_motion'):
+for name in ('port','calibration_file','enable_motion','motor_settings_file'):
     ET.SubElement(cm530,'param',name=name).text=f'$(arg {name})'
 ET.SubElement(ET.SubElement(hardware,'xacro:if',value="${'$(arg mode)' not in ('sim', 'hardware')}"),'plugin').text='mock_components/GenericSystem'
 for arm in (1,2):
@@ -168,7 +169,7 @@ for arm in (1,2):
         ET.SubElement(joint,'state_interface',name='velocity')
         # AX-12A counts exactly as the firmware reported them; hardware only.
         counts = ET.SubElement(joint,'xacro:if',value="${'$(arg mode)' == 'hardware'}")
-        for name in ('raw_position','raw_target'):
+        for name in ('raw_position','raw_target','raw_load'):
             ET.SubElement(counts,'state_interface',name=name)
 gazebo = ET.SubElement(ET.SubElement(robot,'xacro:if',value="${'$(arg mode)' == 'sim'}"),'gazebo')
 plugin = ET.SubElement(gazebo,'plugin',filename='libgz_ros2_control-system.so',name='gz_ros2_control::GazeboSimROS2ControlPlugin')

@@ -1,0 +1,47 @@
+2026-11-21T00:02:39+08:00
+== plain
+make exit 0
+Test project /tmp/cm530_plain
+    Start 1: cm530_protocol_test
+1/5 Test #1: cm530_protocol_test ..............   Passed    0.07 sec
+    Start 2: cm530_calibration_test
+2/5 Test #2: cm530_calibration_test ...........   Passed    0.08 sec
+    Start 3: cm530_motor_settings_test
+3/5 Test #3: cm530_motor_settings_test ........   Passed    0.09 sec
+    Start 4: cm530_link_test
+4/5 Test #4: cm530_link_test ..................   Passed    0.11 sec
+    Start 5: cm530_scheduler_test
+5/5 Test #5: cm530_scheduler_test .............   Passed    0.19 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Label Time Summary:
+gtest    =   0.55 sec*proc (5 tests)
+
+Total Test time (real) =   0.56 sec
+== address,undefined
+make exit 0
+Test project /tmp/cm530_asan
+    Start 1: cm530_protocol_test
+1/5 Test #1: cm530_protocol_test ..............   Passed    0.08 sec
+    Start 2: cm530_calibration_test
+2/5 Test #2: cm530_calibration_test ...........   Passed    0.12 sec
+    Start 3: cm530_motor_settings_test
+3/5 Test #3: cm530_motor_settings_test ........   Passed    0.10 sec
+    Start 4: cm530_link_test
+4/5 Test #4: cm530_link_test ..................   Passed    0.14 sec
+    Start 5: cm530_scheduler_test
+5/5 Test #5: cm530_scheduler_test .............   Passed    0.20 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Label Time Summary:
+gtest    =   0.64 sec*proc (5 tests)
+
+Total Test time (real) =   0.65 sec
+== thread (built; run below without ASLR)
+cm530_protocol_test exit 0 0 tsan warnings; [  PASSED  ] 4 tests.
+cm530_calibration_test exit 0 0 tsan warnings; [  PASSED  ] 8 tests.
+cm530_motor_settings_test exit 0 0 tsan warnings; [  PASSED  ] 3 tests.
+cm530_link_test exit 0 0 tsan warnings; [  PASSED  ] 23 tests.
+cm530_scheduler_test exit 0 0 tsan warnings; [  PASSED  ] 13 tests.

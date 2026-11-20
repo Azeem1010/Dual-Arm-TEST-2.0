@@ -9,6 +9,7 @@
 
 #include "cm530_hardware/calibration.hpp"
 #include "cm530_hardware/link.hpp"
+#include "cm530_hardware/motor_settings.hpp"
 #include "cm530_hardware/scheduler.hpp"
 #include "hardware_interface/system_interface.hpp"
 
@@ -42,6 +43,7 @@ private:
 
   std::string port_;
   std::string calibration_file_;
+  std::string motor_settings_file_;
   bool enable_motion_{false};
   std::chrono::milliseconds command_timeout_{500};
   std::chrono::milliseconds startup_listen_{200};
@@ -49,15 +51,19 @@ private:
   SpeedOptions speed_options_{};
 
   std::optional<Calibration> calibration_;
+  // Empty: compliance is never written and stays at the motors' power-up values.
+  std::optional<MotorSettings> motor_settings_;
   std::unique_ptr<Link> link_;
   std::unique_ptr<Scheduler> scheduler_;
   std::array<RawPose, kArmCount> latest_raw_{};
+  std::array<RawLoad, kArmCount> latest_load_{};
   std::array<std::optional<RawPose>, kArmCount> acked_target_{};
 
   std::array<std::string, kJointCount> position_state_;
   std::array<std::string, kJointCount> velocity_state_;
   std::array<std::string, kJointCount> raw_position_state_;
   std::array<std::string, kJointCount> raw_target_state_;
+  std::array<std::string, kJointCount> raw_load_state_;
   std::array<std::string, kJointCount> position_command_;
   std::array<double, kJointCount> last_rad_{};
   // Previous position command, for the commanded velocity behind each AX speed.

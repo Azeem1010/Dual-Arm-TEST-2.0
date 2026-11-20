@@ -27,7 +27,7 @@ Scheduler::Scheduler(
 {
   const auto now = std::chrono::steady_clock::now();
   for (std::size_t arm = 0; arm < kArmCount; ++arm) {
-    samples_[arm] = ArmSample{initial[arm], now, acked_[arm]};
+    samples_[arm] = ArmSample{initial[arm], {}, now, acked_[arm]};
   }
 }
 
@@ -124,12 +124,12 @@ bool Scheduler::cycle_arm(Arm arm)
     }
   }
   const LinkResult read = link_.transact(Command::read(arm));
-  if (!read.ok() || !read.pose) {
+  if (!read.ok() || !read.pose || !read.load) {
     latch(std::format("READ {} failed: {}", arm_name(arm), read.detail));
     return false;
   }
   const std::scoped_lock lock(mutex_);
-  samples_[index] = ArmSample{*read.pose, std::chrono::steady_clock::now(), acked_[index]};
+  samples_[index] = ArmSample{*read.pose, *read.load, std::chrono::steady_clock::now(), acked_[index]};
   return true;
 }
 

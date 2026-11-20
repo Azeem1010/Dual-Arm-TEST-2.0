@@ -110,6 +110,21 @@ TEST_F(SchedulerTest, ReadOnlyModeNeverWritesTargets)
   EXPECT_FALSE(scheduler->faulted());
 }
 
+// v19: every READ also carries Present Load, so each sample has the load of the same READ.
+TEST_F(SchedulerTest, SamplesCarryPresentLoad)
+{
+  auto scheduler = make(false);
+  scheduler->start();
+  sim.set_load(1, 1024 + 200);
+  sim.set_load(16, 77);
+  ASSERT_TRUE(eventually([&] {
+      const auto arm2 = sample(*scheduler, Arm::kArm2);
+      return arm2 && arm2->load == cm530_hardware::RawLoad{0, 1224, 0, 77};
+    }));
+  scheduler->stop();
+  EXPECT_FALSE(scheduler->faulted());
+}
+
 TEST_F(SchedulerTest, SendsChangedTargetsOnceAndFollowsFeedback)
 {
   auto scheduler = make(true);

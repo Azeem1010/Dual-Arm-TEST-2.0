@@ -17,8 +17,12 @@ PACKAGE = Path(__file__).resolve().parents[1]
 URDF = (PACKAGE.parent / 'dual_arm_description' / 'urdf' / 'dual_arm_cad.urdf.xacro').read_text(encoding='utf-8')
 TEMPLATE = PACKAGE / 'config' / 'hardware' / 'calibration_worksheet.template.yaml'
 CONFIG = yaml.safe_load((PACKAGE / 'config' / 'sim' / 'coordinator.yaml').read_text(encoding='utf-8'))
-REPLIES = {'VERSION': 'VERSION,6', 'PING': 'PONG', 'GET_HOME,arm1': 'HOME,arm1,90,567,712,825',
-           'GET_HOME,arm2': 'HOME,arm2,590,567,712,825', 'READ,arm1': 'POS,arm1,500,501,502,503', 'READ,arm2': 'POS,arm2,510,511,512,513'}
+REPLIES = {'VERSION': 'VERSION,7', 'PING': 'PONG', 'GET_HOME,arm1': 'HOME,arm1,90,567,712,825',
+           'GET_HOME,arm2': 'HOME,arm2,590,567,712,825', 'READ,arm1': 'POS,arm1,500,501,502,503,0,40,1090,7',
+           'READ,arm2': 'POS,arm2,510,511,512,513,1,2,3,4',
+           'GET_COMP,arm1': 'COMP,arm1,1,1,1,1,32,16,16,32,32,32,32,32',
+           'GET_COMP,arm2': 'COMP,arm2,1,1,1,1,32,32,32,32,32,32,32,32',
+           'DIAG,arm1': 'DIAG,arm1,120,121,122,123,30,31,32,33', 'DIAG,arm2': 'DIAG,arm2,119,119,119,119,40,41,42,43'}
 
 
 class FakePort:
@@ -61,12 +65,21 @@ class CM530Probe(unittest.TestCase):
         self.assertEqual(report['status'], 'PASS')
         self.assertEqual(report['home']['arm1'], [90, 567, 712, 825])
         self.assertEqual(report['position']['arm2'], [510, 511, 512, 513])
+        self.assertEqual(report['load']['arm1'], [0, 40, 1090, 7])
+        self.assertEqual(report['compliance']['arm1'], {'margin': [1, 1, 1, 1], 'slope': [32, 16, 16, 32],
+                                                        'punch': [32, 32, 32, 32]})
+        self.assertEqual(report['voltage_0_1v']['arm1'], [120, 121, 122, 123])
+        self.assertEqual(report['temperature_c']['arm2'], [40, 41, 42, 43])
+
+    def test_v18_read_without_load_stops(self):
+        report = self.run_with(FakePort({**REPLIES, 'READ,arm1': 'POS,arm1,500,501,502,503'}))
+        self.assertEqual(report['status'], 'FAIL')
 
     def test_only_read_only_commands_are_written(self):
         port = FakePort()
         self.run_with(port)
         self.assertTrue(set(port.commands()) <= set(ALLOWED_COMMANDS))
-        for forbidden in ('AX', 'HOLD', 'TORQUE', 'LED'):
+        for forbidden in ('AX', 'HOLD', 'TORQUE', 'LED', 'COMP'):
             self.assertFalse(any(command.startswith(forbidden) for command in port.commands()))
         self.assertFalse(any(command.startswith('HOME') for command in port.commands()))
 
@@ -78,7 +91,8 @@ class CM530Probe(unittest.TestCase):
     def test_other_commands_are_refused_before_writing(self):
         port = FakePort()
         probe = Probe(port, 1.0, clock=lambda: port.now)
-        for command in ('AX,arm1,1,2,3,4', 'HOME,arm1', 'HOLD,arm1', 'TORQUE,arm1,1'):
+        for command in ('AX,arm1,1,2,3,4', 'HOME,arm1', 'HOLD,arm1', 'TORQUE,arm1,1',
+                        'COMP,arm1,1,1,1,1,32,32,32,32,32,32,32,32'):
             with self.assertRaises(ProbeError):
                 probe.send(command)
         self.assertEqual(port.written, [])
@@ -104,9 +118,12 @@ class CM530Probe(unittest.TestCase):
         self.assertEqual(self.run_with(FakePort({**REPLIES, 'VERSION': 'VERSION,4'}))['status'], 'FAIL')
         # A v17 board (protocol 5) ignores Moving Speed, so it fails too.
         self.assertEqual(self.run_with(FakePort({**REPLIES, 'VERSION': 'VERSION,5'}))['status'], 'FAIL')
+        # A v18 board (protocol 6) has no load, COMP or DIAG.
+        self.assertEqual(self.run_with(FakePort({**REPLIES, 'VERSION': 'VERSION,6'}))['status'], 'FAIL')
 
     def test_boot_message_is_tolerated(self):
-        self.assertEqual(self.run_with(FakePort(boot=b'READY,6\r\n'))['status'], 'PASS')
+        self.assertEqual(self.run_with(FakePort(boot=b'READY,7\r\n'))['status'], 'PASS')
+        self.assertEqual(self.run_with(FakePort(boot=b'READY,6\r\n'))['status'], 'FAIL')
 
     def test_unexpected_startup_line_stops(self):
         report = self.run_with(FakePort(boot=b'OK,AX,arm1\r\n'))

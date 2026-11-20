@@ -18,6 +18,8 @@ struct ArmSample
 {
   // Present Position exactly as the last successful READ returned it.
   RawPose raw{};
+  // Present Load from the same READ (v19); zero until the first READ.
+  RawLoad load{};
   std::chrono::steady_clock::time_point stamp{};
   // The last AX the firmware answered OK,AX to; empty until one is acknowledged.
   // OK,AX echoes nothing, so the host keeps the values it sent (spec 4.2).
