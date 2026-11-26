@@ -12,7 +12,9 @@ Details and log excerpts: evidence/field_20261126/README.md. Prototype results n
 | Transfer runs | FAIL | 5 runs stopped on arm1 `DXL_CORRUPT` (IDs 15, 15, 3, 3, 2), at most 5 objects per run |
 | arm1 bus DXL_CORRUPT/TIMEOUT | FAIL (intermittent) | dxl_error_counts.txt; cable still not checked |
 | arm2 camera rotated 180 degrees | PASS for the rotate node; orientation on screen NOT_RUN | |
-| Sway test round 1 with v19 | NOT_RUN | no bag recorded |
+| Sway round 1, arm1 HOME to A (v19, acceleration 0.3) | PASS as analysis, 2 segments | lift p2p 4.7-4.8 (11-19: 21.9-22.7); smaller travel, cause not separated; sway_analysis_1557/ |
+| Sway round 1, arm2 HOME to B | NOT_RUN | arm2 did not move in the bag |
+| arm2 B pick tolerance (10 mm) | FAIL | object seen 10-11 mm from the taught point, 8 times; tolerance not changed |
 
 ## 2026-11-20 firmware v19 / protocol 7 (Present Load, COMP, GET_COMP, DIAG), no hardware
 

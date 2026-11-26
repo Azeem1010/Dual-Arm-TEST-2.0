@@ -46,10 +46,35 @@ Judgement, not verified: errors on several IDs point at what the arm1 chain shar
 | arm2 camera rotated 180 degrees | PASS for the node starting; orientation on screen NOT_RUN |
 | arm1 cable check or swap | NOT_RUN |
 | `scripts/build.sh` model validation and MoveIt rebuild after a06900a | NOT_RUN |
-| Sway test round 1 (v19, factory compliance) | NOT_RUN as a separate test; no bag recorded |
+| Sway round 1 (v19, factory compliance, acceleration 0.3): arm1 HOME to A | PASS as analysis, 2 segments only: lift p2p 4.7-4.8 counts (11-19: 21.9-22.7) |
+| Sway round 1: arm2 HOME to B | NOT_RUN: arm2 never moved in the bag (B tolerance stop) |
+| B pick tolerance at 15:59 and 16:00 | FAIL: object 10-11 mm from arm2's taught point, tolerance 10 mm; not changed |
+
+## Sway bag, 15:57 (added 16:05)
+
+Bag `~/bags/sway_v19_1557/` on the Orin (392 s, 147,449 messages, 117 MB mcap; only `bag_sway_v19_1557/metadata.yaml` is in git). Topics as on 11-19: `/joint_states`, `/dynamic_joint_states` (now with `raw_load`), `/rosout`, both `controller_state`. Analysis with the unchanged 11-19 scripts copied into `sway_analysis_1557/` (`extract.py`, `sway.py`; output `segments.txt`, `coord_log.txt`).
+
+Conditions differ from the 11-19 baseline (bag 13:44) in three ways at once: firmware v19 with compliance written at activation (factory values, so the registers are the same as before), `acceleration_scale` 0.3 instead of 0.6, and different A targets.
+
+| arm1 segment | 11-19 lift travel / p2p / ripple RMS | 11-26 lift travel / p2p / ripple RMS |
+|---|---|---|
+| HOME to A above | 150-241 / 21.9-22.7 / 5.2-5.6 (4 segments) | 81-90 / 4.7-4.8 / 0.75-0.81 (2 segments) |
+| A to B above | 56 / 5.1 / 0.96 | 116-124 / 7.8-8.7 / 1.5-1.6 |
+| B to HOME | 181 / 6.7 / 1.15 | 183 / 11.1-13.3 / 1.8-1.9 |
+
+- The HOME-outward sway on arm1 is gone in these two moves (4 Hz ripple p2p 22 to 5 counts). Both moves took 5.3-5.4 s instead of 3.4-4.0 s, consistent with the lower acceleration.
+- Not a clean comparison: the lift travel was only 81-90 counts (A targets near x -0.125 m) against 150-241, and only two segments. The cause (acceleration, travel, or both) is not separated.
+- B to HOME is a little rougher than on 11-19 (lift p2p 11-13 against 6.7), still well below the old HOME-outward level.
+- arm2 did not move: the task stopped before arm2 left HOME (next section), so arm2 HOME to B is not measured.
+- `raw_load` is in the bag but not analysed yet.
+
+## B pick tolerance stop, 15:59 and 16:00
+
+arm1 put the object into B with 2.5 mm joint error (`arm1 B contact: ... xy error 2.5 mm`), but the env camera saw it at x 0.0306-0.0311 m, y about 0, which is 10-11 mm from arm2's taught B point; the prototype `b_pick_tolerance_m` is 0.01, so `_validated_b_target` raised a fault. Three automatic resumes measured the same position, the task stopped; a second start repeated it (8 measurements, 10-11 mm each). Judgement, not verified: the cap sat off-centre on arm1's cup from the A pick (offset toward C, +x), since arm1's own position error was small. The tolerance was not changed (AGENTS.md: no loosening without a user decision).
 
 ## Next
 
 1. Power off and check or swap the arm1 servo cables, starting with the CM-530 to first-servo cable; move each joint by hand to see whether a cable gets pulled.
 2. Run again and count DXL errors; if they continue after the swap, compare with v18 (needs the v18 driver back as well).
-3. Run `scripts/build.sh` (or at least `validate_model.py` and the MoveIt rebuild) for the xacro change.
+3. Record a longer sway bag with both arms moving (arm2 HOME to B) and A targets far from HOME, to separate acceleration from travel.
+4. Run `scripts/build.sh` (or at least `validate_model.py` and the MoveIt rebuild) for the xacro change.

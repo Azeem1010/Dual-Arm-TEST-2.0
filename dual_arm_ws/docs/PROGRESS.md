@@ -10,6 +10,7 @@ Details: [evidence/field_20261126/README.md](evidence/field_20261126/README.md).
 - First activation refused: arm1 shoulder_lift raw 329 (limit 338..925) and wrist_flex 840 (219..835); moved by hand.
 - Transfer runs FAIL: every run stopped on an arm1 `ERR,DXL_CORRUPT` (ID 15 twice, 3 twice, 2 once), at most 5 objects per run. Across all 103 HMI logs since 11-13 the DXL errors are almost all arm1 and spread over IDs 15, 17, 3 and 2, which points at the shared arm1 chain (cable, port, power, connector) rather than one servo; judgement, cable still not checked. Also five CM-530 handshake timeouts at start and three ESP32 suction-controller stops.
 - arm2 hand camera rotated 180 degrees in `vision_pkg/config/cameras.yaml` (user request; monitor-only, no calibration). Rotation node seen running; orientation on screen not confirmed.
+- Sway bag 15:57 (`~/bags/sway_v19_1557/`, not in git): arm1 HOME to A lift ripple p2p 4.7-4.8 counts against 21.9-22.7 on 11-19, but only two segments, smaller lift travel (81-90 against 150-241) and acceleration 0.3, so the cause is not separated; arm2 HOME to B NOT_RUN. In the same run arm2 refused the B object twice: the camera saw it 10-11 mm from arm2's taught point (tolerance 10 mm); tolerance not changed.
 - Next: power off and check or swap the arm1 servo cables (CM-530 to first servo first), then count DXL errors again; run `scripts/build.sh`.
 
 ## Earlier result: firmware v19 / protocol 7 with Present Load and settable compliance (2026-11-20, no hardware)
