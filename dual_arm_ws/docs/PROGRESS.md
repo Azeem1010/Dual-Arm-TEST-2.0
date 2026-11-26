@@ -1,8 +1,18 @@
-# Development status — 2026-11-20
+# Development status — 2026-11-26
 
 Current status by work package is in MODIFICATION_PLAN.md section 6. Each section below records one result at the time it was made, so later sections supersede what older ones list as not run.
 
-## Latest result: firmware v19 / protocol 7 with Present Load and settable compliance (2026-11-20, no hardware)
+## Latest result: first field runs with firmware v19, arm1 bus errors stop every run (2026-11-26, Orin, prototype)
+
+Details: [evidence/field_20261126/README.md](evidence/field_20261126/README.md).
+
+- The board answers `VERSION,7` (v19). The Orin install was still the v18 driver (handshake refused `VERSION,7`); after `colcon build` the handshake, the compliance read-back (`GET_COMP`, factory margin 1 / slope 32 / punch 32) and DIAG (12.3-12.7 V) PASS. `scripts/build.sh` (model validation, MoveIt rebuild for the a06900a xacro change) NOT_RUN.
+- First activation refused: arm1 shoulder_lift raw 329 (limit 338..925) and wrist_flex 840 (219..835); moved by hand.
+- Transfer runs FAIL: every run stopped on an arm1 `ERR,DXL_CORRUPT` (ID 15 twice, 3 twice, 2 once), at most 5 objects per run. Across all 103 HMI logs since 11-13 the DXL errors are almost all arm1 and spread over IDs 15, 17, 3 and 2, which points at the shared arm1 chain (cable, port, power, connector) rather than one servo; judgement, cable still not checked. Also five CM-530 handshake timeouts at start and three ESP32 suction-controller stops.
+- arm2 hand camera rotated 180 degrees in `vision_pkg/config/cameras.yaml` (user request; monitor-only, no calibration). Rotation node seen running; orientation on screen not confirmed.
+- Next: power off and check or swap the arm1 servo cables (CM-530 to first servo first), then count DXL errors again; run `scripts/build.sh`.
+
+## Earlier result: firmware v19 / protocol 7 with Present Load and settable compliance (2026-11-20, no hardware)
 
 Details: [evidence/fw_v19_20261120/README.md](evidence/fw_v19_20261120/README.md).
 

@@ -1,5 +1,19 @@
 # Evidence report — 2026-11-08
 
+## 2026-11-26 Orin field runs with firmware v19 (prototype)
+
+Details and log excerpts: evidence/field_20261126/README.md. Prototype results never count as calibration or H stage evidence.
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| v19 driver build on the Orin (`colcon build`, 15 packages) | PASS | `scripts/build.sh` model validation and MoveIt rebuild NOT_RUN |
+| Handshake with the v19 board (`VERSION,7`) | PASS | after the rebuild; the old v18 install refused it |
+| COMP / GET_COMP at activation (factory values), DIAG voltage and temperature | PASS | hmi_log_excerpts.txt, 14:46 run |
+| Transfer runs | FAIL | 5 runs stopped on arm1 `DXL_CORRUPT` (IDs 15, 15, 3, 3, 2), at most 5 objects per run |
+| arm1 bus DXL_CORRUPT/TIMEOUT | FAIL (intermittent) | dxl_error_counts.txt; cable still not checked |
+| arm2 camera rotated 180 degrees | PASS for the rotate node; orientation on screen NOT_RUN | |
+| Sway test round 1 with v19 | NOT_RUN | no bag recorded |
+
 ## 2026-11-20 firmware v19 / protocol 7 (Present Load, COMP, GET_COMP, DIAG), no hardware
 
 Details and raw output: evidence/fw_v19_20261120/README.md.

@@ -69,7 +69,7 @@ python3 scripts/test_cm530_mock.py        # CM-530 整合測試，不需硬體
 | 已有模擬在執行 | 先用 `pgrep -af 'gz sim'` 確認，不要重複啟動 |
 | Gazebo 關不掉 | 已知問題，launch 結束後可能要對殘留的 `gz sim` 送 SIGTERM |
 | 第 17 版 `tests/test_bridge.c` 有 11 項失敗 | 第 17 版的測試仍預期 HOME=512；第 18 版的測試已對齊 256／512／512／512，全部通過 |
-| CM-530 韌體版本 | 驅動是第 19 版（協定 7：`READ` 帶負載、`COMP`／`GET_COMP`／`DIAG`），只接受 `VERSION,7`。板子在 2026-11-20 仍是第 18 版，連線會失敗，要先燒錄第 19 版（現場人員要求後）；要回到第 18 版就同時退回驅動。HOME 以 `arm_config.h` 和板上 `GET_HOME` 為準 |
+| CM-530 韌體版本 | 驅動是第 19 版（協定 7：`READ` 帶負載、`COMP`／`GET_COMP`／`DIAG`），只接受 `VERSION,7`。板子在 2026-11-26 已確認是第 19 版；Orin 拉新版後要重新 `colcon build`，舊 install 會拒絕 `VERSION,7`；要回到第 18 版就同時退回驅動。HOME 以 `arm_config.h` 和板上 `GET_HOME` 為準 |
 | CAD 的 q=0 | 不是手臂伸直；伸直對應 q=(0, −35, −55, 0)° |
 
 ## 專案慣例
